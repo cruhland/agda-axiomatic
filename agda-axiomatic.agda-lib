@@ -1,0 +1,3 @@
+name: agda-axiomatic
+depend: standard-library
+include: src
