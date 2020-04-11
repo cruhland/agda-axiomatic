@@ -15,13 +15,13 @@ record Peano (ℕ : Set) : Set₁ where
     succ-inj : ∀ {n m} → succ n ≡ succ m → n ≡ m
     ind : (P : ℕ → Set) → P zero → (∀ {k} → P k → P (succ k)) → ∀ n → P n
 
+module _ {ℕ : Set} {{P : Peano ℕ}} where
+  open Peano P
+
   fromNat : Nat.Nat → {{_ : ⊤}} → ℕ
   fromNat Nat.zero = zero
   fromNat (Nat.suc n) = succ (fromNat n)
 
-  number : Number ℕ
-  number = record { Constraint = const ⊤ ; fromNat = fromNat }
-
-instance
-  numberPeano : {N : Set} {{P : Peano N}} → Number N
-  numberPeano {{P}} = Peano.number P
+  instance
+    number : Number ℕ
+    number = record { Constraint = const ⊤ ; fromNat = fromNat }
