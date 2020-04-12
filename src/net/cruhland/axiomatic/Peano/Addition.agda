@@ -10,17 +10,17 @@ module net.cruhland.axiomatic.Peano.Addition (PB : PeanoBundle) where
   _+_ : ℕ → ℕ → ℕ
   n + m = rec m succ n
 
-  +-identityᴸ : ∀ {m} → zero + m ≡ m
-  +-identityᴸ = rec-zero
+  +-zeroᴸ : ∀ {m} → zero + m ≡ m
+  +-zeroᴸ = rec-zero
 
   +-succᴸ : ∀ {n m} → succ n + m ≡ succ (n + m)
   +-succᴸ = rec-succ
 
-  +-identityᴿ : ∀ {n} → n + zero ≡ n
-  +-identityᴿ {n} = ind P Pz Ps n
+  +-zeroᴿ : ∀ {n} → n + zero ≡ n
+  +-zeroᴿ {n} = ind P Pz Ps n
     where
       P = λ x → x + zero ≡ x
-      Pz = +-identityᴸ
+      Pz = +-zeroᴸ
 
       Ps : succProp P
       Ps {k} k+z≡k =
@@ -40,9 +40,9 @@ module net.cruhland.axiomatic.Peano.Addition (PB : PeanoBundle) where
       Pz =
         begin
           zero + succ m
-        ≡⟨ +-identityᴸ ⟩
+        ≡⟨ +-zeroᴸ ⟩
           succ m
-        ≡⟨ cong succ (sym +-identityᴸ) ⟩
+        ≡⟨ cong succ (sym +-zeroᴸ) ⟩
           succ (zero + m)
         ∎
 
@@ -62,7 +62,7 @@ module net.cruhland.axiomatic.Peano.Addition (PB : PeanoBundle) where
   +-comm {n} {m} = ind P Pz Ps n
     where
       P = λ x → x + m ≡ m + x
-      Pz = trans +-identityᴸ (sym +-identityᴿ)
+      Pz = trans +-zeroᴸ (sym +-zeroᴿ)
 
       Ps : succProp P
       Ps {k} k+m≡m+k =
@@ -84,9 +84,9 @@ module net.cruhland.axiomatic.Peano.Addition (PB : PeanoBundle) where
       Pz =
         begin
           (zero + m) + p
-        ≡⟨ cong (_+ p) +-identityᴸ ⟩
+        ≡⟨ cong (_+ p) +-zeroᴸ ⟩
           m + p
-        ≡⟨ sym +-identityᴸ ⟩
+        ≡⟨ sym +-zeroᴸ ⟩
           zero + (m + p)
         ∎
 
@@ -103,3 +103,36 @@ module net.cruhland.axiomatic.Peano.Addition (PB : PeanoBundle) where
         ≡⟨ sym +-succᴸ ⟩
           succ k + (m + p)
         ∎
+
+  infixl 6 _+_
+
+  +-cancelᴸ : ∀ {n m p} → n + m ≡ n + p → m ≡ p
+  +-cancelᴸ {n} {m} {p} = ind P Pz Ps n
+    where
+      P = λ x → x + m ≡ x + p → m ≡ p
+
+      Pz : P zero
+      Pz z+m≡z+p =
+        begin
+          m
+        ≡⟨ sym +-zeroᴸ ⟩
+          zero + m
+        ≡⟨ z+m≡z+p ⟩
+          zero + p
+        ≡⟨ +-zeroᴸ ⟩
+          p
+        ∎
+
+      Ps : succProp P
+      Ps {k} k+m≡k+p→m≡p sk+m≡sk+p = k+m≡k+p→m≡p (succ-inj s[k+m]≡s[k+p])
+        where
+          s[k+m]≡s[k+p] =
+            begin
+              succ (k + m)
+            ≡⟨ sym +-succᴸ ⟩
+              succ k + m
+            ≡⟨ sk+m≡sk+p ⟩
+              succ k + p
+            ≡⟨ +-succᴸ ⟩
+              succ (k + p)
+            ∎
