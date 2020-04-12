@@ -75,3 +75,31 @@ module net.cruhland.axiomatic.Peano.Addition (PB : PeanoBundle) where
         ≡⟨ sym +-succᴿ ⟩
           m + succ k
         ∎
+
+  +-assoc : ∀ {n m p} → (n + m) + p ≡ n + (m + p)
+  +-assoc {n} {m} {p} = ind P Pz Ps n
+    where
+      P = λ x → (x + m) + p ≡ x + (m + p)
+
+      Pz =
+        begin
+          (zero + m) + p
+        ≡⟨ cong (_+ p) +-identityᴸ ⟩
+          m + p
+        ≡⟨ sym +-identityᴸ ⟩
+          zero + (m + p)
+        ∎
+
+      Ps : succProp P
+      Ps {k} [k+m]+p≡k+[m+p] =
+        begin
+          (succ k + m) + p
+        ≡⟨ cong (_+ p) +-succᴸ ⟩
+          succ (k + m) + p
+        ≡⟨ +-succᴸ ⟩
+          succ ((k + m) + p)
+        ≡⟨ cong succ [k+m]+p≡k+[m+p] ⟩
+          succ (k + (m + p))
+        ≡⟨ sym +-succᴸ ⟩
+          succ k + (m + p)
+        ∎
