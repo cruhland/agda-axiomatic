@@ -1,6 +1,6 @@
 open import Function using (const)
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; sym; cong)
+open Eq using (_≡_; sym; trans; cong)
 open Eq.≡-Reasoning
 open import net.cruhland.axiomatic.Peano using (PeanoBundle)
 
@@ -56,4 +56,22 @@ module net.cruhland.axiomatic.Peano.Addition (PB : PeanoBundle) where
           succ (succ (k + m))
         ≡⟨ cong succ (sym +-succᴸ) ⟩
           succ (succ k + m)
+        ∎
+
+  +-comm : ∀ {n m} → n + m ≡ m + n
+  +-comm {n} {m} = ind P Pz Ps n
+    where
+      P = λ x → x + m ≡ m + x
+      Pz = trans +-identityᴸ (sym +-identityᴿ)
+
+      Ps : succProp P
+      Ps {k} k+m≡m+k =
+        begin
+          succ k + m
+        ≡⟨ +-succᴸ ⟩
+          succ (k + m)
+        ≡⟨ cong succ k+m≡m+k ⟩
+          succ (m + k)
+        ≡⟨ sym +-succᴿ ⟩
+          m + succ k
         ∎
