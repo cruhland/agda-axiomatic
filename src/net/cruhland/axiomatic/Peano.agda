@@ -1,13 +1,13 @@
 module net.cruhland.axiomatic.Peano where
 
-open import Data.Product using (Σ; _,_)
-open import Data.Sum using (_⊎_) renaming (inj₁ to left; inj₂ to right)
 open import Function using (const)
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; _≢_; refl; sym; trans; cong)
 open Eq.≡-Reasoning
+open import net.cruhland.axiomatic.Logic using (LogicBundle)
 
-record Peano (ℕ : Set) : Set₁ where
+record Peano (ℕ : Set) (LB : LogicBundle) : Set₁ where
+  open LogicBundle LB
   field
     zero : ℕ
     succ : ℕ → ℕ
@@ -64,18 +64,20 @@ record Peano (ℕ : Set) : Set₁ where
     {A : Set} {z : A} {s : A → A} {n : ℕ} → rec z s (succ n) ≡ rec (s z) s n
   rec-succ-tail = trans rec-succ rec-s-comm
 
-  case : ∀ n → n ≡ zero ⊎ Σ ℕ λ p → n ≡ succ p
+  case : ∀ n → n ≡ zero ∨ Σ ℕ λ p → n ≡ succ p
   case n = ind P Pz Ps n
     where
-      P = λ x → x ≡ zero ⊎ Σ ℕ λ p → x ≡ succ p
-      Pz = left refl
+      P = λ x → x ≡ zero ∨ Σ ℕ λ p → x ≡ succ p
+      Pz = ∨-introᴸ refl
 
       Ps : succProp P
-      Ps {k} _ = right (k , refl)
+      Ps {k} _ = ∨-introᴿ (Σ-intro k refl)
 
 record PeanoBundle : Set₁ where
   field
     ℕ : Set
-    isPeano : Peano ℕ
+    LB : LogicBundle
+    isPeano : Peano ℕ LB
 
+  open LogicBundle LB public
   open Peano isPeano public
