@@ -34,3 +34,6 @@ record LogicBundle : Set₁ where
   infixr 1 _∨_
 
   open Logic isLogic public
+
+  ¬_ : Set → Set
+  ¬ A = A → ⊥

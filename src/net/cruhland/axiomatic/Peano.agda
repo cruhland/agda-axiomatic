@@ -2,7 +2,7 @@ module net.cruhland.axiomatic.Peano where
 
 open import Function using (const)
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; _≢_; refl; sym; trans; cong)
+open Eq using (_≡_; refl; sym; trans; cong)
 open Eq.≡-Reasoning
 open import net.cruhland.axiomatic.Logic using (LogicBundle)
 
@@ -12,7 +12,7 @@ record Peano (ℕ : Set) (LB : LogicBundle) : Set₁ where
     zero : ℕ
     succ : ℕ → ℕ
 
-    succ≢zero : ∀ {n} → succ n ≢ zero
+    succ≢zero : ∀ {n} → ¬ (succ n ≡ zero)
     succ-inj : ∀ {n m} → succ n ≡ succ m → n ≡ m
 
   succProp : (P : ℕ → Set) → Set
