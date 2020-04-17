@@ -32,6 +32,7 @@ record LogicBundle : Set₁ where
     isLogic : Logic Σ _∧_ _∨_ ⊤ ⊥
 
   infixr 1 _∨_
+  infixr 2 _∧_
 
   open Logic isLogic public
 
