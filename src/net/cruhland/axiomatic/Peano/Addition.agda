@@ -2,9 +2,12 @@ open import Function using (const)
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; sym; trans; cong)
 open Eq.≡-Reasoning
+open import net.cruhland.axiomatic.Logic using (LogicBundle)
 open import net.cruhland.axiomatic.Peano using (PeanoBundle)
 
-module net.cruhland.axiomatic.Peano.Addition (PB : PeanoBundle) where
+module net.cruhland.axiomatic.Peano.Addition
+  (LB : LogicBundle)
+  (PB : PeanoBundle LB) where
   open PeanoBundle PB
 
   _+_ : ℕ → ℕ → ℕ

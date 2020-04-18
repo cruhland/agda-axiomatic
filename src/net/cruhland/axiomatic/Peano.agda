@@ -78,11 +78,9 @@ record Peano (ℕ : Set) (LB : LogicBundle) : Set₁ where
       Ps : succProp P
       Ps {k} _ = ∨-introᴿ (Σ-intro k refl)
 
-record PeanoBundle : Set₁ where
+record PeanoBundle (LB : LogicBundle) : Set₁ where
   field
     ℕ : Set
-    LB : LogicBundle
     isPeano : Peano ℕ LB
 
-  open LogicBundle LB public
   open Peano isPeano public
