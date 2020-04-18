@@ -8,3 +8,6 @@ record Falsity (⊥ : Set) : Set₁ where
     -- No ⊥-β rules
 
     -- No ⊥-η rules
+
+  ¬_ : Set → Set
+  ¬ A = A → ⊥

@@ -8,11 +8,16 @@ open import net.cruhland.axiomatic.Logic using (LogicBundle)
 
 record Peano (ℕ : Set) (LB : LogicBundle) : Set₁ where
   open LogicBundle LB
+
   field
     zero : ℕ
     succ : ℕ → ℕ
 
-    succ≢zero : ∀ {n} → ¬ (succ n ≡ zero)
+  _≢_ : {A : Set} → A → A → Set
+  x ≢ y = ¬ (x ≡ y)
+
+  field
+    succ≢zero : ∀ {n} → succ n ≢ zero
     succ-inj : ∀ {n m} → succ n ≡ succ m → n ≡ m
 
   succProp : (P : ℕ → Set) → Set

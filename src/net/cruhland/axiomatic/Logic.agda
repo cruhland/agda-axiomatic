@@ -1,6 +1,5 @@
 module net.cruhland.axiomatic.Logic where
 
-open import Relation.Binary.PropositionalEquality using (_≡_)
 open import net.cruhland.axiomatic.Logic.Conjunction using (Conjunction)
 open import net.cruhland.axiomatic.Logic.Disjunction using (Disjunction)
 open import net.cruhland.axiomatic.Logic.Exists using (Exists)
@@ -35,6 +34,3 @@ record LogicBundle : Set₁ where
   infixr 2 _∧_
 
   open Logic isLogic public
-
-  ¬_ : Set → Set
-  ¬ A = A → ⊥
