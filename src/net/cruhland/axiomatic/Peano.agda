@@ -1,13 +1,15 @@
 module net.cruhland.axiomatic.Peano where
 
-open import Function using (const)
+open import Function using (const; _∘_)
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong)
 open Eq.≡-Reasoning
 open import net.cruhland.axiomatic.Logic using (LogicBundle)
+import net.cruhland.axiomatic.Logic.Decidable as Decidable
 
 record Peano (ℕ : Set) (LB : LogicBundle) : Set₁ where
   open LogicBundle LB
+  open Decidable LB
 
   field
     zero : ℕ
@@ -77,6 +79,31 @@ record Peano (ℕ : Set) (LB : LogicBundle) : Set₁ where
 
       Ps : succProp P
       Ps {k} _ = ∨-introᴿ (Σ-intro k refl)
+
+  _≡?_ : (n m : ℕ) → Decidable (n ≡ m)
+  n ≡? m = ind P Pz Ps n m
+    where
+      P = λ x → ∀ y → Decidable (x ≡ y)
+
+      Qz = λ y → Decidable (zero ≡ y)
+      Qzz = ∨-introᴸ refl
+
+      Qzs : succProp Qz
+      Qzs z≡k∨z≢k = ∨-introᴿ (¬sym succ≢zero)
+
+      Pz = λ y → ind Qz Qzz Qzs y
+
+      Ps : succProp P
+      Ps {k} y→k≡y∨k≢y = ind Qs Qsz Qss
+        where
+          Qs = λ y → Decidable (succ k ≡ y)
+          Qsz = ∨-introᴿ succ≢zero
+
+          Qss : succProp Qs
+          Qss {j} k≡j∨k≢j = ∨-rec use-k≡j use-k≢j (y→k≡y∨k≢y j)
+            where
+              use-k≡j = ∨-introᴸ ∘ cong succ
+              use-k≢j = λ k≢j → ∨-introᴿ (k≢j ∘ succ-inj)
 
 record PeanoBundle (LB : LogicBundle) : Set₁ where
   field

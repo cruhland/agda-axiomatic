@@ -1,6 +1,6 @@
 open import Function using (const)
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; sym; trans; cong)
+open Eq using (_≡_; sym; trans; cong; subst)
 open Eq.≡-Reasoning
 open import net.cruhland.axiomatic.Logic using (LogicBundle)
 open import net.cruhland.axiomatic.Peano using (PeanoBundle)
@@ -8,7 +8,9 @@ open import net.cruhland.axiomatic.Peano using (PeanoBundle)
 module net.cruhland.axiomatic.Peano.Addition
   (LB : LogicBundle)
   (PB : PeanoBundle LB) where
+  open LogicBundle LB
   open PeanoBundle PB
+  open import net.cruhland.axiomatic.Logic.Decidable LB
 
   _+_ : ℕ → ℕ → ℕ
   n + m = rec m succ n
@@ -145,3 +147,27 @@ module net.cruhland.axiomatic.Peano.Addition
             ≡⟨ +-succᴸ ⟩
               succ (k + p)
             ∎
+
+  Positive : ℕ → Set
+  Positive n = n ≢ zero
+
+  +-positive : ∀ {a b} → Positive a → Positive (a + b)
+  +-positive {a} {b} pos-a = ind P Pz Ps b
+    where
+      P = λ x → Positive (a + x)
+
+      Pz : P zero
+      Pz = subst Positive (sym +-zeroᴿ) pos-a
+
+      Ps : succProp P
+      Ps {k} _ = λ a+sk≡z → succ≢zero (trans (sym +-succᴿ) a+sk≡z)
+
+  +-both-zero : ∀ {a b} → a + b ≡ zero → a ≡ zero ∧ b ≡ zero
+  +-both-zero {a} {b} a+b≡z = ¬[¬a∨¬b]→a∧b (a ≡? zero) (b ≡? zero) ¬[a≢z∨b≢z]
+    where
+      a≢z→⊥ = λ a≢z → +-positive a≢z a+b≡z
+      b≢z→⊥ = λ b≢z → +-positive b≢z (trans +-comm a+b≡z)
+      ¬[a≢z∨b≢z] = ∨-rec a≢z→⊥ b≢z→⊥
+
+  +-unchanged : ∀ {n m} → n + m ≡ n → m ≡ zero
+  +-unchanged {n} {m} n+m≡n = +-cancelᴸ (trans n+m≡n (sym +-zeroᴿ))
