@@ -70,3 +70,33 @@ module net.cruhland.axiomatic.Peano.Ordering
 
               a≡z = ∧-elimᴸ (+-both-zero (+-unchanged n+a+b≡n))
               n≡n+a = sym (trans (cong (n +_) a≡z) +-zeroᴿ)
+
+  ≤-compat-+ᵁᴿ : ∀ {a b c} → a ≤ b → a + c ≤ b + c
+  ≤-compat-+ᵁᴿ {a} {b} {c} a≤b = Σ-rec a≤b→a+c≤b+c a≤b
+    where
+      a≤b→a+c≤b+c : (d : ℕ) → a + d ≡ b → a + c ≤ b + c
+      a≤b→a+c≤b+c d a+d≡b = Σ-intro d a+c+d≡b+c
+        where
+          a+c+d≡b+c =
+            begin
+              a + c + d
+            ≡⟨ +-perm-abc→acb ⟩
+              a + d + c
+            ≡⟨ cong (_+ c) a+d≡b ⟩
+              b + c
+            ∎
+
+  ≤-compat-+ᴰᴿ : ∀ {a b c} → a + c ≤ b + c → a ≤ b
+  ≤-compat-+ᴰᴿ {a} {b} {c} a+c≤b+c = Σ-rec a+c≤b+c→a≤b a+c≤b+c
+    where
+      a+c≤b+c→a≤b : (d : ℕ) → a + c + d ≡ b + c → a ≤ b
+      a+c≤b+c→a≤b d a+c+d≡b+c = Σ-intro d (+-cancelᴿ a+d+c≡b+c)
+        where
+          a+d+c≡b+c =
+            begin
+              a + d + c
+            ≡⟨ +-perm-abc→acb ⟩
+              a + c + d
+            ≡⟨ a+c+d≡b+c ⟩
+              b + c
+            ∎

@@ -117,6 +117,18 @@ module net.cruhland.axiomatic.Peano.Addition
 
   infixl 6 _+_
 
+  +-perm-abc→acb : ∀ {a b c} → a + b + c ≡ a + c + b
+  +-perm-abc→acb {a} {b} {c} =
+    begin
+      a + b + c
+    ≡⟨ +-assoc ⟩
+      a + (b + c)
+    ≡⟨ cong (a +_) +-comm ⟩
+      a + (c + b)
+    ≡⟨ sym +-assoc ⟩
+      a + c + b
+    ∎
+
   +-cancelᴸ : ∀ {n m p} → n + m ≡ n + p → m ≡ p
   +-cancelᴸ {n} {m} {p} = ind P Pz Ps n
     where
@@ -147,6 +159,20 @@ module net.cruhland.axiomatic.Peano.Addition
             ≡⟨ +-succᴸ ⟩
               succ (k + p)
             ∎
+
+  +-cancelᴿ : ∀ {n m p} → n + p ≡ m + p → n ≡ m
+  +-cancelᴿ {n} {m} {p} n+p≡m+p = +-cancelᴸ p+n≡p+m
+    where
+      p+n≡p+m =
+        begin
+          p + n
+        ≡⟨ +-comm ⟩
+          n + p
+        ≡⟨ n+p≡m+p ⟩
+          m + p
+        ≡⟨ +-comm ⟩
+          p + m
+        ∎
 
   Positive : ℕ → Set
   Positive n = n ≢ zero
