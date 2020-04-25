@@ -111,7 +111,7 @@ module net.cruhland.axiomatic.Peano.Ordering
       a≢b = ∧-elimᴿ a<b
 
       use-a≤b : (d : ℕ) → a + d ≡ b → succ a ≤ b
-      use-a≤b d a+d≡b = Σ-map-snd use-d≡succ d≡succ
+      use-a≤b d a+d≡b = Σ-map-snd use-d-pred (pred d≢z)
         where
           d≢z : d ≢ zero
           d≢z d≡z = a≢b a≡b
@@ -127,10 +127,8 @@ module net.cruhland.axiomatic.Peano.Ordering
                   b
                 ∎
 
-          d≡succ = ∨-forceᴿ d≢z (case d)
-
-          use-d≡succ : ∀ {e} → d ≡ succ e → succ a + e ≡ b
-          use-d≡succ {e} d≡se =
+          use-d-pred : ∀ {e} → d ≡ succ e → succ a + e ≡ b
+          use-d-pred {e} d≡se =
             begin
               succ a + e
             ≡⟨ +-succᴸ⃗ᴿ ⟩

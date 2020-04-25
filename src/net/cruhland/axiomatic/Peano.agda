@@ -80,6 +80,9 @@ record Peano (ℕ : Set) (LB : LogicBundle) : Set₁ where
       Ps : succProp P
       Ps {k} _ = ∨-introᴿ (Σ-intro k refl)
 
+  pred : ∀ {n} → n ≢ zero → Σ ℕ λ p → n ≡ succ p
+  pred {n} n≢z = ∨-forceᴿ n≢z (case n)
+
   _≡?_ : (n m : ℕ) → Decidable (n ≡ m)
   n ≡? m = ind P Pz Ps n m
     where
