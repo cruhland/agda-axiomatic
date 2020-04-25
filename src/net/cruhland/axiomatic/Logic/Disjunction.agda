@@ -40,3 +40,6 @@ record Disjunction (_∨_ : Set → Set → Set) : Set₁ where
   ∨-rec-βᴿ :
     ∀ {A B C} {f : A → C} {g : B → C} {b : B} → ∨-rec f g (∨-introᴿ b) ≡ g b
   ∨-rec-βᴿ = ∨-βᴿ
+
+  ∨-comm : ∀ {A B} → A ∨ B → B ∨ A
+  ∨-comm A∨B = ∨-rec ∨-introᴿ ∨-introᴸ A∨B

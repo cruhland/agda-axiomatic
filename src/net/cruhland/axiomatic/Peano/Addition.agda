@@ -69,6 +69,16 @@ module net.cruhland.axiomatic.Peano.Addition
   +-succᴿ⃗ᴸ : ∀ {n m} → n + succ m ≡ succ n + m
   +-succᴿ⃗ᴸ = sym +-succᴸ⃗ᴿ
 
+  succ≡+ : ∀ {n} → succ n ≡ n + succ zero
+  succ≡+ {n} =
+    begin
+      succ n
+    ≡⟨ cong succ (sym +-zeroᴿ) ⟩
+      succ (n + zero)
+    ≡⟨ sym +-succᴿ ⟩
+      n + succ zero
+    ∎
+
   +-comm : ∀ {n m} → n + m ≡ m + n
   +-comm {n} {m} = ind P Pz Ps n
     where

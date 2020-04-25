@@ -28,6 +28,9 @@ module net.cruhland.axiomatic.Peano.Ordering
   ≤-refl : ∀ {n} → n ≤ n
   ≤-refl {n} = Σ-intro zero +-zeroᴿ
 
+  n≤sn : ∀ {n} → n ≤ succ n
+  n≤sn = Σ-intro (succ zero) (sym succ≡+)
+
   ≤-trans : ∀ {n m p} → n ≤ m → m ≤ p → n ≤ p
   ≤-trans {n} {m} {p} n≤m m≤p = Σ-rec use-n≤m n≤m
     where
@@ -100,3 +103,63 @@ module net.cruhland.axiomatic.Peano.Ordering
             ≡⟨ a+c+d≡b+c ⟩
               b + c
             ∎
+
+  <→≤ : ∀ {a b} → a < b → succ a ≤ b
+  <→≤ {a} {b} a<b = Σ-rec use-a≤b a≤b
+    where
+      a≤b = ∧-elimᴸ a<b
+      a≢b = ∧-elimᴿ a<b
+
+      use-a≤b : (d : ℕ) → a + d ≡ b → succ a ≤ b
+      use-a≤b d a+d≡b = Σ-map-snd use-d≡succ d≡succ
+        where
+          d≢z : d ≢ zero
+          d≢z d≡z = a≢b a≡b
+            where
+              a≡b =
+                begin
+                  a
+                ≡⟨ sym +-zeroᴿ ⟩
+                  a + zero
+                ≡⟨ cong (a +_) (sym d≡z) ⟩
+                  a + d
+                ≡⟨ a+d≡b ⟩
+                  b
+                ∎
+
+          d≡succ = ∨-forceᴿ d≢z (case d)
+
+          use-d≡succ : ∀ {e} → d ≡ succ e → succ a + e ≡ b
+          use-d≡succ {e} d≡se =
+            begin
+              succ a + e
+            ≡⟨ +-succᴸ⃗ᴿ ⟩
+              a + succ e
+            ≡⟨ cong (a +_) (sym d≡se) ⟩
+              a + d
+            ≡⟨ a+d≡b ⟩
+              b
+            ∎
+
+  ≤→< : ∀ {a b} → succ a ≤ b → a < b
+  ≤→< {a} {b} sa≤b = ∧-intro a≤b a≢b
+    where
+      a≤b = ≤-trans n≤sn sa≤b
+
+      use-sa≤b : (d : ℕ) → succ a + d ≡ b → a ≢ b
+      use-sa≤b d sa+d≡b a≡b = succ≢zero (+-cancelᴸ a+sd≡a+z)
+        where
+          a+sd≡a+z =
+            begin
+              a + succ d
+            ≡⟨ +-succᴿ⃗ᴸ ⟩
+              succ a + d
+            ≡⟨ sa+d≡b ⟩
+              b
+            ≡⟨ sym a≡b ⟩
+              a
+            ≡⟨ sym +-zeroᴿ ⟩
+              a + zero
+            ∎
+
+      a≢b = Σ-rec use-sa≤b sa≤b

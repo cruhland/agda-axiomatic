@@ -1,5 +1,6 @@
 module net.cruhland.axiomatic.Logic where
 
+open import Function using (id; _∘_)
 open import net.cruhland.axiomatic.Logic.Conjunction using (Conjunction)
 open import net.cruhland.axiomatic.Logic.Disjunction using (Disjunction)
 open import net.cruhland.axiomatic.Logic.Exists using (Exists)
@@ -34,3 +35,9 @@ record LogicBundle : Set₁ where
   infixr 2 _∧_
 
   open Logic isLogic public
+
+  ∨-forceᴸ : {A B : Set} → ¬ B → A ∨ B → A
+  ∨-forceᴸ ¬B A∨B = ∨-rec id (⊥-elim ∘ ¬B) A∨B
+
+  ∨-forceᴿ : {A B : Set} → ¬ A → A ∨ B → B
+  ∨-forceᴿ ¬A A∨B = ∨-forceᴸ ¬A (∨-comm A∨B)
