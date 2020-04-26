@@ -37,7 +37,7 @@ record LogicBundle : Set₁ where
   open Logic isLogic public
 
   ∨-forceᴸ : {A B : Set} → ¬ B → A ∨ B → A
-  ∨-forceᴸ ¬B A∨B = ∨-rec id (⊥-elim ∘ ¬B) A∨B
+  ∨-forceᴸ ¬b = ∨-recᴸ (⊥-elim ∘ ¬b)
 
   ∨-forceᴿ : {A B : Set} → ¬ A → A ∨ B → B
-  ∨-forceᴿ ¬A A∨B = ∨-forceᴸ ¬A (∨-comm A∨B)
+  ∨-forceᴿ ¬a = ∨-recᴿ (⊥-elim ∘ ¬a)

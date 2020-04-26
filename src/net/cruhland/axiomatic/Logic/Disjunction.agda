@@ -1,6 +1,6 @@
 module net.cruhland.axiomatic.Logic.Disjunction where
 
-open import Function using (const)
+open import Function using (const; id)
 open import Relation.Binary.PropositionalEquality using (_≡_)
 
 record Disjunction (_∨_ : Set → Set → Set) : Set₁ where
@@ -29,7 +29,6 @@ record Disjunction (_∨_ : Set → Set → Set) : Set₁ where
       ∀ {A B} {a∨b : A ∨ B} →
       ∨-elim (const (A ∨ B)) ∨-introᴸ ∨-introᴿ a∨b ≡ a∨b
 
-
   ∨-rec : {A B C : Set} → (A → C) → (B → C) → A ∨ B → C
   ∨-rec {A} {B} {C} f g a∨b = ∨-elim (const C) f g a∨b
 
@@ -40,6 +39,12 @@ record Disjunction (_∨_ : Set → Set → Set) : Set₁ where
   ∨-rec-βᴿ :
     ∀ {A B C} {f : A → C} {g : B → C} {b : B} → ∨-rec f g (∨-introᴿ b) ≡ g b
   ∨-rec-βᴿ = ∨-βᴿ
+
+  ∨-recᴸ : ∀ {A B} → (B → A) → A ∨ B → A
+  ∨-recᴸ g = ∨-rec id g
+
+  ∨-recᴿ : ∀ {A B} → (A → B) → A ∨ B → B
+  ∨-recᴿ f = ∨-rec f id
 
   ∨-comm : ∀ {A B} → A ∨ B → B ∨ A
   ∨-comm A∨B = ∨-rec ∨-introᴿ ∨-introᴸ A∨B
