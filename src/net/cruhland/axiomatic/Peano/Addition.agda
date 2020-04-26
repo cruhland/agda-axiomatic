@@ -184,6 +184,18 @@ module net.cruhland.axiomatic.Peano.Addition
           p + m
         ∎
 
+  n≢sn : ∀ {n} → n ≢ succ n
+  n≢sn {n} n≡sn = succ≢zero (+-cancelᴸ n+sz≡n+z)
+    where
+      n+sz≡n+z =
+        begin
+          n + succ zero
+        ≡⟨ +-succᴿ⃗ᴸ ⟩
+          succ n + zero
+        ≡⟨ cong (_+ zero) (sym n≡sn) ⟩
+          n + zero
+        ∎
+
   Positive : ℕ → Set
   Positive n = n ≢ zero
 
