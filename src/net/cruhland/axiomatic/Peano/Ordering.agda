@@ -1,5 +1,5 @@
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; sym; cong; trans)
+open Eq using (_≡_; sym; cong; trans; subst)
 open Eq.≡-Reasoning
 open import net.cruhland.axiomatic.Logic using (LogicBundle)
 open import net.cruhland.axiomatic.Peano using (PeanoBundle)
@@ -265,3 +265,33 @@ module net.cruhland.axiomatic.Peano.Ordering
           use-< = λ k<m → ∨-rec sk<m sk≡m (≤→<∨≡ (<→≤ k<m))
           use-≡ = λ k≡m → ∨-introᴿ (∨-introᴿ (≤→< (≤-≡ (cong succ (sym k≡m)))))
           use-> = λ k>m → ∨-introᴿ (∨-introᴿ (<-trans k>m n<sn))
+
+  <-zero : ∀ {n} → ¬ (n < zero)
+  <-zero {n} n<z = n≢z (Σ-rec use-n≤z n≤z)
+    where
+      n≤z = ∧-elimᴸ n<z
+      n≢z = ∧-elimᴿ n<z
+
+      use-n≤z : ∀ d → n + d ≡ zero → n ≡ zero
+      use-n≤z d n+d≡zero = ∧-elimᴸ (+-both-zero n+d≡zero)
+
+  s≤s→≤ : ∀ {n m} → succ n ≤ succ m → n ≤ m
+  s≤s→≤ {n} {m} sn≤sm = Σ-map-snd use-sn≤sm sn≤sm
+    where
+      use-sn≤sm : ∀ {d} → succ n + d ≡ succ m → n + d ≡ m
+      use-sn≤sm {d} sn+d≡sm = succ-inj (trans (sym +-succᴸ) sn+d≡sm)
+
+  strong-ind :
+    (P : ℕ → Set) (b : ℕ) →
+    (∀ m → b ≤ m → (∀ k → b ≤ k → k < m → P k) → P m) →
+    ∀ n → b ≤ n → P n
+  strong-ind P b Pm n b≤n = Pm n b≤n (ind Q Qz Qs n)
+    where
+      Q = λ x → ∀ j → b ≤ j → j < x → P j
+      Qz = λ j b≤j j<z → ⊥-elim (<-zero j<z)
+
+      Qs : succProp Q
+      Qs Qk j b≤j j<sk = ∨-rec use-j<k use-j≡k (≤→<∨≡ (s≤s→≤ (<→≤ j<sk)))
+        where
+          use-j<k = λ j<k → Qk j b≤j j<k
+          use-j≡k = λ j≡k → Pm j b≤j (subst Q (sym j≡k) Qk)
