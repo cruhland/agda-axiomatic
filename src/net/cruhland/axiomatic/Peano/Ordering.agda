@@ -1,3 +1,4 @@
+open import Function using (_∘_)
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; sym; cong; trans; subst)
 open Eq.≡-Reasoning
@@ -281,6 +282,12 @@ module net.cruhland.axiomatic.Peano.Ordering
       use-sn≤sm : ∀ {d} → succ n + d ≡ succ m → n + d ≡ m
       use-sn≤sm {d} sn+d≡sm = succ-inj (trans (sym +-succᴸ) sn+d≡sm)
 
+  ≤s→≤∨≡s : ∀ {n m} → n ≤ succ m → n ≤ m ∨ n ≡ succ m
+  ≤s→≤∨≡s n≤sm = ∨-mapᴸ (s≤s→≤ ∘ <→≤) (≤→<∨≡ n≤sm)
+
+  <s→<∨≡ : ∀ {n m} → n < succ m → n < m ∨ n ≡ m
+  <s→<∨≡ = ≤→<∨≡ ∘ s≤s→≤ ∘ <→≤
+
   strong-ind :
     (P : ℕ → Set) (b : ℕ) →
     (∀ m → b ≤ m → (∀ k → b ≤ k → k < m → P k) → P m) →
@@ -291,7 +298,7 @@ module net.cruhland.axiomatic.Peano.Ordering
       Qz = λ j b≤j j<z → ⊥-elim (<-zero j<z)
 
       Qs : succProp Q
-      Qs Qk j b≤j j<sk = ∨-rec use-j<k use-j≡k (≤→<∨≡ (s≤s→≤ (<→≤ j<sk)))
+      Qs Qk j b≤j j<sk = ∨-rec use-j<k use-j≡k (<s→<∨≡ j<sk)
         where
           use-j<k = λ j<k → Qk j b≤j j<k
           use-j≡k = λ j≡k → Pm j b≤j (subst Q (sym j≡k) Qk)
