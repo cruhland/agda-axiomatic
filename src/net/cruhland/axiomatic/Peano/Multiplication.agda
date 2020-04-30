@@ -64,13 +64,7 @@ module net.cruhland.axiomatic.Peano.Multiplication
           k * succ m + succ m
         ≡⟨ cong (_+ succ m) Pk ⟩
           k * m + k + succ m
-        ≡⟨ +-assoc ⟩
-          k * m + (k + succ m)
-        ≡⟨ cong (k * m +_) +-comm ⟩
-          k * m + (succ m + k)
-        ≡⟨ cong (k * m +_) +-succᴸ⃗ᴿ ⟩
-          k * m + (m + succ k)
-        ≡⟨ sym +-assoc ⟩
+        ≡⟨ with-+-assoc (trans +-comm +-succᴸ⃗ᴿ) ⟩
           k * m + m + succ k
         ≡⟨ cong (_+ succ k) (sym *-succᴸ) ⟩
           succ k * m + succ k
@@ -110,3 +104,34 @@ module net.cruhland.axiomatic.Peano.Multiplication
             ≡⟨ n*m≡z ⟩
               zero
             ∎
+
+  *-distrib-+ : ∀ {a b c} → a * (b + c) ≡ a * b + a * c
+  *-distrib-+ {a} {b} {c} = ind P Pz Ps c
+    where
+      P = λ x → a * (b + x) ≡ a * b + a * x
+      Pz =
+        begin
+          a * (b + zero)
+        ≡⟨ cong (a *_) +-zeroᴿ ⟩
+          a * b
+        ≡⟨ sym +-zeroᴿ ⟩
+          a * b + zero
+        ≡⟨ cong (a * b +_) (sym *-zeroᴿ) ⟩
+          a * b + a * zero
+        ∎
+
+      Ps : succProp P
+      Ps {k} a[b+k]≡ab+ak =
+        begin
+          a * (b + succ k)
+        ≡⟨ cong (a *_) +-succᴿ ⟩
+          a * succ (b + k)
+        ≡⟨ *-succᴿ ⟩
+          a * (b + k) + a
+        ≡⟨ cong (_+ a) a[b+k]≡ab+ak ⟩
+          a * b + a * k + a
+        ≡⟨ +-assoc ⟩
+          a * b + (a * k + a)
+        ≡⟨ cong (a * b +_) (sym *-succᴿ) ⟩
+          a * b + a * succ k
+        ∎

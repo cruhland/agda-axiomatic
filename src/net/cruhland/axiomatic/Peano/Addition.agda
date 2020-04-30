@@ -127,16 +127,16 @@ module net.cruhland.axiomatic.Peano.Addition
 
   infixl 6 _+_
 
-  +-perm-abc→acb : ∀ {a b c} → a + b + c ≡ a + c + b
-  +-perm-abc→acb {a} {b} {c} =
+  with-+-assoc : ∀ {a b c d e} → b + c ≡ d + e → a + b + c ≡ a + d + e
+  with-+-assoc {a} {b} {c} {d} {e} b+c≡d+e =
     begin
       a + b + c
     ≡⟨ +-assoc ⟩
       a + (b + c)
-    ≡⟨ cong (a +_) +-comm ⟩
-      a + (c + b)
+    ≡⟨ cong (a +_) b+c≡d+e ⟩
+      a + (d + e)
     ≡⟨ sym +-assoc ⟩
-      a + c + b
+      a + d + e
     ∎
 
   +-cancelᴸ : ∀ {n m p} → n + m ≡ n + p → m ≡ p

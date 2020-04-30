@@ -32,6 +32,18 @@ module net.cruhland.axiomatic.Peano.Ordering
   n≤sn : ∀ {n} → n ≤ succ n
   n≤sn = Σ-intro (succ zero) (sym succ≡+)
 
+  a+b+c-reduce : ∀ {a b c d e} → a + b ≡ d → d + c ≡ e → a + (b + c) ≡ e
+  a+b+c-reduce {a} {b} {c} {d} {e} a+b≡d d+c≡e =
+    begin
+      a + (b + c)
+    ≡⟨ sym +-assoc ⟩
+      (a + b) + c
+    ≡⟨ cong (_+ c) a+b≡d ⟩
+      d + c
+    ≡⟨ d+c≡e ⟩
+      e
+    ∎
+
   ≤-trans : ∀ {n m p} → n ≤ m → m ≤ p → n ≤ p
   ≤-trans {n} {m} {p} n≤m m≤p = Σ-rec use-n≤m n≤m
     where
@@ -39,18 +51,7 @@ module net.cruhland.axiomatic.Peano.Ordering
       use-n≤m a n+a≡m = Σ-rec use-m≤p m≤p
         where
           use-m≤p : ∀ b → m + b ≡ p → n ≤ p
-          use-m≤p b m+b≡p = Σ-intro (a + b) n+a+b≡p
-            where
-              n+a+b≡p =
-                begin
-                  n + (a + b)
-                ≡⟨ sym +-assoc ⟩
-                  (n + a) + b
-                ≡⟨ cong (_+ b) n+a≡m ⟩
-                  m + b
-                ≡⟨ m+b≡p ⟩
-                  p
-                ∎
+          use-m≤p b m+b≡p = Σ-intro (a + b) (a+b+c-reduce n+a≡m m+b≡p)
 
   ≤-antisym : ∀ {n m} → n ≤ m → m ≤ n → n ≡ m
   ≤-antisym {n} {m} n≤m m≤n = Σ-rec use-n≤m n≤m
@@ -61,17 +62,7 @@ module net.cruhland.axiomatic.Peano.Ordering
           use-m≤n : ∀ b → m + b ≡ n → n ≡ m
           use-m≤n b m+b≡n = trans n≡n+a n+a≡m
             where
-              n+a+b≡n =
-                begin
-                  n + (a + b)
-                ≡⟨ sym +-assoc ⟩
-                  (n + a) + b
-                ≡⟨ cong (_+ b) n+a≡m ⟩
-                  m + b
-                ≡⟨ m+b≡n ⟩
-                  n
-                ∎
-
+              n+a+b≡n = a+b+c-reduce n+a≡m m+b≡n
               a≡z = ∧-elimᴸ (+-both-zero (+-unchanged n+a+b≡n))
               n≡n+a = sym (trans (cong (n +_) a≡z) +-zeroᴿ)
 
@@ -84,7 +75,7 @@ module net.cruhland.axiomatic.Peano.Ordering
           a+c+d≡b+c =
             begin
               a + c + d
-            ≡⟨ +-perm-abc→acb ⟩
+            ≡⟨ with-+-assoc +-comm ⟩
               a + d + c
             ≡⟨ cong (_+ c) a+d≡b ⟩
               b + c
@@ -99,7 +90,7 @@ module net.cruhland.axiomatic.Peano.Ordering
           a+d+c≡b+c =
             begin
               a + d + c
-            ≡⟨ +-perm-abc→acb ⟩
+            ≡⟨ with-+-assoc +-comm ⟩
               a + c + d
             ≡⟨ a+c+d≡b+c ⟩
               b + c
@@ -233,17 +224,7 @@ module net.cruhland.axiomatic.Peano.Ordering
             where
               p≡m+e = ∧-elimᴿ pe∧p≡m+e
               p[d+e] = +-positive pd
-
-              p≡n+[d+e] =
-                begin
-                  p
-                ≡⟨ p≡m+e ⟩
-                  m + e
-                ≡⟨ cong (_+ e) m≡n+d ⟩
-                  n + d + e
-                ≡⟨ +-assoc ⟩
-                  n + (d + e)
-                ∎
+              p≡n+[d+e] = sym (a+b+c-reduce (sym m≡n+d) (sym p≡m+e))
               Σd+e = Σ-intro (d + e) (∧-intro p[d+e] p≡n+[d+e])
 
   trichotomy : ∀ {n m} → n < m ∨ n ≡ m ∨ n > m
