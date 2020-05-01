@@ -105,8 +105,8 @@ module net.cruhland.axiomatic.Peano.Multiplication
               zero
             ∎
 
-  *-distrib-+ : ∀ {a b c} → a * (b + c) ≡ a * b + a * c
-  *-distrib-+ {a} {b} {c} = ind P Pz Ps c
+  *-distrib-+ᴸ : ∀ {a b c} → a * (b + c) ≡ a * b + a * c
+  *-distrib-+ᴸ {a} {b} {c} = ind P Pz Ps c
     where
       P = λ x → a * (b + x) ≡ a * b + a * x
       Pz =
@@ -134,4 +134,51 @@ module net.cruhland.axiomatic.Peano.Multiplication
           a * b + (a * k + a)
         ≡⟨ cong (a * b +_) (sym *-succᴿ) ⟩
           a * b + a * succ k
+        ∎
+
+  *-distrib-+ᴿ : ∀ {a b c} → (a + b) * c ≡ a * c + b * c
+  *-distrib-+ᴿ {a} {b} {c} =
+    begin
+      (a + b) * c
+    ≡⟨ *-comm ⟩
+      c * (a + b)
+    ≡⟨ *-distrib-+ᴸ ⟩
+      c * a + c * b
+    ≡⟨ cong (_+ c * b) *-comm ⟩
+      a * c + c * b
+    ≡⟨ cong (a * c +_) *-comm ⟩
+      a * c + b * c
+    ∎
+
+  *-assoc : ∀ {a b c} → (a * b) * c ≡ a * (b * c)
+  *-assoc {a} {b} {c} = sym (ind P Pz Ps b)
+    where
+      P = λ x → a * (x * c) ≡ (a * x) * c
+      Pz =
+        begin
+          a * (zero * c)
+        ≡⟨ cong (a *_) *-zeroᴸ ⟩
+          a * zero
+        ≡⟨ *-zeroᴿ ⟩
+          zero
+        ≡⟨ sym *-zeroᴸ ⟩
+          zero * c
+        ≡⟨ cong (_* c) (sym *-zeroᴿ) ⟩
+          (a * zero) * c
+        ∎
+
+      Ps : succProp P
+      Ps {k} a[kc]≡[ak]c =
+        begin
+          a * (succ k * c)
+        ≡⟨ cong (a *_) *-succᴸ ⟩
+          a * (k * c + c)
+        ≡⟨ *-distrib-+ᴸ ⟩
+          a * (k * c) + a * c
+        ≡⟨ cong (_+ a * c) a[kc]≡[ak]c ⟩
+          (a * k) * c + a * c
+        ≡⟨ sym *-distrib-+ᴿ ⟩
+          (a * k + a) * c
+        ≡⟨ cong (_* c) (sym *-succᴿ) ⟩
+          (a * succ k) * c
         ∎
