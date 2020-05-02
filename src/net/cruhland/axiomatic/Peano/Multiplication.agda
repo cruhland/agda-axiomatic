@@ -10,6 +10,7 @@ module net.cruhland.axiomatic.Peano.Multiplication
   open LogicBundle LB
   open PeanoBundle PB
   open import net.cruhland.axiomatic.Peano.Addition LB PB
+  open import net.cruhland.axiomatic.Peano.Ordering LB PB
 
   _*_ : ℕ → ℕ → ℕ
   n * m = rec zero (_+ m) n
@@ -88,7 +89,7 @@ module net.cruhland.axiomatic.Peano.Multiplication
           m * succ k
         ∎
 
-  *-either-zero : ∀{n m} → n * m ≡ zero → n ≡ zero ∨ m ≡ zero
+  *-either-zero : ∀ {n m} → n * m ≡ zero → n ≡ zero ∨ m ≡ zero
   *-either-zero {n} {m} n*m≡z = ∨-mapᴿ (Σ-rec use-pred) (case n)
     where
       use-pred : ∀ p → n ≡ succ p → m ≡ zero
@@ -182,3 +183,16 @@ module net.cruhland.axiomatic.Peano.Multiplication
         ≡⟨ cong (_* c) (sym *-succᴿ) ⟩
           (a * succ k) * c
         ∎
+
+  *-positive : ∀ {a b} → Positive a → Positive b → Positive (a * b)
+  *-positive {a} {b} a≢z b≢z ab≡z = ∨-rec a≢z b≢z (*-either-zero ab≡z)
+
+  *-preserves-< : ∀ {a b c} → a < b → c ≢ zero → a * c < b * c
+  *-preserves-< {a} {b} {c} a<b c≢z = Σ-rec use-b≡a+d (<→positive-diff a<b)
+    where
+      use-b≡a+d : ∀ d → d ≢ zero ∧ b ≡ a + d → a * c < b * c
+      use-b≡a+d d d≢z∧b≡a+d = positive-diff→< (Σ-intro (d * c) dc≢z∧bc≡ac+dc)
+        where
+          dc≢z = *-positive (∧-elimᴸ d≢z∧b≡a+d) c≢z
+          bc≡ac+dc = trans (cong (_* c) (∧-elimᴿ d≢z∧b≡a+d)) *-distrib-+ᴿ
+          dc≢z∧bc≡ac+dc = ∧-intro dc≢z bc≡ac+dc

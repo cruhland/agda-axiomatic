@@ -18,6 +18,8 @@ record Peano (ℕ : Set) (LB : LogicBundle) : Set₁ where
   _≢_ : {A : Set} → A → A → Set
   x ≢ y = ¬ (x ≡ y)
 
+  infix 4 _≢_
+
   field
     succ≢zero : ∀ {n} → succ n ≢ zero
     succ-inj : ∀ {n m} → succ n ≡ succ m → n ≡ m
