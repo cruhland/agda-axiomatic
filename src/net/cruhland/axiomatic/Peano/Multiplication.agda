@@ -89,6 +89,21 @@ module net.cruhland.axiomatic.Peano.Multiplication
           m * succ k
         ∎
 
+  *-oneᴸ : ∀ {n} → succ zero * n ≡ n
+  *-oneᴸ {n} =
+    begin
+      succ zero * n
+    ≡⟨ *-succᴸ ⟩
+      zero * n + n
+    ≡⟨ cong (_+ n) *-zeroᴸ ⟩
+      zero + n
+    ≡⟨ +-zeroᴸ ⟩
+      n
+    ∎
+
+  *-oneᴿ : ∀ {n} → n * succ zero ≡ n
+  *-oneᴿ = trans *-comm *-oneᴸ
+
   *-either-zero : ∀ {n m} → n * m ≡ zero → n ≡ zero ∨ m ≡ zero
   *-either-zero {n} {m} n*m≡z = ∨-mapᴿ (Σ-rec use-pred) (case n)
     where
