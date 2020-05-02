@@ -196,3 +196,9 @@ module net.cruhland.axiomatic.Peano.Multiplication
           dc≢z = *-positive (∧-elimᴸ d≢z∧b≡a+d) c≢z
           bc≡ac+dc = trans (cong (_* c) (∧-elimᴿ d≢z∧b≡a+d)) *-distrib-+ᴿ
           dc≢z∧bc≡ac+dc = ∧-intro dc≢z bc≡ac+dc
+
+  *-cancelᴿ : ∀ {a b c} → c ≢ zero → a * c ≡ b * c → a ≡ b
+  *-cancelᴿ c≢z ac≡bc = ∨-forceᴸ a≯b (∨-forceᴿ a≮b trichotomy)
+    where
+      a≮b = λ a<b → (∧-elimᴿ (*-preserves-< a<b c≢z)) ac≡bc
+      a≯b = λ b<a → (∧-elimᴿ (*-preserves-< b<a c≢z)) (sym ac≡bc)
