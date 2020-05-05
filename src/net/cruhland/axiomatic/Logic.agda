@@ -1,6 +1,7 @@
 module net.cruhland.axiomatic.Logic where
 
 open import Function using (id; _∘_)
+open import Level using (Setω)
 open import net.cruhland.axiomatic.Logic.Conjunction using (Conjunction)
 open import net.cruhland.axiomatic.Logic.Disjunction using (Disjunction)
 open import net.cruhland.axiomatic.Logic.Exists using (Exists)
@@ -8,9 +9,9 @@ open import net.cruhland.axiomatic.Logic.Falsity using (Falsity)
 open import net.cruhland.axiomatic.Logic.Truth using (Truth)
 
 record Logic
-  (Σ : (A : Set) → (A → Set) → Set)
+  (Σ : ∀ {α} (A : Set α) → (A → Set) → Set)
   (_∧_ _∨_ : Set → Set → Set)
-  (⊤ ⊥ : Set) : Set₁ where
+  (⊤ ⊥ : Set) : Setω where
   field
     exists : Exists Σ
     conjunction : Conjunction _∧_
@@ -24,9 +25,9 @@ record Logic
   open Truth truth public
   open Falsity falsity public
 
-record LogicBundle : Set₁ where
+record LogicBundle : Setω where
   field
-    Σ : (A : Set) → (A → Set) → Set
+    Σ : ∀ {α} (A : Set α) → (A → Set) → Set
     _∧_ _∨_ : Set → Set → Set
     ⊤ ⊥ : Set
     isLogic : Logic Σ _∧_ _∨_ ⊤ ⊥

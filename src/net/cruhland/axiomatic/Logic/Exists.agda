@@ -1,13 +1,14 @@
 module net.cruhland.axiomatic.Logic.Exists where
 
 open import Function using (const; id)
+open import Level using (Setω)
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; sym; cong; subst; subst-subst-sym)
 open Eq.≡-Reasoning
 
-record Exists (Σ : (A : Set) → (A → Set) → Set) : Set₁ where
+record Exists (Σ : ∀ {α} (A : Set α) → (A → Set) → Set) : Setω where
   field
-    Σ-intro : {A : Set} {B : A → Set} (a : A) → B a → Σ A B
+    Σ-intro : ∀ {α} {A : Set α} {B : A → Set} (a : A) → B a → Σ A B
 
     Σ-elim :
       {A : Set} {B : A → Set} (C : Σ A B → Set) →
@@ -44,10 +45,10 @@ record Exists (Σ : (A : Set) → (A → Set) → Set) : Set₁ where
 
   snd-β :
     ∀ {A} {B : A → Set} {a : A} {b : B a} →
-    subst B fst-β (snd (Σ-intro {A} {B} a b)) ≡ b
+    subst B fst-β (snd (Σ-intro {A = A} {B} a b)) ≡ b
   snd-β {A} {B} {a} {b} =
     begin
-      subst B fst-β (snd (Σ-intro {A} {B} a b))
+      subst B fst-β (snd (Σ-intro {A = A} {B} a b))
     ≡⟨⟩
       subst B fst-β snd-expanded
     ≡⟨ cong (subst B fst-β) Σ-β ⟩
