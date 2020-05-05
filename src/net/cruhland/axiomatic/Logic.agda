@@ -41,3 +41,8 @@ record LogicBundle : Set₁ where
 
   ∨-forceᴿ : {A B : Set} → ¬ A → A ∨ B → B
   ∨-forceᴿ ¬a = ∨-recᴿ (⊥-elim ∘ ¬a)
+
+  _↔_ : Set → Set → Set
+  A ↔ B = (A → B) ∧ (B → A)
+
+  infixl 0 _↔_
