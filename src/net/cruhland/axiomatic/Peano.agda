@@ -15,7 +15,7 @@ record Peano (ℕ : Set) (LB : LogicBundle) : Set₁ where
     zero : ℕ
     succ : ℕ → ℕ
 
-  _≢_ : {A : Set} → A → A → Set
+  _≢_ : ∀ {α} {A : Set α} → A → A → Set α
   x ≢ y = ¬ (x ≡ y)
 
   infix 4 _≢_

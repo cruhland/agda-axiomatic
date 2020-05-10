@@ -11,7 +11,7 @@ record Falsity (⊥ : Set) : Set₁ where
 
     -- No ⊥-η rules
 
-  ¬_ : Set → Set
+  ¬_ : ∀ {α} → Set α → Set α
   ¬ A = A → ⊥
 
   ¬sym : {A : Set} {x y : A} → ¬ (x ≡ y) → ¬ (y ≡ x)
