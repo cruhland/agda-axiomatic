@@ -54,3 +54,6 @@ record Disjunction (_∨_ : Set → Set → Set) : Set₁ where
 
   ∨-mapᴿ : ∀ {A B C} → (B → C) → A ∨ B → A ∨ C
   ∨-mapᴿ g A∨B = ∨-rec ∨-introᴸ (∨-introᴿ ∘ g) A∨B
+
+  ∨-merge : ∀ {A} → A ∨ A → A
+  ∨-merge = ∨-rec id id
