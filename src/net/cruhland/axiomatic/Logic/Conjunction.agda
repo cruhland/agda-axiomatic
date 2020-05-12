@@ -12,3 +12,6 @@ record Conjunction (_∧_ : Set → Set → Set) : Set₁ where
     ∧-βᴿ : ∀ {A B} {a : A} {b : B} → ∧-elimᴿ (∧-intro a b) ≡ b
 
     ∧-η : ∀ {A B} {a∧b : A ∧ B} → ∧-intro (∧-elimᴸ a∧b) (∧-elimᴿ a∧b) ≡ a∧b
+
+  ∧-comm : ∀ {A B} → A ∧ B → B ∧ A
+  ∧-comm A∧B = ∧-intro (∧-elimᴿ A∧B) (∧-elimᴸ A∧B)

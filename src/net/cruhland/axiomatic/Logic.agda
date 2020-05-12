@@ -47,3 +47,13 @@ record LogicBundle : Setω where
   A ↔ B = (A → B) ∧ (B → A)
 
   infixl 0 _↔_
+
+  ↔-refl : ∀ {A} → A ↔ A
+  ↔-refl = ∧-intro id id
+
+  ↔-sym : ∀ {A B} → A ↔ B → B ↔ A
+  ↔-sym A↔B = ∧-comm A↔B
+
+  ↔-trans : ∀ {A B C} → A ↔ B → B ↔ C → A ↔ C
+  ↔-trans A↔B B↔C =
+    ∧-intro (∧-elimᴸ B↔C ∘ ∧-elimᴸ A↔B) (∧-elimᴿ A↔B ∘ ∧-elimᴿ B↔C)
