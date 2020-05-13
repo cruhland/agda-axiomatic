@@ -10,7 +10,7 @@ open import net.cruhland.axiomatic.Logic.Truth using (Truth)
 
 record Logic
   (Σ : ∀ {α} (A : Set α) → (A → Set) → Set)
-  (_∧_ _∨_ : Set → Set → Set)
+  (_∧_ _∨_ : ∀ {α β} → Set α → Set β → Set)
   (⊤ ⊥ : Set) : Setω where
   field
     exists : Exists Σ
@@ -28,7 +28,7 @@ record Logic
 record LogicBundle : Setω where
   field
     Σ : ∀ {α} (A : Set α) → (A → Set) → Set
-    _∧_ _∨_ : Set → Set → Set
+    _∧_ _∨_ : ∀ {α β} → Set α → Set β → Set
     ⊤ ⊥ : Set
     isLogic : Logic Σ _∧_ _∨_ ⊤ ⊥
 

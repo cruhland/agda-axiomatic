@@ -1,17 +1,24 @@
 module net.cruhland.axiomatic.Logic.Conjunction where
 
+open import Level using (Setω)
 open import Relation.Binary.PropositionalEquality using (_≡_)
 
-record Conjunction (_∧_ : Set → Set → Set) : Set₁ where
+record Conjunction (_∧_ : ∀ {α β} → Set α → Set β → Set) : Setω where
   field
-    ∧-intro : {A B : Set} → A → B → A ∧ B
-    ∧-elimᴸ : {A B : Set} → A ∧ B → A
-    ∧-elimᴿ : {A B : Set} → A ∧ B → B
+    ∧-intro : ∀ {α β} {A : Set α} {B : Set β} → A → B → A ∧ B
+    ∧-elimᴸ : ∀ {α β} {A : Set α} {B : Set β} → A ∧ B → A
+    ∧-elimᴿ : ∀ {α β} {A : Set α} {B : Set β} → A ∧ B → B
 
-    ∧-βᴸ : ∀ {A B} {a : A} {b : B} → ∧-elimᴸ (∧-intro a b) ≡ a
-    ∧-βᴿ : ∀ {A B} {a : A} {b : B} → ∧-elimᴿ (∧-intro a b) ≡ b
+    ∧-βᴸ :
+      ∀ {α β} {A : Set α} {B : Set β} {a : A} {b : B} →
+      ∧-elimᴸ (∧-intro a b) ≡ a
+    ∧-βᴿ :
+      ∀ {α β} {A : Set α} {B : Set β} {a : A} {b : B} →
+      ∧-elimᴿ (∧-intro a b) ≡ b
 
-    ∧-η : ∀ {A B} {a∧b : A ∧ B} → ∧-intro (∧-elimᴸ a∧b) (∧-elimᴿ a∧b) ≡ a∧b
+    ∧-η :
+      ∀ {α β} {A : Set α} {B : Set β} {a∧b : A ∧ B} →
+      ∧-intro (∧-elimᴸ a∧b) (∧-elimᴿ a∧b) ≡ a∧b
 
-  ∧-comm : ∀ {A B} → A ∧ B → B ∧ A
+  ∧-comm : ∀ {α β} {A : Set α} {B : Set β} → A ∧ B → B ∧ A
   ∧-comm A∧B = ∧-intro (∧-elimᴿ A∧B) (∧-elimᴸ A∧B)
