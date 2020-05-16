@@ -1,9 +1,9 @@
 module net.cruhland.axiomatic.Logic.Conjunction where
 
-open import Level using (Setω)
+open import Level using (_⊔_; Setω)
 open import Relation.Binary.PropositionalEquality using (_≡_)
 
-record Conjunction (_∧_ : ∀ {α β} → Set α → Set β → Set) : Setω where
+record Conjunction (_∧_ : ∀ {α β} → Set α → Set β → Set (α ⊔ β)) : Setω where
   field
     ∧-intro : ∀ {α β} {A : Set α} {B : Set β} → A → B → A ∧ B
     ∧-elimᴸ : ∀ {α β} {A : Set α} {B : Set β} → A ∧ B → A
