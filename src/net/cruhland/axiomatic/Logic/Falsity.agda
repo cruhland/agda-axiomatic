@@ -1,11 +1,12 @@
 module net.cruhland.axiomatic.Logic.Falsity where
 
+open import Level using (Setω)
 open import Relation.Binary.PropositionalEquality using (_≡_; sym)
 
-record Falsity (⊥ : Set) : Set₁ where
+record Falsity (⊥ : Set) : Setω where
   field
     -- No ⊥-intro rules; ⊥ is empty
-    ⊥-elim : {A : Set} → ⊥ → A
+    ⊥-elim : ∀ {α} {A : Set α} → ⊥ → A
 
     -- No ⊥-β rules
 
