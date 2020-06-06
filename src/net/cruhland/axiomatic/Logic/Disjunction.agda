@@ -52,15 +52,20 @@ record Disjunction (_∨_ : ∀ {α β} → Set α → Set β → Set (α ⊔ β
   ∨-recᴿ f = ∨-rec f id
 
   ∨-comm : ∀ {α β} {A : Set α} {B : Set β} → A ∨ B → B ∨ A
-  ∨-comm A∨B = ∨-rec ∨-introᴿ ∨-introᴸ A∨B
+  ∨-comm = ∨-rec ∨-introᴿ ∨-introᴸ
+
+  ∨-map :
+    ∀ {α β χ δ} {A : Set α} {B : Set β} {C : Set χ} {D : Set δ} →
+      (A → C) → (B → D) → A ∨ B → C ∨ D
+  ∨-map f g = ∨-rec (∨-introᴸ ∘ f) (∨-introᴿ ∘ g)
 
   ∨-mapᴸ :
     ∀ {α β χ} {A : Set α} {B : Set β} {C : Set χ} → (A → C) → A ∨ B → C ∨ B
-  ∨-mapᴸ f A∨B = ∨-rec (∨-introᴸ ∘ f) ∨-introᴿ A∨B
+  ∨-mapᴸ f = ∨-map f id
 
   ∨-mapᴿ :
     ∀ {α β χ} {A : Set α} {B : Set β} {C : Set χ} → (B → C) → A ∨ B → A ∨ C
-  ∨-mapᴿ g A∨B = ∨-rec ∨-introᴸ (∨-introᴿ ∘ g) A∨B
+  ∨-mapᴿ g = ∨-map id g
 
   ∨-merge : ∀ {α} {A : Set α} → A ∨ A → A
   ∨-merge = ∨-rec id id
