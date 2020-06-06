@@ -227,10 +227,10 @@ module net.cruhland.axiomatic.Peano.Ordering
               p≡n+[d+e] = sym (a+b+c-reduce (sym m≡n+d) (sym p≡m+e))
               Σd+e = Σ-intro (d + e) (∧-intro p[d+e] p≡n+[d+e])
 
-  trichotomy : ∀ {n m} → n < m ∨ n ≡ m ∨ n > m
+  trichotomy : ∀ {n m} → n < m ∨ (n ≡ m ∨ n > m)
   trichotomy {n} {m} = ind P Pz Ps n
     where
-      P = λ x → x < m ∨ x ≡ m ∨ x > m
+      P = λ x → x < m ∨ (x ≡ m ∨ x > m)
       Pz = ∨-rec use-zero use-pred (case m)
         where
           use-zero = λ m≡z → ∨-introᴿ (∨-introᴸ (sym m≡z))

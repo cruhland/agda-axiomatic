@@ -1,7 +1,7 @@
 module net.cruhland.axiomatic.Logic where
 
 open import Function using (id; _∘_)
-open import Level using (_⊔_; Setω)
+open import Level using (_⊔_; Setω; Lift; lift; lower) renaming (zero to lzero)
 open import net.cruhland.axiomatic.Logic.Conjunction using (Conjunction)
 open import net.cruhland.axiomatic.Logic.Disjunction using (Disjunction)
 open import net.cruhland.axiomatic.Logic.Exists using (Exists)
@@ -32,16 +32,22 @@ record LogicBundle : Setω where
     ⊤ ⊥ : Set
     isLogic : Logic Σ _∧_ _∨_ ⊤ ⊥
 
-  infixr 1 _∨_
-  infixr 2 _∧_
+  infixl 1 _∨_
+  infixl 2 _∧_
 
   open Logic isLogic public
 
-  ∨-forceᴸ : {A B : Set} → ¬ B → A ∨ B → A
-  ∨-forceᴸ ¬b = ∨-recᴸ (⊥-elim ∘ ¬b)
+  ∨-identᴸ : ∀ {α β} {B : Set β} → Lift α ⊥ ∨ B → B
+  ∨-identᴸ = ∨-recᴿ (⊥-elim ∘ lower)
 
-  ∨-forceᴿ : {A B : Set} → ¬ A → A ∨ B → B
-  ∨-forceᴿ ¬a = ∨-recᴿ (⊥-elim ∘ ¬a)
+  ∨-identᴿ : ∀ {α β} {A : Set α} → A ∨ Lift β ⊥ → A
+  ∨-identᴿ = ∨-recᴸ (⊥-elim ∘ lower)
+
+  ∨-forceᴸ : ∀ {α β} {A : Set α} {B : Set β} → ¬ B → A ∨ B → A
+  ∨-forceᴸ ¬b = ∨-identᴿ {β = lzero} ∘ ∨-mapᴿ (lift ∘ ¬b)
+
+  ∨-forceᴿ : ∀ {α β} {A : Set α} {B : Set β} → ¬ A → A ∨ B → B
+  ∨-forceᴿ ¬a = ∨-identᴸ {α = lzero} ∘ ∨-mapᴸ (lift ∘ ¬a)
 
   _↔_ : ∀ {α β} → Set α → Set β → Set (α ⊔ β)
   A ↔ B = (A → B) ∧ (B → A)
