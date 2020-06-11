@@ -29,7 +29,7 @@ module net.cruhland.axiomatic.Peano.Multiplication
       P = λ x → x * zero ≡ zero
       Pz = *-zeroᴸ
 
-      Ps : stepProp P
+      Ps : step-case P
       Ps {k} Pk =
         begin
           step k * zero
@@ -57,7 +57,7 @@ module net.cruhland.axiomatic.Peano.Multiplication
           zero * m + zero
         ∎
 
-      Ps : stepProp P
+      Ps : step-case P
       Ps {k} Pk =
         begin
           step k * step m
@@ -77,7 +77,7 @@ module net.cruhland.axiomatic.Peano.Multiplication
       P = λ x → x * m ≡ m * x
       Pz = trans *-zeroᴸ (sym *-zeroᴿ)
 
-      Ps : stepProp P
+      Ps : step-case P
       Ps {k} Pk =
         begin
           step k * m
@@ -136,7 +136,7 @@ module net.cruhland.axiomatic.Peano.Multiplication
           a * b + a * zero
         ∎
 
-      Ps : stepProp P
+      Ps : step-case P
       Ps {k} a[b+k]≡ab+ak =
         begin
           a * (b + step k)
@@ -183,7 +183,7 @@ module net.cruhland.axiomatic.Peano.Multiplication
           (a * zero) * c
         ∎
 
-      Ps : stepProp P
+      Ps : step-case P
       Ps {k} a[kc]≡[ak]c =
         begin
           a * (step k * c)

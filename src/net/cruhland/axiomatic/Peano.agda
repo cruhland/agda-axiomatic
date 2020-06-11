@@ -24,13 +24,13 @@ record Peano (ℕ : Set) (LB : LogicBundle) : Set₁ where
     step≢zero : ∀ {n} → step n ≢ zero
     step-inj : ∀ {n m} → step n ≡ step m → n ≡ m
 
-  stepProp : (P : ℕ → Set) → Set
-  stepProp P = ∀ {k} → P k → P (step k)
+  step-case : (P : ℕ → Set) → Set
+  step-case P = ∀ {k} → P k → P (step k)
 
   field
-    ind : (P : ℕ → Set) → P zero → stepProp P → ∀ n → P n
-    ind-zero : ∀ {P z} {s : stepProp P} → ind P z s zero ≡ z
-    ind-step : ∀ {P z n} {s : stepProp P} → ind P z s (step n) ≡ s (ind P z s n)
+    ind : (P : ℕ → Set) → P zero → step-case P → ∀ n → P n
+    ind-zero : ∀ {P z} {s : step-case P} → ind P z s zero ≡ z
+    ind-step : ∀ {P z n} {s : step-case P} → ind P z s (step n) ≡ s (ind P z s n)
 
   rec : {A : Set} → A → (A → A) → ℕ → A
   rec {A} z s n = ind (const A) z s n
@@ -57,7 +57,7 @@ record Peano (ℕ : Set) (LB : LogicBundle) : Set₁ where
           rec (s z) s zero
         ∎
 
-      Ps : stepProp P
+      Ps : step-case P
       Ps {k} s[rec-z]≡rec[s-z] =
         begin
           s (rec z s (step k))
@@ -79,7 +79,7 @@ record Peano (ℕ : Set) (LB : LogicBundle) : Set₁ where
       P = λ x → x ≡ zero ∨ Σ ℕ λ p → x ≡ step p
       Pz = ∨-introᴸ refl
 
-      Ps : stepProp P
+      Ps : step-case P
       Ps {k} _ = ∨-introᴿ (Σ-intro k refl)
 
   pred : ∀ {n} → n ≢ zero → Σ ℕ λ p → n ≡ step p
@@ -93,18 +93,18 @@ record Peano (ℕ : Set) (LB : LogicBundle) : Set₁ where
       Qz = λ y → Decidable (zero ≡ y)
       Qzz = ∨-introᴸ refl
 
-      Qzs : stepProp Qz
+      Qzs : step-case Qz
       Qzs z≡k∨z≢k = ∨-introᴿ (¬sym step≢zero)
 
       Pz = λ y → ind Qz Qzz Qzs y
 
-      Ps : stepProp P
+      Ps : step-case P
       Ps {k} y→k≡y∨k≢y = ind Qs Qsz Qss
         where
           Qs = λ y → Decidable (step k ≡ y)
           Qsz = ∨-introᴿ step≢zero
 
-          Qss : stepProp Qs
+          Qss : step-case Qs
           Qss {j} k≡j∨k≢j = ∨-rec use-k≡j use-k≢j (y→k≡y∨k≢y j)
             where
               use-k≡j = ∨-introᴸ ∘ cong step

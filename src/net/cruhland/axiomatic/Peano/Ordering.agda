@@ -192,7 +192,7 @@ module net.cruhland.axiomatic.Peano.Ordering
       P = λ x → zero ≤ x
       Pz = ≤-refl
 
-      Ps : stepProp P
+      Ps : step-case P
       Ps z≤k = ≤-trans z≤k n≤sn
 
   ≤-≡ : ∀ {n m} → n ≡ m → n ≤ m
@@ -239,7 +239,7 @@ module net.cruhland.axiomatic.Peano.Ordering
               use-Σp : ∀ p → m ≡ step p → zero ≢ m
               use-Σp p m≡sp z≡m = step≢zero (sym (trans z≡m m≡sp))
 
-      Ps : stepProp P
+      Ps : step-case P
       Ps tri-k = ∨-rec use-< (∨-rec use-≡ use->) tri-k
         where
           sk<m = λ sk<m → ∨-introᴸ sk<m
@@ -278,7 +278,7 @@ module net.cruhland.axiomatic.Peano.Ordering
       Q = λ x → ∀ j → b ≤ j → j < x → P j
       Qz = λ j b≤j j<z → ⊥-elim (<-zero j<z)
 
-      Qs : stepProp Q
+      Qs : step-case Q
       Qs Qk j b≤j j<sk = ∨-rec use-j<k use-j≡k (<s→<∨≡ j<sk)
         where
           use-j<k = λ j<k → Qk j b≤j j<k

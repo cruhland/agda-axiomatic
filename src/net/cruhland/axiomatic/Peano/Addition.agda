@@ -27,7 +27,7 @@ module net.cruhland.axiomatic.Peano.Addition
       P = λ x → x + zero ≡ x
       Pz = +-zeroᴸ
 
-      Ps : stepProp P
+      Ps : step-case P
       Ps {k} k+z≡k =
         begin
           step k + zero
@@ -51,7 +51,7 @@ module net.cruhland.axiomatic.Peano.Addition
           step (zero + m)
         ∎
 
-      Ps : stepProp P
+      Ps : step-case P
       Ps {k} k+sm≡s[k+m] =
         begin
           step k + step m
@@ -85,7 +85,7 @@ module net.cruhland.axiomatic.Peano.Addition
       P = λ x → x + m ≡ m + x
       Pz = trans +-zeroᴸ (sym +-zeroᴿ)
 
-      Ps : stepProp P
+      Ps : step-case P
       Ps {k} k+m≡m+k =
         begin
           step k + m
@@ -111,7 +111,7 @@ module net.cruhland.axiomatic.Peano.Addition
           zero + (m + p)
         ∎
 
-      Ps : stepProp P
+      Ps : step-case P
       Ps {k} [k+m]+p≡k+[m+p] =
         begin
           (step k + m) + p
@@ -156,7 +156,7 @@ module net.cruhland.axiomatic.Peano.Addition
           p
         ∎
 
-      Ps : stepProp P
+      Ps : step-case P
       Ps {k} k+m≡k+p→m≡p sk+m≡sk+p = k+m≡k+p→m≡p (step-inj s[k+m]≡s[k+p])
         where
           s[k+m]≡s[k+p] =
@@ -207,7 +207,7 @@ module net.cruhland.axiomatic.Peano.Addition
       Pz : P zero
       Pz = subst Positive (sym +-zeroᴿ) pos-a
 
-      Ps : stepProp P
+      Ps : step-case P
       Ps {k} _ = λ a+sk≡z → step≢zero (trans (sym +-stepᴿ) a+sk≡z)
 
   +-both-zero : ∀ {a b} → a + b ≡ zero → a ≡ zero ∧ b ≡ zero
