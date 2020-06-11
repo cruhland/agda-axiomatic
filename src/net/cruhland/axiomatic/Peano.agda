@@ -13,7 +13,7 @@ record Peano (ℕ : Set) (LB : LogicBundle) : Set₁ where
 
   field
     zero : ℕ
-    succ : ℕ → ℕ
+    step : ℕ → ℕ
 
   _≢_ : ∀ {α} {A : Set α} → A → A → Set α
   x ≢ y = ¬ (x ≡ y)
@@ -21,16 +21,16 @@ record Peano (ℕ : Set) (LB : LogicBundle) : Set₁ where
   infix 4 _≢_
 
   field
-    succ≢zero : ∀ {n} → succ n ≢ zero
-    succ-inj : ∀ {n m} → succ n ≡ succ m → n ≡ m
+    step≢zero : ∀ {n} → step n ≢ zero
+    step-inj : ∀ {n m} → step n ≡ step m → n ≡ m
 
-  succProp : (P : ℕ → Set) → Set
-  succProp P = ∀ {k} → P k → P (succ k)
+  stepProp : (P : ℕ → Set) → Set
+  stepProp P = ∀ {k} → P k → P (step k)
 
   field
-    ind : (P : ℕ → Set) → P zero → succProp P → ∀ n → P n
-    ind-zero : ∀ {P z} {s : succProp P} → ind P z s zero ≡ z
-    ind-succ : ∀ {P z n} {s : succProp P} → ind P z s (succ n) ≡ s (ind P z s n)
+    ind : (P : ℕ → Set) → P zero → stepProp P → ∀ n → P n
+    ind-zero : ∀ {P z} {s : stepProp P} → ind P z s zero ≡ z
+    ind-step : ∀ {P z n} {s : stepProp P} → ind P z s (step n) ≡ s (ind P z s n)
 
   rec : {A : Set} → A → (A → A) → ℕ → A
   rec {A} z s n = ind (const A) z s n
@@ -38,9 +38,9 @@ record Peano (ℕ : Set) (LB : LogicBundle) : Set₁ where
   rec-zero : {A : Set} {z : A} {s : A → A} → rec z s zero ≡ z
   rec-zero {A} = ind-zero {const A}
 
-  rec-succ :
-    {A : Set} {z : A} {s : A → A} {n : ℕ} → rec z s (succ n) ≡ s (rec z s n)
-  rec-succ {A} = ind-succ {const A}
+  rec-step :
+    {A : Set} {z : A} {s : A → A} {n : ℕ} → rec z s (step n) ≡ s (rec z s n)
+  rec-step {A} = ind-step {const A}
 
   rec-s-comm :
     {A : Set} {z : A} {s : A → A} {n : ℕ} → s (rec z s n) ≡ rec (s z) s n
@@ -57,32 +57,32 @@ record Peano (ℕ : Set) (LB : LogicBundle) : Set₁ where
           rec (s z) s zero
         ∎
 
-      Ps : succProp P
+      Ps : stepProp P
       Ps {k} s[rec-z]≡rec[s-z] =
         begin
-          s (rec z s (succ k))
-        ≡⟨ cong s rec-succ ⟩
+          s (rec z s (step k))
+        ≡⟨ cong s rec-step ⟩
           s (s (rec z s k))
         ≡⟨ cong s s[rec-z]≡rec[s-z] ⟩
           s (rec (s z) s k)
-        ≡⟨ sym rec-succ ⟩
-          rec (s z) s (succ k)
+        ≡⟨ sym rec-step ⟩
+          rec (s z) s (step k)
         ∎
 
-  rec-succ-tail :
-    {A : Set} {z : A} {s : A → A} {n : ℕ} → rec z s (succ n) ≡ rec (s z) s n
-  rec-succ-tail = trans rec-succ rec-s-comm
+  rec-step-tail :
+    {A : Set} {z : A} {s : A → A} {n : ℕ} → rec z s (step n) ≡ rec (s z) s n
+  rec-step-tail = trans rec-step rec-s-comm
 
-  case : ∀ n → n ≡ zero ∨ Σ ℕ λ p → n ≡ succ p
+  case : ∀ n → n ≡ zero ∨ Σ ℕ λ p → n ≡ step p
   case n = ind P Pz Ps n
     where
-      P = λ x → x ≡ zero ∨ Σ ℕ λ p → x ≡ succ p
+      P = λ x → x ≡ zero ∨ Σ ℕ λ p → x ≡ step p
       Pz = ∨-introᴸ refl
 
-      Ps : succProp P
+      Ps : stepProp P
       Ps {k} _ = ∨-introᴿ (Σ-intro k refl)
 
-  pred : ∀ {n} → n ≢ zero → Σ ℕ λ p → n ≡ succ p
+  pred : ∀ {n} → n ≢ zero → Σ ℕ λ p → n ≡ step p
   pred {n} n≢z = ∨-forceᴿ n≢z (case n)
 
   _≡?_ : (n m : ℕ) → Decidable (n ≡ m)
@@ -93,22 +93,22 @@ record Peano (ℕ : Set) (LB : LogicBundle) : Set₁ where
       Qz = λ y → Decidable (zero ≡ y)
       Qzz = ∨-introᴸ refl
 
-      Qzs : succProp Qz
-      Qzs z≡k∨z≢k = ∨-introᴿ (¬sym succ≢zero)
+      Qzs : stepProp Qz
+      Qzs z≡k∨z≢k = ∨-introᴿ (¬sym step≢zero)
 
       Pz = λ y → ind Qz Qzz Qzs y
 
-      Ps : succProp P
+      Ps : stepProp P
       Ps {k} y→k≡y∨k≢y = ind Qs Qsz Qss
         where
-          Qs = λ y → Decidable (succ k ≡ y)
-          Qsz = ∨-introᴿ succ≢zero
+          Qs = λ y → Decidable (step k ≡ y)
+          Qsz = ∨-introᴿ step≢zero
 
-          Qss : succProp Qs
+          Qss : stepProp Qs
           Qss {j} k≡j∨k≢j = ∨-rec use-k≡j use-k≢j (y→k≡y∨k≢y j)
             where
-              use-k≡j = ∨-introᴸ ∘ cong succ
-              use-k≢j = λ k≢j → ∨-introᴿ (k≢j ∘ succ-inj)
+              use-k≡j = ∨-introᴸ ∘ cong step
+              use-k≢j = λ k≢j → ∨-introᴿ (k≢j ∘ step-inj)
 
 record PeanoBundle (LB : LogicBundle) : Set₁ where
   field

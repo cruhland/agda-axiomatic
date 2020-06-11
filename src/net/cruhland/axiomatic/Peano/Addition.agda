@@ -13,13 +13,13 @@ module net.cruhland.axiomatic.Peano.Addition
   open import net.cruhland.axiomatic.Logic.Decidable LB
 
   _+_ : ℕ → ℕ → ℕ
-  n + m = rec m succ n
+  n + m = rec m step n
 
   +-zeroᴸ : ∀ {m} → zero + m ≡ m
   +-zeroᴸ = rec-zero
 
-  +-succᴸ : ∀ {n m} → succ n + m ≡ succ (n + m)
-  +-succᴸ = rec-succ
+  +-stepᴸ : ∀ {n m} → step n + m ≡ step (n + m)
+  +-stepᴸ = rec-step
 
   +-zeroᴿ : ∀ {n} → n + zero ≡ n
   +-zeroᴿ {n} = ind P Pz Ps n
@@ -27,56 +27,56 @@ module net.cruhland.axiomatic.Peano.Addition
       P = λ x → x + zero ≡ x
       Pz = +-zeroᴸ
 
-      Ps : succProp P
+      Ps : stepProp P
       Ps {k} k+z≡k =
         begin
-          succ k + zero
-        ≡⟨ +-succᴸ ⟩
-          succ (k + zero)
-        ≡⟨ cong succ k+z≡k ⟩
-          succ k
+          step k + zero
+        ≡⟨ +-stepᴸ ⟩
+          step (k + zero)
+        ≡⟨ cong step k+z≡k ⟩
+          step k
         ∎
 
-  +-succᴿ : ∀ {n m} → n + succ m ≡ succ (n + m)
-  +-succᴿ {n} {m} = ind P Pz Ps n
+  +-stepᴿ : ∀ {n m} → n + step m ≡ step (n + m)
+  +-stepᴿ {n} {m} = ind P Pz Ps n
     where
-      P = λ x → x + succ m ≡ succ (x + m)
+      P = λ x → x + step m ≡ step (x + m)
 
       Pz =
         begin
-          zero + succ m
+          zero + step m
         ≡⟨ +-zeroᴸ ⟩
-          succ m
-        ≡⟨ cong succ (sym +-zeroᴸ) ⟩
-          succ (zero + m)
+          step m
+        ≡⟨ cong step (sym +-zeroᴸ) ⟩
+          step (zero + m)
         ∎
 
-      Ps : succProp P
+      Ps : stepProp P
       Ps {k} k+sm≡s[k+m] =
         begin
-          succ k + succ m
-        ≡⟨ +-succᴸ ⟩
-          succ (k + succ m)
-        ≡⟨ cong succ k+sm≡s[k+m] ⟩
-          succ (succ (k + m))
-        ≡⟨ cong succ (sym +-succᴸ) ⟩
-          succ (succ k + m)
+          step k + step m
+        ≡⟨ +-stepᴸ ⟩
+          step (k + step m)
+        ≡⟨ cong step k+sm≡s[k+m] ⟩
+          step (step (k + m))
+        ≡⟨ cong step (sym +-stepᴸ) ⟩
+          step (step k + m)
         ∎
 
-  +-succᴸ⃗ᴿ : ∀ {n m} → succ n + m ≡ n + succ m
-  +-succᴸ⃗ᴿ = trans +-succᴸ (sym +-succᴿ)
+  +-stepᴸ⃗ᴿ : ∀ {n m} → step n + m ≡ n + step m
+  +-stepᴸ⃗ᴿ = trans +-stepᴸ (sym +-stepᴿ)
 
-  +-succᴿ⃗ᴸ : ∀ {n m} → n + succ m ≡ succ n + m
-  +-succᴿ⃗ᴸ = sym +-succᴸ⃗ᴿ
+  +-stepᴿ⃗ᴸ : ∀ {n m} → n + step m ≡ step n + m
+  +-stepᴿ⃗ᴸ = sym +-stepᴸ⃗ᴿ
 
-  succ≡+ : ∀ {n} → succ n ≡ n + succ zero
-  succ≡+ {n} =
+  step≡+ : ∀ {n} → step n ≡ n + step zero
+  step≡+ {n} =
     begin
-      succ n
-    ≡⟨ cong succ (sym +-zeroᴿ) ⟩
-      succ (n + zero)
-    ≡⟨ sym +-succᴿ ⟩
-      n + succ zero
+      step n
+    ≡⟨ cong step (sym +-zeroᴿ) ⟩
+      step (n + zero)
+    ≡⟨ sym +-stepᴿ ⟩
+      n + step zero
     ∎
 
   +-comm : ∀ {n m} → n + m ≡ m + n
@@ -85,16 +85,16 @@ module net.cruhland.axiomatic.Peano.Addition
       P = λ x → x + m ≡ m + x
       Pz = trans +-zeroᴸ (sym +-zeroᴿ)
 
-      Ps : succProp P
+      Ps : stepProp P
       Ps {k} k+m≡m+k =
         begin
-          succ k + m
-        ≡⟨ +-succᴸ ⟩
-          succ (k + m)
-        ≡⟨ cong succ k+m≡m+k ⟩
-          succ (m + k)
-        ≡⟨ sym +-succᴿ ⟩
-          m + succ k
+          step k + m
+        ≡⟨ +-stepᴸ ⟩
+          step (k + m)
+        ≡⟨ cong step k+m≡m+k ⟩
+          step (m + k)
+        ≡⟨ sym +-stepᴿ ⟩
+          m + step k
         ∎
 
   +-assoc : ∀ {n m p} → (n + m) + p ≡ n + (m + p)
@@ -111,18 +111,18 @@ module net.cruhland.axiomatic.Peano.Addition
           zero + (m + p)
         ∎
 
-      Ps : succProp P
+      Ps : stepProp P
       Ps {k} [k+m]+p≡k+[m+p] =
         begin
-          (succ k + m) + p
-        ≡⟨ cong (_+ p) +-succᴸ ⟩
-          succ (k + m) + p
-        ≡⟨ +-succᴸ ⟩
-          succ ((k + m) + p)
-        ≡⟨ cong succ [k+m]+p≡k+[m+p] ⟩
-          succ (k + (m + p))
-        ≡⟨ sym +-succᴸ ⟩
-          succ k + (m + p)
+          (step k + m) + p
+        ≡⟨ cong (_+ p) +-stepᴸ ⟩
+          step (k + m) + p
+        ≡⟨ +-stepᴸ ⟩
+          step ((k + m) + p)
+        ≡⟨ cong step [k+m]+p≡k+[m+p] ⟩
+          step (k + (m + p))
+        ≡⟨ sym +-stepᴸ ⟩
+          step k + (m + p)
         ∎
 
   infixl 6 _+_
@@ -156,18 +156,18 @@ module net.cruhland.axiomatic.Peano.Addition
           p
         ∎
 
-      Ps : succProp P
-      Ps {k} k+m≡k+p→m≡p sk+m≡sk+p = k+m≡k+p→m≡p (succ-inj s[k+m]≡s[k+p])
+      Ps : stepProp P
+      Ps {k} k+m≡k+p→m≡p sk+m≡sk+p = k+m≡k+p→m≡p (step-inj s[k+m]≡s[k+p])
         where
           s[k+m]≡s[k+p] =
             begin
-              succ (k + m)
-            ≡⟨ sym +-succᴸ ⟩
-              succ k + m
+              step (k + m)
+            ≡⟨ sym +-stepᴸ ⟩
+              step k + m
             ≡⟨ sk+m≡sk+p ⟩
-              succ k + p
-            ≡⟨ +-succᴸ ⟩
-              succ (k + p)
+              step k + p
+            ≡⟨ +-stepᴸ ⟩
+              step (k + p)
             ∎
 
   +-cancelᴿ : ∀ {n m p} → n + p ≡ m + p → n ≡ m
@@ -184,14 +184,14 @@ module net.cruhland.axiomatic.Peano.Addition
           p + m
         ∎
 
-  n≢sn : ∀ {n} → n ≢ succ n
-  n≢sn {n} n≡sn = succ≢zero (+-cancelᴸ n+sz≡n+z)
+  n≢sn : ∀ {n} → n ≢ step n
+  n≢sn {n} n≡sn = step≢zero (+-cancelᴸ n+sz≡n+z)
     where
       n+sz≡n+z =
         begin
-          n + succ zero
-        ≡⟨ +-succᴿ⃗ᴸ ⟩
-          succ n + zero
+          n + step zero
+        ≡⟨ +-stepᴿ⃗ᴸ ⟩
+          step n + zero
         ≡⟨ cong (_+ zero) (sym n≡sn) ⟩
           n + zero
         ∎
@@ -207,8 +207,8 @@ module net.cruhland.axiomatic.Peano.Addition
       Pz : P zero
       Pz = subst Positive (sym +-zeroᴿ) pos-a
 
-      Ps : succProp P
-      Ps {k} _ = λ a+sk≡z → succ≢zero (trans (sym +-succᴿ) a+sk≡z)
+      Ps : stepProp P
+      Ps {k} _ = λ a+sk≡z → step≢zero (trans (sym +-stepᴿ) a+sk≡z)
 
   +-both-zero : ∀ {a b} → a + b ≡ zero → a ≡ zero ∧ b ≡ zero
   +-both-zero {a} {b} a+b≡z = ¬[¬a∨¬b]→a∧b (a ≡? zero) (b ≡? zero) ¬[a≢z∨b≢z]

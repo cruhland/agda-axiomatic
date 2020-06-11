@@ -20,8 +20,8 @@ module net.cruhland.axiomatic.Peano.Multiplication
   *-zeroᴸ : ∀ {m} → zero * m ≡ zero
   *-zeroᴸ = rec-zero
 
-  *-succᴸ : ∀ {n m} → succ n * m ≡ n * m + m
-  *-succᴸ = rec-succ
+  *-stepᴸ : ∀ {n m} → step n * m ≡ n * m + m
+  *-stepᴸ = rec-step
 
   *-zeroᴿ : ∀ {n} → n * zero ≡ zero
   *-zeroᴿ {n} = ind P Pz Ps n
@@ -29,11 +29,11 @@ module net.cruhland.axiomatic.Peano.Multiplication
       P = λ x → x * zero ≡ zero
       Pz = *-zeroᴸ
 
-      Ps : succProp P
+      Ps : stepProp P
       Ps {k} Pk =
         begin
-          succ k * zero
-        ≡⟨ *-succᴸ ⟩
+          step k * zero
+        ≡⟨ *-stepᴸ ⟩
           k * zero + zero
         ≡⟨ +-zeroᴿ ⟩
           k * zero
@@ -41,14 +41,14 @@ module net.cruhland.axiomatic.Peano.Multiplication
           zero
         ∎
 
-  *-succᴿ : ∀ {n m} → n * succ m ≡ n * m + n
-  *-succᴿ {n} {m} = ind P Pz Ps n
+  *-stepᴿ : ∀ {n m} → n * step m ≡ n * m + n
+  *-stepᴿ {n} {m} = ind P Pz Ps n
     where
-      P = λ x → x * succ m ≡ x * m + x
+      P = λ x → x * step m ≡ x * m + x
 
       Pz =
         begin
-          zero * succ m
+          zero * step m
         ≡⟨ *-zeroᴸ ⟩
           zero
         ≡⟨ sym *-zeroᴸ ⟩
@@ -57,18 +57,18 @@ module net.cruhland.axiomatic.Peano.Multiplication
           zero * m + zero
         ∎
 
-      Ps : succProp P
+      Ps : stepProp P
       Ps {k} Pk =
         begin
-          succ k * succ m
-        ≡⟨ *-succᴸ ⟩
-          k * succ m + succ m
-        ≡⟨ cong (_+ succ m) Pk ⟩
-          k * m + k + succ m
-        ≡⟨ with-+-assoc (trans +-comm +-succᴸ⃗ᴿ) ⟩
-          k * m + m + succ k
-        ≡⟨ cong (_+ succ k) (sym *-succᴸ) ⟩
-          succ k * m + succ k
+          step k * step m
+        ≡⟨ *-stepᴸ ⟩
+          k * step m + step m
+        ≡⟨ cong (_+ step m) Pk ⟩
+          k * m + k + step m
+        ≡⟨ with-+-assoc (trans +-comm +-stepᴸ⃗ᴿ) ⟩
+          k * m + m + step k
+        ≡⟨ cong (_+ step k) (sym *-stepᴸ) ⟩
+          step k * m + step k
         ∎
 
   *-comm : ∀ {n m} → n * m ≡ m * n
@@ -77,23 +77,23 @@ module net.cruhland.axiomatic.Peano.Multiplication
       P = λ x → x * m ≡ m * x
       Pz = trans *-zeroᴸ (sym *-zeroᴿ)
 
-      Ps : succProp P
+      Ps : stepProp P
       Ps {k} Pk =
         begin
-          succ k * m
-        ≡⟨ *-succᴸ ⟩
+          step k * m
+        ≡⟨ *-stepᴸ ⟩
           k * m + m
         ≡⟨ cong (_+ m) Pk ⟩
           m * k + m
-        ≡⟨ sym *-succᴿ ⟩
-          m * succ k
+        ≡⟨ sym *-stepᴿ ⟩
+          m * step k
         ∎
 
-  *-oneᴸ : ∀ {n} → succ zero * n ≡ n
+  *-oneᴸ : ∀ {n} → step zero * n ≡ n
   *-oneᴸ {n} =
     begin
-      succ zero * n
-    ≡⟨ *-succᴸ ⟩
+      step zero * n
+    ≡⟨ *-stepᴸ ⟩
       zero * n + n
     ≡⟨ cong (_+ n) *-zeroᴸ ⟩
       zero + n
@@ -101,20 +101,20 @@ module net.cruhland.axiomatic.Peano.Multiplication
       n
     ∎
 
-  *-oneᴿ : ∀ {n} → n * succ zero ≡ n
+  *-oneᴿ : ∀ {n} → n * step zero ≡ n
   *-oneᴿ = trans *-comm *-oneᴸ
 
   *-either-zero : ∀ {n m} → n * m ≡ zero → n ≡ zero ∨ m ≡ zero
   *-either-zero {n} {m} n*m≡z = ∨-mapᴿ (Σ-rec use-pred) (case n)
     where
-      use-pred : ∀ p → n ≡ succ p → m ≡ zero
+      use-pred : ∀ p → n ≡ step p → m ≡ zero
       use-pred p n≡sp = ∧-elimᴿ (+-both-zero p*m+m≡z)
         where
           p*m+m≡z =
             begin
               p * m + m
-            ≡⟨ sym *-succᴸ ⟩
-              succ p * m
+            ≡⟨ sym *-stepᴸ ⟩
+              step p * m
             ≡⟨ cong (_* m) (sym n≡sp) ⟩
               n * m
             ≡⟨ n*m≡z ⟩
@@ -136,20 +136,20 @@ module net.cruhland.axiomatic.Peano.Multiplication
           a * b + a * zero
         ∎
 
-      Ps : succProp P
+      Ps : stepProp P
       Ps {k} a[b+k]≡ab+ak =
         begin
-          a * (b + succ k)
-        ≡⟨ cong (a *_) +-succᴿ ⟩
-          a * succ (b + k)
-        ≡⟨ *-succᴿ ⟩
+          a * (b + step k)
+        ≡⟨ cong (a *_) +-stepᴿ ⟩
+          a * step (b + k)
+        ≡⟨ *-stepᴿ ⟩
           a * (b + k) + a
         ≡⟨ cong (_+ a) a[b+k]≡ab+ak ⟩
           a * b + a * k + a
         ≡⟨ +-assoc ⟩
           a * b + (a * k + a)
-        ≡⟨ cong (a * b +_) (sym *-succᴿ) ⟩
-          a * b + a * succ k
+        ≡⟨ cong (a * b +_) (sym *-stepᴿ) ⟩
+          a * b + a * step k
         ∎
 
   *-distrib-+ᴿ : ∀ {a b c} → (a + b) * c ≡ a * c + b * c
@@ -183,11 +183,11 @@ module net.cruhland.axiomatic.Peano.Multiplication
           (a * zero) * c
         ∎
 
-      Ps : succProp P
+      Ps : stepProp P
       Ps {k} a[kc]≡[ak]c =
         begin
-          a * (succ k * c)
-        ≡⟨ cong (a *_) *-succᴸ ⟩
+          a * (step k * c)
+        ≡⟨ cong (a *_) *-stepᴸ ⟩
           a * (k * c + c)
         ≡⟨ *-distrib-+ᴸ ⟩
           a * (k * c) + a * c
@@ -195,8 +195,8 @@ module net.cruhland.axiomatic.Peano.Multiplication
           (a * k) * c + a * c
         ≡⟨ sym *-distrib-+ᴿ ⟩
           (a * k + a) * c
-        ≡⟨ cong (_* c) (sym *-succᴿ) ⟩
-          (a * succ k) * c
+        ≡⟨ cong (_* c) (sym *-stepᴿ) ⟩
+          (a * step k) * c
         ∎
 
   *-positive : ∀ {a b} → Positive a → Positive b → Positive (a * b)

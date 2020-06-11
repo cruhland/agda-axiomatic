@@ -12,7 +12,7 @@ module net.cruhland.axiomatic.Peano.Literals
 
   fromNat : Nat.Nat → {{_ : ⊤}} → ℕ
   fromNat Nat.zero = zero
-  fromNat (Nat.suc n) = succ (fromNat n)
+  fromNat (Nat.suc n) = step (fromNat n)
 
   instance
     number : Number ℕ
