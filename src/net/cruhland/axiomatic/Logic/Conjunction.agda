@@ -36,3 +36,6 @@ record Conjunction (_∧_ : ∀ {α β} → Set α → Set β → Set (α ⊔ β
   ∧-mapᴿ :
     ∀ {α β δ} {A : Set α} {B : Set β} {D : Set δ} → (B → D) → A ∧ B → A ∧ D
   ∧-mapᴿ g a∧b = ∧-map id g a∧b
+
+  ∧-dup : ∀ {α} {A : Set α} → A → A ∧ A
+  ∧-dup a = ∧-intro a a
