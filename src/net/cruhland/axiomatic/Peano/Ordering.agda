@@ -6,8 +6,7 @@ open import net.cruhland.axiomatic.Logic using (LogicBundle)
 open import net.cruhland.axiomatic.Peano using (PeanoBundle)
 
 module net.cruhland.axiomatic.Peano.Ordering
-  (LB : LogicBundle)
-  (PB : PeanoBundle LB) where
+    (LB : LogicBundle) (PB : PeanoBundle LB) where
   open LogicBundle LB
   open PeanoBundle PB
   open import net.cruhland.axiomatic.Peano.Addition LB PB
