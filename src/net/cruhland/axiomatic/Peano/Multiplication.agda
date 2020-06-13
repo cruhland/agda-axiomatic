@@ -1,27 +1,25 @@
+module net.cruhland.axiomatic.Peano.Multiplication where
+
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; sym; trans; cong)
 open Eq.≡-Reasoning
 open import net.cruhland.axiomatic.Logic using (LogicBundle)
 open import net.cruhland.axiomatic.Peano using (PeanoBundle)
+import net.cruhland.axiomatic.Peano.Addition as PeanoAddition
+import net.cruhland.axiomatic.Peano.Ordering as PeanoOrdering
 
-module net.cruhland.axiomatic.Peano.Multiplication
-  (LB : LogicBundle)
-  (PB : PeanoBundle LB) where
+record Multiplication (LB : LogicBundle) (PB : PeanoBundle LB) : Set where
   open LogicBundle LB
   open PeanoBundle PB
-  open import net.cruhland.axiomatic.Peano.Addition LB PB
-  open import net.cruhland.axiomatic.Peano.Ordering LB PB
-
-  _*_ : ℕ → ℕ → ℕ
-  n * m = rec zero (_+ m) n
+  open PeanoAddition LB PB
+  open PeanoOrdering LB PB
 
   infixl 7 _*_
 
-  *-zeroᴸ : ∀ {m} → zero * m ≡ zero
-  *-zeroᴸ = rec-zero
-
-  *-stepᴸ : ∀ {n m} → step n * m ≡ n * m + m
-  *-stepᴸ = rec-step
+  field
+    _*_ : ℕ → ℕ → ℕ
+    *-zeroᴸ : ∀ {m} → zero * m ≡ zero
+    *-stepᴸ : ∀ {n m} → step n * m ≡ n * m + m
 
   *-zeroᴿ : ∀ {n} → n * zero ≡ zero
   *-zeroᴿ {n} = ind P Pz Ps n
