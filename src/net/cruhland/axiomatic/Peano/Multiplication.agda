@@ -5,14 +5,17 @@ open Eq using (_≡_; sym; trans; cong)
 open Eq.≡-Reasoning
 open import net.cruhland.axiomatic.Logic using (LogicBundle)
 open import net.cruhland.axiomatic.Peano using (PeanoBundle)
-import net.cruhland.axiomatic.Peano.Addition as PeanoAddition
+open import net.cruhland.axiomatic.Peano.Addition
+  using () renaming (Addition to PeanoAddition)
 import net.cruhland.axiomatic.Peano.Ordering as PeanoOrdering
 
-record Multiplication (LB : LogicBundle) (PB : PeanoBundle LB) : Set where
+record Multiplication
+    (LB : LogicBundle) (PB : PeanoBundle LB) (PA : PeanoAddition LB PB)
+      : Set where
   open LogicBundle LB
   open PeanoBundle PB
-  open PeanoAddition LB PB
-  open PeanoOrdering LB PB
+  open PeanoAddition PA
+  open PeanoOrdering LB PB PA
 
   infixl 7 _*_
 

@@ -1,25 +1,24 @@
+module net.cruhland.axiomatic.Peano.Addition where
+
 open import Function using (const)
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; sym; trans; cong; subst)
 open Eq.≡-Reasoning
 open import net.cruhland.axiomatic.Logic using (LogicBundle)
+import net.cruhland.axiomatic.Logic.Decidable as LogicDecidable
 open import net.cruhland.axiomatic.Peano using (PeanoBundle)
 
-module net.cruhland.axiomatic.Peano.Addition
-  (LB : LogicBundle)
-  (PB : PeanoBundle LB) where
+record Addition (LB : LogicBundle) (PB : PeanoBundle LB) : Set where
   open LogicBundle LB
   open PeanoBundle PB
-  open import net.cruhland.axiomatic.Logic.Decidable LB
+  open LogicDecidable LB
 
-  _+_ : ℕ → ℕ → ℕ
-  n + m = rec m step n
+  infixl 6 _+_
 
-  +-zeroᴸ : ∀ {m} → zero + m ≡ m
-  +-zeroᴸ = rec-zero
-
-  +-stepᴸ : ∀ {n m} → step n + m ≡ step (n + m)
-  +-stepᴸ = rec-step
+  field
+    _+_ : ℕ → ℕ → ℕ
+    +-zeroᴸ : ∀ {m} → zero + m ≡ m
+    +-stepᴸ : ∀ {n m} → step n + m ≡ step (n + m)
 
   +-zeroᴿ : ∀ {n} → n + zero ≡ n
   +-zeroᴿ {n} = ind P Pz Ps n
@@ -124,8 +123,6 @@ module net.cruhland.axiomatic.Peano.Addition
         ≡⟨ sym +-stepᴸ ⟩
           step k + (m + p)
         ∎
-
-  infixl 6 _+_
 
   with-+-assoc : ∀ {a b c d e} → b + c ≡ d + e → a + b + c ≡ a + d + e
   with-+-assoc {a} {b} {c} {d} {e} b+c≡d+e =
