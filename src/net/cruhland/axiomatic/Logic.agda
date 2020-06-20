@@ -64,3 +64,8 @@ record LogicBundle : Setω where
     ∀ {α β χ} {A : Set α} {B : Set β} {C : Set χ} → A ↔ B → B ↔ C → A ↔ C
   ↔-trans A↔B B↔C =
     ∧-intro (∧-elimᴸ B↔C ∘ ∧-elimᴸ A↔B) (∧-elimᴿ A↔B ∘ ∧-elimᴿ B↔C)
+
+  ↔-bimap :
+    ∀ {α β χ δ} {A : Set α} {B : Set β} {C : Set χ} {D : Set δ} →
+      ((A → B) → (C → D)) → ((B → A) → (D → C)) → A ↔ B → C ↔ D
+  ↔-bimap = ∧-map
