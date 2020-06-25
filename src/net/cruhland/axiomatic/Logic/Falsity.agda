@@ -3,8 +3,9 @@ module net.cruhland.axiomatic.Logic.Falsity where
 open import Level using (Setω)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; sym)
 
--- Use standard library definitions
+-- Export standard library definitions
 open import Data.Empty public using (⊥; ⊥-elim)
+open import Data.Empty.Polymorphic public renaming (⊥ to ⊥̂; ⊥-elim to ⊥̂-elim)
 open import Relation.Nullary public using (¬_)
 
 ¬sym : {A : Set} {x y : A} → x ≢ y → y ≢ x
