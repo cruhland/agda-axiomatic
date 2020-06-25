@@ -1,87 +1,37 @@
 module net.cruhland.axiomatic.Logic.Disjunction where
 
-open import Function using (const; id; _∘_)
-open import Level using (_⊔_; Setω)
-open import Relation.Binary.PropositionalEquality using (_≡_)
+open import Function using (id; _∘_)
 
-record Disjunction (_∨_ : ∀ {α β} → Set α → Set β → Set (α ⊔ β)) : Setω where
-  field
-    ∨-introᴸ : ∀ {α β} {A : Set α} {B : Set β} → A → A ∨ B
-    ∨-introᴿ : ∀ {α β} {A : Set α} {B : Set β} → B → A ∨ B
+-- Export standard library definitions
+open import Data.Sum public renaming
+  (_⊎_ to _∨_
+  ; inj₁ to ∨-introᴸ
+  ; inj₂ to ∨-introᴿ
+  ; [_,_] to ∨-elim
+  ; [_,_]′ to ∨-rec
+  ; fromInj₁ to ∨-recᴸ
+  ; fromInj₂ to ∨-recᴿ
+  ; swap to ∨-comm
+  ; map to ∨-map
+  ; map₁ to ∨-mapᴸ
+  ; map₂ to ∨-mapᴿ
+  )
 
-    ∨-elim :
-      ∀ {α β χ} {A : Set α} {B : Set β} (C : A ∨ B → Set χ) →
-      ((a : A) → C (∨-introᴸ a)) →
-      ((b : B) → C (∨-introᴿ b)) →
-      ∀ a∨b →
-      C a∨b
+∨-merge : ∀ {α} {A : Set α} → A ∨ A → A
+∨-merge = ∨-rec id id
 
-    ∨-βᴸ :
-      ∀ {α β χ} {A : Set α} {B : Set β} {C : A ∨ B → Set χ}
-      {f : (a : A) → C (∨-introᴸ a)} {g : (b : B) → C (∨-introᴿ b)} {a : A} →
-      ∨-elim C f g (∨-introᴸ a) ≡ f a
+∨-assocᴸᴿ :
+  ∀ {α β χ} {A : Set α} {B : Set β} {C : Set χ} → (A ∨ B) ∨ C → A ∨ (B ∨ C)
+∨-assocᴸᴿ [A∨B]∨C = ∨-rec (∨-rec use-A use-B) use-C [A∨B]∨C
+  where
+    use-A = ∨-introᴸ
+    use-B = ∨-introᴿ ∘ ∨-introᴸ
+    use-C = ∨-introᴿ ∘ ∨-introᴿ
 
-    ∨-βᴿ :
-      ∀ {α β χ} {A : Set α} {B : Set β} {C : A ∨ B → Set χ}
-      {f : (a : A) → C (∨-introᴸ a)} {g : (b : B) → C (∨-introᴿ b)} {b : B} →
-      ∨-elim C f g (∨-introᴿ b) ≡ g b
-
-    ∨-η :
-      ∀ {α β} {A : Set α} {B : Set β} {a∨b : A ∨ B} →
-      ∨-elim (const (A ∨ B)) ∨-introᴸ ∨-introᴿ a∨b ≡ a∨b
-
-  ∨-rec :
-    ∀ {α β χ} {A : Set α} {B : Set β} {C : Set χ} →
-    (A → C) → (B → C) → A ∨ B → C
-  ∨-rec {C = C} f g a∨b = ∨-elim (const C) f g a∨b
-
-  ∨-rec-βᴸ :
-    ∀ {α β χ} {A : Set α} {B : Set β} {C : Set χ}
-    {f : A → C} {g : B → C} {a : A} → ∨-rec f g (∨-introᴸ a) ≡ f a
-  ∨-rec-βᴸ = ∨-βᴸ
-
-  ∨-rec-βᴿ :
-    ∀ {α β χ} {A : Set α} {B : Set β} {C : Set χ}
-    {f : A → C} {g : B → C} {b : B} → ∨-rec f g (∨-introᴿ b) ≡ g b
-  ∨-rec-βᴿ = ∨-βᴿ
-
-  ∨-recᴸ : ∀ {α β} {A : Set α} {B : Set β} → (B → A) → A ∨ B → A
-  ∨-recᴸ g = ∨-rec id g
-
-  ∨-recᴿ : ∀ {α β} {A : Set α} {B : Set β} → (A → B) → A ∨ B → B
-  ∨-recᴿ f = ∨-rec f id
-
-  ∨-comm : ∀ {α β} {A : Set α} {B : Set β} → A ∨ B → B ∨ A
-  ∨-comm = ∨-rec ∨-introᴿ ∨-introᴸ
-
-  ∨-map :
-    ∀ {α β χ δ} {A : Set α} {B : Set β} {C : Set χ} {D : Set δ} →
-      (A → C) → (B → D) → A ∨ B → C ∨ D
-  ∨-map f g = ∨-rec (∨-introᴸ ∘ f) (∨-introᴿ ∘ g)
-
-  ∨-mapᴸ :
-    ∀ {α β χ} {A : Set α} {B : Set β} {C : Set χ} → (A → C) → A ∨ B → C ∨ B
-  ∨-mapᴸ f = ∨-map f id
-
-  ∨-mapᴿ :
-    ∀ {α β χ} {A : Set α} {B : Set β} {C : Set χ} → (B → C) → A ∨ B → A ∨ C
-  ∨-mapᴿ g = ∨-map id g
-
-  ∨-merge : ∀ {α} {A : Set α} → A ∨ A → A
-  ∨-merge = ∨-rec id id
-
-  ∨-assocᴸᴿ :
-    ∀ {α β χ} {A : Set α} {B : Set β} {C : Set χ} → (A ∨ B) ∨ C → A ∨ (B ∨ C)
-  ∨-assocᴸᴿ [A∨B]∨C = ∨-rec (∨-rec use-A use-B) use-C [A∨B]∨C
-    where
-      use-A = ∨-introᴸ
-      use-B = ∨-introᴿ ∘ ∨-introᴸ
-      use-C = ∨-introᴿ ∘ ∨-introᴿ
-
-  ∨-assocᴿᴸ :
-    ∀ {α β χ} {A : Set α} {B : Set β} {C : Set χ} → A ∨ (B ∨ C) → (A ∨ B) ∨ C
-  ∨-assocᴿᴸ A∨[B∨C] = ∨-rec use-A (∨-rec use-B use-C) A∨[B∨C]
-    where
-      use-A = ∨-introᴸ ∘ ∨-introᴸ
-      use-B = ∨-introᴸ ∘ ∨-introᴿ
-      use-C = ∨-introᴿ
+∨-assocᴿᴸ :
+  ∀ {α β χ} {A : Set α} {B : Set β} {C : Set χ} → A ∨ (B ∨ C) → (A ∨ B) ∨ C
+∨-assocᴿᴸ A∨[B∨C] = ∨-rec use-A (∨-rec use-B use-C) A∨[B∨C]
+  where
+    use-A = ∨-introᴸ ∘ ∨-introᴸ
+    use-B = ∨-introᴸ ∘ ∨-introᴿ
+    use-C = ∨-introᴿ
