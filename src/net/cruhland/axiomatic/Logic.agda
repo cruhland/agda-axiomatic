@@ -5,36 +5,33 @@ open import Level using (_⊔_; Setω; Lift; lift; lower) renaming (zero to lzer
 open import net.cruhland.axiomatic.Logic.Conjunction using (Conjunction)
 open import net.cruhland.axiomatic.Logic.Disjunction using (Disjunction)
 open import net.cruhland.axiomatic.Logic.Exists using (Exists)
-open import net.cruhland.axiomatic.Logic.Falsity using (Falsity)
+import net.cruhland.axiomatic.Logic.Falsity as Falsity
 import net.cruhland.axiomatic.Logic.Truth as Truth
 
 record Logic
   (Σ : ∀ {α β} (A : Set α) → (A → Set β) → Set (α ⊔ β))
-  (_∧_ _∨_ : ∀ {α β} → Set α → Set β → Set (α ⊔ β))
-  (⊥ : Set) : Setω where
+  (_∧_ _∨_ : ∀ {α β} → Set α → Set β → Set (α ⊔ β)) : Setω where
   field
     exists : Exists Σ
     conjunction : Conjunction _∧_
     disjunction : Disjunction _∨_
-    falsity : Falsity ⊥
 
   open Exists exists public
   open Conjunction conjunction public
   open Disjunction disjunction public
-  open Falsity falsity public
 
 record LogicBundle : Setω where
   field
     Σ : ∀ {α β} (A : Set α) → (A → Set β) → Set (α ⊔ β)
     _∧_ _∨_ : ∀ {α β} → Set α → Set β → Set (α ⊔ β)
-    ⊥ : Set
-    isLogic : Logic Σ _∧_ _∨_ ⊥
+    isLogic : Logic Σ _∧_ _∨_
 
   infixl 1 _∨_
   infixl 2 _∧_
 
   open Logic isLogic public
-  open Truth public using (⊤; ⊤-intro)
+  open Falsity public
+  open Truth public
 
   ∨-identᴸ : ∀ {α β} {B : Set β} → Lift α ⊥ ∨ B → B
   ∨-identᴸ = ∨-recᴿ (⊥-elim ∘ lower)
