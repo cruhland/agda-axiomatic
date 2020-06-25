@@ -2,31 +2,26 @@ module net.cruhland.axiomatic.Logic where
 
 open import Function using (id; _∘_)
 open import Level using (_⊔_; Setω) renaming (zero to lzero)
-open import net.cruhland.axiomatic.Logic.Conjunction using (Conjunction)
+open import net.cruhland.axiomatic.Logic.Conjunction as Conjunction
 import net.cruhland.axiomatic.Logic.Disjunction as Disjunction
 open import net.cruhland.axiomatic.Logic.Exists using (Exists)
 import net.cruhland.axiomatic.Logic.Falsity as Falsity
 import net.cruhland.axiomatic.Logic.Truth as Truth
 
 record Logic
-  (Σ : ∀ {α β} (A : Set α) → (A → Set β) → Set (α ⊔ β))
-  (_∧_ : ∀ {α β} → Set α → Set β → Set (α ⊔ β)) : Setω where
+  (Σ : ∀ {α β} (A : Set α) → (A → Set β) → Set (α ⊔ β)) : Setω where
   field
     exists : Exists Σ
-    conjunction : Conjunction _∧_
 
   open Exists exists public
-  open Conjunction conjunction public
 
 record LogicBundle : Setω where
   field
     Σ : ∀ {α β} (A : Set α) → (A → Set β) → Set (α ⊔ β)
-    _∧_ : ∀ {α β} → Set α → Set β → Set (α ⊔ β)
-    isLogic : Logic Σ _∧_
-
-  infixl 2 _∧_
+    isLogic : Logic Σ
 
   open Logic isLogic public
+  open Conjunction public
   open Disjunction public
   open Falsity public
   open Truth public

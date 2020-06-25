@@ -3,7 +3,7 @@ module net.cruhland.axiomatic.Logic.Disjunction where
 open import Function using (id; _∘_)
 
 -- Export standard library definitions
-open import Data.Sum public renaming
+open import Data.Sum public using () renaming
   (_⊎_ to _∨_
   ; inj₁ to ∨-introᴸ
   ; inj₂ to ∨-introᴿ
