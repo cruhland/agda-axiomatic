@@ -1,8 +1,6 @@
 module net.cruhland.axiomatic.Logic.Conjunction where
 
 open import Function using (id)
-open import Level using (_⊔_; Setω)
-open import Relation.Binary.PropositionalEquality using (_≡_)
 
 -- Export standard library definitions
 open import Data.Product public using () renaming

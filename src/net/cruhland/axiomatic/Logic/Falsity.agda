@@ -1,7 +1,6 @@
 module net.cruhland.axiomatic.Logic.Falsity where
 
-open import Level using (Setω)
-open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; sym)
+open import Relation.Binary.PropositionalEquality using (_≢_; sym)
 
 -- Export standard library definitions
 open import Data.Empty public using (⊥; ⊥-elim)
