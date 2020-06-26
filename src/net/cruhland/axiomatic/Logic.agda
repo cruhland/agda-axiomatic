@@ -4,25 +4,14 @@ open import Function using (id; _∘_)
 open import Level using (_⊔_; Setω) renaming (zero to lzero)
 open import net.cruhland.axiomatic.Logic.Conjunction as Conjunction
 import net.cruhland.axiomatic.Logic.Disjunction as Disjunction
-open import net.cruhland.axiomatic.Logic.Exists using (Exists)
+import net.cruhland.axiomatic.Logic.Exists as Exists
 import net.cruhland.axiomatic.Logic.Falsity as Falsity
 import net.cruhland.axiomatic.Logic.Truth as Truth
 
-record Logic
-  (Σ : ∀ {α β} (A : Set α) → (A → Set β) → Set (α ⊔ β)) : Setω where
-  field
-    exists : Exists Σ
-
-  open Exists exists public
-
 record LogicBundle : Setω where
-  field
-    Σ : ∀ {α β} (A : Set α) → (A → Set β) → Set (α ⊔ β)
-    isLogic : Logic Σ
-
-  open Logic isLogic public
   open Conjunction public
   open Disjunction public
+  open Exists public
   open Falsity public
   open Truth public
 
