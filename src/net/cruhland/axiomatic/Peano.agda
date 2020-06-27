@@ -22,47 +22,6 @@ record Peano (ℕ : Set) : Set₁ where
     ind-zero : ∀ {P z} {s : step-case P} → ind P z s zero ≡ z
     ind-step : ∀ {P z n} {s : step-case P} → ind P z s (step n) ≡ s (ind P z s n)
 
-  rec : {A : Set} → A → (A → A) → ℕ → A
-  rec {A} z s n = ind (const A) z s n
-
-  rec-zero : {A : Set} {z : A} {s : A → A} → rec z s zero ≡ z
-  rec-zero {A} = ind-zero {const A}
-
-  rec-step :
-    {A : Set} {z : A} {s : A → A} {n : ℕ} → rec z s (step n) ≡ s (rec z s n)
-  rec-step {A} = ind-step {const A}
-
-  rec-s-comm :
-    {A : Set} {z : A} {s : A → A} {n : ℕ} → s (rec z s n) ≡ rec (s z) s n
-  rec-s-comm {A} {z} {s} {n} = ind P Pz Ps n
-    where
-      P = λ x → s (rec z s x) ≡ rec (s z) s x
-
-      Pz =
-        begin
-          s (rec z s zero)
-        ≡⟨ cong s rec-zero ⟩
-          s z
-        ≡⟨ sym rec-zero ⟩
-          rec (s z) s zero
-        ∎
-
-      Ps : step-case P
-      Ps {k} s[rec-z]≡rec[s-z] =
-        begin
-          s (rec z s (step k))
-        ≡⟨ cong s rec-step ⟩
-          s (s (rec z s k))
-        ≡⟨ cong s s[rec-z]≡rec[s-z] ⟩
-          s (rec (s z) s k)
-        ≡⟨ sym rec-step ⟩
-          rec (s z) s (step k)
-        ∎
-
-  rec-step-tail :
-    {A : Set} {z : A} {s : A → A} {n : ℕ} → rec z s (step n) ≡ rec (s z) s n
-  rec-step-tail = trans rec-step rec-s-comm
-
   case : ∀ n → n ≡ zero ∨ Σ ℕ λ p → n ≡ step p
   case n = ind P Pz Ps n
     where
