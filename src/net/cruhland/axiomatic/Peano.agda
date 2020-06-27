@@ -2,25 +2,15 @@ module net.cruhland.axiomatic.Peano where
 
 open import Function using (const; _∘_)
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; refl; sym; trans; cong)
+open Eq using (_≡_; _≢_; refl; sym; trans; cong)
 open Eq.≡-Reasoning
-open import net.cruhland.axiomatic.Logic using (LogicBundle)
-import net.cruhland.axiomatic.Logic.Decidable as Decidable
+open import net.cruhland.axiomatic.Logic
+  using (_∨_; Σ; ∨-introᴸ; ∨-introᴿ; Σ-intro; ∨-forceᴿ; Decidable; ¬sym; ∨-rec)
 
-record Peano (ℕ : Set) (LB : LogicBundle) : Set₁ where
-  open LogicBundle LB
-  open Decidable LB
-
+record Peano (ℕ : Set) : Set₁ where
   field
     zero : ℕ
     step : ℕ → ℕ
-
-  _≢_ : ∀ {α} {A : Set α} → A → A → Set α
-  x ≢ y = ¬ (x ≡ y)
-
-  infix 4 _≢_
-
-  field
     step≢zero : ∀ {n} → step n ≢ zero
     step-inj : ∀ {n m} → step n ≡ step m → n ≡ m
 
@@ -110,9 +100,9 @@ record Peano (ℕ : Set) (LB : LogicBundle) : Set₁ where
               use-k≡j = ∨-introᴸ ∘ cong step
               use-k≢j = λ k≢j → ∨-introᴿ (k≢j ∘ step-inj)
 
-record PeanoBundle (LB : LogicBundle) : Set₁ where
+record PeanoBundle : Set₁ where
   field
     ℕ : Set
-    isPeano : Peano ℕ LB
+    isPeano : Peano ℕ
 
   open Peano isPeano public

@@ -1,15 +1,19 @@
 open import Function using (_∘_)
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; sym; cong; trans; subst)
+open Eq using (_≡_; _≢_; sym; cong; trans; subst)
 open Eq.≡-Reasoning
-open import net.cruhland.axiomatic.Logic using (LogicBundle)
+open import net.cruhland.axiomatic.Logic using
+  ( _∧_; ∧-elimᴸ; ∧-elimᴿ; ∧-intro
+  ; _∨_; ∨-introᴸ; ∨-introᴿ; ∨-mapᴸ; ∨-rec
+  ; ⊥-elim; ¬_
+  ; Σ; Σ-intro; Σ-map-snd; Σ-rec
+  )
 open import net.cruhland.axiomatic.Peano using (PeanoBundle)
 open import net.cruhland.axiomatic.Peano.Addition
   using () renaming (Addition to PeanoAddition)
 
 module net.cruhland.axiomatic.Peano.Ordering
-    (LB : LogicBundle) (PB : PeanoBundle LB) (PA : PeanoAddition LB PB) where
-  open LogicBundle LB
+    (PB : PeanoBundle) (PA : PeanoAddition PB) where
   open PeanoBundle PB
   open PeanoAddition PA
 

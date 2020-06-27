@@ -1,21 +1,22 @@
 module net.cruhland.axiomatic.Peano.Multiplication where
 
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; sym; trans; cong)
+open Eq using (_≡_; _≢_; sym; trans; cong)
 open Eq.≡-Reasoning
-open import net.cruhland.axiomatic.Logic using (LogicBundle)
+open import net.cruhland.axiomatic.Logic using
+  ( _∧_; ∧-elimᴸ; ∧-elimᴿ; ∧-intro
+  ; _∨_; ∨-forceᴸ; ∨-forceᴿ; ∨-mapᴿ; ∨-rec
+  ; Σ-intro; Σ-rec
+  )
 open import net.cruhland.axiomatic.Peano using (PeanoBundle)
 open import net.cruhland.axiomatic.Peano.Addition
   using () renaming (Addition to PeanoAddition)
 import net.cruhland.axiomatic.Peano.Ordering as PeanoOrdering
 
-record Multiplication
-    (LB : LogicBundle) (PB : PeanoBundle LB) (PA : PeanoAddition LB PB)
-      : Set where
-  open LogicBundle LB
+record Multiplication (PB : PeanoBundle) (PA : PeanoAddition PB) : Set where
   open PeanoBundle PB
   open PeanoAddition PA
-  open PeanoOrdering LB PB PA
+  open PeanoOrdering PB PA
 
   infixl 7 _*_
 
