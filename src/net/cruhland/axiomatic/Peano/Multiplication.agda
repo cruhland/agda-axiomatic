@@ -8,14 +8,15 @@ open import net.cruhland.axiomatic.Logic using
   ; _∨_; ∨-forceᴸ; ∨-forceᴿ; ∨-mapᴿ; ∨-rec
   ; Σ-intro; Σ-rec
   )
-open import net.cruhland.axiomatic.Peano using (PeanoBundle)
 open import net.cruhland.axiomatic.Peano.Addition
   using () renaming (Addition to PeanoAddition)
+open import net.cruhland.axiomatic.Peano.Base
+  using () renaming (Peano to PeanoBase)
 import net.cruhland.axiomatic.Peano.Ordering as PeanoOrdering
 
-record Multiplication (PB : PeanoBundle) (PA : PeanoAddition PB) : Set where
-  open PeanoBundle PB
+record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
   open PeanoAddition PA
+  open PeanoBase PB
   open PeanoOrdering PB PA
 
   infixl 7 _*_

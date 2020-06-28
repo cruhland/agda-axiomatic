@@ -1,67 +1,23 @@
 module net.cruhland.axiomatic.Peano where
 
-open import Function using (const; _∘_)
-import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; _≢_; refl; sym; trans; cong)
-open Eq.≡-Reasoning
-open import net.cruhland.axiomatic.Logic
-  using (_∨_; Σ; ∨-introᴸ; ∨-introᴿ; Σ-intro; ∨-forceᴿ; Decidable; ¬sym; ∨-rec)
+open import net.cruhland.axiomatic.Peano.Addition using (Addition)
+open import net.cruhland.axiomatic.Peano.Base using (Peano)
+open import net.cruhland.axiomatic.Peano.Exponentiation using (Exponentiation)
+import net.cruhland.axiomatic.Peano.Literals as Literals
+open import net.cruhland.axiomatic.Peano.Multiplication using (Multiplication)
+import net.cruhland.axiomatic.Peano.Ordering as Ordering
 
-record Peano (ℕ : Set) : Set₁ where
+-- Bundle all child modules together for convenience
+record PeanoArithmetic : Set₁ where
   field
-    zero : ℕ
-    step : ℕ → ℕ
-    step≢zero : ∀ {n} → step n ≢ zero
-    step-inj : ∀ {n m} → step n ≡ step m → n ≡ m
+    PB : Peano
+    PA : Addition PB
+    PM : Multiplication PB PA
+    PE : Exponentiation PB PA PM
 
-  step-case : (P : ℕ → Set) → Set
-  step-case P = ∀ {k} → P k → P (step k)
-
-  field
-    ind : (P : ℕ → Set) → P zero → step-case P → ∀ n → P n
-    ind-zero : ∀ {P z} {s : step-case P} → ind P z s zero ≡ z
-    ind-step : ∀ {P z n} {s : step-case P} → ind P z s (step n) ≡ s (ind P z s n)
-
-  case : ∀ n → n ≡ zero ∨ Σ ℕ λ p → n ≡ step p
-  case n = ind P Pz Ps n
-    where
-      P = λ x → x ≡ zero ∨ Σ ℕ λ p → x ≡ step p
-      Pz = ∨-introᴸ refl
-
-      Ps : step-case P
-      Ps {k} _ = ∨-introᴿ (Σ-intro k refl)
-
-  pred : ∀ {n} → n ≢ zero → Σ ℕ λ p → n ≡ step p
-  pred {n} n≢z = ∨-forceᴿ n≢z (case n)
-
-  _≡?_ : (n m : ℕ) → Decidable (n ≡ m)
-  n ≡? m = ind P Pz Ps n m
-    where
-      P = λ x → ∀ y → Decidable (x ≡ y)
-
-      Qz = λ y → Decidable (zero ≡ y)
-      Qzz = ∨-introᴸ refl
-
-      Qzs : step-case Qz
-      Qzs z≡k∨z≢k = ∨-introᴿ (¬sym step≢zero)
-
-      Pz = λ y → ind Qz Qzz Qzs y
-
-      Ps : step-case P
-      Ps {k} y→k≡y∨k≢y = ind Qs Qsz Qss
-        where
-          Qs = λ y → Decidable (step k ≡ y)
-          Qsz = ∨-introᴿ step≢zero
-
-          Qss : step-case Qs
-          Qss {j} k≡j∨k≢j = ∨-rec use-k≡j use-k≢j (y→k≡y∨k≢y j)
-            where
-              use-k≡j = ∨-introᴸ ∘ cong step
-              use-k≢j = λ k≢j → ∨-introᴿ (k≢j ∘ step-inj)
-
-record PeanoBundle : Set₁ where
-  field
-    ℕ : Set
-    isPeano : Peano ℕ
-
-  open Peano isPeano public
+  open Addition PA public
+  open Exponentiation PE public
+  open Literals PB public
+  open Multiplication PM public
+  open Ordering PB PA public
+  open Peano PB public

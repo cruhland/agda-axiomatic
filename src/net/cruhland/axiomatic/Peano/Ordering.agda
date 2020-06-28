@@ -8,14 +8,15 @@ open import net.cruhland.axiomatic.Logic using
   ; ⊥-elim; ¬_
   ; Σ; Σ-intro; Σ-map-snd; Σ-rec
   )
-open import net.cruhland.axiomatic.Peano using (PeanoBundle)
 open import net.cruhland.axiomatic.Peano.Addition
   using () renaming (Addition to PeanoAddition)
+open import net.cruhland.axiomatic.Peano.Base
+  using () renaming (Peano to PeanoBase)
 
 module net.cruhland.axiomatic.Peano.Ordering
-    (PB : PeanoBundle) (PA : PeanoAddition PB) where
-  open PeanoBundle PB
+    (PB : PeanoBase) (PA : PeanoAddition PB) where
   open PeanoAddition PA
+  open PeanoBase PB
 
   _≤_ : ℕ → ℕ → Set
   n ≤ m = Σ ℕ (λ a → n + a ≡ m)

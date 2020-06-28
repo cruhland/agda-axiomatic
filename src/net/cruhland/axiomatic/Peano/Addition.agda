@@ -5,10 +5,11 @@ import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; _≢_; sym; trans; cong; subst)
 open Eq.≡-Reasoning
 open import net.cruhland.axiomatic.Logic using (_∧_; ∨-rec; ¬[¬a∨¬b]→a∧b)
-open import net.cruhland.axiomatic.Peano using (PeanoBundle)
+open import net.cruhland.axiomatic.Peano.Base
+  using () renaming (Peano to PeanoBase)
 
-record Addition (PB : PeanoBundle) : Set where
-  open PeanoBundle PB
+record Addition (PB : PeanoBase) : Set where
+  open PeanoBase PB
 
   infixl 6 _+_
 
