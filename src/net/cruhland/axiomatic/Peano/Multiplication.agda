@@ -5,7 +5,7 @@ open Eq using (_≡_; _≢_; sym; trans; cong)
 open Eq.≡-Reasoning
 open import net.cruhland.axiomatic.Logic using
   ( _∧_; ∧-elimᴸ; ∧-elimᴿ; ∧-intro
-  ; _∨_; ∨-forceᴸ; ∨-forceᴿ; ∨-mapᴿ; ∨-rec
+  ; _∨_; ∨-forceᴸ; ∨-forceᴿ; ∨-introᴸ; ∨-introᴿ; ∨-rec
   ; Σ-intro; Σ-rec
   )
 open import net.cruhland.axiomatic.Peano.Addition
@@ -108,21 +108,22 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
   *-oneᴿ = trans *-comm *-oneᴸ
 
   *-either-zero : ∀ {n m} → n * m ≡ zero → n ≡ zero ∨ m ≡ zero
-  *-either-zero {n} {m} n*m≡z = ∨-mapᴿ (Σ-rec use-pred) (case n)
+  *-either-zero {n} {m} n*m≡z with case n
+  ... | Case-zero n≡0 = ∨-introᴸ n≡0
+  ... | Case-step (Pred-intro p n≡sp) = ∨-introᴿ m≡0
     where
-      use-pred : ∀ p → n ≡ step p → m ≡ zero
-      use-pred p n≡sp = ∧-elimᴿ (+-both-zero p*m+m≡z)
-        where
-          p*m+m≡z =
-            begin
-              p * m + m
-            ≡⟨ sym *-stepᴸ ⟩
-              step p * m
-            ≡⟨ cong (_* m) (sym n≡sp) ⟩
-              n * m
-            ≡⟨ n*m≡z ⟩
-              zero
-            ∎
+      p*m+m≡z =
+        begin
+          p * m + m
+        ≡⟨ sym *-stepᴸ ⟩
+          step p * m
+        ≡⟨ cong (_* m) (sym n≡sp) ⟩
+          n * m
+        ≡⟨ n*m≡z ⟩
+          zero
+        ∎
+
+      m≡0 = ∧-elimᴿ (+-both-zero p*m+m≡z)
 
   *-distrib-+ᴸ : ∀ {a b c} → a * (b + c) ≡ a * b + a * c
   *-distrib-+ᴸ {a} {b} {c} = ind P Pz Ps c

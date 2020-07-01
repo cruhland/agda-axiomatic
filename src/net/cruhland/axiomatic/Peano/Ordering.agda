@@ -5,7 +5,7 @@ open Eq.≡-Reasoning
 open import net.cruhland.axiomatic.Logic using
   ( _∧_; ∧-elimᴸ; ∧-elimᴿ; ∧-intro
   ; _∨_; ∨-introᴸ; ∨-introᴿ; ∨-mapᴸ; ∨-rec
-  ; ⊥-elim; ¬_
+  ; ⊥; ⊥-elim; ¬_
   ; Σ; Σ-intro; Σ-map-snd; Σ-rec
   )
 open import net.cruhland.axiomatic.Peano.Addition
@@ -16,7 +16,10 @@ open import net.cruhland.axiomatic.Peano.Base
 module net.cruhland.axiomatic.Peano.Ordering
     (PB : PeanoBase) (PA : PeanoAddition PB) where
   open PeanoAddition PA
-  open PeanoBase PB
+  open PeanoBase PB using
+    ( ℕ; ind; step; step-case; step-inj; step≢zero; zero; _≡?_
+    ; Case; case; Case-step; Case-zero; Pred-intro; pred
+    )
 
   _≤_ : ℕ → ℕ → Set
   n ≤ m = Σ ℕ (λ a → n + a ≡ m)
@@ -109,7 +112,7 @@ module net.cruhland.axiomatic.Peano.Ordering
       a≢b = ∧-elimᴿ a<b
 
       use-a≤b : (d : ℕ) → a + d ≡ b → step a ≤ b
-      use-a≤b d a+d≡b = Σ-map-snd use-d-pred (pred d≢z)
+      use-a≤b d a+d≡b with pred d≢z
         where
           d≢z : d ≢ zero
           d≢z d≡z = a≢b a≡b
@@ -124,9 +127,9 @@ module net.cruhland.axiomatic.Peano.Ordering
                 ≡⟨ a+d≡b ⟩
                   b
                 ∎
-
-          use-d-pred : ∀ {e} → d ≡ step e → step a + e ≡ b
-          use-d-pred {e} d≡se =
+      ... | Pred-intro e d≡se = Σ-intro e sa+e≡b
+        where
+          sa+e≡b =
             begin
               step a + e
             ≡⟨ +-stepᴸ⃗ᴿ ⟩
@@ -173,24 +176,21 @@ module net.cruhland.axiomatic.Peano.Ordering
   positive-diff→< {a} {b} Σpd = ≤→< (Σ-rec use-Σpd Σpd)
     where
       use-Σpd : (d : ℕ) → Positive d ∧ b ≡ a + d → step a ≤ b
-      use-Σpd d d≢0∧b≡a+d = Σ-rec use-pred (pred d≢0)
+      use-Σpd d d≢0∧b≡a+d with pred (∧-elimᴸ d≢0∧b≡a+d)
+      ... | Pred-intro p d≡sp = Σ-intro p sa+p≡b
         where
-          d≢0 = ∧-elimᴸ d≢0∧b≡a+d
           b≡a+d = ∧-elimᴿ d≢0∧b≡a+d
 
-          use-pred : (p : ℕ) → d ≡ step p → step a ≤ b
-          use-pred p d≡sp = Σ-intro p sa+p≡b
-            where
-              sa+p≡b =
-                begin
-                  step a + p
-                ≡⟨ +-stepᴸ⃗ᴿ ⟩
-                  a + step p
-                ≡⟨ cong (a +_) (sym d≡sp) ⟩
-                  a + d
-                ≡⟨ sym b≡a+d ⟩
-                  b
-                ∎
+          sa+p≡b =
+            begin
+              step a + p
+            ≡⟨ +-stepᴸ⃗ᴿ ⟩
+              a + step p
+            ≡⟨ cong (a +_) (sym d≡sp) ⟩
+              a + d
+            ≡⟨ sym b≡a+d ⟩
+              b
+            ∎
 
   ≤-zero : ∀ {n} → zero ≤ n
   ≤-zero {n} = ind P Pz Ps n
@@ -237,13 +237,12 @@ module net.cruhland.axiomatic.Peano.Ordering
   trichotomy {n} {m} = ind P Pz Ps n
     where
       P = λ x → x < m ∨ (x ≡ m ∨ x > m)
-      Pz = ∨-rec use-zero use-pred (case m)
-        where
-          use-zero = λ m≡z → ∨-introᴿ (∨-introᴸ (sym m≡z))
-          use-pred = λ Σp → ∨-introᴸ (∧-intro ≤-zero (Σ-rec use-Σp Σp))
-            where
-              use-Σp : ∀ p → m ≡ step p → zero ≢ m
-              use-Σp p m≡sp z≡m = step≢zero (sym (trans z≡m m≡sp))
+
+      Pz : P zero
+      Pz with case m
+      ... | Case-zero m≡z = ∨-introᴿ (∨-introᴸ (sym m≡z))
+      ... | Case-step (Pred-intro p m≡sp) = ∨-introᴸ (∧-intro ≤-zero z≢m)
+        where z≢m = λ z≡m → step≢zero (sym (trans z≡m m≡sp))
 
       Ps : step-case P
       Ps tri-k = ∨-rec use-< (∨-rec use-≡ use->) tri-k

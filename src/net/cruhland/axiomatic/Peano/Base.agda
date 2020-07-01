@@ -4,8 +4,8 @@ open import Function using (const; _∘_)
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; _≢_; refl; sym; trans; cong)
 open Eq.≡-Reasoning
-open import net.cruhland.axiomatic.Logic
-  using (_∨_; Σ; ∨-introᴸ; ∨-introᴿ; Σ-intro; ∨-forceᴿ; Decidable; ¬sym; ∨-rec)
+open import net.cruhland.axiomatic.Logic using
+  (∨-introᴸ; ∨-introᴿ; ∨-rec; ⊥; ⊥-elim; ¬sym; Decidable)
 
 record Peano : Set₁ where
   field
@@ -23,17 +23,28 @@ record Peano : Set₁ where
     ind-zero : ∀ {P z} {s : step-case P} → ind P z s zero ≡ z
     ind-step : ∀ {P z n} {s : step-case P} → ind P z s (step n) ≡ s (ind P z s n)
 
-  case : ∀ n → n ≡ zero ∨ Σ ℕ λ p → n ≡ step p
-  case n = ind P Pz Ps n
+  record Pred (n : ℕ) : Set where
+    constructor Pred-intro
+    field
+      p : ℕ
+      n≡sp : n ≡ step p
+
+  data Case (n : ℕ) : Set where
+    Case-zero : (n≡z : n ≡ zero) → Case n
+    Case-step : (n≡s : Pred n) → Case n
+
+  case : ∀ n → Case n
+  case = ind Case Cz Cs
     where
-      P = λ x → x ≡ zero ∨ Σ ℕ λ p → x ≡ step p
-      Pz = ∨-introᴸ refl
+      Cz = Case-zero refl
 
-      Ps : step-case P
-      Ps {k} _ = ∨-introᴿ (Σ-intro k refl)
+      Cs : step-case Case
+      Cs {k} _ = Case-step (Pred-intro k refl)
 
-  pred : ∀ {n} → n ≢ zero → Σ ℕ λ p → n ≡ step p
-  pred {n} n≢z = ∨-forceᴿ n≢z (case n)
+  pred : ∀ {n} → n ≢ zero → Pred n
+  pred {n} n≢z with case n
+  ... | Case-zero n≡z = ⊥-elim (n≢z n≡z)
+  ... | Case-step n≡s = n≡s
 
   _≡?_ : (n m : ℕ) → Decidable (n ≡ m)
   n ≡? m = ind P Pz Ps n m
@@ -55,7 +66,7 @@ record Peano : Set₁ where
           Qsz = ∨-introᴿ step≢zero
 
           Qss : step-case Qs
-          Qss {j} k≡j∨k≢j = ∨-rec use-k≡j use-k≢j (y→k≡y∨k≢y j)
+          Qss {j} _ = ∨-rec use-k≡j use-k≢j (y→k≡y∨k≢y j)
             where
               use-k≡j = ∨-introᴸ ∘ cong step
               use-k≢j = λ k≢j → ∨-introᴿ (k≢j ∘ step-inj)
