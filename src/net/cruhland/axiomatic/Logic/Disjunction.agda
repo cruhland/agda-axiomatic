@@ -7,10 +7,9 @@ open import net.cruhland.axiomatic.Logic.Falsity using
 
 -- Export standard library definitions
 open import Data.Sum public using () renaming
-  (_⊎_ to _∨_
+  ( _⊎_ to _∨_
   ; inj₁ to ∨-introᴸ
   ; inj₂ to ∨-introᴿ
-  ; [_,_] to ∨-elim
   ; [_,_]′ to ∨-rec
   ; fromInj₁ to ∨-recᴸ
   ; fromInj₂ to ∨-recᴿ
@@ -25,19 +24,15 @@ open import Data.Sum public using () renaming
 
 ∨-assocᴸᴿ :
   ∀ {α β χ} {A : Set α} {B : Set β} {C : Set χ} → (A ∨ B) ∨ C → A ∨ (B ∨ C)
-∨-assocᴸᴿ [A∨B]∨C = ∨-rec (∨-rec use-A use-B) use-C [A∨B]∨C
-  where
-    use-A = ∨-introᴸ
-    use-B = ∨-introᴿ ∘ ∨-introᴸ
-    use-C = ∨-introᴿ ∘ ∨-introᴿ
+∨-assocᴸᴿ (∨-introᴸ (∨-introᴸ a)) = ∨-introᴸ a
+∨-assocᴸᴿ (∨-introᴸ (∨-introᴿ b)) = ∨-introᴿ (∨-introᴸ b)
+∨-assocᴸᴿ (∨-introᴿ c) = ∨-introᴿ (∨-introᴿ c)
 
 ∨-assocᴿᴸ :
   ∀ {α β χ} {A : Set α} {B : Set β} {C : Set χ} → A ∨ (B ∨ C) → (A ∨ B) ∨ C
-∨-assocᴿᴸ A∨[B∨C] = ∨-rec use-A (∨-rec use-B use-C) A∨[B∨C]
-  where
-    use-A = ∨-introᴸ ∘ ∨-introᴸ
-    use-B = ∨-introᴸ ∘ ∨-introᴿ
-    use-C = ∨-introᴿ
+∨-assocᴿᴸ (∨-introᴸ a) = ∨-introᴸ (∨-introᴸ a)
+∨-assocᴿᴸ (∨-introᴿ (∨-introᴸ b)) = ∨-introᴸ (∨-introᴿ b)
+∨-assocᴿᴸ (∨-introᴿ (∨-introᴿ c)) = ∨-introᴿ c
 
 -- Interactions with falsity (⊥) and negation (¬)
 ∨-identᴸ : ∀ {α β} {B : Set β} → ⊥ᴸᴾ {α} ∨ B → B

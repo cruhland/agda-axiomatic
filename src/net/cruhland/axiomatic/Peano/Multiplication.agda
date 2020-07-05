@@ -5,7 +5,8 @@ open Eq using (_≡_; _≢_; sym; trans; cong)
 open Eq.≡-Reasoning
 open import net.cruhland.axiomatic.Logic using
   ( _∧_; ∧-elimᴿ; ∧-intro
-  ; _∨_; ∨-forceᴸ; ∨-forceᴿ; ∨-introᴸ; ∨-introᴿ; ∨-rec
+  ; _∨_; ∨-introᴸ; ∨-introᴿ
+  ; ⊥-elim
   ; Σ-intro; Σ-rec
   )
 open import net.cruhland.axiomatic.Peano.Addition
@@ -23,7 +24,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
   open PeanoBase PB using (ℕ; ind; step; step-case; zero)
   open PeanoInspect PB using (case; Case-step; Case-zero; Pred-intro)
   open PeanoOrdering PB PA using
-    (_<_; positive-diff→<; <→positive-diff; trichotomy)
+    (_<_; positive-diff→<; <→positive-diff; tri-<; tri-≡; tri->; trichotomy)
 
   infixl 7 _*_
 
@@ -210,7 +211,9 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
         ∎
 
   *-positive : ∀ {a b} → Positive a → Positive b → Positive (a * b)
-  *-positive {a} {b} a≢z b≢z ab≡z = ∨-rec a≢z b≢z (*-either-zero ab≡z)
+  *-positive {a} {b} a≢z b≢z ab≡z with *-either-zero ab≡z
+  ... | ∨-introᴸ a≡z = a≢z a≡z
+  ... | ∨-introᴿ b≡z = b≢z b≡z
 
   *-preserves-< : ∀ {a b c} → a < b → c ≢ zero → a * c < b * c
   *-preserves-< {a} {b} {c} a<b c≢z = Σ-rec use-b≡a+d (<→positive-diff a<b)
@@ -224,7 +227,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
             dc≢z∧bc≡ac+dc = ∧-intro dc≢z bc≡ac+dc
 
   *-cancelᴿ : ∀ {a b c} → c ≢ zero → a * c ≡ b * c → a ≡ b
-  *-cancelᴿ c≢z ac≡bc = ∨-forceᴸ a≯b (∨-forceᴿ a≮b trichotomy)
-    where
-      a≮b = λ a<b → (∧-elimᴿ (*-preserves-< a<b c≢z)) ac≡bc
-      a≯b = λ b<a → (∧-elimᴿ (*-preserves-< b<a c≢z)) (sym ac≡bc)
+  *-cancelᴿ c≢z ac≡bc with trichotomy
+  ... | tri-< a<b = ⊥-elim (∧-elimᴿ (*-preserves-< a<b c≢z) ac≡bc)
+  ... | tri-≡ a≡b = a≡b
+  ... | tri-> a>b = ⊥-elim (∧-elimᴿ (*-preserves-< a>b c≢z) (sym ac≡bc))

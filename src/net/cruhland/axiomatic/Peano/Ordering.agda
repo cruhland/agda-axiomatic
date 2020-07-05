@@ -4,7 +4,7 @@ open Eq using (_≡_; _≢_; sym; cong; trans; subst)
 open Eq.≡-Reasoning
 open import net.cruhland.axiomatic.Logic using
   ( _∧_; ∧-elimᴸ; ∧-intro
-  ; _∨_; ∨-introᴸ; ∨-introᴿ; ∨-mapᴸ; ∨-rec
+  ; _∨_; ∨-introᴸ; ∨-introᴿ; ∨-mapᴸ
   ; ⊥; ⊥-elim; ¬_
   ; Σ; Σ-intro; Σ-map-snd; Σ-rec
   ; no; yes
@@ -228,25 +228,28 @@ module net.cruhland.axiomatic.Peano.Ordering
               p≡n+[d+e] = sym (a+b+c-reduce (sym m≡n+d) (sym p≡m+e))
               Σd+e = Σ-intro (d + e) (∧-intro p[d+e] p≡n+[d+e])
 
-  trichotomy : ∀ {n m} → n < m ∨ (n ≡ m ∨ n > m)
+  data Trichotomy (n m : ℕ) : Set where
+    tri-< : n < m → Trichotomy n m
+    tri-≡ : n ≡ m → Trichotomy n m
+    tri-> : n > m → Trichotomy n m
+
+  trichotomy : ∀ {n m} → Trichotomy n m
   trichotomy {n} {m} = ind P Pz Ps n
     where
-      P = λ x → x < m ∨ (x ≡ m ∨ x > m)
+      P = λ x → Trichotomy x m
 
       Pz : P zero
       Pz with case m
-      ... | Case-zero m≡z = ∨-introᴿ (∨-introᴸ (sym m≡z))
-      ... | Case-step (Pred-intro p m≡sp) = ∨-introᴸ (∧-intro ≤-zero z≢m)
+      ... | Case-zero m≡z = tri-≡ (sym m≡z)
+      ... | Case-step (Pred-intro p m≡sp) = tri-< (∧-intro ≤-zero z≢m)
         where z≢m = λ z≡m → step≢zero (sym (trans z≡m m≡sp))
 
       Ps : step-case P
-      Ps tri-k = ∨-rec use-< (∨-rec use-≡ use->) tri-k
-        where
-          sk<m = λ sk<m → ∨-introᴸ sk<m
-          sk≡m = λ sk≡m → ∨-introᴿ (∨-introᴸ sk≡m)
-          use-< = λ k<m → ∨-rec sk<m sk≡m (≤→<∨≡ (<→≤ k<m))
-          use-≡ = λ k≡m → ∨-introᴿ (∨-introᴿ (≤→< (≤-≡ (cong step (sym k≡m)))))
-          use-> = λ k>m → ∨-introᴿ (∨-introᴿ (<-trans k>m n<sn))
+      Ps (tri-< k<m) with ≤→<∨≡ (<→≤ k<m)
+      ... | ∨-introᴸ sk<m = tri-< sk<m
+      ... | ∨-introᴿ sk≡m = tri-≡ sk≡m
+      Ps (tri-≡ k≡m) = tri-> (≤→< (≤-≡ (cong step (sym k≡m))))
+      Ps (tri-> k>m) = tri-> (<-trans k>m n<sn)
 
   <-zero : ∀ {n} → ¬ (n < zero)
   <-zero {n} (∧-intro n≤z n≢z) = n≢z (Σ-rec use-n≤z n≤z)
@@ -276,7 +279,6 @@ module net.cruhland.axiomatic.Peano.Ordering
       Qz = λ j b≤j j<z → ⊥-elim (<-zero j<z)
 
       Qs : step-case Q
-      Qs Qk j b≤j j<sk = ∨-rec use-j<k use-j≡k (<s→<∨≡ j<sk)
-        where
-          use-j<k = λ j<k → Qk j b≤j j<k
-          use-j≡k = λ j≡k → Pm j b≤j (subst Q (sym j≡k) Qk)
+      Qs Qk j b≤j j<sk with <s→<∨≡ j<sk
+      ... | ∨-introᴸ j<k = Qk j b≤j j<k
+      ... | ∨-introᴿ j≡k = Pm j b≤j (subst Q (sym j≡k) Qk)

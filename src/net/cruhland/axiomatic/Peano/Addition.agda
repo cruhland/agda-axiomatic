@@ -4,7 +4,8 @@ open import Function using (const)
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; _≢_; sym; trans; cong; subst)
 open Eq.≡-Reasoning
-open import net.cruhland.axiomatic.Logic using (_∧_; ∨-rec; ¬[¬a∨¬b]→a∧b)
+open import net.cruhland.axiomatic.Logic using
+  (_∧_; _∨_; ∨-introᴸ; ∨-introᴿ; ¬_; ¬[¬a∨¬b]→a∧b)
 open import net.cruhland.axiomatic.Peano.Base
   using () renaming (Peano to PeanoBase)
 import net.cruhland.axiomatic.Peano.Inspect as PeanoInspect
@@ -208,11 +209,12 @@ record Addition (PB : PeanoBase) : Set where
       Ps {k} _ = λ a+sk≡z → step≢zero (trans (sym +-stepᴿ) a+sk≡z)
 
   +-both-zero : ∀ {a b} → a + b ≡ zero → a ≡ zero ∧ b ≡ zero
-  +-both-zero {a} {b} a+b≡z = ¬[¬a∨¬b]→a∧b (a ≡? zero) (b ≡? zero) ¬[a≢z∨b≢z]
-    where
-      a≢z→⊥ = λ a≢z → +-positive a≢z a+b≡z
-      b≢z→⊥ = λ b≢z → +-positive b≢z (trans +-comm a+b≡z)
-      ¬[a≢z∨b≢z] = ∨-rec a≢z→⊥ b≢z→⊥
+  +-both-zero {a} {b} a+b≡z =
+    ¬[¬a∨¬b]→a∧b (a ≡? zero) (b ≡? zero) neither-positive
+      where
+        neither-positive : ¬ (a ≢ zero ∨ b ≢ zero)
+        neither-positive (∨-introᴸ a≢z) = +-positive a≢z a+b≡z
+        neither-positive (∨-introᴿ b≢z) = +-positive b≢z (trans +-comm a+b≡z)
 
   +-unchanged : ∀ {n m} → n + m ≡ n → m ≡ zero
   +-unchanged {n} {m} n+m≡n = +-cancelᴸ (trans n+m≡n (sym +-zeroᴿ))
