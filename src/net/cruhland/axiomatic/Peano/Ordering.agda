@@ -7,19 +7,24 @@ open import net.cruhland.axiomatic.Logic using
   ; _∨_; ∨-introᴸ; ∨-introᴿ; ∨-mapᴸ; ∨-rec
   ; ⊥; ⊥-elim; ¬_
   ; Σ; Σ-intro; Σ-map-snd; Σ-rec
+  ; no; yes
   )
 open import net.cruhland.axiomatic.Peano.Addition
   using () renaming (Addition to PeanoAddition)
 open import net.cruhland.axiomatic.Peano.Base
   using () renaming (Peano to PeanoBase)
+import net.cruhland.axiomatic.Peano.Inspect as PeanoInspect
 
 module net.cruhland.axiomatic.Peano.Ordering
     (PB : PeanoBase) (PA : PeanoAddition PB) where
-  open PeanoAddition PA
-  open PeanoBase PB using
-    ( ℕ; ind; step; step-case; step-inj; step≢zero; zero; _≡?_
-    ; Case; case; Case-step; Case-zero; Pred-intro; pred
+  open PeanoAddition PA using
+    ( _+_; n≢sn; +-stepᴸ; +-stepᴸ⃗ᴿ; +-stepᴿ⃗ᴸ; step≡+; +-zeroᴿ
+    ; +-assoc; +-cancelᴸ; +-cancelᴿ; +-comm; with-+-assoc
+    ; Positive; +-both-zero; +-positive; +-unchanged
     )
+  open PeanoBase PB using (ℕ; ind; step; step-case; step-inj; step≢zero; zero)
+  open PeanoInspect PB using
+    (_≡?_; Case; case; Case-step; Case-zero; Pred-intro; pred)
 
   _≤_ : ℕ → ℕ → Set
   n ≤ m = Σ ℕ (λ a → n + a ≡ m)
@@ -205,10 +210,9 @@ module net.cruhland.axiomatic.Peano.Ordering
   ≤-≡ n≡m = Σ-intro zero (trans +-zeroᴿ n≡m)
 
   ≤→<∨≡ : ∀ {n m} → n ≤ m → n < m ∨ n ≡ m
-  ≤→<∨≡ {n} {m} n≤m = ∨-rec use-≡ use-≢ (n ≡? m)
-    where
-      use-≡ = ∨-introᴿ
-      use-≢ = λ n≢m → ∨-introᴸ (∧-intro n≤m n≢m)
+  ≤→<∨≡ {n} {m} n≤m with n ≡? m
+  ... | yes n≡m = ∨-introᴿ n≡m
+  ... | no n≢m = ∨-introᴸ (∧-intro n≤m n≢m)
 
   n<sn : ∀ {n} → n < step n
   n<sn = ∧-intro n≤sn n≢sn

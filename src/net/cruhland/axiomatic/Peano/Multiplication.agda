@@ -12,12 +12,18 @@ open import net.cruhland.axiomatic.Peano.Addition
   using () renaming (Addition to PeanoAddition)
 open import net.cruhland.axiomatic.Peano.Base
   using () renaming (Peano to PeanoBase)
+import net.cruhland.axiomatic.Peano.Inspect as PeanoInspect
 import net.cruhland.axiomatic.Peano.Ordering as PeanoOrdering
 
 record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
-  open PeanoAddition PA
-  open PeanoBase PB
-  open PeanoOrdering PB PA
+  open PeanoAddition PA using
+    ( _+_; +-assoc; +-comm; +-stepᴿ; +-stepᴸ⃗ᴿ; with-+-assoc; +-zeroᴸ; +-zeroᴿ
+    ; Positive; +-both-zero
+    )
+  open PeanoBase PB using (ℕ; ind; step; step-case; zero)
+  open PeanoInspect PB using (case; Case-step; Case-zero; Pred-intro)
+  open PeanoOrdering PB PA using
+    (_<_; positive-diff→<; <→positive-diff; trichotomy)
 
   infixl 7 _*_
 

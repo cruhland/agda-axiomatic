@@ -6,7 +6,7 @@ open import net.cruhland.axiomatic.Peano.Base
   using () renaming (Peano to PeanoBase)
 
 module net.cruhland.axiomatic.Peano.Literals (PB : PeanoBase) where
-  open PeanoBase PB
+  open PeanoBase PB using (ℕ; step; zero)
 
   fromNat : Nat.Nat → {{_ : ⊤}} → ℕ
   fromNat Nat.zero = zero

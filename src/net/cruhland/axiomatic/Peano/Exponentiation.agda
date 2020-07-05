@@ -12,8 +12,8 @@ record Exponentiation
     (PB : PeanoBase)
     (PA : PeanoAddition PB)
     (PM : PeanoMultiplication PB PA) : Set where
-  open PeanoBase PB
-  open PeanoMultiplication PM
+  open PeanoBase PB using (ℕ; step; zero)
+  open PeanoMultiplication PM using (_*_)
 
   infixr 8 _^_
 

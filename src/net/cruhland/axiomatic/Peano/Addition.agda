@@ -7,9 +7,11 @@ open Eq.≡-Reasoning
 open import net.cruhland.axiomatic.Logic using (_∧_; ∨-rec; ¬[¬a∨¬b]→a∧b)
 open import net.cruhland.axiomatic.Peano.Base
   using () renaming (Peano to PeanoBase)
+import net.cruhland.axiomatic.Peano.Inspect as PeanoInspect
 
 record Addition (PB : PeanoBase) : Set where
-  open PeanoBase PB
+  open PeanoBase PB using (ℕ; ind; step; step-case; step-inj; step≢zero; zero)
+  open PeanoInspect PB using (_≡?_)
 
   infixl 6 _+_
 

@@ -3,6 +3,7 @@ module net.cruhland.axiomatic.Peano where
 open import net.cruhland.axiomatic.Peano.Addition using (Addition)
 open import net.cruhland.axiomatic.Peano.Base using (Peano)
 open import net.cruhland.axiomatic.Peano.Exponentiation using (Exponentiation)
+import net.cruhland.axiomatic.Peano.Inspect as Inspect
 import net.cruhland.axiomatic.Peano.Literals as Literals
 open import net.cruhland.axiomatic.Peano.Multiplication using (Multiplication)
 import net.cruhland.axiomatic.Peano.Ordering as Ordering
@@ -17,6 +18,7 @@ record PeanoArithmetic : Set₁ where
 
   open Addition PA public
   open Exponentiation PE public
+  open Inspect PB public
   open Literals PB public
   open Multiplication PM public
   open Ordering PB PA public
