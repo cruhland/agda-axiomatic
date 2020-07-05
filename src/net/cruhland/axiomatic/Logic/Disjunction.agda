@@ -2,7 +2,8 @@ module net.cruhland.axiomatic.Logic.Disjunction where
 
 open import Function using (id; _∘_)
 import Level
-open import net.cruhland.axiomatic.Logic.Falsity using (⊥-elim; ⊥̂; ⊥̂-elim; ¬_)
+open import net.cruhland.axiomatic.Logic.Falsity using
+  (⊥-elim; ⊥ᴸᴾ; ⊥ᴸᴾ-elim; ¬_)
 
 -- Export standard library definitions
 open import Data.Sum public using () renaming
@@ -39,11 +40,11 @@ open import Data.Sum public using () renaming
     use-C = ∨-introᴿ
 
 -- Interactions with falsity (⊥) and negation (¬)
-∨-identᴸ : ∀ {α β} {B : Set β} → ⊥̂ {α} ∨ B → B
-∨-identᴸ = ∨-recᴿ ⊥̂-elim
+∨-identᴸ : ∀ {α β} {B : Set β} → ⊥ᴸᴾ {α} ∨ B → B
+∨-identᴸ = ∨-recᴿ ⊥ᴸᴾ-elim
 
-∨-identᴿ : ∀ {α β} {A : Set α} → A ∨ ⊥̂ {β} → A
-∨-identᴿ = ∨-recᴸ ⊥̂-elim
+∨-identᴿ : ∀ {α β} {A : Set α} → A ∨ ⊥ᴸᴾ {β} → A
+∨-identᴿ = ∨-recᴸ ⊥ᴸᴾ-elim
 
 ∨-forceᴸ : ∀ {α β} {A : Set α} {B : Set β} → ¬ B → A ∨ B → A
 ∨-forceᴸ ¬b = ∨-identᴿ {β = Level.zero} ∘ ∨-mapᴿ (⊥-elim ∘ ¬b)
