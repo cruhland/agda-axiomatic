@@ -4,7 +4,7 @@ import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; _≢_; sym; trans; cong)
 open Eq.≡-Reasoning
 open import net.cruhland.axiomatic.Logic using
-  ( _∧_; ∧-elimᴸ; ∧-elimᴿ; ∧-intro
+  ( _∧_; ∧-elimᴿ; ∧-intro
   ; _∨_; ∨-forceᴸ; ∨-forceᴿ; ∨-introᴸ; ∨-introᴿ; ∨-rec
   ; Σ-intro; Σ-rec
   )
@@ -115,8 +115,8 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
 
   *-either-zero : ∀ {n m} → n * m ≡ zero → n ≡ zero ∨ m ≡ zero
   *-either-zero {n} {m} n*m≡z with case n
-  ... | Case-zero n≡0 = ∨-introᴸ n≡0
-  ... | Case-step (Pred-intro p n≡sp) = ∨-introᴿ m≡0
+  ... | Case-zero n≡z = ∨-introᴸ n≡z
+  ... | Case-step (Pred-intro p n≡sp) = ∨-introᴿ m≡z
     where
       p*m+m≡z =
         begin
@@ -129,7 +129,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
           zero
         ∎
 
-      m≡0 = ∧-elimᴿ (+-both-zero p*m+m≡z)
+      m≡z = ∧-elimᴿ (+-both-zero p*m+m≡z)
 
   *-distrib-+ᴸ : ∀ {a b c} → a * (b + c) ≡ a * b + a * c
   *-distrib-+ᴸ {a} {b} {c} = ind P Pz Ps c
@@ -216,11 +216,12 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
   *-preserves-< {a} {b} {c} a<b c≢z = Σ-rec use-b≡a+d (<→positive-diff a<b)
     where
       use-b≡a+d : ∀ d → d ≢ zero ∧ b ≡ a + d → a * c < b * c
-      use-b≡a+d d d≢z∧b≡a+d = positive-diff→< (Σ-intro (d * c) dc≢z∧bc≡ac+dc)
-        where
-          dc≢z = *-positive (∧-elimᴸ d≢z∧b≡a+d) c≢z
-          bc≡ac+dc = trans (cong (_* c) (∧-elimᴿ d≢z∧b≡a+d)) *-distrib-+ᴿ
-          dc≢z∧bc≡ac+dc = ∧-intro dc≢z bc≡ac+dc
+      use-b≡a+d d (∧-intro d≢z b≡a+d) =
+        positive-diff→< (Σ-intro (d * c) dc≢z∧bc≡ac+dc)
+          where
+            dc≢z = *-positive d≢z c≢z
+            bc≡ac+dc = trans (cong (_* c) b≡a+d) *-distrib-+ᴿ
+            dc≢z∧bc≡ac+dc = ∧-intro dc≢z bc≡ac+dc
 
   *-cancelᴿ : ∀ {a b c} → c ≢ zero → a * c ≡ b * c → a ≡ b
   *-cancelᴿ c≢z ac≡bc = ∨-forceᴸ a≯b (∨-forceᴿ a≮b trichotomy)

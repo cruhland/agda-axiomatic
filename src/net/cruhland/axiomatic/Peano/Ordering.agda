@@ -3,7 +3,7 @@ import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; _≢_; sym; cong; trans; subst)
 open Eq.≡-Reasoning
 open import net.cruhland.axiomatic.Logic using
-  ( _∧_; ∧-elimᴸ; ∧-elimᴿ; ∧-intro
+  ( _∧_; ∧-elimᴸ; ∧-intro
   ; _∨_; ∨-introᴸ; ∨-introᴿ; ∨-mapᴸ; ∨-rec
   ; ⊥; ⊥-elim; ¬_
   ; Σ; Σ-intro; Σ-map-snd; Σ-rec
@@ -111,11 +111,8 @@ module net.cruhland.axiomatic.Peano.Ordering
             ∎
 
   <→≤ : ∀ {a b} → a < b → step a ≤ b
-  <→≤ {a} {b} a<b = Σ-rec use-a≤b a≤b
+  <→≤ {a} {b} (∧-intro a≤b a≢b) = Σ-rec use-a≤b a≤b
     where
-      a≤b = ∧-elimᴸ a<b
-      a≢b = ∧-elimᴿ a<b
-
       use-a≤b : (d : ℕ) → a + d ≡ b → step a ≤ b
       use-a≤b d a+d≡b with pred d≢z
         where
@@ -181,11 +178,9 @@ module net.cruhland.axiomatic.Peano.Ordering
   positive-diff→< {a} {b} Σpd = ≤→< (Σ-rec use-Σpd Σpd)
     where
       use-Σpd : (d : ℕ) → Positive d ∧ b ≡ a + d → step a ≤ b
-      use-Σpd d d≢0∧b≡a+d with pred (∧-elimᴸ d≢0∧b≡a+d)
+      use-Σpd d (∧-intro d≢0 b≡a+d) with pred d≢0
       ... | Pred-intro p d≡sp = Σ-intro p sa+p≡b
         where
-          b≡a+d = ∧-elimᴿ d≢0∧b≡a+d
-
           sa+p≡b =
             begin
               step a + p
@@ -224,15 +219,11 @@ module net.cruhland.axiomatic.Peano.Ordering
       Σe = <→positive-diff m<p
 
       use-Σd : ∀ d → Positive d ∧ m ≡ n + d → n < p
-      use-Σd d pd∧m≡n+d = Σ-rec use-Σe Σe
+      use-Σd d (∧-intro pd m≡n+d) = Σ-rec use-Σe Σe
         where
-          pd = ∧-elimᴸ pd∧m≡n+d
-          m≡n+d = ∧-elimᴿ pd∧m≡n+d
-
           use-Σe : ∀ e → Positive e ∧ p ≡ m + e → n < p
-          use-Σe e pe∧p≡m+e = positive-diff→< Σd+e
+          use-Σe e (∧-intro pe p≡m+e) = positive-diff→< Σd+e
             where
-              p≡m+e = ∧-elimᴿ pe∧p≡m+e
               p[d+e] = +-positive pd
               p≡n+[d+e] = sym (a+b+c-reduce (sym m≡n+d) (sym p≡m+e))
               Σd+e = Σ-intro (d + e) (∧-intro p[d+e] p≡n+[d+e])
@@ -258,11 +249,8 @@ module net.cruhland.axiomatic.Peano.Ordering
           use-> = λ k>m → ∨-introᴿ (∨-introᴿ (<-trans k>m n<sn))
 
   <-zero : ∀ {n} → ¬ (n < zero)
-  <-zero {n} n<z = n≢z (Σ-rec use-n≤z n≤z)
+  <-zero {n} (∧-intro n≤z n≢z) = n≢z (Σ-rec use-n≤z n≤z)
     where
-      n≤z = ∧-elimᴸ n<z
-      n≢z = ∧-elimᴿ n<z
-
       use-n≤z : ∀ d → n + d ≡ zero → n ≡ zero
       use-n≤z d n+d≡zero = ∧-elimᴸ (+-both-zero n+d≡zero)
 
