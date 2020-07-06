@@ -24,7 +24,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
   open PeanoBase PB using (ℕ; ind; step; step-case; zero)
   open PeanoInspect PB using (case; Case-step; Case-zero; Pred-intro)
   open PeanoOrdering PB PA using
-    (_<_; positive-diff→<; <→positive-diff; tri-<; tri-≡; tri->; trichotomy)
+    (_<_; <→≢; <⁺→<; <→<⁺; <⁺-intro; tri-<; tri-≡; tri->; trichotomy)
 
   infixl 7 _*_
 
@@ -216,18 +216,14 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
   ... | ∨-introᴿ b≡z = b≢z b≡z
 
   *-preserves-< : ∀ {a b c} → a < b → c ≢ zero → a * c < b * c
-  *-preserves-< {a} {b} {c} a<b c≢z = Σ-rec use-b≡a+d (<→positive-diff a<b)
+  *-preserves-< {a} {b} {c} a<b c≢z with <→<⁺ a<b
+  ... | <⁺-intro d d≢z a+d≡b = <⁺→< (<⁺-intro (d * c) dc≢z ac+dc≡bc)
     where
-      use-b≡a+d : ∀ d → d ≢ zero ∧ b ≡ a + d → a * c < b * c
-      use-b≡a+d d (∧-intro d≢z b≡a+d) =
-        positive-diff→< (Σ-intro (d * c) dc≢z∧bc≡ac+dc)
-          where
-            dc≢z = *-positive d≢z c≢z
-            bc≡ac+dc = trans (cong (_* c) b≡a+d) *-distrib-+ᴿ
-            dc≢z∧bc≡ac+dc = ∧-intro dc≢z bc≡ac+dc
+      dc≢z = *-positive d≢z c≢z
+      ac+dc≡bc = trans (sym *-distrib-+ᴿ) (cong (_* c) a+d≡b)
 
   *-cancelᴿ : ∀ {a b c} → c ≢ zero → a * c ≡ b * c → a ≡ b
   *-cancelᴿ c≢z ac≡bc with trichotomy
-  ... | tri-< a<b = ⊥-elim (∧-elimᴿ (*-preserves-< a<b c≢z) ac≡bc)
+  ... | tri-< a<b = ⊥-elim (<→≢ (*-preserves-< a<b c≢z) ac≡bc)
   ... | tri-≡ a≡b = a≡b
-  ... | tri-> a>b = ⊥-elim (∧-elimᴿ (*-preserves-< a>b c≢z) (sym ac≡bc))
+  ... | tri-> a>b = ⊥-elim (<→≢ (*-preserves-< a>b c≢z) (sym ac≡bc))
