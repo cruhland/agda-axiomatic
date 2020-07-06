@@ -15,5 +15,3 @@ record Peano : Set₁ where
 
   field
     ind : (P : ℕ → Set) → P zero → step-case P → ∀ n → P n
-    ind-zero : ∀ {P z} {s : step-case P} → ind P z s zero ≡ z
-    ind-step : ∀ {P z n} {s : step-case P} → ind P z s (step n) ≡ s (ind P z s n)

@@ -6,7 +6,6 @@ open import net.cruhland.axiomatic.Logic using
   ( _∧_; ∧-elimᴸ; ∧-intro
   ; _∨_; ∨-introᴸ; ∨-introᴿ; ∨-mapᴸ
   ; ⊥; ⊥-elim; ¬_
-  ; Σ; Σ-intro; Σ-map-snd; Σ-rec
   ; no; yes
   )
 open import net.cruhland.axiomatic.Peano.Addition
@@ -24,7 +23,7 @@ module net.cruhland.axiomatic.Peano.Ordering
     )
   open PeanoBase PB using (ℕ; ind; step; step-case; step-inj; step≢zero; zero)
   open PeanoInspect PB using
-    (_≡?_; Case; case; Case-step; Case-zero; Pred-intro; pred)
+    (_≡?_; Case; case; case-step; case-zero; pred-intro; pred)
 
   infix 4 _≤_ _<_ _≰_ _≮_ _≥_ _>_ _≱_ _≯_
 
@@ -132,7 +131,7 @@ module net.cruhland.axiomatic.Peano.Ordering
             ≡⟨ a+d≡b ⟩
               b
             ∎
-  ... | Pred-intro e d≡se = ≤-intro e sa+e≡b
+  ... | pred-intro e d≡se = ≤-intro e sa+e≡b
     where
       sa+e≡b =
         begin
@@ -179,7 +178,7 @@ module net.cruhland.axiomatic.Peano.Ordering
 
   <⁺→< : ∀ {a b} → a <⁺ b → a < b
   <⁺→< {a} {b} (<⁺-intro d d≢z a+d≡b) with pred d≢z
-  ... | Pred-intro p d≡sp = s≤→< (≤-intro p sa+p≡b)
+  ... | pred-intro p d≡sp = s≤→< (≤-intro p sa+p≡b)
     where
       sa+p≡b =
         begin
@@ -230,8 +229,8 @@ module net.cruhland.axiomatic.Peano.Ordering
 
       Pz : P zero
       Pz with case m
-      ... | Case-zero m≡z = tri-≡ (sym m≡z)
-      ... | Case-step (Pred-intro p m≡sp) = tri-< (<-intro ≤-zero z≢m)
+      ... | case-zero m≡z = tri-≡ (sym m≡z)
+      ... | case-step (pred-intro p m≡sp) = tri-< (<-intro ≤-zero z≢m)
         where z≢m = λ z≡m → step≢zero (sym (trans z≡m m≡sp))
 
       Ps : step-case P

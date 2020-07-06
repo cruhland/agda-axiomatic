@@ -4,11 +4,7 @@ import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; _≢_; sym; trans; cong)
 open Eq.≡-Reasoning
 open import net.cruhland.axiomatic.Logic using
-  ( _∧_; ∧-elimᴿ; ∧-intro
-  ; _∨_; ∨-introᴸ; ∨-introᴿ
-  ; ⊥-elim
-  ; Σ-intro; Σ-rec
-  )
+  (_∧_; ∧-elimᴿ; ∧-intro; _∨_; ∨-introᴸ; ∨-introᴿ; ⊥-elim)
 open import net.cruhland.axiomatic.Peano.Addition
   using () renaming (Addition to PeanoAddition)
 open import net.cruhland.axiomatic.Peano.Base
@@ -22,7 +18,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
     ; Positive; +-both-zero
     )
   open PeanoBase PB using (ℕ; ind; step; step-case; zero)
-  open PeanoInspect PB using (case; Case-step; Case-zero; Pred-intro)
+  open PeanoInspect PB using (case; case-step; case-zero; pred-intro)
   open PeanoOrdering PB PA using
     (_<_; <→≢; <⁺→<; <→<⁺; <⁺-intro; tri-<; tri-≡; tri->; trichotomy)
 
@@ -116,8 +112,8 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
 
   *-either-zero : ∀ {n m} → n * m ≡ zero → n ≡ zero ∨ m ≡ zero
   *-either-zero {n} {m} n*m≡z with case n
-  ... | Case-zero n≡z = ∨-introᴸ n≡z
-  ... | Case-step (Pred-intro p n≡sp) = ∨-introᴿ m≡z
+  ... | case-zero n≡z = ∨-introᴸ n≡z
+  ... | case-step (pred-intro p n≡sp) = ∨-introᴿ m≡z
     where
       p*m+m≡z =
         begin
