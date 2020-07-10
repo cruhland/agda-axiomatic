@@ -3,7 +3,8 @@ module net.cruhland.axiomatic.Sets.Empty where
 open import Function using (_∘_)
 open import Level using (_⊔_; Setω)
 open import net.cruhland.axiomatic.Logic using (⊥-elim; _↔_; ↔-intro)
-open import net.cruhland.axiomatic.Sets.Base using (SetAxioms; Setoid)
+open import net.cruhland.axiomatic.Sets.Base using
+  (α; S; SetAxioms; Setoid; σ₁; σ₂)
 import net.cruhland.axiomatic.Sets.Equality as Equality
 
 record EmptySet (SA : SetAxioms) : Setω where
@@ -11,14 +12,13 @@ record EmptySet (SA : SetAxioms) : Setω where
   open SetAxioms SA using (_∈_; _∉_; PSet)
 
   field
-    ∅ : ∀ {σ₁ σ₂ α} {S : Setoid σ₁ σ₂} → PSet S α
+    ∅ : PSet S α
 
-  is-empty : ∀ {σ₁ σ₂ α} {S : Setoid σ₁ σ₂} → PSet S α → Set (σ₁ ⊔ α)
+  is-empty : {S : Setoid σ₁ σ₂} → PSet S α → Set (σ₁ ⊔ α)
   is-empty A = ∀ {x} → x ∉ A
 
   field
-    x∉∅ : ∀ {σ₁ σ₂ α} {S : Setoid σ₁ σ₂} → is-empty {α = α} {S} ∅
+    x∉∅ : is-empty {α = α} {S} ∅
 
-  ∅-unique :
-    ∀ {σ₁ σ₂ α} {S : Setoid σ₁ σ₂} {∅′ : PSet S α} → is-empty ∅′ → ∅ ≗ ∅′
+  ∅-unique : {∅′ : PSet S α} → is-empty ∅′ → ∅ ≗ ∅′
   ∅-unique x∉∅′ = ≗-intro (↔-intro (⊥-elim ∘ x∉∅) (⊥-elim ∘ x∉∅′))
