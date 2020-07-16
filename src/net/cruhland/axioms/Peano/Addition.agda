@@ -1,14 +1,14 @@
-module net.cruhland.axiomatic.Peano.Addition where
+module net.cruhland.axioms.Peano.Addition where
 
 open import Function using (const)
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; _≢_; sym; trans; cong; subst)
 open Eq.≡-Reasoning
-open import net.cruhland.axiomatic.Logic using
-  (_∧_; _∨_; ∨-introᴸ; ∨-introᴿ; ¬_; ¬[¬a∨¬b]→a∧b)
-open import net.cruhland.axiomatic.Peano.Base
+open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
-import net.cruhland.axiomatic.Peano.Inspect as PeanoInspect
+import net.cruhland.axioms.Peano.Inspect as PeanoInspect
+open import net.cruhland.models.Logic using
+  (_∧_; _∨_; ∨-introᴸ; ∨-introᴿ; ¬_; ¬[¬a∨¬b]→a∧b)
 
 record Addition (PB : PeanoBase) : Set where
   open PeanoBase PB using (ℕ; ind; step; step-case; step-inj; step≢zero; zero)

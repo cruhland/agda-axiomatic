@@ -1,8 +1,8 @@
-module net.cruhland.axiomatic.Logic.Disjunction where
+module net.cruhland.models.Logic.Disjunction where
 
 open import Function using (id; _∘_)
 import Level
-open import net.cruhland.axiomatic.Logic.Falsity using
+open import net.cruhland.models.Logic.Falsity using
   (⊥-elim; ⊥ᴸᴾ; ⊥ᴸᴾ-elim; ¬_)
 
 -- Export standard library definitions

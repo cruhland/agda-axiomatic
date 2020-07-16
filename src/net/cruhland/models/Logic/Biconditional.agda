@@ -1,4 +1,4 @@
-module net.cruhland.axiomatic.Logic.Biconditional where
+module net.cruhland.models.Logic.Biconditional where
 
 open import Function using (id; _∘_)
 open import Level using (_⊔_)

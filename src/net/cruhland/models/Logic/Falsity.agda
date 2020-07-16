@@ -1,4 +1,4 @@
-module net.cruhland.axiomatic.Logic.Falsity where
+module net.cruhland.models.Logic.Falsity where
 
 open import Relation.Binary.PropositionalEquality using (_≢_; sym)
 

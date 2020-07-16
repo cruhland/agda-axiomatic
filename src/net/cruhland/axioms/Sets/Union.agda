@@ -1,9 +1,9 @@
-module net.cruhland.axiomatic.Sets.Union where
+module net.cruhland.axioms.Sets.Union where
 
 open import Level using (_⊔_; Setω)
-open import net.cruhland.axiomatic.Logic using (_∨_; _↔_)
-open import net.cruhland.axiomatic.Sets.Base using
+open import net.cruhland.axioms.Sets.Base using
   (α; β; S; SetAxioms; Setoid; σ₁; σ₂)
+open import net.cruhland.models.Logic using (_∨_; _↔_)
 
 record PairwiseUnion (SA : SetAxioms) : Setω where
   open SetAxioms SA using (_∈_; PSet)

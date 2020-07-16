@@ -1,10 +1,10 @@
-module net.cruhland.axiomatic.Logic.Decidable where
+module net.cruhland.models.Logic.Decidable where
 
 open import Function using (id)
-open import net.cruhland.axiomatic.Logic.Conjunction using (_∧_; ∧-intro)
-open import net.cruhland.axiomatic.Logic.Disjunction
+open import net.cruhland.models.Logic.Conjunction using (_∧_; ∧-intro)
+open import net.cruhland.models.Logic.Disjunction
   using (_∨_; ∨-rec; ∨-introᴸ; ∨-introᴿ)
-open import net.cruhland.axiomatic.Logic.Falsity using (⊥-elim; ¬_)
+open import net.cruhland.models.Logic.Falsity using (⊥-elim; ¬_)
 
 -- Export standard library definitions
 open import Relation.Nullary public using (no; yes) renaming (Dec to Decidable)

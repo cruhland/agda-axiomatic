@@ -1,7 +1,7 @@
-module net.cruhland.axiomatic.Sets.Base where
+module net.cruhland.axioms.Sets.Base where
 
 open import Level using (_⊔_; Level; Setω) renaming (suc to lsuc)
-open import net.cruhland.axiomatic.Logic using (¬_; _↔_)
+open import net.cruhland.models.Logic using (¬_; _↔_)
 
 -- Export standard library definitions
 open import Relation.Binary public using (Setoid)

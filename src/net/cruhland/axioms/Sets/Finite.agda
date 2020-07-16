@@ -1,9 +1,9 @@
-open import net.cruhland.axiomatic.Sets.Base using (SetAxioms)
-open import net.cruhland.axiomatic.Sets.Empty using (EmptySet)
-open import net.cruhland.axiomatic.Sets.Union using (PairwiseUnion)
-open import net.cruhland.axiomatic.Sets.Singleton using (SingletonSet)
+open import net.cruhland.axioms.Sets.Base using (SetAxioms)
+open import net.cruhland.axioms.Sets.Empty using (EmptySet)
+open import net.cruhland.axioms.Sets.Union using (PairwiseUnion)
+open import net.cruhland.axioms.Sets.Singleton using (SingletonSet)
 
-module net.cruhland.axiomatic.Sets.Finite
+module net.cruhland.axioms.Sets.Finite
     (SA : SetAxioms)
     (ES : EmptySet SA)
     (PU : PairwiseUnion SA)
@@ -17,9 +17,9 @@ module net.cruhland.axiomatic.Sets.Finite
   open import Data.List.Relation.Unary.Any using (here; there)
   open import Relation.Binary.PropositionalEquality using (_≡_)
   open import Level using () renaming (zero to lzero)
-  open import net.cruhland.axiomatic.Logic using
+  open import net.cruhland.axioms.Sets.Base using (α; El; S; Setoid; σ₁; σ₂)
+  open import net.cruhland.models.Logic using
     (_∨_; ∨-introᴸ; ∨-introᴿ; _↔_; ↔-elimᴸ; ↔-elimᴿ; ⊥-elim)
-  open import net.cruhland.axiomatic.Sets.Base using (α; El; S; Setoid; σ₁; σ₂)
 
   import Data.List.Membership.Setoid as Membership
 

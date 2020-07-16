@@ -1,4 +1,4 @@
-module net.cruhland.axiomatic.Logic.Conjunction where
+module net.cruhland.models.Logic.Conjunction where
 
 open import Function using (id)
 

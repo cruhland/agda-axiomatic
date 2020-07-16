@@ -1,14 +1,14 @@
-open import net.cruhland.axiomatic.Sets.Base using (SetAxioms)
+open import net.cruhland.axioms.Sets.Base using (SetAxioms)
 
-module net.cruhland.axiomatic.Sets.Equality (SA : SetAxioms) where
+module net.cruhland.axioms.Sets.Equality (SA : SetAxioms) where
   open SetAxioms SA using (_∈_; PSet; PSet-cong)
 
   open import Level using (_⊔_) renaming (suc to lsuc)
   open import Relation.Binary using (IsEquivalence)
-  open import net.cruhland.axiomatic.Logic using
-    (¬_; _↔_; ↔-elimᴸ; ↔-refl; ↔-sym; ↔-trans)
-  open import net.cruhland.axiomatic.Sets.Base using
+  open import net.cruhland.axioms.Sets.Base using
     (α; β; El; S; Setoid; σ₁; σ₂)
+  open import net.cruhland.models.Logic using
+    (¬_; _↔_; ↔-elimᴸ; ↔-refl; ↔-sym; ↔-trans)
 
   infix 4 _≗_ _≗̸_
 

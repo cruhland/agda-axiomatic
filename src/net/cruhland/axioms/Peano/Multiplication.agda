@@ -1,16 +1,16 @@
-module net.cruhland.axiomatic.Peano.Multiplication where
+module net.cruhland.axioms.Peano.Multiplication where
 
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; _≢_; sym; trans; cong)
 open Eq.≡-Reasoning
-open import net.cruhland.axiomatic.Logic using
-  (_∧_; ∧-elimᴿ; ∧-intro; _∨_; ∨-introᴸ; ∨-introᴿ; ⊥-elim)
-open import net.cruhland.axiomatic.Peano.Addition
+open import net.cruhland.axioms.Peano.Addition
   using () renaming (Addition to PeanoAddition)
-open import net.cruhland.axiomatic.Peano.Base
+open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
-import net.cruhland.axiomatic.Peano.Inspect as PeanoInspect
-import net.cruhland.axiomatic.Peano.Ordering as PeanoOrdering
+import net.cruhland.axioms.Peano.Inspect as PeanoInspect
+import net.cruhland.axioms.Peano.Ordering as PeanoOrdering
+open import net.cruhland.models.Logic using
+  (_∧_; ∧-elimᴿ; ∧-intro; _∨_; ∨-introᴸ; ∨-introᴿ; ⊥-elim)
 
 record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
   open PeanoAddition PA using

@@ -1,4 +1,4 @@
-module net.cruhland.axiomatic.Peano.Base where
+module net.cruhland.axioms.Peano.Base where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_)
 

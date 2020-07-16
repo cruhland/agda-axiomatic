@@ -1,11 +1,11 @@
-module net.cruhland.axiomatic.Sets.Empty where
+module net.cruhland.axioms.Sets.Empty where
 
 open import Function using (_∘_)
 open import Level using (_⊔_; Setω)
-open import net.cruhland.axiomatic.Logic using (⊥-elim; _↔_; ↔-intro)
-open import net.cruhland.axiomatic.Sets.Base using
+open import net.cruhland.axioms.Sets.Base using
   (α; S; SetAxioms; Setoid; σ₁; σ₂)
-import net.cruhland.axiomatic.Sets.Equality as Equality
+import net.cruhland.axioms.Sets.Equality as Equality
+open import net.cruhland.models.Logic using (⊥-elim; _↔_; ↔-intro)
 
 record EmptySet (SA : SetAxioms) : Setω where
   open Equality SA using (_≗_; ≗-intro)

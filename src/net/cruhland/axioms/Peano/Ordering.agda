@@ -2,19 +2,19 @@ open import Function using (_∘_; flip)
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; _≢_; sym; cong; trans; subst)
 open Eq.≡-Reasoning
-open import net.cruhland.axiomatic.Logic using
+open import net.cruhland.axioms.Peano.Addition
+  using () renaming (Addition to PeanoAddition)
+open import net.cruhland.axioms.Peano.Base
+  using () renaming (Peano to PeanoBase)
+import net.cruhland.axioms.Peano.Inspect as PeanoInspect
+open import net.cruhland.models.Logic using
   ( _∧_; ∧-elimᴸ; ∧-intro
   ; _∨_; ∨-introᴸ; ∨-introᴿ; ∨-mapᴸ
   ; ⊥; ⊥-elim; ¬_
   ; no; yes
   )
-open import net.cruhland.axiomatic.Peano.Addition
-  using () renaming (Addition to PeanoAddition)
-open import net.cruhland.axiomatic.Peano.Base
-  using () renaming (Peano to PeanoBase)
-import net.cruhland.axiomatic.Peano.Inspect as PeanoInspect
 
-module net.cruhland.axiomatic.Peano.Ordering
+module net.cruhland.axioms.Peano.Ordering
     (PB : PeanoBase) (PA : PeanoAddition PB) where
   open PeanoAddition PA using
     ( _+_; n≢sn; +-stepᴸ; +-stepᴸ⃗ᴿ; +-stepᴿ⃗ᴸ; step≡+; +-zeroᴿ

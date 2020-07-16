@@ -1,11 +1,11 @@
-module net.cruhland.axiomatic.Peano.Exponentiation where
+module net.cruhland.axioms.Peano.Exponentiation where
 
 open import Relation.Binary.PropositionalEquality using (_≡_)
-open import net.cruhland.axiomatic.Peano.Addition
+open import net.cruhland.axioms.Peano.Addition
   using () renaming (Addition to PeanoAddition)
-open import net.cruhland.axiomatic.Peano.Base
+open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
-open import net.cruhland.axiomatic.Peano.Multiplication
+open import net.cruhland.axioms.Peano.Multiplication
   using () renaming (Multiplication to PeanoMultiplication)
 
 record Exponentiation

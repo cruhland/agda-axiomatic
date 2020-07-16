@@ -1,10 +1,10 @@
-module net.cruhland.axiomatic.Sets.Singleton where
+module net.cruhland.axioms.Sets.Singleton where
 
 open import Level using (_⊔_; Setω)
-open import net.cruhland.axiomatic.Logic using (_↔_; ↔-elimᴿ; ↔-sym; ↔-trans)
-open import net.cruhland.axiomatic.Sets.Base using
+open import net.cruhland.axioms.Sets.Base using
   (α; El; S; SetAxioms; Setoid; σ₁; σ₂)
-import net.cruhland.axiomatic.Sets.Equality as Equality
+import net.cruhland.axioms.Sets.Equality as Equality
+open import net.cruhland.models.Logic using (_↔_; ↔-elimᴿ; ↔-sym; ↔-trans)
 
 module SingletonDef (SA : SetAxioms) where
   open SetAxioms SA using (_∈_; PSet)

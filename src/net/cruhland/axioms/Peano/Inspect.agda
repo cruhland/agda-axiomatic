@@ -1,10 +1,10 @@
 open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; cong; refl; sym; trans)
-open import net.cruhland.axiomatic.Logic using (⊥-elim; Decidable; no; yes)
-open import net.cruhland.axiomatic.Peano.Base
+open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
+open import net.cruhland.models.Logic using (⊥-elim; Decidable; no; yes)
 
-module net.cruhland.axiomatic.Peano.Inspect (PB : PeanoBase) where
+module net.cruhland.axioms.Peano.Inspect (PB : PeanoBase) where
   open PeanoBase PB using (ℕ; ind; step; step-case; step-inj; step≢zero; zero)
 
   _IsPred_ : ℕ → ℕ → Set
