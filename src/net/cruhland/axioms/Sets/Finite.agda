@@ -43,35 +43,26 @@ module net.cruhland.axioms.Sets.Finite
   finite : List (El S) → PSet S lzero
   finite = foldr (λ x acc → singleton x ∪ acc) ∅
 
-  ∈ᴸ→∈fin :
-    {S : Setoid σ₁ σ₂} {a : El S} {xs : List (El S)} →
-      let open Membership S using () renaming (_∈_ to _∈ᴸ_)
-       in a ∈ᴸ xs → a ∈ finite {S = S} xs
-  ∈ᴸ→∈fin {S = S} (here a≈x) =
-    ↔-elimᴿ x∈A∪B↔x∈A∨x∈B (∨-introᴸ (↔-elimᴿ x∈sa↔x≈a a≈x))
-      where open Setoid S using (_≈_)
-  ∈ᴸ→∈fin {S = S} (there a∈ᴸxs) =
-    ↔-elimᴿ x∈A∪B↔x∈A∨x∈B (∨-introᴿ (∈ᴸ→∈fin a∈ᴸxs))
-      where open Setoid S using (_≈_)
+  module Memberᴸ {DS : DecSetoid σ₁ σ₂} where
+    open DecMembership DS using () renaming (_∈_ to _∈ᴸ_; _∈?_ to _∈ᴸ?_)
+    S′ = DecSetoid.setoid DS
+    open Setoid S′ using (_≈_)
 
-  ∈fin→∈ᴸ :
-    {S : Setoid σ₁ σ₂} {a : El S} {xs : List (El S)} →
-      let open Membership S using () renaming (_∈_ to _∈ᴸ_)
-       in a ∈ finite {S = S} xs → a ∈ᴸ xs
-  ∈fin→∈ᴸ {xs = []} a∈fxs = ⊥-elim (x∉∅ a∈fxs)
-  ∈fin→∈ᴸ {S = S} {xs = x ∷ xs} a∈fxs with ↔-elimᴸ x∈A∪B↔x∈A∨x∈B a∈fxs
-  ... | ∨-introᴸ a∈sx = here (↔-elimᴸ x∈sa↔x≈a a∈sx)
-    where open Setoid S using (_≈_)
-  ... | ∨-introᴿ a∈fxs′ = there (∈fin→∈ᴸ a∈fxs′)
-    where open Setoid S using (_≈_)
+    ∈ᴸ→∈fin : {a : El S′} {xs : List (El S′)} → a ∈ᴸ xs → a ∈ finite {S = S′} xs
+    ∈ᴸ→∈fin (here a≈x) = ↔-elimᴿ x∈A∪B↔x∈A∨x∈B (∨-introᴸ (↔-elimᴿ x∈sa↔x≈a a≈x))
+    ∈ᴸ→∈fin (there a∈ᴸxs) = ↔-elimᴿ x∈A∪B↔x∈A∨x∈B (∨-introᴿ (∈ᴸ→∈fin a∈ᴸxs))
 
-  ∉ᴸ→∉fin :
-    {S : Setoid σ₁ σ₂} {a : El S} {xs : List (El S)} →
-      let open Membership S using () renaming (_∉_ to _∉ᴸ_)
-       in a ∉ᴸ xs → a ∉ finite {S = S} xs
-  ∉ᴸ→∉fin a∉ᴸxs a∈xs = a∉ᴸxs (∈fin→∈ᴸ a∈xs)
+    ∈fin→∈ᴸ : {a : El S′} {xs : List (El S′)} → a ∈ finite {S = S′} xs → a ∈ᴸ xs
+    ∈fin→∈ᴸ {xs = []} a∈fxs = ⊥-elim (x∉∅ a∈fxs)
+    ∈fin→∈ᴸ {xs = x ∷ xs} a∈fxs with ↔-elimᴸ x∈A∪B↔x∈A∨x∈B a∈fxs
+    ... | ∨-introᴸ a∈sx = here (↔-elimᴸ x∈sa↔x≈a a∈sx)
+    ... | ∨-introᴿ a∈fxs′ = there (∈fin→∈ᴸ a∈fxs′)
+
+    _∈?_ : (a : El S′) (xs : List (El S′)) → Dec (a ∈ finite {S = S′} xs)
+    a ∈? xs = map′ ∈ᴸ→∈fin ∈fin→∈ᴸ (a ∈ᴸ? xs)
 
   module Subsetᴸ {DS : DecSetoid σ₁ σ₂} where
+    open Memberᴸ {DS = DS} using (∈ᴸ→∈fin; ∈fin→∈ᴸ)
     open DecMembership DS using () renaming (_∈_ to _∈ᴸ_; _∈?_ to _∈ᴸ?_)
     S′ = DecSetoid.setoid DS
 
