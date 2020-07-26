@@ -26,7 +26,7 @@ record SetTheory : Setω where
   open Finite SA ES PU SS public
   open PairSet PS public
   open PairwiseUnion PU public
-  open Properties SA public
+  open Properties SA PU public
   open SetAxioms SA public
   open SingletonSet SS public
   open Subset SA public

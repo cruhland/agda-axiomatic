@@ -11,7 +11,7 @@ module net.cruhland.axioms.Sets.Finite
   open SetAxioms SA using (_∈_; _∉_; PSet)
   open EmptySet ES using (∅; x∉∅)
   open PairwiseUnion PU using (_∪_; x∈A∪B↔x∈A∨x∈B)
-  open SingletonSet SS using (singleton; x∈sa↔x≈a; a∈sa)
+  open SingletonSet SS using (singleton; a∈sa; x∈sa-elim; x∈sa-intro)
 
   open import Data.List using ([]; _∷_; foldr; List)
   import Data.List.Membership.DecSetoid as DecMembership
@@ -49,13 +49,13 @@ module net.cruhland.axioms.Sets.Finite
     open Setoid S′ using (_≈_)
 
     ∈ᴸ→∈fin : {a : El S′} {xs : List (El S′)} → a ∈ᴸ xs → a ∈ finite {S = S′} xs
-    ∈ᴸ→∈fin (here a≈x) = ↔-elimᴿ x∈A∪B↔x∈A∨x∈B (∨-introᴸ (↔-elimᴿ x∈sa↔x≈a a≈x))
+    ∈ᴸ→∈fin (here a≈x) = ↔-elimᴿ x∈A∪B↔x∈A∨x∈B (∨-introᴸ (x∈sa-intro a≈x))
     ∈ᴸ→∈fin (there a∈ᴸxs) = ↔-elimᴿ x∈A∪B↔x∈A∨x∈B (∨-introᴿ (∈ᴸ→∈fin a∈ᴸxs))
 
     ∈fin→∈ᴸ : {a : El S′} {xs : List (El S′)} → a ∈ finite {S = S′} xs → a ∈ᴸ xs
     ∈fin→∈ᴸ {xs = []} a∈fxs = ⊥-elim (x∉∅ a∈fxs)
     ∈fin→∈ᴸ {xs = x ∷ xs} a∈fxs with ↔-elimᴸ x∈A∪B↔x∈A∨x∈B a∈fxs
-    ... | ∨-introᴸ a∈sx = here (↔-elimᴸ x∈sa↔x≈a a∈sx)
+    ... | ∨-introᴸ a∈sx = here (x∈sa-elim a∈sx)
     ... | ∨-introᴿ a∈fxs′ = there (∈fin→∈ᴸ a∈fxs′)
 
     _∈?_ : (a : El S′) (xs : List (El S′)) → Dec (a ∈ finite {S = S′} xs)
