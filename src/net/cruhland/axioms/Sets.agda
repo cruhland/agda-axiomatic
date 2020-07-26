@@ -5,6 +5,7 @@ open import net.cruhland.axioms.Sets.Base using (SetAxioms)
 open import net.cruhland.axioms.Sets.Empty using (EmptySet)
 import net.cruhland.axioms.Sets.Equality as Equality
 import net.cruhland.axioms.Sets.Finite as Finite
+open import net.cruhland.axioms.Sets.Pair using (PairSet)
 import net.cruhland.axioms.Sets.Properties as Properties
 open import net.cruhland.axioms.Sets.Singleton using (SingletonSet)
 import net.cruhland.axioms.Sets.Subset as Subset
@@ -15,6 +16,7 @@ record SetTheory : Setω where
   field
     SA : SetAxioms
     ES : EmptySet SA
+    PS : PairSet SA
     PU : PairwiseUnion SA
     SS : SingletonSet SA
 
@@ -22,6 +24,7 @@ record SetTheory : Setω where
   open EmptySet ES public
   open Equality SA public
   open Finite SA ES PU SS public
+  open PairSet PS public
   open PairwiseUnion PU public
   open Properties SA public
   open SetAxioms SA public
