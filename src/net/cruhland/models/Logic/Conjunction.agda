@@ -3,7 +3,7 @@ module net.cruhland.models.Logic.Conjunction where
 open import Function using (id)
 
 -- Export standard library definitions
-open import Data.Product public using () renaming
+open import Data.Product public using (curry; uncurry) renaming
   ( _×_ to _∧_
   ; _,_ to ∧-intro
   ; proj₁ to ∧-elimᴸ

@@ -2,7 +2,7 @@ open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; cong; refl; sym; trans)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
-open import net.cruhland.models.Logic using (⊥-elim; Decidable; no; yes)
+open import net.cruhland.models.Logic using (⊥-elim; Dec; no; yes)
 
 module net.cruhland.axioms.Peano.Inspect (PB : PeanoBase) where
   open PeanoBase PB using (ℕ; ind; step; step-case; step-inj; step≢zero; zero)
@@ -33,10 +33,10 @@ module net.cruhland.axioms.Peano.Inspect (PB : PeanoBase) where
   ... | case-zero n≡z = ⊥-elim (n≢z n≡z)
   ... | case-step n≡s = n≡s
 
-  _≡?_ : (n m : ℕ) → Decidable (n ≡ m)
+  _≡?_ : (n m : ℕ) → Dec (n ≡ m)
   n ≡? m = ind P Pz Ps n m
     where
-      P = λ x → ∀ y → Decidable (x ≡ y)
+      P = λ x → ∀ y → Dec (x ≡ y)
 
       Pz : P zero
       Pz y with case y

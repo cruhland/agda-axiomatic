@@ -8,7 +8,7 @@ open import Relation.Binary public using (Setoid)
 open Setoid public using () renaming (Carrier to El)
 
 variable
-  σ₁ σ₂ α β : Level
+  σ₁ σ₂ α β χ : Level
   S : Setoid σ₁ σ₂
 
 record SetAxioms : Setω where
