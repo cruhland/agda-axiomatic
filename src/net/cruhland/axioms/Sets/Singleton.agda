@@ -15,7 +15,7 @@ module SingletonDef (SA : SetAxioms) where
     where open Setoid S using (_≈_)
 
 record SingletonSet (SA : SetAxioms) : Setω where
-  open Equality SA using (_≗_; ≗-intro)
+  open Equality SA using (_≃_; ≃-intro)
   open SetAxioms SA using (_∈_; PSet)
   open SingletonDef SA using (is-singleton)
 
@@ -38,5 +38,5 @@ record SingletonSet (SA : SetAxioms) : Setω where
     a∈sa = x∈sa-intro S.refl
 
     singleton-unique :
-      {a : El S} {A : PSet S α} → is-singleton a A → singleton a ≗ A
-    singleton-unique x∈A↔x≈a = ≗-intro (↔-trans x∈sa↔x≈a (↔-sym x∈A↔x≈a))
+      {a : El S} {A : PSet S α} → is-singleton a A → singleton a ≃ A
+    singleton-unique x∈A↔x≈a = ≃-intro (↔-trans x∈sa↔x≈a (↔-sym x∈A↔x≈a))

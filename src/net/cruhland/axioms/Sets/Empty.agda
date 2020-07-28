@@ -8,7 +8,7 @@ import net.cruhland.axioms.Sets.Equality as Equality
 open import net.cruhland.models.Logic using (⊥-elim; _↔_; ↔-intro)
 
 record EmptySet (SA : SetAxioms) : Setω where
-  open Equality SA using (_≗_; ≗-intro)
+  open Equality SA using (_≃_; ≃-intro)
   open SetAxioms SA using (_∈_; _∉_; PSet)
 
   field
@@ -20,5 +20,5 @@ record EmptySet (SA : SetAxioms) : Setω where
   field
     x∉∅ : is-empty {α = α} {S} ∅
 
-  ∅-unique : {∅′ : PSet S α} → is-empty ∅′ → ∅ ≗ ∅′
-  ∅-unique x∉∅′ = ≗-intro (↔-intro (⊥-elim ∘ x∉∅) (⊥-elim ∘ x∉∅′))
+  ∅-unique : {∅′ : PSet S α} → is-empty ∅′ → ∅ ≃ ∅′
+  ∅-unique x∉∅′ = ≃-intro (↔-intro (⊥-elim ∘ x∉∅) (⊥-elim ∘ x∉∅′))

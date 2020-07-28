@@ -15,7 +15,7 @@ module PairDef (SA : SetAxioms) where
     where open Setoid S using (_≈_)
 
 record PairSet (SA : SetAxioms) : Setω where
-  open Equality SA using (_≗_; ≗-intro)
+  open Equality SA using (_≃_; ≃-intro)
   open SetAxioms SA using (_∈_; PSet)
   open PairDef SA using (is-pair)
 
@@ -33,6 +33,6 @@ record PairSet (SA : SetAxioms) : Setω where
     x∈pab-intro : {x a b : El S} → x ≈ a ∨ x ≈ b → x ∈ pair {S = S} {α} a b
     x∈pab-intro = ↔-elimᴿ x∈pab↔x≈a∨x≈b
 
-    pair-unique : {A : PSet S α} {a b : El S} → is-pair a b A → pair a b ≗ A
+    pair-unique : {A : PSet S α} {a b : El S} → is-pair a b A → pair a b ≃ A
     pair-unique x∈A↔x≈a∨x≈b =
-      ≗-intro (↔-trans x∈pab↔x≈a∨x≈b (↔-sym x∈A↔x≈a∨x≈b))
+      ≃-intro (↔-trans x∈pab↔x≈a∨x≈b (↔-sym x∈A↔x≈a∨x≈b))
