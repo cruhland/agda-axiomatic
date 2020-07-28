@@ -31,7 +31,7 @@ module net.cruhland.axioms.Sets.Finite
   open import net.cruhland.axioms.Sets.Base using (α; El; S; Setoid; σ₁; σ₂)
   open import net.cruhland.axioms.Sets.Equality SA using (_≃_)
   open import net.cruhland.axioms.Sets.Properties SA PU using
-    (⊆-antisym; ≃-elimᴸ; ≃-elimᴿ; ∪-⊆ᴿ)
+    (⊆-antisym; ≃→⊆ᴸ; ≃→⊆ᴿ; ∪-⊆ᴿ)
   open import net.cruhland.axioms.Sets.Subset SA using (_⊆_; ⊆-intro)
   open import net.cruhland.models.Logic using
     ( _∧_; ∧-elimᴸ; ∧-elimᴿ; ∧-intro; uncurry
@@ -97,4 +97,4 @@ module net.cruhland.axioms.Sets.Finite
     _≃?_ : (xs ys : List (El S′)) → Dec (finite {S = S′} xs ≃ finite ys)
     xs ≃? ys = map′ (uncurry ⊆-antisym) ≃→⊆⊇ ((xs ⊆? ys) ∧-dec (ys ⊆? xs))
       where
-        ≃→⊆⊇ = λ A≃B → ∧-intro (≃-elimᴸ A≃B) (≃-elimᴿ A≃B)
+        ≃→⊆⊇ = λ A≃B → ∧-intro (≃→⊆ᴸ A≃B) (≃→⊆ᴿ A≃B)

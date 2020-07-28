@@ -5,7 +5,7 @@ open import net.cruhland.axioms.Sets.Base using
   (α; El; S; SetAxioms; Setoid; σ₁; σ₂)
 import net.cruhland.axioms.Sets.Equality as Equality
 open import net.cruhland.models.Logic using
-  (_∨_; _↔_; ↔-elimᴸ; ↔-elimᴿ; ↔-sym; ↔-trans)
+  (_∨_; ∨-introᴸ; ∨-introᴿ; _↔_; ↔-elimᴸ; ↔-elimᴿ; ↔-sym; ↔-trans)
 
 module PairDef (SA : SetAxioms) where
   open SetAxioms SA using (_∈_; PSet)
@@ -25,13 +25,19 @@ record PairSet (SA : SetAxioms) : Setω where
       {S : Setoid σ₁ σ₂} {a b : El S} → is-pair {α = α} {S} a b (pair a b)
 
   module _ {S : Setoid σ₁ σ₂} where
-    open Setoid S using (_≈_)
+    open Setoid S using (_≈_) renaming (refl to ≈-refl)
 
     x∈pab-elim : {x a b : El S} → x ∈ pair {S = S} {α} a b → x ≈ a ∨ x ≈ b
     x∈pab-elim = ↔-elimᴸ x∈pab↔x≈a∨x≈b
 
     x∈pab-intro : {x a b : El S} → x ≈ a ∨ x ≈ b → x ∈ pair {S = S} {α} a b
     x∈pab-intro = ↔-elimᴿ x∈pab↔x≈a∨x≈b
+
+    a∈pab : {a b : El S} → a ∈ pair {S = S} {α} a b
+    a∈pab = x∈pab-intro (∨-introᴸ ≈-refl)
+
+    b∈pab : {a b : El S} → b ∈ pair {S = S} {α} a b
+    b∈pab = x∈pab-intro (∨-introᴿ ≈-refl)
 
     pair-unique : {A : PSet S α} {a b : El S} → is-pair a b A → pair a b ≃ A
     pair-unique x∈A↔x≈a∨x≈b =

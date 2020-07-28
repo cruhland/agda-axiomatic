@@ -8,7 +8,7 @@ module net.cruhland.axioms.Sets.Equality (SA : SetAxioms) where
   open import net.cruhland.axioms.Sets.Base using
     (α; β; El; S; Setoid; σ₁; σ₂)
   open import net.cruhland.models.Logic using
-    (¬_; _↔_; ↔-elimᴸ; ↔-refl; ↔-sym; ↔-trans)
+    (¬_; _↔_; ↔-elimᴸ; ↔-elimᴿ; ↔-refl; ↔-sym; ↔-trans)
 
   infix 4 _≃_ _≄_
 
@@ -19,6 +19,12 @@ module net.cruhland.axioms.Sets.Equality (SA : SetAxioms) where
 
   _≄_ : {S : Setoid σ₁ σ₂} → PSet S α → PSet S α → Set (σ₁ ⊔ α)
   A ≄ B = ¬ (A ≃ B)
+
+  ≃-elimᴸ : {S : Setoid σ₁ σ₂} {A B : PSet S α} → A ≃ B → ∀ {x} → x ∈ A → x ∈ B
+  ≃-elimᴸ (≃-intro x∈A↔x∈B) = ↔-elimᴸ x∈A↔x∈B
+
+  ≃-elimᴿ : {S : Setoid σ₁ σ₂} {A B : PSet S α} → A ≃ B → ∀ {x} → x ∈ B → x ∈ A
+  ≃-elimᴿ (≃-intro x∈A↔x∈B) = ↔-elimᴿ x∈A↔x∈B
 
   ≃-refl : {A : PSet S α} → A ≃ A
   ≃-refl = ≃-intro ↔-refl
