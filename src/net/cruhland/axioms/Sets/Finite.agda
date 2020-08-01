@@ -6,14 +6,15 @@ open import net.cruhland.axioms.Sets.Singleton using (SingletonSet)
 module net.cruhland.axioms.Sets.Finite
     (SA : SetAxioms)
     (ES : EmptySet SA)
-    (PU : PairwiseUnion SA)
+    (PU : PairwiseUnion SA ES)
     (SS : SingletonSet SA) where
   open SetAxioms SA using (_∈_; _∉_; PSet)
   open EmptySet ES using (∅; x∉∅)
-  open PairwiseUnion PU using (_∪_; x∈A∪B↔x∈A∨x∈B)
+  open PairwiseUnion PU using
+    (_∪_; ∪-∅ᴸ; ∪-assoc; x∈A∪B-elim; x∈A∪B-introᴸ; x∈A∪B-introᴿ; ∪-substᴿ)
   open SingletonSet SS using (singleton; a∈sa; x∈sa-elim; x∈sa-intro)
 
-  open import Data.List using ([]; _∷_; foldr; List)
+  open import Data.List using ([]; _∷_; _++_; foldr; List)
   import Data.List.Membership.DecSetoid as DecMembership
   import Data.List.Membership.Setoid as Membership
   open import Data.List.Relation.Binary.Permutation.Propositional using (_↭_)
@@ -29,14 +30,13 @@ module net.cruhland.axioms.Sets.Finite
   open import Relation.Nullary.Decidable using (map′)
   open import Relation.Nullary.Product using () renaming (_×-dec_ to _∧-dec_)
   open import net.cruhland.axioms.Sets.Base using (α; El; S; Setoid; σ₁; σ₂)
-  open import net.cruhland.axioms.Sets.Equality SA using (_≃_)
-  open import net.cruhland.axioms.Sets.Properties SA PU using
-    (⊆-antisym; ≃→⊆ᴸ; ≃→⊆ᴿ; ∪-⊆ᴿ)
-  open import net.cruhland.axioms.Sets.Subset SA using (_⊆_; ⊆-intro)
+  open import net.cruhland.axioms.Sets.Equality SA using (_≃_; ≃-trans)
+  open import net.cruhland.axioms.Sets.Properties SA ES PU using (∪-⊆ᴿ)
+  open import net.cruhland.axioms.Sets.Subset SA using
+    (_⊆_; ≃→⊆ᴸ; ≃→⊆ᴿ; ⊆-antisym; ⊆-intro)
   open import net.cruhland.models.Logic using
     ( _∧_; ∧-elimᴸ; ∧-elimᴿ; ∧-intro; uncurry
     ; _∨_; ∨-introᴸ; ∨-introᴿ
-    ; _↔_; ↔-elimᴸ; ↔-elimᴿ
     ; ⊥-elim; Dec
     )
 
@@ -49,12 +49,12 @@ module net.cruhland.axioms.Sets.Finite
     open Setoid S′ using (_≈_)
 
     ∈ᴸ→∈fin : {a : El S′} {xs : List (El S′)} → a ∈ᴸ xs → a ∈ finite {S = S′} xs
-    ∈ᴸ→∈fin (here a≈x) = ↔-elimᴿ x∈A∪B↔x∈A∨x∈B (∨-introᴸ (x∈sa-intro a≈x))
-    ∈ᴸ→∈fin (there a∈ᴸxs) = ↔-elimᴿ x∈A∪B↔x∈A∨x∈B (∨-introᴿ (∈ᴸ→∈fin a∈ᴸxs))
+    ∈ᴸ→∈fin (here a≈x) = x∈A∪B-introᴸ (x∈sa-intro a≈x)
+    ∈ᴸ→∈fin (there a∈ᴸxs) = x∈A∪B-introᴿ (∈ᴸ→∈fin a∈ᴸxs)
 
     ∈fin→∈ᴸ : {a : El S′} {xs : List (El S′)} → a ∈ finite {S = S′} xs → a ∈ᴸ xs
     ∈fin→∈ᴸ {xs = []} a∈fxs = ⊥-elim (x∉∅ a∈fxs)
-    ∈fin→∈ᴸ {xs = x ∷ xs} a∈fxs with ↔-elimᴸ x∈A∪B↔x∈A∨x∈B a∈fxs
+    ∈fin→∈ᴸ {xs = x ∷ xs} a∈fxs with x∈A∪B-elim a∈fxs
     ... | ∨-introᴸ a∈sx = here (x∈sa-elim a∈sx)
     ... | ∨-introᴿ a∈fxs′ = there (∈fin→∈ᴸ a∈fxs′)
 
@@ -66,7 +66,7 @@ module net.cruhland.axioms.Sets.Finite
     open DecMembership DS using () renaming (_∈_ to _∈ᴸ_; _∈?_ to _∈ᴸ?_)
     S′ = DecSetoid.setoid DS
 
-    infix 4 _⊆ᴸ_ _⊆ᴸ?_
+    infix 4 _⊆ᴸ_ _⊆ᴸ?_ _⊆?_ _≃?_
 
     _⊆ᴸ_ : List (El S′) → List (El S′) → Set (σ₁ ⊔ σ₂)
     _⊆ᴸ_ xs ys = All (_∈ᴸ ys) xs
@@ -88,7 +88,7 @@ module net.cruhland.axioms.Sets.Finite
     ⊆fin→⊆ᴸ {xs = []} fxs⊆fys = []ᴬ
     ⊆fin→⊆ᴸ {xs = x ∷ xs} sx∪fxs⊆fys@(⊆-intro x∈fxs→x∈fys) = x∈ᴸys ∷ᴬ xs⊆ᴸys
       where
-        x∈ᴸys = ∈fin→∈ᴸ (x∈fxs→x∈fys (↔-elimᴿ x∈A∪B↔x∈A∨x∈B (∨-introᴸ a∈sa)))
+        x∈ᴸys = ∈fin→∈ᴸ (x∈fxs→x∈fys (x∈A∪B-introᴸ a∈sa))
         xs⊆ᴸys = ⊆fin→⊆ᴸ (∪-⊆ᴿ sx∪fxs⊆fys)
 
     _⊆?_ : (xs ys : List (El S′)) → Dec (finite {S = S′} xs ⊆ finite ys)
@@ -98,3 +98,9 @@ module net.cruhland.axioms.Sets.Finite
     xs ≃? ys = map′ (uncurry ⊆-antisym) ≃→⊆⊇ ((xs ⊆? ys) ∧-dec (ys ⊆? xs))
       where
         ≃→⊆⊇ = λ A≃B → ∧-intro (≃→⊆ᴸ A≃B) (≃→⊆ᴿ A≃B)
+
+  ∪-finite :
+    {S : Setoid σ₁ σ₂} →
+      (xs ys : List (El S)) → finite {S = S} xs ∪ finite ys ≃ finite (xs ++ ys)
+  ∪-finite [] ys = ∪-∅ᴸ
+  ∪-finite (x ∷ xs) ys = ≃-trans ∪-assoc (∪-substᴿ (∪-finite xs ys))

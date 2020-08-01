@@ -1,5 +1,6 @@
 module net.cruhland.axioms.Sets.Pair where
 
+open import Function using (_∘_)
 open import Level using (_⊔_; Setω)
 open import net.cruhland.axioms.Sets.Base using
   (α; El; S; SetAxioms; Setoid; σ₁; σ₂)
@@ -32,6 +33,12 @@ record PairSet (SA : SetAxioms) : Setω where
 
     x∈pab-intro : {x a b : El S} → x ≈ a ∨ x ≈ b → x ∈ pair {S = S} {α} a b
     x∈pab-intro = ↔-elimᴿ x∈pab↔x≈a∨x≈b
+
+    x∈pab-introᴸ : {x a b : El S} → x ≈ a → x ∈ pair {S = S} {α} a b
+    x∈pab-introᴸ = x∈pab-intro ∘ ∨-introᴸ
+
+    x∈pab-introᴿ : {x a b : El S} → x ≈ b → x ∈ pair {S = S} {α} a b
+    x∈pab-introᴿ = x∈pab-intro ∘ ∨-introᴿ
 
     a∈pab : {a b : El S} → a ∈ pair {S = S} {α} a b
     a∈pab = x∈pab-intro (∨-introᴸ ≈-refl)

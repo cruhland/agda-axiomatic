@@ -17,7 +17,7 @@ record SetTheory : Setω where
     SA : SetAxioms
     ES : EmptySet SA
     PS : PairSet SA
-    PU : PairwiseUnion SA
+    PU : PairwiseUnion SA ES
     SS : SingletonSet SA
 
   open import net.cruhland.axioms.Sets.Base public using (El; Setoid)
@@ -26,7 +26,7 @@ record SetTheory : Setω where
   open Finite SA ES PU SS public
   open PairSet PS public
   open PairwiseUnion PU public
-  open Properties SA PU public
+  open Properties SA ES PU public
   open SetAxioms SA public
   open SingletonSet SS public
   open Subset SA public
