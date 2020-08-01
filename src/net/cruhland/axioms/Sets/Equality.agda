@@ -1,7 +1,7 @@
 open import net.cruhland.axioms.Sets.Base using (SetAxioms)
 
 module net.cruhland.axioms.Sets.Equality (SA : SetAxioms) where
-  open SetAxioms SA using (_∈_; PSet; PSet-cong)
+  open SetAxioms SA using (_∈_; _∉_; PSet; PSet-cong)
 
   open import Level using (_⊔_) renaming (suc to lsuc)
   open import Relation.Binary using (IsEquivalence)
@@ -50,3 +50,11 @@ module net.cruhland.axioms.Sets.Equality (SA : SetAxioms) where
   ∈-substᴸ :
     {A B : PSet S α} {C : PSet (PSet-Setoid S α) β} → A ≃ B → A ∈ C → B ∈ C
   ∈-substᴸ A≃B = ↔-elimᴸ (PSet-cong A≃B)
+
+  ∉-substᴿ :
+    {S : Setoid σ₁ σ₂} {A B : PSet S α} {x : El S} → A ≃ B → x ∉ A → x ∉ B
+  ∉-substᴿ A≃B x∉A x∈B = x∉A (∈-substᴿ (≃-sym A≃B) x∈B)
+
+  ∉-substᴸ :
+    {A B : PSet S α} {C : PSet (PSet-Setoid S α) β} → A ≃ B → A ∉ C → B ∉ C
+  ∉-substᴸ A≃B A∉C B∈C = A∉C (∈-substᴸ (≃-sym A≃B) B∈C)
