@@ -4,12 +4,17 @@ open import net.cruhland.axioms.Sets.Union using (PairwiseUnion)
 
 module net.cruhland.axioms.Sets.Properties
     (SA : SetAxioms) (ES : EmptySet SA) (PU : PairwiseUnion SA ES) where
+  open EmptySet ES using (∅; x∉∅)
   open PairwiseUnion PU using (_∪_; x∈A∪B-introᴸ; x∈A∪B-introᴿ)
   open SetAxioms SA using (PSet)
 
   open import Function using (_∘_)
   open import net.cruhland.axioms.Sets.Base using (α; β; χ; S)
   open import net.cruhland.axioms.Sets.Subset SA using (_⊆_; ⊆-intro)
+  open import net.cruhland.models.Logic using (⊥-elim)
+
+  ∅-⊆ : {A : PSet S α} → (∅ {α = α}) ⊆ A
+  ∅-⊆ = ⊆-intro (⊥-elim ∘ x∉∅)
 
   ∪-⊆ᴸ : {A : PSet S α} {B : PSet S β} {C : PSet S χ} → A ∪ B ⊆ C → A ⊆ C
   ∪-⊆ᴸ (⊆-intro x∈A∪B→x∈C) = ⊆-intro (x∈A∪B→x∈C ∘ x∈A∪B-introᴸ)
