@@ -8,7 +8,8 @@ module net.cruhland.axioms.Sets.Subset (SA : SetAxioms) where
 
   open import Function using (_∘_; id)
   open import Level using (_⊔_)
-  open import net.cruhland.axioms.Sets.Base using (α; β; El; S; Setoid; σ₁; σ₂)
+  open import net.cruhland.axioms.Sets.Base using
+    (α; β; χ; El; S; Setoid; σ₁; σ₂)
   open import net.cruhland.models.Logic using (_↔_; ↔-intro; ¬_)
 
   infix 4 _⊆_ _⊈_ _⊊_
@@ -19,7 +20,7 @@ module net.cruhland.axioms.Sets.Subset (SA : SetAxioms) where
     field
       ⊆-elim : ∀ {x} → x ∈ A → x ∈ B
 
-  open _⊆_ public using (⊆-elim)
+  open _⊆_ public
 
   _⊈_ : {S : Setoid σ₁ σ₂} → PSet S α → PSet S β → Set (σ₁ ⊔ α ⊔ β)
   A ⊈ B = ¬ (A ⊆ B)
@@ -33,6 +34,9 @@ module net.cruhland.axioms.Sets.Subset (SA : SetAxioms) where
 
   ⊆-refl : {A : PSet S α} → A ⊆ A
   ⊆-refl = ⊆-intro id
+
+  ⊆-trans : {A : PSet S α} {B : PSet S β} {C : PSet S χ} → A ⊆ B → B ⊆ C → A ⊆ C
+  ⊆-trans (⊆-intro x∈A→x∈B) (⊆-intro x∈B→x∈C) = ⊆-intro (x∈B→x∈C ∘ x∈A→x∈B)
 
   ⊆-antisym : {A B : PSet S α} → A ⊆ B → B ⊆ A → A ≃ B
   ⊆-antisym (⊆-intro x∈A→x∈B) (⊆-intro x∈B→x∈A) =
@@ -60,3 +64,7 @@ module net.cruhland.axioms.Sets.Subset (SA : SetAxioms) where
   ⊊-substᴿ : {A : PSet S α} {B₁ B₂ : PSet S β} → B₁ ≃ B₂ → A ⊊ B₁ → A ⊊ B₂
   ⊊-substᴿ B₁≃B₂ (⊊-intro A⊆B₁ b b∉A b∈B₁) =
     ⊊-intro (⊆-substᴿ B₁≃B₂ A⊆B₁) b b∉A (∈-substᴿ B₁≃B₂ b∈B₁)
+
+  ⊊-trans : {A : PSet S α} {B : PSet S β} {C : PSet S χ} → A ⊊ B → B ⊊ C → A ⊊ C
+  ⊊-trans (⊊-intro A⊆B@(⊆-intro x∈A→x∈B) b b∉A b∈B) (⊊-intro B⊆C c c∉B c∈C) =
+    ⊊-intro (⊆-trans A⊆B B⊆C) c (c∉B ∘ x∈A→x∈B) c∈C
