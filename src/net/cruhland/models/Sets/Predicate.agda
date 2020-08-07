@@ -3,12 +3,12 @@ module net.cruhland.models.Sets.Predicate where
 open import Function using (const; flip; id)
 open import Level using (_⊔_; Level; Setω) renaming (suc to lsuc)
 open import net.cruhland.axioms.Sets using
-  ( Comprehension; EmptySet; PairSet; PairwiseUnion
+  ( Comprehension; EmptySet; PairSet; PairwiseIntersection; PairwiseUnion
   ; SetAxioms; SetTheory; SingletonSet
   )
 open import net.cruhland.axioms.Sets.Base using (α; β; σ₁; σ₂; El; S; Setoid)
 open import net.cruhland.models.Logic using
-  (_∨_; ∨-map; _↔_; ↔-intro; ↔-refl; ⊥ᴸᴾ; ⊥ᴸᴾ-elim)
+  (_∧_; ∧-map; _∨_; ∨-map; _↔_; ↔-intro; ↔-refl; ⊥ᴸᴾ; ⊥ᴸᴾ-elim)
 
 record PSet {σ₁ σ₂} (S : Setoid σ₁ σ₂) (α : Level)
     : Set (σ₁ ⊔ σ₂ ⊔ lsuc α) where
@@ -30,7 +30,10 @@ setAxioms = record
 open SetAxioms setAxioms using (_∈_)
 
 comprehension : Comprehension setAxioms
-comprehension = record { ⟨_~_⟩ = λ ap cong → record { ap = ap ; cong = cong } }
+comprehension = record
+  { ⟨_~_⟩ = λ ap cong → record { ap = ap ; cong = cong }
+  ; x∈⟨P⟩↔Px = ↔-refl
+  }
 
 ∅ : PSet S α
 ∅ = record { ap = const ⊥ᴸᴾ ; cong = const id }
@@ -80,12 +83,29 @@ _∪_ {S = S} {α} {β} A B = record { ap = in-union ; cong = union-cong }
 pairwiseUnion : PairwiseUnion setAxioms emptySet
 pairwiseUnion = record { _∪_ = _∪_ ; x∈A∪B↔x∈A∨x∈B = ↔-refl }
 
+_∩_ : PSet S α → PSet S β → PSet S (α ⊔ β)
+_∩_ {S = S} {α} {β} A B =
+  record { ap = in-intersection ; cong = intersection-cong }
+    where
+      open Setoid S using (_≈_)
+
+      in-intersection : El S → Set (α ⊔ β)
+      in-intersection x = x ∈ A ∧ x ∈ B
+
+      intersection-cong :
+        {x y : El S} → x ≈ y → in-intersection x → in-intersection y
+      intersection-cong x≈y = ∧-map (cong A x≈y) (cong B x≈y)
+
+pairwiseIntersection : PairwiseIntersection setAxioms
+pairwiseIntersection = record { _∩_ = _∩_ ; x∈A∩B↔x∈A∧x∈B = ↔-refl }
+
 setTheory : SetTheory
 setTheory = record
   { SA = setAxioms
   ; SC = comprehension
   ; ES = emptySet
   ; PS = pairSet
+  ; PI = pairwiseIntersection
   ; PU = pairwiseUnion
   ; SS = singletonSet
   }

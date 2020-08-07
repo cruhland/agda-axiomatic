@@ -8,6 +8,8 @@ open import net.cruhland.axioms.Sets.Comprehension public using (Comprehension)
 open import net.cruhland.axioms.Sets.Empty public using (EmptySet)
 import net.cruhland.axioms.Sets.Equality as Equality
 import net.cruhland.axioms.Sets.Finite as Finite
+open import net.cruhland.axioms.Sets.Intersection public using
+  (PairwiseIntersection)
 open import net.cruhland.axioms.Sets.Pair public using (PairSet)
 import net.cruhland.axioms.Sets.Properties as Properties
 open import net.cruhland.axioms.Sets.Singleton public using (SingletonSet)
@@ -21,6 +23,7 @@ record SetTheory : Setω where
     SC : Comprehension SA
     ES : EmptySet SA
     PS : PairSet SA
+    PI : PairwiseIntersection SA
     PU : PairwiseUnion SA ES
     SS : SingletonSet SA
 
@@ -30,6 +33,7 @@ record SetTheory : Setω where
   open Equality SA public
   open Finite SA ES PU SS public
   open PairSet PS public
+  open PairwiseIntersection PI public
   open PairwiseUnion PU public
   open Properties SA ES PU public
   open SetAxioms SA public
