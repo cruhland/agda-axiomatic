@@ -1,7 +1,7 @@
 module net.cruhland.axioms.Sets.Base where
 
 open import Level using (_⊔_; Level; Setω) renaming (suc to lsuc)
-open import net.cruhland.models.Logic using (¬_; _↔_)
+open import net.cruhland.models.Logic using (¬_)
 
 -- Export standard library definitions
 open import Relation.Binary public using (Setoid)
@@ -20,7 +20,7 @@ record SetAxioms : Setω where
 
     PSet-cong :
       {S : Setoid σ₁ σ₂} {x y : El S} {A : PSet S α} →
-        let open Setoid S using (_≈_) in x ≈ y → x ∈ A ↔ y ∈ A
+        let open Setoid S using (_≈_) in x ≈ y → x ∈ A → y ∈ A
 
   _∉_ : El S → PSet S α → Set α
   x ∉ A = ¬ (x ∈ A)

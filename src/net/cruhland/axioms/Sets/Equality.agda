@@ -49,7 +49,7 @@ module net.cruhland.axioms.Sets.Equality (SA : SetAxioms) where
 
   ∈-substᴸ :
     {A B : PSet S α} {C : PSet (PSet-Setoid S α) β} → A ≃ B → A ∈ C → B ∈ C
-  ∈-substᴸ A≃B = ↔-elimᴸ (PSet-cong A≃B)
+  ∈-substᴸ = PSet-cong
 
   ∉-substᴿ :
     {S : Setoid σ₁ σ₂} {A B : PSet S α} {x : El S} → A ≃ B → x ∉ A → x ∉ B

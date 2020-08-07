@@ -22,9 +22,8 @@ module net.cruhland.axioms.Sets.Finite
     using (All; all; lookupAny) renaming ([] to []ᴬ; _∷_ to _∷ᴬ_)
   open import Data.List.Relation.Unary.Any using
     (Any; here; index; lookup; map; there)
-  open import Data.List.Relation.Unary.Any.Properties using (lookup-result)
   open import Function using (_∘_)
-  open import Level using (_⊔_) renaming (zero to lzero)
+  open import Level using (_⊔_)
   open import Relation.Binary using (Decidable; DecSetoid)
   open import Relation.Binary.PropositionalEquality using (_≡_)
   open import Relation.Nullary.Decidable using (map′)
@@ -40,22 +39,22 @@ module net.cruhland.axioms.Sets.Finite
     ; ⊥-elim; Dec
     )
 
-  finite : List (El S) → PSet S lzero
+  finite : {S : Setoid σ₁ σ₂} → List (El S) → PSet S σ₂
   finite = foldr (λ x acc → singleton x ∪ acc) ∅
 
   module Memberᴸ {DS : DecSetoid σ₁ σ₂} where
     open DecMembership DS using () renaming (_∈_ to _∈ᴸ_; _∈?_ to _∈ᴸ?_)
     S′ = DecSetoid.setoid DS
-    open Setoid S′ using (_≈_)
+    open Setoid S′ using (_≈_) renaming (sym to ≈-sym)
 
     ∈ᴸ→∈fin : {a : El S′} {xs : List (El S′)} → a ∈ᴸ xs → a ∈ finite {S = S′} xs
-    ∈ᴸ→∈fin (here a≈x) = x∈A∪B-introᴸ (x∈sa-intro a≈x)
+    ∈ᴸ→∈fin (here a≈x) = x∈A∪B-introᴸ (x∈sa-intro (≈-sym a≈x))
     ∈ᴸ→∈fin (there a∈ᴸxs) = x∈A∪B-introᴿ (∈ᴸ→∈fin a∈ᴸxs)
 
     ∈fin→∈ᴸ : {a : El S′} {xs : List (El S′)} → a ∈ finite {S = S′} xs → a ∈ᴸ xs
     ∈fin→∈ᴸ {xs = []} a∈fxs = ⊥-elim (x∉∅ a∈fxs)
     ∈fin→∈ᴸ {xs = x ∷ xs} a∈fxs with x∈A∪B-elim a∈fxs
-    ... | ∨-introᴸ a∈sx = here (x∈sa-elim a∈sx)
+    ... | ∨-introᴸ a∈sx = here (≈-sym (x∈sa-elim a∈sx))
     ... | ∨-introᴿ a∈fxs′ = there (∈fin→∈ᴸ a∈fxs′)
 
     _∈?_ : (a : El S′) (xs : List (El S′)) → Dec (a ∈ finite {S = S′} xs)

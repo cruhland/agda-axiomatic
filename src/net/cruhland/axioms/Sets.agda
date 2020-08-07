@@ -1,26 +1,31 @@
 module net.cruhland.axioms.Sets where
 
 open import Level using (Setω)
-open import net.cruhland.axioms.Sets.Base using (SetAxioms)
-open import net.cruhland.axioms.Sets.Empty using (EmptySet)
+
+-- Export names from child modules
+open import net.cruhland.axioms.Sets.Base public using (SetAxioms)
+open import net.cruhland.axioms.Sets.Comprehension public using (Comprehension)
+open import net.cruhland.axioms.Sets.Empty public using (EmptySet)
 import net.cruhland.axioms.Sets.Equality as Equality
 import net.cruhland.axioms.Sets.Finite as Finite
-open import net.cruhland.axioms.Sets.Pair using (PairSet)
+open import net.cruhland.axioms.Sets.Pair public using (PairSet)
 import net.cruhland.axioms.Sets.Properties as Properties
-open import net.cruhland.axioms.Sets.Singleton using (SingletonSet)
+open import net.cruhland.axioms.Sets.Singleton public using (SingletonSet)
 import net.cruhland.axioms.Sets.Subset as Subset
-open import net.cruhland.axioms.Sets.Union using (PairwiseUnion)
+open import net.cruhland.axioms.Sets.Union public using (PairwiseUnion)
 
 -- Bundle all child modules together for convenience
 record SetTheory : Setω where
   field
     SA : SetAxioms
+    SC : Comprehension SA
     ES : EmptySet SA
     PS : PairSet SA
     PU : PairwiseUnion SA ES
     SS : SingletonSet SA
 
   open import net.cruhland.axioms.Sets.Base public using (El; Setoid)
+  open Comprehension SC public
   open EmptySet ES public
   open Equality SA public
   open Finite SA ES PU SS public
