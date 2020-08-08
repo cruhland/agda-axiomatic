@@ -7,7 +7,8 @@ open import net.cruhland.models.Logic.Disjunction
 open import net.cruhland.models.Logic.Falsity using (⊥-elim; ¬_)
 
 -- Export standard library definitions
-open import Relation.Nullary public using (Dec; no; yes)
+open import Relation.Nullary public using
+  (_because_; Dec; does; ofⁿ; ofʸ; no; yes)
 
 ¬¬-elim : {A : Set} → Dec A → ¬ (¬ A) → A
 ¬¬-elim (yes a) ¬¬a = a

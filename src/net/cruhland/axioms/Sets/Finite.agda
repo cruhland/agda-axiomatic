@@ -1,20 +1,27 @@
 open import net.cruhland.axioms.Sets.Base using (SetAxioms)
 open import net.cruhland.axioms.Sets.Empty using (EmptySet)
+open import net.cruhland.axioms.Sets.Intersection using (PairwiseIntersection)
 open import net.cruhland.axioms.Sets.Union using (PairwiseUnion)
 open import net.cruhland.axioms.Sets.Singleton using (SingletonSet)
 
 module net.cruhland.axioms.Sets.Finite
     (SA : SetAxioms)
     (ES : EmptySet SA)
+    (PI : PairwiseIntersection SA)
     (PU : PairwiseUnion SA ES)
     (SS : SingletonSet SA) where
-  open SetAxioms SA using (_∈_; _∉_; PSet)
+  open SetAxioms SA using (_∈_; _∉_; PSet; PSet-cong)
   open EmptySet ES using (∅; x∉∅)
+  open PairwiseIntersection PI using
+    (_∩_; x∈A∩B-elim; x∈A∩B-elimᴸ; x∈A∩B-intro₂)
   open PairwiseUnion PU using
-    (_∪_; ∪-∅ᴸ; ∪-assoc; x∈A∪B-elim; x∈A∪B-introᴸ; x∈A∪B-introᴿ; ∪-substᴿ)
+    ( _∪_; ∪-∅ᴸ; ∪-assoc; x∈A∪B-elim
+    ; x∈A∪B-introᴸ; x∈A∪B-introᴿ; ∪-substᴸ; ∪-substᴿ
+    )
   open SingletonSet SS using (singleton; a∈sa; x∈sa-elim; x∈sa-intro)
 
-  open import Data.List using ([]; _∷_; _++_; foldr; List)
+  open import Data.Bool using (false; true)
+  open import Data.List using ([]; _∷_; _++_; any; filter; foldr; List)
   import Data.List.Membership.DecSetoid as DecMembership
   import Data.List.Membership.Setoid as Membership
   open import Data.List.Relation.Binary.Permutation.Propositional using (_↭_)
@@ -29,14 +36,17 @@ module net.cruhland.axioms.Sets.Finite
   open import Relation.Nullary.Decidable using (map′)
   open import Relation.Nullary.Product using () renaming (_×-dec_ to _∧-dec_)
   open import net.cruhland.axioms.Sets.Base using (α; El; S; Setoid; σ₁; σ₂)
-  open import net.cruhland.axioms.Sets.Equality SA using (_≃_; ≃-trans)
-  open import net.cruhland.axioms.Sets.Properties SA ES PU using (∪-⊆ᴿ)
+  open import net.cruhland.axioms.Sets.Equality SA using
+    (_≃_; ≃-trans; module ≃-Reasoning)
+  open ≃-Reasoning
+  open import net.cruhland.axioms.Sets.Properties SA ES PI PU using
+    (A⊆∅→A≃∅; ∪-⊆ᴿ; ∩-∅ᴸ; ∩-over-∪ᴿ)
   open import net.cruhland.axioms.Sets.Subset SA using
     (_⊆_; ≃→⊆ᴸ; ≃→⊆ᴿ; ⊆-antisym; ⊆-intro)
   open import net.cruhland.models.Logic using
     ( _∧_; ∧-elimᴸ; ∧-elimᴿ; ∧-intro; uncurry
     ; _∨_; ∨-introᴸ; ∨-introᴿ
-    ; ⊥-elim; Dec
+    ; ⊥-elim; _because_; Dec; does; ofⁿ; ofʸ
     )
 
   finite : {S : Setoid σ₁ σ₂} → List (El S) → PSet S σ₂
@@ -103,3 +113,73 @@ module net.cruhland.axioms.Sets.Finite
       (xs ys : List (El S)) → finite {S = S} xs ∪ finite ys ≃ finite (xs ++ ys)
   ∪-finite [] ys = ∪-∅ᴸ
   ∪-finite (x ∷ xs) ys = ≃-trans ∪-assoc (∪-substᴿ (∪-finite xs ys))
+
+  singleton-∈∩ᴸ :
+    {S : Setoid σ₁ σ₂} {A : PSet S σ₂} {a : El S} →
+      a ∈ A → singleton a ∩ A ≃ singleton a
+  singleton-∈∩ᴸ {S = S} {A} {a} a∈A =
+    ⊆-antisym (⊆-intro forward) (⊆-intro backward)
+      where
+        forward : ∀ {x} → x ∈ singleton a ∩ A → x ∈ singleton a
+        forward x∈sa∩A = x∈A∩B-elimᴸ x∈sa∩A
+
+        backward : ∀ {x} → x ∈ singleton a → x ∈ singleton a ∩ A
+        backward x∈sa = x∈A∩B-intro₂ x∈sa (PSet-cong (x∈sa-elim x∈sa) a∈A)
+          where open Setoid S using (_≈_)
+
+  singleton-∉∩ᴸ :
+    {S : Setoid σ₁ σ₂} {A : PSet S σ₂} {a : El S} → a ∉ A → singleton a ∩ A ≃ ∅
+  singleton-∉∩ᴸ {S = S} {A} {a} a∉A = A⊆∅→A≃∅ (⊆-intro x∈sa∩A→x∈∅)
+    where
+      open Setoid S using (_≈_) renaming (sym to ≈-sym)
+
+      x∈sa∩A→x∈∅ : ∀ {x} → x ∈ singleton a ∩ A → x ∈ ∅
+      x∈sa∩A→x∈∅ x∈sa∩A =
+        let ∧-intro x∈sa x∈A = x∈A∩B-elim x∈sa∩A
+         in ⊥-elim (a∉A (PSet-cong (≈-sym (x∈sa-elim x∈sa)) x∈A))
+
+  intersection :
+    {DS : DecSetoid σ₁ σ₂} →
+      let S′ = DecSetoid.setoid DS
+       in List (El S′) → List (El S′) → List (El S′)
+  intersection {DS = DS} xs ys = filter (_∈ᴸ? ys) xs
+    where open DecMembership DS using () renaming (_∈?_ to _∈ᴸ?_)
+
+  ∩-finite-lemma :
+    {DS : DecSetoid σ₁ σ₂} →
+      let S′ = DecSetoid.setoid DS
+       in {x : El S′} (xs ys : List (El S′)) →
+            let left₁ = singleton x ∩ finite ys
+                left₂ = finite {S = S′} (intersection {DS = DS} xs ys)
+                left = left₁ ∪ left₂
+                right = finite (intersection {DS = DS} (x ∷ xs) ys)
+             in left ≃ right
+  ∩-finite-lemma {DS = DS} {x = x} xs ys with x ∈ᴸ? ys
+    where open DecMembership DS using () renaming (_∈?_ to _∈ᴸ?_)
+  ... | true because ofʸ x∈ᴸys = ∪-substᴸ (singleton-∈∩ᴸ (∈ᴸ→∈fin x∈ᴸys))
+      where open Memberᴸ {DS = DS} using (∈ᴸ→∈fin)
+  ... | false because ofⁿ x∉ᴸys = ≃-trans (∪-substᴸ (singleton-∉∩ᴸ x∉fys)) ∪-∅ᴸ
+    where
+      open Memberᴸ {DS = DS} using (∈fin→∈ᴸ)
+      x∉fys = λ x∈fys → x∉ᴸys (∈fin→∈ᴸ x∈fys)
+
+  ∩-finite :
+    {DS : DecSetoid σ₁ σ₂} →
+      let S′ = DecSetoid.setoid DS
+       in (xs ys : List (El S′)) →
+            let xs∩ys = intersection {DS = DS} xs ys
+             in finite xs ∩ finite ys ≃ finite {S = S′} xs∩ys
+  ∩-finite [] ys = ∩-∅ᴸ
+  ∩-finite {DS = DS} (x ∷ xs) ys =
+    begin
+      finite (x ∷ xs) ∩ finite ys
+    ≃⟨⟩
+      (singleton x ∪ finite xs) ∩ finite ys
+    ≃⟨ ∩-over-∪ᴿ ⟩
+      singleton x ∩ finite ys ∪ finite xs ∩ finite ys
+    ≃⟨ ∪-substᴿ (∩-finite xs ys) ⟩
+      singleton x ∩ finite ys ∪ finite (intersection {DS = DS} xs ys)
+    ≃⟨ ∩-finite-lemma xs ys ⟩
+      finite (intersection {DS = DS} (x ∷ xs) ys)
+    ∎
+      where open DecMembership DS using () renaming (_∈?_ to _∈ᴸ?_)

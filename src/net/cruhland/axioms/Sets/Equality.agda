@@ -58,3 +58,27 @@ module net.cruhland.axioms.Sets.Equality (SA : SetAxioms) where
   ∉-substᴸ :
     {A B : PSet S α} {C : PSet (PSet-Setoid S α) β} → A ≃ B → A ∉ C → B ∉ C
   ∉-substᴸ A≃B A∉C B∈C = A∉C (∈-substᴸ (≃-sym A≃B) B∈C)
+
+  module ≃-Reasoning where
+
+    infix 3 _∎
+    infixr 2 _≃⟨⟩_ step-≃ step-≃˘
+    infix 1 begin_
+
+    begin_ : {A B : PSet S α} → A ≃ B → A ≃ B
+    begin A≃B = A≃B
+
+    _≃⟨⟩_ : (A {B} : PSet S α) → A ≃ B → A ≃ B
+    _ ≃⟨⟩ A≃B = A≃B
+
+    step-≃ : (A {B C} : PSet S α) → B ≃ C → A ≃ B → A ≃ C
+    step-≃ _ B≃C A≃B = ≃-trans A≃B B≃C
+
+    step-≃˘ : (A {B C} : PSet S α) → B ≃ C → B ≃ A → A ≃ C
+    step-≃˘ _ B≃C B≃A = ≃-trans (≃-sym B≃A) B≃C
+
+    _∎ : (A : PSet S α) → A ≃ A
+    _ ∎ = ≃-refl
+
+    syntax step-≃ A B≃C A≃B = A ≃⟨ A≃B ⟩ B≃C
+    syntax step-≃˘ A B≃C B≃A = A ≃˘⟨ B≃A ⟩ B≃C

@@ -31,11 +31,11 @@ record SetTheory : Setω where
   open Comprehension SC public
   open EmptySet ES public
   open Equality SA public
-  open Finite SA ES PU SS public
+  open Finite SA ES PI PU SS public
   open PairSet PS public
   open PairwiseIntersection PI public
   open PairwiseUnion PU public
-  open Properties SA ES PU public
+  open Properties SA ES PI PU public
   open SetAxioms SA public
   open SingletonSet SS public
   open Subset SA public
