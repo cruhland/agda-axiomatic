@@ -12,7 +12,7 @@ variable
   S : Setoid σ₁ σ₂
 
 record SetAxioms : Setω where
-  infix 5 _∈_ _∉_
+  infix 4 _∈_ _∉_
 
   field
     PSet : Setoid σ₁ σ₂ → ∀ α → Set (σ₁ ⊔ σ₂ ⊔ lsuc α)
