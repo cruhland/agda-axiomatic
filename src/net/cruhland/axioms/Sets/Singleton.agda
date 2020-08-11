@@ -1,11 +1,14 @@
 module net.cruhland.axioms.Sets.Singleton where
 
 open import Level using (_⊔_; Setω)
+open import Relation.Binary using (DecSetoid)
+open import Relation.Nullary.Decidable using (map′)
 open import net.cruhland.axioms.Sets.Base using
   (El; S; SetAxioms; Setoid; σ₁; σ₂)
+import net.cruhland.axioms.Sets.Decidable as Decidable
 import net.cruhland.axioms.Sets.Equality as Equality
 open import net.cruhland.models.Logic using
-  (_↔_; ↔-elimᴸ; ↔-elimᴿ; ↔-sym; ↔-trans)
+  (_↔_; ↔-elimᴸ; ↔-elimᴿ; ↔-sym; ↔-trans; Dec; no; yes)
 
 module SingletonDef (SA : SetAxioms) where
   open SetAxioms SA using (_∈_; PSet)
@@ -15,6 +18,7 @@ module SingletonDef (SA : SetAxioms) where
     where open Setoid S using (_≈_)
 
 record SingletonSet (SA : SetAxioms) : Setω where
+  open Decidable SA using (DecMembership; ∈-dec-intro)
   open Equality SA using (_≃_; ≃-intro)
   open SetAxioms SA using (_∈_; PSet)
   open SingletonDef SA using (is-singleton)
@@ -25,8 +29,7 @@ record SingletonSet (SA : SetAxioms) : Setω where
       {S : Setoid σ₁ σ₂} {a : El S} → is-singleton {S = S} a (singleton a)
 
   module _ {S : Setoid σ₁ σ₂} where
-    open Setoid S using (_≈_)
-    module S = Setoid S
+    open Setoid S using (_≈_) renaming (refl to ≈-refl)
 
     x∈sa-elim : {x a : El S} → x ∈ singleton {S = S} a → a ≈ x
     x∈sa-elim = ↔-elimᴸ x∈sa↔a≈x
@@ -35,8 +38,16 @@ record SingletonSet (SA : SetAxioms) : Setω where
     x∈sa-intro = ↔-elimᴿ x∈sa↔a≈x
 
     a∈sa : {a : El S} → a ∈ singleton {S = S} a
-    a∈sa = x∈sa-intro S.refl
+    a∈sa = x∈sa-intro ≈-refl
 
     singleton-unique :
       {a : El S} {A : PSet S σ₂} → is-singleton a A → singleton a ≃ A
     singleton-unique x∈A↔a≈x = ≃-intro (↔-trans x∈sa↔a≈x (↔-sym x∈A↔a≈x))
+
+  instance
+    ∈-dec :
+      {DS : DecSetoid σ₁ σ₂} →
+        ∀ {a} → DecMembership (singleton {S = DecSetoid.setoid DS} a)
+    ∈-dec {DS = DS} {a} =
+      ∈-dec-intro (λ {x} → map′ x∈sa-intro x∈sa-elim (a ≟ x))
+        where open DecSetoid DS using (_≈_; _≟_)
