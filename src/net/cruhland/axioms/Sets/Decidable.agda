@@ -7,13 +7,13 @@ module net.cruhland.axioms.Sets.Decidable (SA : SetAxioms) where
 open SetAxioms SA using (_∈_; PSet)
 
 record DecMembership {S : Setoid σ₁ σ₂} (A : PSet S α) : Set (σ₁ ⊔ α) where
-  constructor ∈-dec-intro
+  constructor ∈?-intro
   field
-    ∈-dec-elim : ∀ {x} → Dec (x ∈ A)
+    ∈?-elim : ∀ {x} → Dec (x ∈ A)
 
 open DecMembership {{...}}
 
 _∈?_ :
   {S : Setoid σ₁ σ₂} (x : El S) (A : PSet S α) → {{DecMembership A}} →
     Dec (x ∈ A)
-(x ∈? A) {{decMem}} = ∈-dec-elim
+(x ∈? A) {{decMem}} = ∈?-elim

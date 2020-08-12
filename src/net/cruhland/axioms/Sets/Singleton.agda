@@ -18,7 +18,7 @@ module SingletonDef (SA : SetAxioms) where
     where open Setoid S using (_≈_)
 
 record SingletonSet (SA : SetAxioms) : Setω where
-  open Decidable SA using (DecMembership; ∈-dec-intro)
+  open Decidable SA using (DecMembership; ∈?-intro)
   open Equality SA using (_≃_; ≃-intro)
   open SetAxioms SA using (_∈_; PSet)
   open SingletonDef SA using (is-singleton)
@@ -45,9 +45,9 @@ record SingletonSet (SA : SetAxioms) : Setω where
     singleton-unique x∈A↔a≈x = ≃-intro (↔-trans x∈sa↔a≈x (↔-sym x∈A↔a≈x))
 
   instance
-    ∈-dec :
+    singleton-∈? :
       {DS : DecSetoid σ₁ σ₂} →
         ∀ {a} → DecMembership (singleton {S = DecSetoid.setoid DS} a)
-    ∈-dec {DS = DS} {a} =
-      ∈-dec-intro (λ {x} → map′ x∈sa-intro x∈sa-elim (a ≟ x))
+    singleton-∈? {DS = DS} {a} =
+      ∈?-intro (λ {x} → map′ x∈sa-intro x∈sa-elim (a ≟ x))
         where open DecSetoid DS using (_≈_; _≟_)

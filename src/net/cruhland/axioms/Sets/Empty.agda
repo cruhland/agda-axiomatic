@@ -9,7 +9,7 @@ import net.cruhland.axioms.Sets.Equality as Equality
 open import net.cruhland.models.Logic using (⊥-elim; _↔_; ↔-intro; Dec; no)
 
 record EmptySet (SA : SetAxioms) : Setω where
-  open Decidable SA using (DecMembership; ∈-dec-intro)
+  open Decidable SA using (DecMembership; ∈?-intro)
   open Equality SA using (_≃_; ≃-intro)
   open SetAxioms SA using (_∈_; _∉_; PSet)
 
@@ -26,5 +26,5 @@ record EmptySet (SA : SetAxioms) : Setω where
   ∅-unique x∉∅′ = ≃-intro (↔-intro (⊥-elim ∘ x∉∅) (⊥-elim ∘ x∉∅′))
 
   instance
-    ∈-dec : DecMembership (∅ {S = S} {α})
-    ∈-dec = ∈-dec-intro (no x∉∅)
+    ∅-∈? : DecMembership (∅ {S = S} {α})
+    ∅-∈? = ∈?-intro (no x∉∅)
