@@ -2,11 +2,16 @@ module net.cruhland.axioms.Sets.Pair where
 
 open import Function using (_∘_)
 open import Level using (_⊔_; Setω)
+open import Relation.Binary using (DecSetoid)
 open import net.cruhland.axioms.Sets.Base using
   (El; S; SetAxioms; Setoid; σ₁; σ₂)
+import net.cruhland.axioms.Sets.Decidable as Decidable
 import net.cruhland.axioms.Sets.Equality as Equality
 open import net.cruhland.models.Logic using
-  (_∨_; ∨-introᴸ; ∨-introᴿ; _↔_; ↔-elimᴸ; ↔-elimᴿ; ↔-sym; ↔-trans)
+  ( _∨_; ∨-dec; ∨-introᴸ; ∨-introᴿ
+  ; _↔_; ↔-elimᴸ; ↔-elimᴿ; ↔-sym; ↔-trans
+  ; Dec; dec-map; no; yes
+  )
 
 module PairDef (SA : SetAxioms) where
   open SetAxioms SA using (_∈_; PSet)
@@ -16,6 +21,7 @@ module PairDef (SA : SetAxioms) where
     where open Setoid S using (_≈_)
 
 record PairSet (SA : SetAxioms) : Setω where
+  open Decidable SA using (DecMembership; ∈?-intro)
   open Equality SA using (_≃_; ≃-intro)
   open SetAxioms SA using (_∈_; PSet)
   open PairDef SA using (is-pair)
@@ -49,3 +55,11 @@ record PairSet (SA : SetAxioms) : Setω where
     pair-unique : {A : PSet S σ₂} {a b : El S} → is-pair a b A → pair a b ≃ A
     pair-unique x∈A↔x≈a∨x≈b =
       ≃-intro (↔-trans x∈pab↔a≈x∨b≈x (↔-sym x∈A↔x≈a∨x≈b))
+
+  instance
+    pair-∈? :
+      {DS : DecSetoid σ₁ σ₂} →
+        ∀ {a b} → DecMembership (pair {S = DecSetoid.setoid DS} a b)
+    pair-∈? {DS = DS} {a} {b} =
+      ∈?-intro (λ {x} → dec-map x∈pab-intro x∈pab-elim (∨-dec (a ≟ x) (b ≟ x)))
+        where open DecSetoid DS using (_≈_; _≟_)

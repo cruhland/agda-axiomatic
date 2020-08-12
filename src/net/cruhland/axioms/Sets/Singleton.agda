@@ -2,13 +2,12 @@ module net.cruhland.axioms.Sets.Singleton where
 
 open import Level using (_⊔_; Setω)
 open import Relation.Binary using (DecSetoid)
-open import Relation.Nullary.Decidable using (map′)
 open import net.cruhland.axioms.Sets.Base using
   (El; S; SetAxioms; Setoid; σ₁; σ₂)
 import net.cruhland.axioms.Sets.Decidable as Decidable
 import net.cruhland.axioms.Sets.Equality as Equality
 open import net.cruhland.models.Logic using
-  (_↔_; ↔-elimᴸ; ↔-elimᴿ; ↔-sym; ↔-trans; Dec; no; yes)
+  (_↔_; ↔-elimᴸ; ↔-elimᴿ; ↔-sym; ↔-trans; Dec; dec-map; no; yes)
 
 module SingletonDef (SA : SetAxioms) where
   open SetAxioms SA using (_∈_; PSet)
@@ -49,5 +48,5 @@ record SingletonSet (SA : SetAxioms) : Setω where
       {DS : DecSetoid σ₁ σ₂} →
         ∀ {a} → DecMembership (singleton {S = DecSetoid.setoid DS} a)
     singleton-∈? {DS = DS} {a} =
-      ∈?-intro (λ {x} → map′ x∈sa-intro x∈sa-elim (a ≟ x))
+      ∈?-intro (λ {x} → dec-map x∈sa-intro x∈sa-elim (a ≟ x))
         where open DecSetoid DS using (_≈_; _≟_)
