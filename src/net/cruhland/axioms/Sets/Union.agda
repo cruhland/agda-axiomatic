@@ -5,12 +5,17 @@ open import Level using (_⊔_; Setω)
 open import net.cruhland.axioms.Sets.Base using
   (α; β; χ; S; SetAxioms; Setoid; σ₁; σ₂)
 open import net.cruhland.axioms.Sets.Empty using (EmptySet)
+import net.cruhland.axioms.Sets.Decidable as Decidable
 import net.cruhland.axioms.Sets.Equality as Equality
 import net.cruhland.axioms.Sets.Subset as Subset
 open import net.cruhland.models.Logic using
-  (_∨_; ∨-comm; ∨-forceᴿ; ∨-introᴸ; ∨-introᴿ; _↔_; ↔-elimᴸ; ↔-elimᴿ)
+  ( _∨_; ∨-comm; ∨-dec; ∨-forceᴿ; ∨-introᴸ; ∨-introᴿ
+  ; _↔_; ↔-elimᴸ; ↔-elimᴿ
+  ; Dec; dec-map
+  )
 
 record PairwiseUnion (SA : SetAxioms) (ES : EmptySet SA) : Setω where
+  open Decidable SA using (_∈?_; DecMembership; ∈?-intro)
   open Equality SA using (_≃_; ≃-intro; ∈-substᴿ; ≃-sym; ≃-trans)
   open EmptySet ES using (∅; x∉∅)
   open SetAxioms SA using (_∈_; PSet)
@@ -101,3 +106,11 @@ record PairwiseUnion (SA : SetAxioms) (ES : EmptySet SA) : Setω where
 
   ∪-∅ᴿ : {A : PSet S α} → A ∪ (∅ {α = α}) ≃ A
   ∪-∅ᴿ = ≃-trans ∪-comm ∪-∅ᴸ
+
+  instance
+    union-∈? :
+      {A : PSet S α} {B : PSet S β} →
+        {{DecMembership A}} → {{DecMembership B}} → DecMembership (A ∪ B)
+    union-∈? {A = A} {B} =
+      ∈?-intro
+        (λ {x} → dec-map x∈A∪B-intro x∈A∪B-elim (∨-dec (x ∈? A) (x ∈? B)))
