@@ -9,7 +9,7 @@ import net.cruhland.axioms.Sets.Decidable as Decidable
 import net.cruhland.axioms.Sets.Equality as Equality
 import net.cruhland.axioms.Sets.Subset as Subset
 open import net.cruhland.models.Logic using
-  ( _∨_; ∨-comm; ∨-dec; ∨-forceᴿ; ∨-introᴸ; ∨-introᴿ
+  ( _∨_; _∨?_; ∨-comm; ∨-forceᴿ; ∨-introᴸ; ∨-introᴿ
   ; _↔_; ↔-elimᴸ; ↔-elimᴿ
   ; Dec; dec-map
   )
@@ -108,9 +108,9 @@ record PairwiseUnion (SA : SetAxioms) (ES : EmptySet SA) : Setω where
   ∪-∅ᴿ = ≃-trans ∪-comm ∪-∅ᴸ
 
   instance
-    union-∈? :
+    ∪-∈? :
       {A : PSet S α} {B : PSet S β} →
         {{DecMembership A}} → {{DecMembership B}} → DecMembership (A ∪ B)
-    union-∈? {A = A} {B} =
+    ∪-∈? {A = A} {B} =
       ∈?-intro
-        (λ {x} → dec-map x∈A∪B-intro x∈A∪B-elim (∨-dec (x ∈? A) (x ∈? B)))
+        (λ {x} → dec-map x∈A∪B-intro x∈A∪B-elim (x ∈? A ∨? x ∈? B))

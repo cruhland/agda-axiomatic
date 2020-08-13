@@ -8,7 +8,7 @@ open import net.cruhland.axioms.Sets.Base using
 import net.cruhland.axioms.Sets.Decidable as Decidable
 import net.cruhland.axioms.Sets.Equality as Equality
 open import net.cruhland.models.Logic using
-  ( _∨_; ∨-dec; ∨-introᴸ; ∨-introᴿ
+  ( _∨_; _∨?_; ∨-introᴸ; ∨-introᴿ
   ; _↔_; ↔-elimᴸ; ↔-elimᴿ; ↔-sym; ↔-trans
   ; Dec; dec-map; no; yes
   )
@@ -61,5 +61,5 @@ record PairSet (SA : SetAxioms) : Setω where
       {DS : DecSetoid σ₁ σ₂} →
         ∀ {a b} → DecMembership (pair {S = DecSetoid.setoid DS} a b)
     pair-∈? {DS = DS} {a} {b} =
-      ∈?-intro (λ {x} → dec-map x∈pab-intro x∈pab-elim (∨-dec (a ≟ x) (b ≟ x)))
+      ∈?-intro (λ {x} → dec-map x∈pab-intro x∈pab-elim (a ≟ x ∨? b ≟ x))
         where open DecSetoid DS using (_≈_; _≟_)

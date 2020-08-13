@@ -4,12 +4,17 @@ open import Function using (_∘_)
 open import Level using (_⊔_; Setω)
 open import net.cruhland.axioms.Sets.Base using
   (α; β; χ; El; S; SetAxioms; Setoid; σ₁; σ₂)
+import net.cruhland.axioms.Sets.Decidable as Decidable
 import net.cruhland.axioms.Sets.Equality as Equality
 import net.cruhland.axioms.Sets.Subset as Subset
 open import net.cruhland.models.Logic using
-  (_∧_; ∧-comm; ∧-elimᴸ; ∧-elimᴿ; ∧-intro; _↔_; ↔-elimᴸ; ↔-elimᴿ; curry)
+  ( _∧_; _∧?_; ∧-comm; ∧-elimᴸ; ∧-elimᴿ; ∧-intro
+  ; _↔_; ↔-elimᴸ; ↔-elimᴿ
+  ; curry; Dec; dec-map
+  )
 
 record PairwiseIntersection (SA : SetAxioms) : Setω where
+  open Decidable SA using (_∈?_; DecMembership; ∈?-intro)
   open Equality SA using (_≃_; ∈-substᴿ; ≃-sym; ≃-trans)
   open SetAxioms SA using (_∈_; PSet)
   open Subset SA using (_⊆_; ⊆-antisym; ⊆-intro)
@@ -89,3 +94,11 @@ record PairwiseIntersection (SA : SetAxioms) : Setω where
 
   ∩-substᴿ : {A : PSet S α} {B₁ B₂ : PSet S β} → B₁ ≃ B₂ → A ∩ B₁ ≃ A ∩ B₂
   ∩-substᴿ B₁≃B₂ = ≃-trans ∩-comm (≃-trans (∩-substᴸ B₁≃B₂) ∩-comm)
+
+  instance
+    ∩-∈? :
+      {A : PSet S α} {B : PSet S β} →
+        {{DecMembership A}} → {{DecMembership B}} → DecMembership (A ∩ B)
+    ∩-∈? {A = A} {B} =
+      ∈?-intro
+        (λ {x} → dec-map x∈A∩B-intro x∈A∩B-elim (x ∈? A ∧? x ∈? B))
