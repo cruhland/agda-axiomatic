@@ -58,8 +58,8 @@ record PairSet (SA : SetAxioms) : Setω where
 
   instance
     pair-∈? :
-      {DS : DecSetoid σ₁ σ₂} →
+      {{DS : DecSetoid σ₁ σ₂}} →
         ∀ {a b} → DecMembership (pair {S = DecSetoid.setoid DS} a b)
-    pair-∈? {DS = DS} {a} {b} =
+    pair-∈? {{DS}} {a} {b} =
       ∈?-intro (λ {x} → dec-map x∈pab-intro x∈pab-elim (a ≟ x ∨? b ≟ x))
         where open DecSetoid DS using (_≈_; _≟_)

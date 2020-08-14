@@ -45,8 +45,8 @@ record SingletonSet (SA : SetAxioms) : Setω where
 
   instance
     singleton-∈? :
-      {DS : DecSetoid σ₁ σ₂} →
+      {{DS : DecSetoid σ₁ σ₂}} →
         ∀ {a} → DecMembership (singleton {S = DecSetoid.setoid DS} a)
-    singleton-∈? {DS = DS} {a} =
+    singleton-∈? {{DS}} {a} =
       ∈?-intro (λ {x} → dec-map x∈sa-intro x∈sa-elim (a ≟ x))
         where open DecSetoid DS using (_≈_; _≟_)

@@ -5,7 +5,8 @@ open import Level using (Setω)
 -- Export names from child modules
 open import net.cruhland.axioms.Sets.Base public using (SetAxioms)
 open import net.cruhland.axioms.Sets.Comprehension public using (Comprehension)
-open import net.cruhland.axioms.Sets.Difference as Difference
+import net.cruhland.axioms.Sets.Decidable as Decidable
+import net.cruhland.axioms.Sets.Difference as Difference
 open import net.cruhland.axioms.Sets.Empty public using (EmptySet)
 import net.cruhland.axioms.Sets.Equality as Equality
 import net.cruhland.axioms.Sets.Finite as Finite
@@ -30,6 +31,7 @@ record SetTheory : Setω where
 
   open import net.cruhland.axioms.Sets.Base public using (El; Setoid)
   open Comprehension SC public
+  open Decidable SA public
   open Difference SA SC public
   open EmptySet ES public
   open Equality SA public
