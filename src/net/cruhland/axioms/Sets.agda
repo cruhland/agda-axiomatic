@@ -4,6 +4,7 @@ open import Level using (Setω)
 
 -- Export names from child modules
 open import net.cruhland.axioms.Sets.Base public using (SetAxioms)
+open import net.cruhland.axioms.Sets.Complement public using (Complement)
 open import net.cruhland.axioms.Sets.Comprehension public using (Comprehension)
 import net.cruhland.axioms.Sets.Decidable as Decidable
 import net.cruhland.axioms.Sets.Difference as Difference
@@ -22,6 +23,7 @@ open import net.cruhland.axioms.Sets.Union public using (PairwiseUnion)
 record SetTheory : Setω where
   field
     SA : SetAxioms
+    CM : Complement SA
     SC : Comprehension SA
     ES : EmptySet SA
     PS : PairSet SA
@@ -30,6 +32,7 @@ record SetTheory : Setω where
     SS : SingletonSet SA
 
   open import net.cruhland.axioms.Sets.Base public using (El; Setoid)
+  open Complement CM public
   open Comprehension SC public
   open Decidable SA public
   open Difference SA SC public

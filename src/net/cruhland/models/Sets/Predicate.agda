@@ -3,8 +3,8 @@ module net.cruhland.models.Sets.Predicate where
 open import Function using (const; flip; id)
 open import Level using (_⊔_; Level; Setω) renaming (suc to lsuc)
 open import net.cruhland.axioms.Sets using
-  ( Comprehension; EmptySet; PairSet; PairwiseIntersection; PairwiseUnion
-  ; SetAxioms; SetTheory; SingletonSet
+  ( Complement; Comprehension; EmptySet; PairSet; PairwiseIntersection
+  ; PairwiseUnion; SetAxioms; SetTheory; SingletonSet
   )
 open import net.cruhland.axioms.Sets.Base using (α; β; σ₁; σ₂; El; S; Setoid)
 open import net.cruhland.models.Logic using
@@ -27,7 +27,7 @@ setAxioms = record
   ; PSet-cong = λ {_ _ _ _ _ _ A} → PSet.cong A
   }
 
-open SetAxioms setAxioms using (_∈_)
+open SetAxioms setAxioms using (_∈_; _∉_)
 
 comprehension : Comprehension setAxioms
 comprehension = record
@@ -99,9 +99,20 @@ _∩_ {S = S} {α} {β} A B =
 pairwiseIntersection : PairwiseIntersection setAxioms
 pairwiseIntersection = record { _∩_ = _∩_ ; x∈A∩B↔x∈A∧x∈B = ↔-refl }
 
+∁ : PSet S α → PSet S α
+∁ {S = S} A = record
+  { ap = λ x → x ∉ A
+  ; cong = λ x≈y x∉A y∈A → x∉A (cong A (≈-sym x≈y) y∈A)
+  }
+  where open Setoid S using (_≈_) renaming (sym to ≈-sym)
+
+complement : Complement setAxioms
+complement = record { ∁ = ∁ ; x∈∁A↔x∉A = ↔-refl }
+
 setTheory : SetTheory
 setTheory = record
   { SA = setAxioms
+  ; CM = complement
   ; SC = comprehension
   ; ES = emptySet
   ; PS = pairSet
