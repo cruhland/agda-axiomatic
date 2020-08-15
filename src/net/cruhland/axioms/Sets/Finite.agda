@@ -33,7 +33,6 @@ module net.cruhland.axioms.Sets.Finite
   open import Level using (_⊔_)
   open import Relation.Binary using (Decidable; DecSetoid)
   open import Relation.Binary.PropositionalEquality using (_≡_)
-  open import Relation.Nullary.Decidable using (map′)
   open import Relation.Nullary.Product using () renaming (_×-dec_ to _∧-dec_)
   open import net.cruhland.axioms.Sets.Base using (α; El; S; Setoid; σ₁; σ₂)
   open import net.cruhland.axioms.Sets.Equality SA using
@@ -46,13 +45,13 @@ module net.cruhland.axioms.Sets.Finite
   open import net.cruhland.models.Logic using
     ( _∧_; ∧-elimᴸ; ∧-elimᴿ; ∧-intro; uncurry
     ; _∨_; ∨-introᴸ; ∨-introᴿ
-    ; ⊥-elim; _because_; Dec; does; ofⁿ; ofʸ
+    ; ⊥-elim; _because_; Dec; dec-map; does; ofⁿ; ofʸ
     )
 
   finite : {S : Setoid σ₁ σ₂} → List (El S) → PSet S σ₂
   finite = foldr (λ x acc → singleton x ∪ acc) ∅
 
-  module Memberᴸ {DS : DecSetoid σ₁ σ₂} where
+  module Subsetᴸ {DS : DecSetoid σ₁ σ₂} where
     open DecMembership DS using () renaming (_∈_ to _∈ᴸ_; _∈?_ to _∈ᴸ?_)
     S′ = DecSetoid.setoid DS
     open Setoid S′ using (_≈_) renaming (sym to ≈-sym)
@@ -66,14 +65,6 @@ module net.cruhland.axioms.Sets.Finite
     ∈fin→∈ᴸ {xs = x ∷ xs} a∈fxs with x∈A∪B-elim a∈fxs
     ... | ∨-introᴸ a∈sx = here (≈-sym (x∈sa-elim a∈sx))
     ... | ∨-introᴿ a∈fxs′ = there (∈fin→∈ᴸ a∈fxs′)
-
-    _∈?_ : (a : El S′) (xs : List (El S′)) → Dec (a ∈ finite {S = S′} xs)
-    a ∈? xs = map′ ∈ᴸ→∈fin ∈fin→∈ᴸ (a ∈ᴸ? xs)
-
-  module Subsetᴸ {DS : DecSetoid σ₁ σ₂} where
-    open Memberᴸ {DS = DS} using (∈ᴸ→∈fin; ∈fin→∈ᴸ)
-    open DecMembership DS using () renaming (_∈_ to _∈ᴸ_; _∈?_ to _∈ᴸ?_)
-    S′ = DecSetoid.setoid DS
 
     infix 4 _⊆ᴸ_ _⊆ᴸ?_ _⊆?_ _≃?_
 
@@ -101,10 +92,10 @@ module net.cruhland.axioms.Sets.Finite
         xs⊆ᴸys = ⊆fin→⊆ᴸ (∪-⊆ᴿ sx∪fxs⊆fys)
 
     _⊆?_ : (xs ys : List (El S′)) → Dec (finite {S = S′} xs ⊆ finite ys)
-    xs ⊆? ys = map′ ⊆ᴸ→⊆fin ⊆fin→⊆ᴸ (xs ⊆ᴸ? ys)
+    xs ⊆? ys = dec-map ⊆ᴸ→⊆fin ⊆fin→⊆ᴸ (xs ⊆ᴸ? ys)
 
     _≃?_ : (xs ys : List (El S′)) → Dec (finite {S = S′} xs ≃ finite ys)
-    xs ≃? ys = map′ (uncurry ⊆-antisym) ≃→⊆⊇ ((xs ⊆? ys) ∧-dec (ys ⊆? xs))
+    xs ≃? ys = dec-map (uncurry ⊆-antisym) ≃→⊆⊇ ((xs ⊆? ys) ∧-dec (ys ⊆? xs))
       where
         ≃→⊆⊇ = λ A≃B → ∧-intro (≃→⊆ᴸ A≃B) (≃→⊆ᴿ A≃B)
 
@@ -157,10 +148,10 @@ module net.cruhland.axioms.Sets.Finite
   ∩-finite-lemma {DS = DS} {x = x} xs ys with x ∈ᴸ? ys
     where open DecMembership DS using () renaming (_∈?_ to _∈ᴸ?_)
   ... | true because ofʸ x∈ᴸys = ∪-substᴸ (singleton-∈∩ᴸ (∈ᴸ→∈fin x∈ᴸys))
-      where open Memberᴸ {DS = DS} using (∈ᴸ→∈fin)
+      where open Subsetᴸ {DS = DS} using (∈ᴸ→∈fin)
   ... | false because ofⁿ x∉ᴸys = ≃-trans (∪-substᴸ (singleton-∉∩ᴸ x∉fys)) ∪-∅ᴸ
     where
-      open Memberᴸ {DS = DS} using (∈fin→∈ᴸ)
+      open Subsetᴸ {DS = DS} using (∈fin→∈ᴸ)
       x∉fys = λ x∈fys → x∉ᴸys (∈fin→∈ᴸ x∈fys)
 
   ∩-finite :
