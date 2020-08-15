@@ -11,7 +11,7 @@ record DecMembership {S : Setoid σ₁ σ₂} (A : PSet S α) : Set (σ₁ ⊔ �
   field
     ∈?-elim : ∀ {x} → Dec (x ∈ A)
 
-open DecMembership {{...}}
+open DecMembership {{...}} public
 
 _∈?_ :
   {S : Setoid σ₁ σ₂} (x : El S) (A : PSet S α) →
