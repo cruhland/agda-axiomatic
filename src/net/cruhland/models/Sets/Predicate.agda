@@ -1,10 +1,10 @@
 module net.cruhland.models.Sets.Predicate where
 
-open import Function using (const; flip; id)
+open import Function using (_∘_; const; flip; id)
 open import Level using (_⊔_; Level; Setω) renaming (suc to lsuc)
 open import net.cruhland.axioms.Sets using
-  ( Complement; Comprehension; EmptySet; PairSet; PairwiseIntersection
-  ; PairwiseUnion; SetAxioms; SetTheory; SingletonSet
+  ( Complement; Comprehension; Difference; EmptySet; PairSet
+  ; PairwiseIntersection; PairwiseUnion; SetAxioms; SetTheory; SingletonSet
   )
 open import net.cruhland.axioms.Sets.Base using (α; β; σ₁; σ₂; El; S; Setoid)
 open import net.cruhland.models.Logic using
@@ -34,6 +34,8 @@ comprehension = record
   { ⟨_~_⟩ = λ ap cong → record { ap = ap ; cong = cong }
   ; x∈⟨P⟩↔Px = ↔-refl
   }
+
+open Comprehension comprehension using (congProp)
 
 ∅ : PSet S α
 ∅ = record { ap = const ⊥ᴸᴾ ; cong = const id }
@@ -109,6 +111,20 @@ pairwiseIntersection = record { _∩_ = _∩_ ; x∈A∩B↔x∈A∧x∈B = ↔-
 complement : Complement setAxioms
 complement = record { ∁ = ∁ ; x∈∁A↔x∉A = ↔-refl }
 
+_∖_ : {S : Setoid σ₁ σ₂} → PSet S α → PSet S β → PSet S (α ⊔ β)
+_∖_ {α = α} {β = β} {S = S} A B = record { ap = in-diff ; cong = diff-cong }
+  where
+    open Setoid S using (_≈_) renaming (sym to ≈-sym)
+
+    in-diff : El S → Set (α ⊔ β)
+    in-diff x = x ∈ A ∧ x ∉ B
+
+    diff-cong : congProp {S = S} in-diff
+    diff-cong x≈y = ∧-map (cong A x≈y) (_∘ cong B (≈-sym x≈y))
+
+difference : Difference setAxioms
+difference = record { _∖_ = _∖_ ; x∈A∖B↔x∈A∧x∉B = ↔-refl }
+
 setTheory : SetTheory
 setTheory = record
   { SA = setAxioms
@@ -118,5 +134,6 @@ setTheory = record
   ; PS = pairSet
   ; PI = pairwiseIntersection
   ; PU = pairwiseUnion
+  ; SD = difference
   ; SS = singletonSet
   }

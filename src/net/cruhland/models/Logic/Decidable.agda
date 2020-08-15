@@ -11,6 +11,7 @@ open import Relation.Nullary public using
   (_because_; Dec; does; ofⁿ; ofʸ; no; yes)
 open import Relation.Nullary.Decidable public
   using () renaming (map′ to dec-map)
+open import Relation.Nullary.Negation public using (¬?)
 open import Relation.Nullary.Product public
   using () renaming (_×-dec_ to _∧?_)
 open import Relation.Nullary.Sum public
