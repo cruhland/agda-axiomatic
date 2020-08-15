@@ -14,6 +14,6 @@ record DecMembership {S : Setoid σ₁ σ₂} (A : PSet S α) : Set (σ₁ ⊔ �
 open DecMembership {{...}}
 
 _∈?_ :
-  {S : Setoid σ₁ σ₂} (x : El S) (A : PSet S α) → {{DecMembership A}} →
-    Dec (x ∈ A)
-(x ∈? A) {{decMem}} = ∈?-elim
+  {S : Setoid σ₁ σ₂} (x : El S) (A : PSet S α) →
+    {{_ : DecMembership A}} → Dec (x ∈ A)
+x ∈? A = ∈?-elim

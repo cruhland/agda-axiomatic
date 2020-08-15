@@ -98,7 +98,7 @@ record PairwiseIntersection (SA : SetAxioms) : Setω where
   instance
     ∩-∈? :
       {A : PSet S α} {B : PSet S β} →
-        {{DecMembership A}} → {{DecMembership B}} → DecMembership (A ∩ B)
+        {{_ : DecMembership A}} {{_ : DecMembership B}} → DecMembership (A ∩ B)
     ∩-∈? {A = A} {B} =
       ∈?-intro
         (λ {x} → dec-map x∈A∩B-intro x∈A∩B-elim (x ∈? A ∧? x ∈? B))

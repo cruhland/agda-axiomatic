@@ -41,5 +41,5 @@ record Comprehension (SA : SetAxioms) : Setω where
   instance
     ⟨P⟩-∈? :
       {P : El S → Set α} {P-cong : congProp {S = S} P} →
-        {{Decidable P}} → DecMembership (⟨_~_⟩ {S = S} P P-cong)
-    ⟨P⟩-∈? {{decP}} = ∈?-intro (λ {x} → dec-map x∈⟨P⟩-intro x∈⟨P⟩-elim (decP x))
+        {{decP : ∀ {x} → Dec (P x)}} → DecMembership (⟨_~_⟩ {S = S} P P-cong)
+    ⟨P⟩-∈? {{decP}} = ∈?-intro (dec-map x∈⟨P⟩-intro x∈⟨P⟩-elim decP)
