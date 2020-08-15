@@ -1,6 +1,6 @@
 open import Function using (_∘_; flip)
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; _≢_; sym; cong; trans; subst)
+open Eq using (_≡_; _≢_; refl; sym; cong; trans; subst)
 open Eq.≡-Reasoning
 open import net.cruhland.axioms.Peano.Addition
   using () renaming (Addition to PeanoAddition)
@@ -11,7 +11,7 @@ open import net.cruhland.models.Logic using
   ( _∧_; ∧-elimᴸ; ∧-intro
   ; _∨_; ∨-introᴸ; ∨-introᴿ; ∨-mapᴸ
   ; ⊥; ⊥-elim; ¬_
-  ; no; yes
+  ; Dec; dec-map; no; yes
   )
 
 module net.cruhland.axioms.Peano.Ordering
@@ -200,6 +200,9 @@ module net.cruhland.axioms.Peano.Ordering
       Ps : step-case P
       Ps z≤k = ≤-trans z≤k n≤sn
 
+  ≤-step : ∀ {n m} → n ≤ m → step n ≤ step m
+  ≤-step (≤-intro d n+d≡m) = ≤-intro d (trans +-stepᴸ (cong step n+d≡m))
+
   ≡→≤ : ∀ {n m} → n ≡ m → n ≤ m
   ≡→≤ n≡m = ≤-intro zero (trans +-zeroᴿ n≡m)
 
@@ -266,3 +269,21 @@ module net.cruhland.axioms.Peano.Ordering
       Qs Qk j b≤j j<sk with <s→<∨≡ j<sk
       ... | ∨-introᴸ j<k = Qk j b≤j j<k
       ... | ∨-introᴿ j≡k = Pm j b≤j (subst Q (sym j≡k) Qk)
+
+  _≤?_ : ∀ n m → Dec (n ≤ m)
+  n ≤? m = ind P Pz Ps n m
+    where
+      P = λ x → ∀ y → Dec (x ≤ y)
+
+      Pz : P zero
+      Pz y = yes ≤-zero
+
+      Ps : step-case P
+      Ps k≤?y y with case y
+      ... | case-zero refl =
+        no λ { (≤-intro d sk+d≡z) → step≢zero (trans (sym +-stepᴸ) sk+d≡z) }
+      ... | case-step (pred-intro j refl) =
+        dec-map ≤-step s≤s→≤ (k≤?y j)
+
+  _<?_ : ∀ n m → Dec (n < m)
+  n <? m = dec-map s≤→< <→s≤ (step n ≤? m)
