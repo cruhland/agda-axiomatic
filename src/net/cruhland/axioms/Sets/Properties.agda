@@ -1,19 +1,25 @@
 open import net.cruhland.axioms.Sets.Base using (SetAxioms)
+open import net.cruhland.axioms.Sets.Complement using (Complement)
+open import net.cruhland.axioms.Sets.Difference using (Difference)
 open import net.cruhland.axioms.Sets.Empty using (EmptySet)
 open import net.cruhland.axioms.Sets.Intersection using (PairwiseIntersection)
 open import net.cruhland.axioms.Sets.Union using (PairwiseUnion)
 
 module net.cruhland.axioms.Sets.Properties
     (SA : SetAxioms)
+    (CM : Complement SA)
     (ES : EmptySet SA)
     (PI : PairwiseIntersection SA)
-    (PU : PairwiseUnion SA ES) where
+    (PU : PairwiseUnion SA ES)
+    (SD : Difference SA) where
+  open Complement CM using (∁; x∈∁A-elim; x∈∁A-intro)
+  open Difference SD using (_∖_; x∈A∖B-elim; x∈A∖B-intro)
   open EmptySet ES using (∅; x∉∅)
   open PairwiseIntersection PI using
     (_∩_; ∩-comm; x∈A∩B-elim; x∈A∩B-elimᴸ; x∈A∩B-intro₂)
   open PairwiseUnion PU using
     (_∪_; x∈A∪B-elim; x∈A∪B-intro; x∈A∪B-introᴸ; x∈A∪B-introᴿ)
-  open SetAxioms SA using (_∈_; PSet)
+  open SetAxioms SA using (_∈_; _∉_; PSet)
 
   open import Function using (_∘_; flip)
   open import net.cruhland.axioms.Sets.Base using
@@ -21,7 +27,7 @@ module net.cruhland.axioms.Sets.Properties
   open import net.cruhland.axioms.Sets.Equality SA using (_≃_; ≃-trans)
   open import net.cruhland.axioms.Sets.Subset SA using (_⊆_; ⊆-antisym; ⊆-intro)
   open import net.cruhland.models.Logic using
-    (∧-intro; _∨_; ∨-introᴸ; ∨-introᴿ; ∨-map; ⊥-elim)
+    (_∧_; ∧-intro; _∨_; ∨-introᴸ; ∨-introᴿ; ∨-map; ⊥-elim)
 
   ∅-⊆ : {A : PSet S α} → (∅ {α = α}) ⊆ A
   ∅-⊆ = ⊆-intro (⊥-elim ∘ x∉∅)
@@ -61,3 +67,16 @@ module net.cruhland.axioms.Sets.Properties
       ... | ∨-introᴿ x∈B∩C =
         let ∧-intro x∈B x∈C = x∈A∩B-elim x∈B∩C
          in x∈A∩B-intro₂ (x∈A∪B-introᴿ x∈B) x∈C
+
+  A∖B≃A∩∁B : {A : PSet S α} {B : PSet S β} → A ∖ B ≃ A ∩ ∁ B
+  A∖B≃A∩∁B {A = A} {B} = ⊆-antisym (⊆-intro forward) (⊆-intro backward)
+    where
+      forward : ∀ {x} → x ∈ A ∖ B → x ∈ A ∩ ∁ B
+      forward x∈A∖B =
+        let ∧-intro x∈A x∉B = x∈A∖B-elim x∈A∖B
+         in x∈A∩B-intro₂ x∈A (x∈∁A-intro x∉B)
+
+      backward : ∀ {x} → x ∈ A ∩ ∁ B → x ∈ A ∖ B
+      backward x∈A∩∁B =
+        let ∧-intro x∈A x∈∁B = x∈A∩B-elim x∈A∩∁B
+         in x∈A∖B-intro (∧-intro x∈A (x∈∁A-elim x∈∁B))
