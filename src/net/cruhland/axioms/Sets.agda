@@ -39,11 +39,11 @@ record SetTheory : Setω where
   open Difference SD public
   open EmptySet ES public
   open Equality SA public
-  open Finite SA ES PI PU SS public
+  open Finite SA CM ES PI PU SD SS public
   open PairSet PS public
   open PairwiseIntersection PI public
   open PairwiseUnion PU public
-  open Properties SA ES PI PU public
+  open Properties SA CM ES PI PU SD public
   open SetAxioms SA public
   open SingletonSet SS public
   open Subset SA public

@@ -1,4 +1,6 @@
 open import net.cruhland.axioms.Sets.Base using (SetAxioms)
+open import net.cruhland.axioms.Sets.Complement using (Complement)
+open import net.cruhland.axioms.Sets.Difference using (Difference)
 open import net.cruhland.axioms.Sets.Empty using (EmptySet)
 open import net.cruhland.axioms.Sets.Intersection using (PairwiseIntersection)
 open import net.cruhland.axioms.Sets.Union using (PairwiseUnion)
@@ -6,11 +8,15 @@ open import net.cruhland.axioms.Sets.Singleton using (SingletonSet)
 
 module net.cruhland.axioms.Sets.Finite
     (SA : SetAxioms)
+    (CM : Complement SA)
     (ES : EmptySet SA)
     (PI : PairwiseIntersection SA)
     (PU : PairwiseUnion SA ES)
+    (SD : Difference SA)
     (SS : SingletonSet SA) where
   open SetAxioms SA using (_∈_; _∉_; PSet; PSet-cong)
+  open Complement CM using (∁; ∁-∈?)
+  open Difference SD using (_∖_)
   open EmptySet ES using (∅; x∉∅)
   open PairwiseIntersection PI using
     (_∩_; x∈A∩B-elim; x∈A∩B-elimᴸ; x∈A∩B-intro₂)
@@ -38,8 +44,8 @@ module net.cruhland.axioms.Sets.Finite
   open import net.cruhland.axioms.Sets.Equality SA using
     (_≃_; ≃-trans; module ≃-Reasoning)
   open ≃-Reasoning
-  open import net.cruhland.axioms.Sets.Properties SA ES PI PU using
-    (A⊆∅→A≃∅; ∪-⊆ᴿ; ∩-∅ᴸ; ∩-over-∪ᴿ)
+  open import net.cruhland.axioms.Sets.Properties SA CM ES PI PU SD using
+    (A⊆∅→A≃∅; ∪-⊆ᴿ; ∩-∅ᴸ; ∩-over-∪ᴿ; A∖B≃A∩∁B)
   open import net.cruhland.axioms.Sets.Subset SA using
     (_⊆_; ≃→⊆ᴸ; ≃→⊆ᴿ; ⊆-antisym; ⊆-intro)
   open import net.cruhland.models.Logic using
@@ -188,3 +194,8 @@ module net.cruhland.axioms.Sets.Finite
     ≃⟨ ∩-finite-lemma xs A ⟩
       finite ((x ∷ xs) ∩ᴾ A)
     ∎
+
+  ∖-finite :
+    {S : Setoid σ₁ σ₂} (xs : List (El S)) (A : PSet S σ₂) →
+      {{_ : DecMembership A}} → finite xs ∖ A ≃ finite (xs ∩ᴾ ∁ A)
+  ∖-finite xs A = ≃-trans A∖B≃A∩∁B (∩-finite xs (∁ A))
