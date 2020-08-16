@@ -16,15 +16,21 @@ module net.cruhland.axioms.Sets.Properties
   open Difference SD using (_∖_; x∈A∖B-elim; x∈A∖B-intro)
   open EmptySet ES using (∅; x∉∅)
   open PairwiseIntersection PI using
-    (_∩_; ∩-comm; x∈A∩B-elim; x∈A∩B-elimᴸ; x∈A∩B-intro₂)
+    ( _∩_; ∩-comm; x∈A∩B-elim; x∈A∩B-elimᴸ; x∈A∩B-elimᴿ; x∈A∩B-intro₂
+    ; ∩-substᴸ; ∩-substᴿ
+    )
   open PairwiseUnion PU using
-    (_∪_; x∈A∪B-elim; x∈A∪B-intro; x∈A∪B-introᴸ; x∈A∪B-introᴿ)
+    ( _∪_; ∪-comm; x∈A∪B-elim; x∈A∪B-intro; x∈A∪B-introᴸ; x∈A∪B-introᴿ
+    ; ∪-substᴸ; ∪-substᴿ
+    )
   open SetAxioms SA using (_∈_; _∉_; PSet)
 
   open import Function using (_∘_; flip)
   open import net.cruhland.axioms.Sets.Base using
     (α; β; χ; σ₁; σ₂; El; S; Setoid)
-  open import net.cruhland.axioms.Sets.Equality SA using (_≃_; ≃-trans)
+  open import net.cruhland.axioms.Sets.Equality SA using
+    (_≃_; ≃-trans; module ≃-Reasoning)
+  open ≃-Reasoning
   open import net.cruhland.axioms.Sets.Subset SA using (_⊆_; ⊆-antisym; ⊆-intro)
   open import net.cruhland.models.Logic using
     (_∧_; ∧-intro; _∨_; ∨-introᴸ; ∨-introᴿ; ∨-map; ⊥-elim)
@@ -67,6 +73,58 @@ module net.cruhland.axioms.Sets.Properties
       ... | ∨-introᴿ x∈B∩C =
         let ∧-intro x∈B x∈C = x∈A∩B-elim x∈B∩C
          in x∈A∩B-intro₂ (x∈A∪B-introᴿ x∈B) x∈C
+
+  ∩-over-∪ᴸ :
+    {A : PSet S α} {B : PSet S β} {C : PSet S χ} → A ∩ (B ∪ C) ≃ A ∩ B ∪ A ∩ C
+  ∩-over-∪ᴸ {A = A} {B} {C} =
+    begin
+      A ∩ (B ∪ C)
+    ≃⟨ ∩-comm ⟩
+      (B ∪ C) ∩ A
+    ≃⟨ ∩-over-∪ᴿ ⟩
+      B ∩ A ∪ C ∩ A
+    ≃⟨ ∪-substᴸ ∩-comm ⟩
+      A ∩ B ∪ C ∩ A
+    ≃⟨ ∪-substᴿ ∩-comm ⟩
+      A ∩ B ∪ A ∩ C
+    ∎
+
+  ∪-over-∩ᴸ :
+    {A : PSet S α} {B : PSet S β} {C : PSet S χ} →
+      A ∪ (B ∩ C) ≃ (A ∪ B) ∩ (A ∪ C)
+  ∪-over-∩ᴸ {A = A} {B} {C} = ⊆-antisym (⊆-intro forward) (⊆-intro backward)
+    where
+      forward : ∀ {x} → x ∈ A ∪ (B ∩ C) → x ∈ (A ∪ B) ∩ (A ∪ C)
+      forward x∈A∪[B∩C] with x∈A∪B-elim x∈A∪[B∩C]
+      ... | ∨-introᴸ x∈A = x∈A∩B-intro₂ (x∈A∪B-introᴸ x∈A) (x∈A∪B-introᴸ x∈A)
+      ... | ∨-introᴿ x∈B∩C =
+        let ∧-intro x∈B x∈C = x∈A∩B-elim x∈B∩C
+         in x∈A∩B-intro₂ (x∈A∪B-introᴿ x∈B) (x∈A∪B-introᴿ x∈C)
+
+      backward : ∀ {x} → x ∈ (A ∪ B) ∩ (A ∪ C) → x ∈ A ∪ (B ∩ C)
+      backward x∈[A∪B]∩[A∪C] with x∈A∪B-elim x∈A∪B | x∈A∪B-elim x∈A∪C
+        where
+          x∈A∪B = x∈A∩B-elimᴸ x∈[A∪B]∩[A∪C]
+          x∈A∪C = x∈A∩B-elimᴿ x∈[A∪B]∩[A∪C]
+      ... | ∨-introᴸ x∈A | ac = x∈A∪B-introᴸ x∈A
+      ... | ∨-introᴿ x∈B | ∨-introᴸ x∈A = x∈A∪B-introᴸ x∈A
+      ... | ∨-introᴿ x∈B | ∨-introᴿ x∈C = x∈A∪B-introᴿ (x∈A∩B-intro₂ x∈B x∈C)
+
+  ∪-over-∩ᴿ :
+    {A : PSet S α} {B : PSet S β} {C : PSet S χ} →
+      (A ∩ B) ∪ C ≃ (A ∪ C) ∩ (B ∪ C)
+  ∪-over-∩ᴿ {A = A} {B} {C} =
+    begin
+      (A ∩ B) ∪ C
+    ≃⟨ ∪-comm ⟩
+      C ∪ (A ∩ B)
+    ≃⟨ ∪-over-∩ᴸ ⟩
+      (C ∪ A) ∩ (C ∪ B)
+    ≃⟨ ∩-substᴸ ∪-comm ⟩
+      (A ∪ C) ∩ (C ∪ B)
+    ≃⟨ ∩-substᴿ ∪-comm ⟩
+      (A ∪ C) ∩ (B ∪ C)
+    ∎
 
   A∖B≃A∩∁B : {A : PSet S α} {B : PSet S β} → A ∖ B ≃ A ∩ ∁ B
   A∖B≃A∩∁B {A = A} {B} = ⊆-antisym (⊆-intro forward) (⊆-intro backward)
