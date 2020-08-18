@@ -45,7 +45,7 @@ module net.cruhland.axioms.Sets.Finite
     (_≃_; ≃-trans; module ≃-Reasoning)
   open ≃-Reasoning
   open import net.cruhland.axioms.Sets.Properties SA CM ES PI PU SD using
-    (A⊆∅→A≃∅; ∪-⊆ᴿ; ∩-∅ᴸ; ∩-over-∪ᴿ; A∖B≃A∩∁B)
+    (A⊆∅→A≃∅; ∪⊆-elimᴿ; ∩-∅ᴸ; ∩-over-∪ᴿ; A∖B≃A∩∁B)
   open import net.cruhland.axioms.Sets.Subset SA using
     (_⊆_; ≃→⊆ᴸ; ≃→⊆ᴿ; ⊆-antisym; ⊆-intro)
   open import net.cruhland.models.Logic using
@@ -111,7 +111,7 @@ module net.cruhland.axioms.Sets.Finite
     ⊆fin→⊆ᴸ {xs = x ∷ xs} sx∪fxs⊆fys@(⊆-intro x∈fxs→x∈fys) = x∈ᴸys ∷ᴬ xs⊆ᴸys
       where
         x∈ᴸys = ∈fin→∈ᴸ (x∈fxs→x∈fys (x∈A∪B-introᴸ a∈sa))
-        xs⊆ᴸys = ⊆fin→⊆ᴸ (∪-⊆ᴿ sx∪fxs⊆fys)
+        xs⊆ᴸys = ⊆fin→⊆ᴸ (∪⊆-elimᴿ sx∪fxs⊆fys)
 
     ⊆fin→⊆ᴾ :
       {xs : List (El S′)} {A : PSet S′ α} → finite {S = S′} xs ⊆ A → xs ⊆ᴾ A
@@ -119,7 +119,7 @@ module net.cruhland.axioms.Sets.Finite
     ⊆fin→⊆ᴾ {xs = x ∷ xs} sx∪fxs⊆A@(⊆-intro x∈fxs→x∈A) = x∈A ∷ᴬ xs⊆ᴾA
       where
         x∈A = x∈fxs→x∈A (x∈A∪B-introᴸ a∈sa)
-        xs⊆ᴾA = ⊆fin→⊆ᴾ (∪-⊆ᴿ sx∪fxs⊆A)
+        xs⊆ᴾA = ⊆fin→⊆ᴾ (∪⊆-elimᴿ sx∪fxs⊆A)
 
     _⊆′?_ : (xs ys : List (El S′)) → Dec (finite {S = S′} xs ⊆ finite ys)
     xs ⊆′? ys = dec-map ⊆ᴸ→⊆fin ⊆fin→⊆ᴸ (xs ⊆ᴸ? ys)

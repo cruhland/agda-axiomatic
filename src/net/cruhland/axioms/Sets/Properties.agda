@@ -13,7 +13,7 @@ module net.cruhland.axioms.Sets.Properties
     (PU : PairwiseUnion SA ES)
     (SD : Difference SA) where
   open Complement CM using (∁; x∈∁A-elim; x∈∁A-intro)
-  open Difference SD using (_∖_; x∈A∖B-elim; x∈A∖B-intro)
+  open Difference SD using (_∖_; x∈A∖B-elim; x∈A∖B-elimᴸ; x∈A∖B-intro)
   open EmptySet ES using (∅; x∉∅)
   open PairwiseIntersection PI using
     ( _∩_; ∩-comm; x∈A∩B-elim; x∈A∩B-elimᴸ; x∈A∩B-elimᴿ; x∈A∩B-intro₂
@@ -33,7 +33,7 @@ module net.cruhland.axioms.Sets.Properties
   open ≃-Reasoning
   open import net.cruhland.axioms.Sets.Subset SA using (_⊆_; ⊆-antisym; ⊆-intro)
   open import net.cruhland.models.Logic using
-    (_∧_; ∧-intro; _∨_; ∨-introᴸ; ∨-introᴿ; ∨-map; ⊥-elim)
+    (_∧_; ∧-intro; _∨_; ∨-introᴸ; ∨-introᴿ; ∨-map; ∨-rec; ⊥-elim)
 
   ∅-⊆ : {A : PSet S α} → (∅ {α = α}) ⊆ A
   ∅-⊆ = ⊆-intro (⊥-elim ∘ x∉∅)
@@ -41,11 +41,16 @@ module net.cruhland.axioms.Sets.Properties
   A⊆∅→A≃∅ : {A : PSet S α} → A ⊆ (∅ {α = α}) → A ≃ ∅
   A⊆∅→A≃∅ A⊆∅ = ⊆-antisym A⊆∅ ∅-⊆
 
-  ∪-⊆ᴸ : {A : PSet S α} {B : PSet S β} {C : PSet S χ} → A ∪ B ⊆ C → A ⊆ C
-  ∪-⊆ᴸ (⊆-intro x∈A∪B→x∈C) = ⊆-intro (x∈A∪B→x∈C ∘ x∈A∪B-introᴸ)
+  ∪⊆-elimᴸ : {A : PSet S α} {B : PSet S β} {C : PSet S χ} → A ∪ B ⊆ C → A ⊆ C
+  ∪⊆-elimᴸ (⊆-intro x∈A∪B→x∈C) = ⊆-intro (x∈A∪B→x∈C ∘ x∈A∪B-introᴸ)
 
-  ∪-⊆ᴿ : {A : PSet S α} {B : PSet S β} {C : PSet S χ} → A ∪ B ⊆ C → B ⊆ C
-  ∪-⊆ᴿ (⊆-intro x∈A∪B→x∈C) = ⊆-intro (x∈A∪B→x∈C ∘ x∈A∪B-introᴿ)
+  ∪⊆-elimᴿ : {A : PSet S α} {B : PSet S β} {C : PSet S χ} → A ∪ B ⊆ C → B ⊆ C
+  ∪⊆-elimᴿ (⊆-intro x∈A∪B→x∈C) = ⊆-intro (x∈A∪B→x∈C ∘ x∈A∪B-introᴿ)
+
+  ∪⊆-intro₂ :
+    {A : PSet S α} {B : PSet S β} {C : PSet S χ} → A ⊆ C → B ⊆ C → A ∪ B ⊆ C
+  ∪⊆-intro₂ (⊆-intro x∈A→x∈C) (⊆-intro x∈B→x∈C) =
+    ⊆-intro (∨-rec x∈A→x∈C x∈B→x∈C ∘ x∈A∪B-elim)
 
   ∩-∅ᴸ : {S : Setoid σ₁ σ₂} {A : PSet S α} → ∅ ∩ A ≃ (∅ {α = α})
   ∩-∅ᴸ = A⊆∅→A≃∅ (⊆-intro x∈A∩B-elimᴸ)
@@ -138,3 +143,6 @@ module net.cruhland.axioms.Sets.Properties
       backward x∈A∩∁B =
         let ∧-intro x∈A x∈∁B = x∈A∩B-elim x∈A∩∁B
          in x∈A∖B-intro (∧-intro x∈A (x∈∁A-elim x∈∁B))
+
+  A∖B⊆A : {A : PSet S α} {B : PSet S β} → A ∖ B ⊆ A
+  A∖B⊆A = ⊆-intro x∈A∖B-elimᴸ
