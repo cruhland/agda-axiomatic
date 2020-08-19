@@ -19,7 +19,7 @@ record PairwiseIntersection (SA : SetAxioms) : Setω where
   open SetAxioms SA using (_∈_; PSet)
   open Subset SA using (_⊆_; ⊆-antisym; ⊆-intro)
 
-  infixl 7 _∩_
+  infixl 6 _∩_
 
   field
     _∩_ : PSet S α → PSet S β → PSet S (α ⊔ β)

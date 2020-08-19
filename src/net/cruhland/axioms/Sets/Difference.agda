@@ -12,7 +12,7 @@ record Difference (SA : SetAxioms) : Setω where
   open Decidable SA using (_∈?_; DecMembership; ∈?-intro)
   open SetAxioms SA using (_∈_; _∉_; PSet)
 
-  infixl 5 _∖_
+  infixl 7 _∖_
 
   field
     _∖_ : PSet S α → PSet S β → PSet S (α ⊔ β)
