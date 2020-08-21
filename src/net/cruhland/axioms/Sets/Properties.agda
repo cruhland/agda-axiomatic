@@ -3,6 +3,8 @@ open import net.cruhland.axioms.Sets.Complement using (Complement)
 open import net.cruhland.axioms.Sets.Difference using (Difference)
 open import net.cruhland.axioms.Sets.Empty using (EmptySet)
 open import net.cruhland.axioms.Sets.Intersection using (PairwiseIntersection)
+open import net.cruhland.axioms.Sets.Pair using (PairSet)
+open import net.cruhland.axioms.Sets.Singleton using (SingletonSet)
 open import net.cruhland.axioms.Sets.Union using (PairwiseUnion)
 
 module net.cruhland.axioms.Sets.Properties
@@ -10,11 +12,14 @@ module net.cruhland.axioms.Sets.Properties
     (CM : Complement SA)
     (ES : EmptySet SA)
     (PI : PairwiseIntersection SA)
+    (PS : PairSet SA)
     (PU : PairwiseUnion SA ES)
-    (SD : Difference SA) where
+    (SD : Difference SA)
+    (SS : SingletonSet SA) where
   open Complement CM using (∁; x∈∁A-elim; x∈∁A-intro)
   open Difference SD using (_∖_; x∈A∖B-elim; x∈A∖B-elimᴸ; x∈A∖B-intro)
   open EmptySet ES using (∅; x∉∅)
+  open PairSet PS using (pair; x∈pab-elim; x∈pab-introᴸ; x∈pab-introᴿ)
   open PairwiseIntersection PI using
     ( _∩_; ∩-comm; x∈A∩B-elim; x∈A∩B-elimᴸ; x∈A∩B-elimᴿ; x∈A∩B-intro₂
     ; ∩-substᴸ; ∩-substᴿ
@@ -24,6 +29,7 @@ module net.cruhland.axioms.Sets.Properties
     ; ∪-substᴸ; ∪-substᴿ
     )
   open SetAxioms SA using (_∈_; _∉_; PSet)
+  open SingletonSet SS using (singleton; x∈sa-elim; x∈sa-intro)
 
   open import Function using (_∘_; flip)
   open import net.cruhland.axioms.Sets.Base using
@@ -51,6 +57,23 @@ module net.cruhland.axioms.Sets.Properties
     {A : PSet S α} {B : PSet S β} {C : PSet S χ} → A ⊆ C → B ⊆ C → A ∪ B ⊆ C
   ∪⊆-intro₂ (⊆-intro x∈A→x∈C) (⊆-intro x∈B→x∈C) =
     ⊆-intro (∨-rec x∈A→x∈C x∈B→x∈C ∘ x∈A∪B-elim)
+
+  pab≃sa∪sb :
+    {S : Setoid σ₁ σ₂} {a b : El S} →
+      pair a b ≃ singleton {S = S} a ∪ singleton b
+  pab≃sa∪sb {S = S} {a} {b} = ⊆-antisym (⊆-intro forward) (⊆-intro backward)
+    where
+      open Setoid S using (_≈_)
+
+      forward : ∀ {x} → x ∈ pair a b → x ∈ singleton a ∪ singleton b
+      forward x∈pab with x∈pab-elim x∈pab
+      ... | ∨-introᴸ x≈a = x∈A∪B-introᴸ (x∈sa-intro x≈a)
+      ... | ∨-introᴿ x≈b = x∈A∪B-introᴿ (x∈sa-intro x≈b)
+
+      backward : ∀ {x} → x ∈ singleton a ∪ singleton b → x ∈ pair a b
+      backward x∈sa∪sb with x∈A∪B-elim x∈sa∪sb
+      ... | ∨-introᴸ x∈sa = x∈pab-introᴸ (x∈sa-elim x∈sa)
+      ... | ∨-introᴿ x∈sb = x∈pab-introᴿ (x∈sa-elim x∈sb)
 
   ∩-∅ᴸ : {S : Setoid σ₁ σ₂} {A : PSet S α} → ∅ ∩ A ≃ (∅ {α = α})
   ∩-∅ᴸ = A⊆∅→A≃∅ (⊆-intro x∈A∩B-elimᴸ)

@@ -3,6 +3,7 @@ open import net.cruhland.axioms.Sets.Complement using (Complement)
 open import net.cruhland.axioms.Sets.Difference using (Difference)
 open import net.cruhland.axioms.Sets.Empty using (EmptySet)
 open import net.cruhland.axioms.Sets.Intersection using (PairwiseIntersection)
+open import net.cruhland.axioms.Sets.Pair using (PairSet)
 open import net.cruhland.axioms.Sets.Union using (PairwiseUnion)
 open import net.cruhland.axioms.Sets.Singleton using (SingletonSet)
 
@@ -11,6 +12,7 @@ module net.cruhland.axioms.Sets.Finite
     (CM : Complement SA)
     (ES : EmptySet SA)
     (PI : PairwiseIntersection SA)
+    (PS : PairSet SA)
     (PU : PairwiseUnion SA ES)
     (SD : Difference SA)
     (SS : SingletonSet SA) where
@@ -18,10 +20,11 @@ module net.cruhland.axioms.Sets.Finite
   open Complement CM using (∁; ∁-∈?)
   open Difference SD using (_∖_)
   open EmptySet ES using (∅; x∉∅)
+  open PairSet PS using (pair)
   open PairwiseIntersection PI using
     (_∩_; x∈A∩B-elim; x∈A∩B-elimᴸ; x∈A∩B-intro₂)
   open PairwiseUnion PU using
-    ( _∪_; ∪-∅ᴸ; ∪-assoc; x∈A∪B-elim
+    ( _∪_; ∪-∅ᴸ; ∪-∅ᴿ; ∪-assoc; x∈A∪B-elim
     ; x∈A∪B-introᴸ; x∈A∪B-introᴿ; ∪-substᴸ; ∪-substᴿ
     )
   open SingletonSet SS using (singleton; a∈sa; x∈sa-elim; x∈sa-intro)
@@ -42,10 +45,10 @@ module net.cruhland.axioms.Sets.Finite
   open import net.cruhland.axioms.Sets.Base using (α; El; S; Setoid; σ₁; σ₂)
   open import net.cruhland.axioms.Sets.Decidable SA using (_∈?_; DecMembership)
   open import net.cruhland.axioms.Sets.Equality SA using
-    (_≃_; ≃-trans; module ≃-Reasoning)
+    (_≃_; ≃-refl; ≃-sym; ≃-trans; module ≃-Reasoning)
   open ≃-Reasoning
-  open import net.cruhland.axioms.Sets.Properties SA CM ES PI PU SD using
-    (A⊆∅→A≃∅; ∪⊆-elimᴿ; ∩-∅ᴸ; ∩-over-∪ᴿ; A∖B≃A∩∁B)
+  open import net.cruhland.axioms.Sets.Properties SA CM ES PI PS PU SD SS using
+    (A⊆∅→A≃∅; ∪⊆-elimᴿ; pab≃sa∪sb; ∩-∅ᴸ; ∩-over-∪ᴿ; A∖B≃A∩∁B)
   open import net.cruhland.axioms.Sets.Subset SA using
     (_⊆_; ≃→⊆ᴸ; ≃→⊆ᴿ; ⊆-antisym; ⊆-intro)
   open import net.cruhland.models.Logic using
@@ -56,6 +59,39 @@ module net.cruhland.axioms.Sets.Finite
 
   finite : {S : Setoid σ₁ σ₂} → List (El S) → PSet S σ₂
   finite = foldr (λ x acc → singleton x ∪ acc) ∅
+
+  record Finite {S : Setoid σ₁ σ₂} (A : PSet S σ₂) : Set (σ₁ ⊔ σ₂) where
+    field
+      toList : List (El S)
+      from∘to : finite toList ≃ A
+
+  open Finite {{...}} public using (toList)
+
+  instance
+    ∅-finite : Finite (∅ {S = S} {α})
+    ∅-finite = record { toList = [] ; from∘to = ≃-refl }
+
+    singleton-finite : ∀ {a} → Finite (singleton {S = S} a)
+    singleton-finite {a = a} = record { toList = a ∷ [] ; from∘to = ∪-∅ᴿ }
+
+    pair-finite : ∀ {a b} → Finite (pair {S = S} a b)
+    pair-finite {a = a} {b} = record { toList = pair-list ; from∘to = from∘to }
+      where
+        pair-list = a ∷ b ∷ []
+        from∘to =
+          begin
+            finite pair-list
+          ≃⟨⟩
+            finite (a ∷ b ∷ [])
+          ≃⟨⟩
+            singleton a ∪ (singleton b ∪ ∅)
+          ≃˘⟨ ∪-assoc ⟩
+            singleton a ∪ singleton b ∪ ∅
+          ≃⟨ ∪-∅ᴿ ⟩
+            singleton a ∪ singleton b
+          ≃˘⟨ pab≃sa∪sb ⟩
+            pair a b
+          ∎
 
   module Subsetᴸ {DS : DecSetoid σ₁ σ₂} where
     open DecSetoidᴸ DS using () renaming (_∈_ to _∈ᴸ_; _∈?_ to _∈ᴸ?_)
