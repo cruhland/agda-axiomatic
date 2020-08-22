@@ -45,12 +45,12 @@ module net.cruhland.axioms.Sets.Finite
   open import net.cruhland.axioms.Sets.Base using (α; β; El; S; Setoid; σ₁; σ₂)
   open import net.cruhland.axioms.Sets.Decidable SA using (_∈?_; DecMembership)
   open import net.cruhland.axioms.Sets.Equality SA using
-    (_≃_; ≃-refl; ≃-sym; ≃-trans; module ≃-Reasoning)
+    (_≃_; ≃-refl; ∈-substᴿ; ≃-sym; ≃-trans; module ≃-Reasoning)
   open ≃-Reasoning
   open import net.cruhland.axioms.Sets.Properties SA CM ES PI PS PU SD SS using
     (A⊆∅→A≃∅; ∪⊆-elimᴿ; pab≃sa∪sb; ∩-∅ᴸ; ∩-over-∪ᴿ; A∖B≃A∩∁B)
   open import net.cruhland.axioms.Sets.Subset SA using
-    (_⊆_; ≃→⊆ᴸ; ≃→⊆ᴿ; ⊆-antisym; ⊆-intro)
+    (_⊆_; ≃→⊆ᴸ; ≃→⊆ᴿ; ⊆-antisym; ⊆-intro; ⊆-substᴸ)
   open import net.cruhland.models.Logic using
     ( _∧_; _∧?_; ∧-elimᴸ; ∧-elimᴿ; ∧-intro; uncurry
     ; _∨_; ∨-introᴸ; ∨-introᴿ
@@ -246,13 +246,16 @@ module net.cruhland.axioms.Sets.Finite
     ... | ∨-introᴸ a∈sx = here (≈-sym (x∈sa-elim a∈sx))
     ... | ∨-introᴿ a∈fxs′ = there (∈fin→∈ᴸ a∈fxs′)
 
-    infix 4 _⊆ᴸ_ _⊆ᴾ_ _⊆ᴸ?_ _⊆ᴾ?_ _⊆?_ _⊆′?_ _≃?_
+    infix 4 _⊆ᴸ_ _⊆ᴾ_ _⊆ᶠ_ _⊆ᴸ?_ _⊆ᴾ?_ _⊆ᶠ?_ _⊆?_ _⊆′?_ _≃?_
 
     _⊆ᴸ_ : List (El S′) → List (El S′) → Set (σ₁ ⊔ σ₂)
     _⊆ᴸ_ xs ys = All (_∈ᴸ ys) xs
 
     _⊆ᴾ_ : List (El S′) → PSet S′ α → Set (σ₁ ⊔ α)
     _⊆ᴾ_ xs A = All (_∈ A) xs
+
+    _⊆ᶠ_ : (A : PSet S′ σ₂) {{_ : Finite A}} → PSet S′ β → Set (σ₁ ⊔ β)
+    A ⊆ᶠ B = toList A ⊆ᴾ B
 
     _⊆ᴸ?_ : Decidable _⊆ᴸ_
     _⊆ᴸ?_ xs ys = all (_∈ᴸ? ys) xs
@@ -261,6 +264,11 @@ module net.cruhland.axioms.Sets.Finite
       (xs : List (El S′)) → (A : PSet S′ α) →
         {{_ : DecMembership A}} → Dec (xs ⊆ᴾ A)
     _⊆ᴾ?_ xs A = all (_∈? A) xs
+
+    _⊆ᶠ?_ :
+      (A : PSet S′ σ₂) (B : PSet S′ β) →
+        {{_ : Finite A}} {{_ : DecMembership B}} → Dec (A ⊆ᶠ B)
+    A ⊆ᶠ? B = toList A ⊆ᴾ? B
 
     ⊆ᴸ→⊆fin : {xs ys : List (El S′)} → xs ⊆ᴸ ys → finite {S = S′} xs ⊆ finite ys
     ⊆ᴸ→⊆fin {xs} {ys} xs⊆ᴸys = ⊆-intro (∈ᴸ→∈fin ∘ x∈ᴸxs→x∈ᴸys ∘ ∈fin→∈ᴸ)
@@ -280,6 +288,14 @@ module net.cruhland.axioms.Sets.Finite
         x∈ᴸxs→x∈A x∈ᴸxs with lookupAny xs⊆ᴾA x∈ᴸxs
         ... | ∧-intro lookup∈A x≈lookup = PSet-cong (≈-sym x≈lookup) lookup∈A
 
+    ⊆fin→⊆ :
+      {A : PSet S′ σ₂} {B : PSet S′ β} {{_ : Finite A}} →
+        finite (toList A) ⊆ B → A ⊆ B
+    ⊆fin→⊆ = ⊆-substᴸ same-set
+
+    ⊆ᶠ→⊆ : {A : PSet S′ σ₂} {B : PSet S′ β} {{_ : Finite A}} → A ⊆ᶠ B → A ⊆ B
+    ⊆ᶠ→⊆ = ⊆fin→⊆ ∘ ⊆ᴾ→⊆fin
+
     ⊆fin→⊆ᴸ : {xs ys : List (El S′)} → finite {S = S′} xs ⊆ finite ys → xs ⊆ᴸ ys
     ⊆fin→⊆ᴸ {xs = []} fxs⊆fys = []ᴬ
     ⊆fin→⊆ᴸ {xs = x ∷ xs} sx∪fxs⊆fys@(⊆-intro x∈fxs→x∈fys) = x∈ᴸys ∷ᴬ xs⊆ᴸys
@@ -295,20 +311,27 @@ module net.cruhland.axioms.Sets.Finite
         x∈A = x∈fxs→x∈A (x∈A∪B-introᴸ a∈sa)
         xs⊆ᴾA = ⊆fin→⊆ᴾ (∪⊆-elimᴿ sx∪fxs⊆A)
 
+    ⊆→⊆fin :
+      {A : PSet S′ σ₂} {B : PSet S′ β} {{_ : Finite A}} →
+        A ⊆ B → finite (toList A) ⊆ B
+    ⊆→⊆fin = ⊆-substᴸ (≃-sym same-set)
+
+    ⊆→⊆ᶠ : {A : PSet S′ σ₂} {B : PSet S′ β} {{_ : Finite A}} → A ⊆ B → A ⊆ᶠ B
+    ⊆→⊆ᶠ = ⊆fin→⊆ᴾ ∘ ⊆→⊆fin
+
     _⊆′?_ : (xs ys : List (El S′)) → Dec (finite {S = S′} xs ⊆ finite ys)
     xs ⊆′? ys = dec-map ⊆ᴸ→⊆fin ⊆fin→⊆ᴸ (xs ⊆ᴸ? ys)
 
     _⊆?_ :
-      (xs : List (El S′)) (A : PSet S′ α) {{_ : DecMembership A}} →
-        Dec (finite {S = S′} xs ⊆ A)
-    xs ⊆? A = dec-map ⊆ᴾ→⊆fin ⊆fin→⊆ᴾ (xs ⊆ᴾ? A)
+      (A : PSet S′ σ₂) (B : PSet S′ β) →
+        {{_ : Finite A}} {{_ : DecMembership B}} → Dec (A ⊆ B)
+    A ⊆? B = dec-map ⊆ᶠ→⊆ ⊆→⊆ᶠ (A ⊆ᶠ? B)
 
-    _≃?_ : (xs ys : List (El S′)) → Dec (finite {S = S′} xs ≃ finite ys)
-    xs ≃? ys = dec-map (uncurry ⊆-antisym) ≃→⊆⊇ ((xs ⊆′? ys) ∧? (ys ⊆′? xs))
+    _≃?_ :
+      (A B : PSet S′ σ₂) →
+      {{_ : DecMembership A}} {{_ : DecMembership B}} →
+      {{_ : Finite A}} {{_ : Finite B}} →
+      Dec (A ≃ B)
+    A ≃? B = dec-map (uncurry ⊆-antisym) ≃→⊆⊇ ((A ⊆? B) ∧? (B ⊆? A))
       where
         ≃→⊆⊇ = λ A≃B → ∧-intro (≃→⊆ᴸ A≃B) (≃→⊆ᴿ A≃B)
-
-  ∖-finite :
-    {S : Setoid σ₁ σ₂} (xs : List (El S)) (A : PSet S σ₂) →
-      {{_ : DecMembership A}} → finite xs ∖ A ≃ finite (xs ∩ᴾ ∁ A)
-  ∖-finite xs A = ≃-trans A∖B≃A∩∁B (∩-finite xs (∁ A))
