@@ -213,6 +213,24 @@ module net.cruhland.axioms.Sets.Finite
             A ∩ B
           ∎
 
+    Finite-∖ :
+      {A : PSet S α} {B : PSet S α} {{_ : Finite A}} {{_ : DecMembership B}} →
+        Finite (A ∖ B)
+    Finite-∖ {A = A} {B} = record { elements = ∖-list ; same-set = list≃∖ }
+      where
+        ∖-list = toList A ∩ᴾ ∁ B
+
+        list≃∖ =
+          begin
+            finite ∖-list
+          ≃⟨⟩
+            finite (toList A ∩ᴾ ∁ B)
+          ≃⟨ same-set {{Finite-∩ᴸ}} ⟩
+            A ∩ ∁ B
+          ≃˘⟨ A∖B≃A∩∁B ⟩
+            A ∖ B
+          ∎
+
   module Subsetᴸ {DS : DecSetoid σ₁ σ₂} where
     open DecSetoidᴸ DS using () renaming (_∈_ to _∈ᴸ_; _∈?_ to _∈ᴸ?_)
     S′ = DecSetoid.setoid DS
