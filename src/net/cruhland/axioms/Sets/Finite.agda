@@ -22,7 +22,7 @@ module net.cruhland.axioms.Sets.Finite
   open EmptySet ES using (∅; x∉∅)
   open PairSet PS using (pair)
   open PairwiseIntersection PI using
-    (_∩_; x∈A∩B-elim; x∈A∩B-elimᴸ; x∈A∩B-intro₂)
+    (_∩_; x∈A∩B-elim; x∈A∩B-elimᴸ; x∈A∩B-intro₂; ∩-substᴸ)
   open PairwiseUnion PU using
     ( _∪_; ∪-∅ᴸ; ∪-∅ᴿ; ∪-assoc; x∈A∪B-elim
     ; x∈A∪B-introᴸ; x∈A∪B-introᴿ; ∪-substᴸ; ∪-substᴿ
@@ -65,6 +65,61 @@ module net.cruhland.axioms.Sets.Finite
       finite {S = S} xs ∪ finite ys ≃ finite (xs ++ ys)
   ∪-finite [] ys = ∪-∅ᴸ
   ∪-finite (x ∷ xs) ys = ≃-trans ∪-assoc (∪-substᴿ (∪-finite xs ys))
+
+  infixl 7 _∩ᴾ_
+
+  _∩ᴾ_ :
+    List (El S) → (A : PSet S α) → {{_ : DecMembership A}} → List (El S)
+  xs ∩ᴾ A = filter (_∈? A) xs
+
+  singleton-∈∩ᴸ :
+    {S : Setoid σ₁ σ₂} {A : PSet S σ₂} {a : El S} →
+      a ∈ A → singleton a ∩ A ≃ singleton a
+  singleton-∈∩ᴸ {S = S} {A} {a} a∈A =
+    ⊆-antisym (⊆-intro forward) (⊆-intro backward)
+      where
+        forward : ∀ {x} → x ∈ singleton a ∩ A → x ∈ singleton a
+        forward x∈sa∩A = x∈A∩B-elimᴸ x∈sa∩A
+
+        backward : ∀ {x} → x ∈ singleton a → x ∈ singleton a ∩ A
+        backward x∈sa = x∈A∩B-intro₂ x∈sa (PSet-cong (x∈sa-elim x∈sa) a∈A)
+          where open Setoid S using (_≈_)
+
+  singleton-∉∩ᴸ :
+    {S : Setoid σ₁ σ₂} {A : PSet S σ₂} {a : El S} → a ∉ A → singleton a ∩ A ≃ ∅
+  singleton-∉∩ᴸ {S = S} {A} {a} a∉A = A⊆∅→A≃∅ (⊆-intro x∈sa∩A→x∈∅)
+    where
+      open Setoid S using (_≈_) renaming (sym to ≈-sym)
+
+      x∈sa∩A→x∈∅ : ∀ {x} → x ∈ singleton a ∩ A → x ∈ ∅
+      x∈sa∩A→x∈∅ x∈sa∩A =
+        let ∧-intro x∈sa x∈A = x∈A∩B-elim x∈sa∩A
+         in ⊥-elim (a∉A (PSet-cong (≈-sym (x∈sa-elim x∈sa)) x∈A))
+
+  ∩-finite-lemma :
+    {S : Setoid σ₁ σ₂} {x : El S} (xs : List (El S)) (A : PSet S σ₂) →
+      {{_ : DecMembership A}} →
+        singleton x ∩ A ∪ finite (xs ∩ᴾ A) ≃ finite ((x ∷ xs) ∩ᴾ A)
+  ∩-finite-lemma {S = S} {x} xs A {{decMem}} with (x ∈? A) {{decMem}}
+  ... | true because ofʸ x∈A = ∪-substᴸ (singleton-∈∩ᴸ x∈A)
+  ... | false because ofⁿ x∉A = ≃-trans (∪-substᴸ (singleton-∉∩ᴸ x∉A)) ∪-∅ᴸ
+
+  ∩-finite :
+    {S : Setoid σ₁ σ₂} (xs : List (El S)) (A : PSet S σ₂) →
+      {{_ : DecMembership A}} → finite xs ∩ A ≃ finite (xs ∩ᴾ A)
+  ∩-finite [] A = ∩-∅ᴸ
+  ∩-finite (x ∷ xs) A =
+    begin
+      finite (x ∷ xs) ∩ A
+    ≃⟨⟩
+      (singleton x ∪ finite xs) ∩ A
+    ≃⟨ ∩-over-∪ᴿ ⟩
+      singleton x ∩ A ∪ finite xs ∩ A
+    ≃⟨ ∪-substᴿ (∩-finite xs A) ⟩
+      singleton x ∩ A ∪ finite (xs ∩ᴾ A)
+    ≃⟨ ∩-finite-lemma xs A ⟩
+      finite ((x ∷ xs) ∩ᴾ A)
+    ∎
 
   record Finite {S : Setoid σ₁ σ₂} (A : PSet S σ₂) : Set (σ₁ ⊔ σ₂) where
     field
@@ -120,6 +175,24 @@ module net.cruhland.axioms.Sets.Finite
             A ∪ finite (toList B)
           ≃⟨ ∪-substᴿ same-set ⟩
             A ∪ B
+          ∎
+
+    Finite-∩ᴸ :
+      {A : PSet S α} {B : PSet S α} {{_ : Finite A}} {{_ : DecMembership B}} →
+        Finite (A ∩ B)
+    Finite-∩ᴸ {A = A} {B} = record { elements = ∩-list ; same-set = list≃∩ }
+      where
+        ∩-list = toList A ∩ᴾ B
+
+        list≃∩ =
+          begin
+            finite ∩-list
+          ≃⟨⟩
+            finite (toList A ∩ᴾ B)
+          ≃˘⟨ ∩-finite (toList A) B ⟩
+            finite (toList A) ∩ B
+          ≃⟨ ∩-substᴸ same-set ⟩
+            A ∩ B
           ∎
 
   module Subsetᴸ {DS : DecSetoid σ₁ σ₂} where
@@ -198,61 +271,6 @@ module net.cruhland.axioms.Sets.Finite
     xs ≃? ys = dec-map (uncurry ⊆-antisym) ≃→⊆⊇ ((xs ⊆′? ys) ∧? (ys ⊆′? xs))
       where
         ≃→⊆⊇ = λ A≃B → ∧-intro (≃→⊆ᴸ A≃B) (≃→⊆ᴿ A≃B)
-
-  singleton-∈∩ᴸ :
-    {S : Setoid σ₁ σ₂} {A : PSet S σ₂} {a : El S} →
-      a ∈ A → singleton a ∩ A ≃ singleton a
-  singleton-∈∩ᴸ {S = S} {A} {a} a∈A =
-    ⊆-antisym (⊆-intro forward) (⊆-intro backward)
-      where
-        forward : ∀ {x} → x ∈ singleton a ∩ A → x ∈ singleton a
-        forward x∈sa∩A = x∈A∩B-elimᴸ x∈sa∩A
-
-        backward : ∀ {x} → x ∈ singleton a → x ∈ singleton a ∩ A
-        backward x∈sa = x∈A∩B-intro₂ x∈sa (PSet-cong (x∈sa-elim x∈sa) a∈A)
-          where open Setoid S using (_≈_)
-
-  singleton-∉∩ᴸ :
-    {S : Setoid σ₁ σ₂} {A : PSet S σ₂} {a : El S} → a ∉ A → singleton a ∩ A ≃ ∅
-  singleton-∉∩ᴸ {S = S} {A} {a} a∉A = A⊆∅→A≃∅ (⊆-intro x∈sa∩A→x∈∅)
-    where
-      open Setoid S using (_≈_) renaming (sym to ≈-sym)
-
-      x∈sa∩A→x∈∅ : ∀ {x} → x ∈ singleton a ∩ A → x ∈ ∅
-      x∈sa∩A→x∈∅ x∈sa∩A =
-        let ∧-intro x∈sa x∈A = x∈A∩B-elim x∈sa∩A
-         in ⊥-elim (a∉A (PSet-cong (≈-sym (x∈sa-elim x∈sa)) x∈A))
-
-  infixl 7 _∩ᴾ_
-
-  _∩ᴾ_ :
-    List (El S) → (A : PSet S α) → {{_ : DecMembership A}} → List (El S)
-  xs ∩ᴾ A = filter (_∈? A) xs
-
-  ∩-finite-lemma :
-    {S : Setoid σ₁ σ₂} {x : El S} (xs : List (El S)) (A : PSet S σ₂) →
-      {{_ : DecMembership A}} →
-        singleton x ∩ A ∪ finite (xs ∩ᴾ A) ≃ finite ((x ∷ xs) ∩ᴾ A)
-  ∩-finite-lemma {S = S} {x} xs A {{decMem}} with (x ∈? A) {{decMem}}
-  ... | true because ofʸ x∈A = ∪-substᴸ (singleton-∈∩ᴸ x∈A)
-  ... | false because ofⁿ x∉A = ≃-trans (∪-substᴸ (singleton-∉∩ᴸ x∉A)) ∪-∅ᴸ
-
-  ∩-finite :
-    {S : Setoid σ₁ σ₂} (xs : List (El S)) (A : PSet S σ₂) →
-      {{_ : DecMembership A}} → finite xs ∩ A ≃ finite (xs ∩ᴾ A)
-  ∩-finite [] A = ∩-∅ᴸ
-  ∩-finite (x ∷ xs) A =
-    begin
-      finite (x ∷ xs) ∩ A
-    ≃⟨⟩
-      (singleton x ∪ finite xs) ∩ A
-    ≃⟨ ∩-over-∪ᴿ ⟩
-      singleton x ∩ A ∪ finite xs ∩ A
-    ≃⟨ ∪-substᴿ (∩-finite xs A) ⟩
-      singleton x ∩ A ∪ finite (xs ∩ᴾ A)
-    ≃⟨ ∩-finite-lemma xs A ⟩
-      finite ((x ∷ xs) ∩ᴾ A)
-    ∎
 
   ∖-finite :
     {S : Setoid σ₁ σ₂} (xs : List (El S)) (A : PSet S σ₂) →
