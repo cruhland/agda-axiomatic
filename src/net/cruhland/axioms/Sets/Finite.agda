@@ -22,7 +22,7 @@ module net.cruhland.axioms.Sets.Finite
   open EmptySet ES using (∅; x∉∅)
   open PairSet PS using (pair)
   open PairwiseIntersection PI using
-    (_∩_; x∈A∩B-elim; x∈A∩B-elimᴸ; x∈A∩B-intro₂; ∩-substᴸ)
+    (_∩_; ∩-comm; x∈A∩B-elim; x∈A∩B-elimᴸ; x∈A∩B-intro₂; ∩-substᴸ)
   open PairwiseUnion PU using
     ( _∪_; ∪-∅ᴸ; ∪-∅ᴿ; ∪-assoc; x∈A∪B-elim
     ; x∈A∪B-introᴸ; x∈A∪B-introᴿ; ∪-substᴸ; ∪-substᴿ
@@ -192,6 +192,24 @@ module net.cruhland.axioms.Sets.Finite
           ≃˘⟨ ∩-finite (toList A) B ⟩
             finite (toList A) ∩ B
           ≃⟨ ∩-substᴸ same-set ⟩
+            A ∩ B
+          ∎
+
+    Finite-∩ᴿ :
+      {A : PSet S α} {B : PSet S α} {{_ : DecMembership A}} {{_ : Finite B}} →
+        Finite (A ∩ B)
+    Finite-∩ᴿ {A = A} {B} = record { elements = ∩-list ; same-set = list≃∩ }
+      where
+        ∩-list = toList B ∩ᴾ A
+
+        list≃∩ =
+          begin
+            finite ∩-list
+          ≃⟨⟩
+            finite (toList B ∩ᴾ A)
+          ≃⟨ same-set ⟩
+            B ∩ A
+          ≃⟨ ∩-comm ⟩
             A ∩ B
           ∎
 
