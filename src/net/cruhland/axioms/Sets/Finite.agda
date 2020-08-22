@@ -42,7 +42,7 @@ module net.cruhland.axioms.Sets.Finite
   open import Level using (_⊔_)
   open import Relation.Binary using (Decidable; DecSetoid)
   open import Relation.Binary.PropositionalEquality using (_≡_)
-  open import net.cruhland.axioms.Sets.Base using (α; El; S; Setoid; σ₁; σ₂)
+  open import net.cruhland.axioms.Sets.Base using (α; β; El; S; Setoid; σ₁; σ₂)
   open import net.cruhland.axioms.Sets.Decidable SA using (_∈?_; DecMembership)
   open import net.cruhland.axioms.Sets.Equality SA using
     (_≃_; ≃-refl; ≃-sym; ≃-trans; module ≃-Reasoning)
@@ -60,25 +60,34 @@ module net.cruhland.axioms.Sets.Finite
   finite : {S : Setoid σ₁ σ₂} → List (El S) → PSet S σ₂
   finite = foldr (λ x acc → singleton x ∪ acc) ∅
 
+  ∪-finite :
+    {S : Setoid σ₁ σ₂} (xs ys : List (El S)) →
+      finite {S = S} xs ∪ finite ys ≃ finite (xs ++ ys)
+  ∪-finite [] ys = ∪-∅ᴸ
+  ∪-finite (x ∷ xs) ys = ≃-trans ∪-assoc (∪-substᴿ (∪-finite xs ys))
+
   record Finite {S : Setoid σ₁ σ₂} (A : PSet S σ₂) : Set (σ₁ ⊔ σ₂) where
     field
-      toList : List (El S)
-      from∘to : finite toList ≃ A
+      elements : List (El S)
+      same-set : finite elements ≃ A
 
-  open Finite {{...}} public using (toList)
+  open Finite {{...}} public using (elements; same-set)
+
+  toList : (A : PSet S σ₂) {{_ : Finite A}} → List (El S)
+  toList A = elements
 
   instance
-    ∅-finite : Finite (∅ {S = S} {α})
-    ∅-finite = record { toList = [] ; from∘to = ≃-refl }
+    Finite-∅ : Finite (∅ {S = S} {α})
+    Finite-∅ = record { elements = [] ; same-set = ≃-refl }
 
-    singleton-finite : ∀ {a} → Finite (singleton {S = S} a)
-    singleton-finite {a = a} = record { toList = a ∷ [] ; from∘to = ∪-∅ᴿ }
+    Finite-singleton : ∀ {a} → Finite (singleton {S = S} a)
+    Finite-singleton {a = a} = record { elements = a ∷ [] ; same-set = ∪-∅ᴿ }
 
-    pair-finite : ∀ {a b} → Finite (pair {S = S} a b)
-    pair-finite {a = a} {b} = record { toList = pair-list ; from∘to = from∘to }
+    Finite-pair : ∀ {a b} → Finite (pair {S = S} a b)
+    Finite-pair {a = a} {b} = record { elements = pair-list ; same-set = list≃pair }
       where
         pair-list = a ∷ b ∷ []
-        from∘to =
+        list≃pair =
           begin
             finite pair-list
           ≃⟨⟩
@@ -91,6 +100,26 @@ module net.cruhland.axioms.Sets.Finite
             singleton a ∪ singleton b
           ≃˘⟨ pab≃sa∪sb ⟩
             pair a b
+          ∎
+
+    Finite-∪ :
+      {A : PSet S α} {B : PSet S α} {{_ : Finite A}} {{_ : Finite B}} →
+        Finite (A ∪ B)
+    Finite-∪ {A = A} {B} = record { elements = ∪-list ; same-set = list≃∪ }
+      where
+        ∪-list = toList A ++ toList B
+
+        list≃∪ =
+          begin
+            finite ∪-list
+          ≃⟨⟩
+            finite (toList A ++ toList B)
+          ≃˘⟨ ∪-finite (toList A) (toList B) ⟩
+            finite (toList A) ∪ finite (toList B)
+          ≃⟨ ∪-substᴸ same-set ⟩
+            A ∪ finite (toList B)
+          ≃⟨ ∪-substᴿ same-set ⟩
+            A ∪ B
           ∎
 
   module Subsetᴸ {DS : DecSetoid σ₁ σ₂} where
@@ -169,12 +198,6 @@ module net.cruhland.axioms.Sets.Finite
     xs ≃? ys = dec-map (uncurry ⊆-antisym) ≃→⊆⊇ ((xs ⊆′? ys) ∧? (ys ⊆′? xs))
       where
         ≃→⊆⊇ = λ A≃B → ∧-intro (≃→⊆ᴸ A≃B) (≃→⊆ᴿ A≃B)
-
-  ∪-finite :
-    {S : Setoid σ₁ σ₂} →
-      (xs ys : List (El S)) → finite {S = S} xs ∪ finite ys ≃ finite (xs ++ ys)
-  ∪-finite [] ys = ∪-∅ᴸ
-  ∪-finite (x ∷ xs) ys = ≃-trans ∪-assoc (∪-substᴿ (∪-finite xs ys))
 
   singleton-∈∩ᴸ :
     {S : Setoid σ₁ σ₂} {A : PSet S σ₂} {a : El S} →
