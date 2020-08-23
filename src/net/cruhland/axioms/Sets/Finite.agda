@@ -29,19 +29,14 @@ module net.cruhland.axioms.Sets.Finite
     )
   open SingletonSet SS using (singleton; a∈sa; x∈sa-elim; x∈sa-intro)
 
-  open import Data.Bool using (false; true)
-  open import Data.List using ([]; _∷_; _++_; any; filter; foldr; List)
+  open import Data.List using ([]; _∷_; _++_; filter; foldr; List)
   import Data.List.Membership.DecSetoid as DecSetoidᴸ
-  import Data.List.Membership.Setoid as Membership
-  open import Data.List.Relation.Binary.Permutation.Propositional using (_↭_)
   open import Data.List.Relation.Unary.All
     using (All; all; lookupAny) renaming ([] to []ᴬ; _∷_ to _∷ᴬ_)
-  open import Data.List.Relation.Unary.Any using
-    (Any; here; index; lookup; map; there)
+  open import Data.List.Relation.Unary.Any using (here; there)
   open import Function using (_∘_)
   open import Level using (_⊔_)
-  open import Relation.Binary using (Decidable; DecSetoid)
-  open import Relation.Binary.PropositionalEquality using (_≡_)
+  open import Relation.Binary using (DecSetoid)
   open import net.cruhland.axioms.Sets.Base using (α; β; El; S; Setoid; σ₁; σ₂)
   open import net.cruhland.axioms.Sets.Decidable SA using (_∈?_; DecMembership)
   open import net.cruhland.axioms.Sets.Equality SA using
@@ -52,9 +47,9 @@ module net.cruhland.axioms.Sets.Finite
   open import net.cruhland.axioms.Sets.Subset SA using
     (_⊆_; ≃→⊆ᴸ; ≃→⊆ᴿ; ⊆-antisym; ⊆-intro; ⊆-substᴸ)
   open import net.cruhland.models.Logic using
-    ( _∧_; _∧?_; ∧-elimᴸ; ∧-elimᴿ; ∧-intro; uncurry
+    ( _∧_; _∧?_; ∧-intro; uncurry
     ; _∨_; ∨-introᴸ; ∨-introᴿ
-    ; ⊥-elim; _because_; Dec; dec-map; does; ofⁿ; ofʸ
+    ; ⊥-elim; Dec; dec-map; no; yes
     )
 
   finite : {S : Setoid σ₁ σ₂} → List (El S) → PSet S σ₂
@@ -101,8 +96,8 @@ module net.cruhland.axioms.Sets.Finite
       {{_ : DecMembership A}} →
         singleton x ∩ A ∪ finite (xs ∩ᴾ A) ≃ finite ((x ∷ xs) ∩ᴾ A)
   ∩-finite-lemma {S = S} {x} xs A {{decMem}} with (x ∈? A) {{decMem}}
-  ... | true because ofʸ x∈A = ∪-substᴸ (singleton-∈∩ᴸ x∈A)
-  ... | false because ofⁿ x∉A = ≃-trans (∪-substᴸ (singleton-∉∩ᴸ x∉A)) ∪-∅ᴸ
+  ... | yes x∈A = ∪-substᴸ (singleton-∈∩ᴸ x∈A)
+  ... | no x∉A = ≃-trans (∪-substᴸ (singleton-∉∩ᴸ x∉A)) ∪-∅ᴸ
 
   ∩-finite :
     {S : Setoid σ₁ σ₂} (xs : List (El S)) (A : PSet S σ₂) →
@@ -232,13 +227,9 @@ module net.cruhland.axioms.Sets.Finite
           ∎
 
   module Subsetᴸ {DS : DecSetoid σ₁ σ₂} where
-    open DecSetoidᴸ DS using () renaming (_∈_ to _∈ᴸ_; _∈?_ to _∈ᴸ?_)
+    open DecSetoidᴸ DS using () renaming (_∈_ to _∈ᴸ_)
     S′ = DecSetoid.setoid DS
     open Setoid S′ using (_≈_) renaming (sym to ≈-sym)
-
-    ∈ᴸ→∈fin : {a : El S′} {xs : List (El S′)} → a ∈ᴸ xs → a ∈ finite {S = S′} xs
-    ∈ᴸ→∈fin (here a≈x) = x∈A∪B-introᴸ (x∈sa-intro (≈-sym a≈x))
-    ∈ᴸ→∈fin (there a∈ᴸxs) = x∈A∪B-introᴿ (∈ᴸ→∈fin a∈ᴸxs)
 
     ∈fin→∈ᴸ : {a : El S′} {xs : List (El S′)} → a ∈ finite {S = S′} xs → a ∈ᴸ xs
     ∈fin→∈ᴸ {xs = []} a∈fxs = ⊥-elim (x∉∅ a∈fxs)
@@ -246,86 +237,41 @@ module net.cruhland.axioms.Sets.Finite
     ... | ∨-introᴸ a∈sx = here (≈-sym (x∈sa-elim a∈sx))
     ... | ∨-introᴿ a∈fxs′ = there (∈fin→∈ᴸ a∈fxs′)
 
-    infix 4 _⊆ᴸ_ _⊆ᴾ_ _⊆ᶠ_ _⊆ᴸ?_ _⊆ᴾ?_ _⊆ᶠ?_ _⊆?_ _⊆′?_ _≃?_
+    infix 4 _⊆ᴸ_ _⊆ᴸ?_ _⊆?_ _≃?_
 
-    _⊆ᴸ_ : List (El S′) → List (El S′) → Set (σ₁ ⊔ σ₂)
-    _⊆ᴸ_ xs ys = All (_∈ᴸ ys) xs
+    _⊆ᴸ_ : List (El S′) → PSet S′ β → Set (σ₁ ⊔ β)
+    xs ⊆ᴸ B = All (_∈ B) xs
 
-    _⊆ᴾ_ : List (El S′) → PSet S′ α → Set (σ₁ ⊔ α)
-    _⊆ᴾ_ xs A = All (_∈ A) xs
+    _⊆ᴸ?_ :
+      (xs : List (El S′)) (B : PSet S′ β) →
+        {{_ : DecMembership B}} → Dec (xs ⊆ᴸ B)
+    xs ⊆ᴸ? B = all (_∈? B) xs
 
-    _⊆ᶠ_ : (A : PSet S′ σ₂) {{_ : Finite A}} → PSet S′ β → Set (σ₁ ⊔ β)
-    A ⊆ᶠ B = toList A ⊆ᴾ B
+    ⊆ᴸ→⊆ :
+      {A : PSet S′ σ₂} {B : PSet S′ β} {{_ : Finite A}} → toList A ⊆ᴸ B → A ⊆ B
+    ⊆ᴸ→⊆ {A = A} {B} A⊆ᴸB =
+      ⊆-intro (x∈ᴸlA→x∈B ∘ ∈fin→∈ᴸ ∘ ∈-substᴿ (≃-sym same-set))
+        where
+          x∈ᴸlA→x∈B : ∀ {x} → x ∈ᴸ toList A → x ∈ B
+          x∈ᴸlA→x∈B x∈ᴸlA with lookupAny A⊆ᴸB x∈ᴸlA
+          ... | ∧-intro lookup∈B x≈lookup = PSet-cong (≈-sym x≈lookup) lookup∈B
 
-    _⊆ᴸ?_ : Decidable _⊆ᴸ_
-    _⊆ᴸ?_ xs ys = all (_∈ᴸ? ys) xs
-
-    _⊆ᴾ?_ :
-      (xs : List (El S′)) → (A : PSet S′ α) →
-        {{_ : DecMembership A}} → Dec (xs ⊆ᴾ A)
-    _⊆ᴾ?_ xs A = all (_∈? A) xs
-
-    _⊆ᶠ?_ :
-      (A : PSet S′ σ₂) (B : PSet S′ β) →
-        {{_ : Finite A}} {{_ : DecMembership B}} → Dec (A ⊆ᶠ B)
-    A ⊆ᶠ? B = toList A ⊆ᴾ? B
-
-    ⊆ᴸ→⊆fin : {xs ys : List (El S′)} → xs ⊆ᴸ ys → finite {S = S′} xs ⊆ finite ys
-    ⊆ᴸ→⊆fin {xs} {ys} xs⊆ᴸys = ⊆-intro (∈ᴸ→∈fin ∘ x∈ᴸxs→x∈ᴸys ∘ ∈fin→∈ᴸ)
-      where
-        open Setoid S′ using (_≈_; trans)
-
-        x∈ᴸxs→x∈ᴸys : ∀ {x} → x ∈ᴸ xs → x ∈ᴸ ys
-        x∈ᴸxs→x∈ᴸys x∈ᴸxs with lookupAny xs⊆ᴸys x∈ᴸxs
-        ... | ∧-intro any[lookup≈]ys x≈lookup =
-          map (trans x≈lookup) any[lookup≈]ys
-
-    ⊆ᴾ→⊆fin :
-      {xs : List (El S′)} {A : PSet S′ α} → xs ⊆ᴾ A → finite {S = S′} xs ⊆ A
-    ⊆ᴾ→⊆fin {xs = xs} {A} xs⊆ᴾA = ⊆-intro (x∈ᴸxs→x∈A ∘ ∈fin→∈ᴸ)
-      where
-        x∈ᴸxs→x∈A : ∀ {x} → x ∈ᴸ xs → x ∈ A
-        x∈ᴸxs→x∈A x∈ᴸxs with lookupAny xs⊆ᴾA x∈ᴸxs
-        ... | ∧-intro lookup∈A x≈lookup = PSet-cong (≈-sym x≈lookup) lookup∈A
-
-    ⊆fin→⊆ :
-      {A : PSet S′ σ₂} {B : PSet S′ β} {{_ : Finite A}} →
-        finite (toList A) ⊆ B → A ⊆ B
-    ⊆fin→⊆ = ⊆-substᴸ same-set
-
-    ⊆ᶠ→⊆ : {A : PSet S′ σ₂} {B : PSet S′ β} {{_ : Finite A}} → A ⊆ᶠ B → A ⊆ B
-    ⊆ᶠ→⊆ = ⊆fin→⊆ ∘ ⊆ᴾ→⊆fin
-
-    ⊆fin→⊆ᴸ : {xs ys : List (El S′)} → finite {S = S′} xs ⊆ finite ys → xs ⊆ᴸ ys
-    ⊆fin→⊆ᴸ {xs = []} fxs⊆fys = []ᴬ
-    ⊆fin→⊆ᴸ {xs = x ∷ xs} sx∪fxs⊆fys@(⊆-intro x∈fxs→x∈fys) = x∈ᴸys ∷ᴬ xs⊆ᴸys
-      where
-        x∈ᴸys = ∈fin→∈ᴸ (x∈fxs→x∈fys (x∈A∪B-introᴸ a∈sa))
-        xs⊆ᴸys = ⊆fin→⊆ᴸ (∪⊆-elimᴿ sx∪fxs⊆fys)
-
-    ⊆fin→⊆ᴾ :
-      {xs : List (El S′)} {A : PSet S′ α} → finite {S = S′} xs ⊆ A → xs ⊆ᴾ A
-    ⊆fin→⊆ᴾ {xs = []} fxs⊆A = []ᴬ
-    ⊆fin→⊆ᴾ {xs = x ∷ xs} sx∪fxs⊆A@(⊆-intro x∈fxs→x∈A) = x∈A ∷ᴬ xs⊆ᴾA
+    ⊆fin→⊆ᴸ :
+      {xs : List (El S′)} {A : PSet S′ α} → finite {S = S′} xs ⊆ A → xs ⊆ᴸ A
+    ⊆fin→⊆ᴸ {xs = []} fxs⊆A = []ᴬ
+    ⊆fin→⊆ᴸ {xs = x ∷ xs} sx∪fxs⊆A@(⊆-intro x∈fxs→x∈A) = x∈A ∷ᴬ xs⊆ᴸA
       where
         x∈A = x∈fxs→x∈A (x∈A∪B-introᴸ a∈sa)
-        xs⊆ᴾA = ⊆fin→⊆ᴾ (∪⊆-elimᴿ sx∪fxs⊆A)
+        xs⊆ᴸA = ⊆fin→⊆ᴸ (∪⊆-elimᴿ sx∪fxs⊆A)
 
-    ⊆→⊆fin :
-      {A : PSet S′ σ₂} {B : PSet S′ β} {{_ : Finite A}} →
-        A ⊆ B → finite (toList A) ⊆ B
-    ⊆→⊆fin = ⊆-substᴸ (≃-sym same-set)
-
-    ⊆→⊆ᶠ : {A : PSet S′ σ₂} {B : PSet S′ β} {{_ : Finite A}} → A ⊆ B → A ⊆ᶠ B
-    ⊆→⊆ᶠ = ⊆fin→⊆ᴾ ∘ ⊆→⊆fin
-
-    _⊆′?_ : (xs ys : List (El S′)) → Dec (finite {S = S′} xs ⊆ finite ys)
-    xs ⊆′? ys = dec-map ⊆ᴸ→⊆fin ⊆fin→⊆ᴸ (xs ⊆ᴸ? ys)
+    ⊆→⊆ᴸ :
+      {A : PSet S′ σ₂} {B : PSet S′ β} {{_ : Finite A}} → A ⊆ B → toList A ⊆ᴸ B
+    ⊆→⊆ᴸ {{finA}} = ⊆fin→⊆ᴸ ∘ ⊆-substᴸ (≃-sym same-set)
 
     _⊆?_ :
       (A : PSet S′ σ₂) (B : PSet S′ β) →
         {{_ : Finite A}} {{_ : DecMembership B}} → Dec (A ⊆ B)
-    A ⊆? B = dec-map ⊆ᶠ→⊆ ⊆→⊆ᶠ (A ⊆ᶠ? B)
+    A ⊆? B = dec-map ⊆ᴸ→⊆ ⊆→⊆ᴸ (toList A ⊆ᴸ? B)
 
     _≃?_ :
       (A B : PSet S′ σ₂) →
