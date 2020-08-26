@@ -4,11 +4,12 @@ open import Function using (_∘_; const; flip; id)
 open import Level using (_⊔_; Level; Setω) renaming (suc to lsuc)
 open import net.cruhland.axioms.Sets using
   ( Complement; Comprehension; Difference; EmptySet; PairSet
-  ; PairwiseIntersection; PairwiseUnion; SetAxioms; SetTheory; SingletonSet
+  ; PairwiseIntersection; PairwiseUnion; Replacement; module ReplacementDefs
+  ; SetAxioms; SetTheory; SingletonSet
   )
 open import net.cruhland.axioms.Sets.Base using (α; β; σ₁; σ₂; El; S; Setoid)
 open import net.cruhland.models.Logic using
-  (_∧_; ∧-map; _∨_; ∨-map; _↔_; ↔-intro; ↔-refl; ⊥ᴸᴾ; ⊥ᴸᴾ-elim)
+  (_∧_; ∧-map; _∨_; ∨-map; _↔_; ↔-elimᴿ; ↔-intro; ↔-refl; ⊥ᴸᴾ; ⊥ᴸᴾ-elim)
 
 record PSet {σ₁ σ₂} (S : Setoid σ₁ σ₂) (α : Level)
     : Set (σ₁ ⊔ σ₂ ⊔ lsuc α) where
@@ -28,6 +29,7 @@ setAxioms = record
   }
 
 open SetAxioms setAxioms using (_∈_; _∉_)
+open ReplacementDefs setAxioms using (ReplMembership; replProp)
 
 comprehension : Comprehension setAxioms
 comprehension = record
@@ -125,15 +127,34 @@ _∖_ {α = α} {β = β} {S = S} A B = record { ap = in-diff ; cong = diff-cong
 difference : Difference setAxioms
 difference = record { _∖_ = _∖_ ; x∈A∖B↔x∈A∧x∉B = ↔-refl }
 
+rep :
+  ∀ {τ₁ τ₂ ψ} {S : Setoid σ₁ σ₂} {T : Setoid τ₁ τ₂} →
+    (P : El S → El T → Set ψ) → (A : PSet S α) → replProp {T = T} {A} P →
+      PSet T (σ₁ ⊔ α ⊔ ψ)
+rep {T = T} P A rp =
+  record { ap = λ x → ReplMembership {T = T} {A} x P ; cong = rep-cong }
+    where
+      open Setoid T using (_≈_)
+
+      rep-cong :
+        ∀ {x y} → x ≈ y → ReplMembership {T = T} {A} x P →
+          ReplMembership {T = T} {A} y P
+      rep-cong x≈y record { a = a ; a∈A = a∈A ; Pax = Pax } =
+        record { a = a ; a∈A = a∈A ; Pax = ↔-elimᴿ (rp a∈A Pax) x≈y }
+
+replacement : Replacement setAxioms
+replacement = record { replacement = rep ; x∈rep↔Pax = ↔-refl }
+
 setTheory : SetTheory
 setTheory = record
   { SA = setAxioms
   ; CM = complement
-  ; SC = comprehension
   ; ES = emptySet
   ; PS = pairSet
   ; PI = pairwiseIntersection
   ; PU = pairwiseUnion
+  ; RE = replacement
+  ; SC = comprehension
   ; SD = difference
   ; SS = singletonSet
   }

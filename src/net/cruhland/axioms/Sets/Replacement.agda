@@ -11,7 +11,7 @@ module ReplacementDefs (SA : SetAxioms) where
   replProp :
     ∀ {τ₁ τ₂ ψ} {S : Setoid σ₁ σ₂} {T : Setoid τ₁ τ₂} {A : PSet S α} →
       (El S → El T → Set ψ) → Set (α ⊔ σ₁ ⊔ τ₁ ⊔ τ₂ ⊔ ψ)
-  replProp {T = T} {A} P = ∀ {x y} → x ∈ A → P x y → ∀ {z} → P x z → y ≈ᵀ z
+  replProp {T = T} {A} P = ∀ {x y} → x ∈ A → P x y → ∀ {z} → P x z ↔ y ≈ᵀ z
     where open Setoid T using () renaming (_≈_ to _≈ᵀ_)
 
   record ReplMembership
@@ -23,16 +23,16 @@ module ReplacementDefs (SA : SetAxioms) where
       Pax : P a x
 
 record Replacement (SA : SetAxioms) : Setω where
-  open ReplacementDefs SA using (ReplMembership; replProp)
+  open ReplacementDefs SA public using (ReplMembership; replProp)
   open SetAxioms SA using (_∈_; PSet)
 
   field
-    map :
+    replacement :
       ∀ {τ₁ τ₂ ψ} {S : Setoid σ₁ σ₂} {T : Setoid τ₁ τ₂} →
         (P : El S → El T → Set ψ) → (A : PSet S α) → replProp {T = T} {A} P →
           PSet T (σ₁ ⊔ α ⊔ ψ)
 
-    x∈map↔Pax :
+    x∈rep↔Pax :
       ∀ {τ₁ τ₂ ψ} {S : Setoid σ₁ σ₂} {T : Setoid τ₁ τ₂} {x : El T}
         {A : PSet S α} {P : El S → El T → Set ψ} {rp : replProp {T = T} P} →
-          x ∈ map {T = T} P A rp ↔ ReplMembership {T = T} {A} x P
+          x ∈ replacement {T = T} P A rp ↔ ReplMembership {T = T} {A} x P
