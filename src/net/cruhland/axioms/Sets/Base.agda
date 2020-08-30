@@ -1,11 +1,17 @@
 module net.cruhland.axioms.Sets.Base where
 
-open import Level using (_⊔_; Level; Setω) renaming (suc to lsuc)
+open import Level using (_⊔_; Level; Setω) renaming (suc to lsuc; zero to lzero)
 open import net.cruhland.models.Logic using (¬_)
 
 -- Export standard library definitions
-open import Relation.Binary public using (Setoid)
+open import Relation.Binary public using (DecSetoid; module DecSetoid; Setoid)
 open Setoid public using () renaming (Carrier to El)
+
+Setoid₀ : Set (lsuc lzero)
+Setoid₀ = Setoid lzero lzero
+
+DecSetoid₀ : Set (lsuc lzero)
+DecSetoid₀ = DecSetoid lzero lzero
 
 variable
   σ₁ σ₂ α β χ : Level
@@ -24,3 +30,6 @@ record SetAxioms : Setω where
 
   _∉_ : El S → PSet S α → Set α
   x ∉ A = ¬ (x ∈ A)
+
+  PSet₀ : Setoid lzero lzero → Set (lsuc lzero)
+  PSet₀ S = PSet S lzero

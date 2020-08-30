@@ -14,6 +14,7 @@ import net.cruhland.axioms.Sets.Finite as Finite
 open import net.cruhland.axioms.Sets.Intersection public using
   (PairwiseIntersection)
 open import net.cruhland.axioms.Sets.Pair public using (PairSet)
+import net.cruhland.axioms.Sets.PreFinite as PreFinite
 import net.cruhland.axioms.Sets.Properties as Properties
 open import net.cruhland.axioms.Sets.Replacement public using
   (Replacement; module ReplacementDefs)
@@ -30,12 +31,12 @@ record SetTheory : Setω where
     PS : PairSet SA
     PI : PairwiseIntersection SA
     PU : PairwiseUnion SA ES
-    RE : Replacement SA
     SC : Comprehension SA
     SD : Difference SA
     SS : SingletonSet SA
+    RE : Replacement SA ES PU SS
 
-  open import net.cruhland.axioms.Sets.Base public using (El; Setoid)
+  open import net.cruhland.axioms.Sets.Base public using (El; Setoid; Setoid₀)
   open Complement CM public
   open Comprehension SC public
   open Decidable SA public
@@ -46,6 +47,7 @@ record SetTheory : Setω where
   open PairSet PS public
   open PairwiseIntersection PI public
   open PairwiseUnion PU public
+  open PreFinite SA ES PU SS public
   open Properties SA CM ES PI PS PU SD SS public
   open Replacement RE public
   open SetAxioms SA public

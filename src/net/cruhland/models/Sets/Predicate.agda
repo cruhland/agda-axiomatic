@@ -7,7 +7,8 @@ open import net.cruhland.axioms.Sets using
   ; PairwiseIntersection; PairwiseUnion; Replacement; module ReplacementDefs
   ; SetAxioms; SetTheory; SingletonSet
   )
-open import net.cruhland.axioms.Sets.Base using (α; β; σ₁; σ₂; El; S; Setoid)
+open import net.cruhland.axioms.Sets.Base using
+  (α; β; σ₁; σ₂; El; S; Setoid; Setoid₀)
 open import net.cruhland.models.Logic using
   (_∧_; ∧-map; _∨_; ∨-map; _↔_; ↔-elimᴿ; ↔-intro; ↔-refl; ⊥ᴸᴾ; ⊥ᴸᴾ-elim)
 
@@ -28,8 +29,8 @@ setAxioms = record
   ; PSet-cong = λ {_ _ _ _ _ _ A} → PSet.cong A
   }
 
-open SetAxioms setAxioms using (_∈_; _∉_)
-open ReplacementDefs setAxioms using (ReplMembership; replProp)
+open SetAxioms setAxioms using (_∈_; _∉_; PSet₀)
+open ReplacementDefs setAxioms using (ReplMembership; ReplProp)
 
 comprehension : Comprehension setAxioms
 comprehension = record
@@ -128,21 +129,22 @@ difference : Difference setAxioms
 difference = record { _∖_ = _∖_ ; x∈A∖B↔x∈A∧x∉B = ↔-refl }
 
 rep :
-  ∀ {τ₁ τ₂ ψ} {S : Setoid σ₁ σ₂} {T : Setoid τ₁ τ₂} →
-    (P : El S → El T → Set ψ) → (A : PSet S α) → replProp {T = T} {A} P →
-      PSet T (σ₁ ⊔ α ⊔ ψ)
-rep {T = T} P A rp =
+  {S T : Setoid₀} →
+    (P : El S → El T → Set) → (A : PSet₀ S) → ReplProp {T = T} {A} P →
+      PSet₀ T
+rep {S = S} {T} P A rp =
   record { ap = λ x → ReplMembership {T = T} {A} x P ; cong = rep-cong }
     where
+      open Setoid S using () renaming (refl to ≈ˢ-refl)
       open Setoid T using (_≈_)
 
       rep-cong :
         ∀ {x y} → x ≈ y → ReplMembership {T = T} {A} x P →
           ReplMembership {T = T} {A} y P
       rep-cong x≈y record { a = a ; a∈A = a∈A ; Pax = Pax } =
-        record { a = a ; a∈A = a∈A ; Pax = ↔-elimᴿ (rp a∈A Pax) x≈y }
+        record { a = a ; a∈A = a∈A ; Pax = ReplProp.P-cong rp ≈ˢ-refl x≈y Pax }
 
-replacement : Replacement setAxioms
+replacement : Replacement setAxioms emptySet pairwiseUnion singletonSet
 replacement = record { replacement = rep ; x∈rep↔Pax = ↔-refl }
 
 setTheory : SetTheory
