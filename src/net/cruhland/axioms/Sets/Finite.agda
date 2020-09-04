@@ -28,7 +28,7 @@ module net.cruhland.axioms.Sets.Finite
     ( _∪_; ∪-∅ᴸ; ∪-∅ᴿ; ∪-assoc; x∈A∪B-elim
     ; x∈A∪B-introᴸ; x∈A∪B-introᴿ; ∪-substᴸ; ∪-substᴿ
     )
-  open PreFinite SA ES PU SS using (∈fin→∈ᴸ; Finite; finite; toList; same-set)
+  open PreFinite SA ES PU SS using (∈fin→∈ᴸ; Finite; finite; same-set; toList)
   open SingletonSet SS using (singleton; a∈sa; x∈sa-elim; x∈sa-intro)
 
   open import Data.List using ([]; _∷_; _++_; filter; foldr; List)
@@ -40,7 +40,7 @@ module net.cruhland.axioms.Sets.Finite
   open import Level using (_⊔_)
   open import Relation.Binary using (DecSetoid)
   open import net.cruhland.axioms.Sets.Base using
-    (α; β; El; S; DecSetoid₀; Setoid; Setoid₀; σ₁; σ₂)
+    (α; β; σ₁; σ₂; S; DecSetoid₀; El; Setoid; Setoid₀)
   open import net.cruhland.axioms.Sets.Decidable SA using (_∈?_; DecMembership)
   open import net.cruhland.axioms.Sets.Equality SA using
     (_≃_; ≃-refl; ∈-substᴿ; ≃-sym; ≃-trans; module ≃-Reasoning)
@@ -92,16 +92,16 @@ module net.cruhland.axioms.Sets.Finite
          in ⊥-elim (a∉A (PSet-cong (≈-sym (x∈sa-elim x∈sa)) x∈A))
 
   ∩-finite-lemma :
-    {S : Setoid₀} {x : El S} (xs : List (El S)) (A : PSet₀ S) →
-      {{_ : DecMembership A}} →
+    {S : Setoid₀} {x : El S}
+      (xs : List (El S)) (A : PSet₀ S) {{_ : DecMembership A}} →
         singleton x ∩ A ∪ finite (xs ∩ᴾ A) ≃ finite ((x ∷ xs) ∩ᴾ A)
   ∩-finite-lemma {S = S} {x} xs A {{decMem}} with (x ∈? A) {{decMem}}
   ... | yes x∈A = ∪-substᴸ (singleton-∈∩ᴸ x∈A)
   ... | no x∉A = ≃-trans (∪-substᴸ (singleton-∉∩ᴸ x∉A)) ∪-∅ᴸ
 
   ∩-finite :
-    {S : Setoid₀} (xs : List (El S)) (A : PSet₀ S) →
-      {{_ : DecMembership A}} → finite xs ∩ A ≃ finite (xs ∩ᴾ A)
+    {S : Setoid₀} (xs : List (El S)) (A : PSet₀ S) {{_ : DecMembership A}} →
+      finite xs ∩ A ≃ finite (xs ∩ᴾ A)
   ∩-finite [] A = ∩-∅ᴸ
   ∩-finite (x ∷ xs) A =
     begin
@@ -227,12 +227,10 @@ module net.cruhland.axioms.Sets.Finite
     xs ⊆ᴸ B = All (_∈ B) xs
 
     _⊆ᴸ?_ :
-      (xs : List (El S′)) (B : PSet₀ S′) →
-        {{_ : DecMembership B}} → Dec (xs ⊆ᴸ B)
+      (xs : List (El S′)) (B : PSet₀ S′) {{_ : DecMembership B}} → Dec (xs ⊆ᴸ B)
     xs ⊆ᴸ? B = all (_∈? B) xs
 
-    ⊆ᴸ→⊆ :
-      {A B : PSet₀ S′} {{_ : Finite A}} → toList A ⊆ᴸ B → A ⊆ B
+    ⊆ᴸ→⊆ : {A B : PSet₀ S′} {{_ : Finite A}} → toList A ⊆ᴸ B → A ⊆ B
     ⊆ᴸ→⊆ {A = A} {B} A⊆ᴸB =
       ⊆-intro (x∈ᴸlA→x∈B ∘ (∈fin→∈ᴸ {DS = DS}) ∘ ∈-substᴿ (≃-sym same-set))
         where
@@ -248,20 +246,18 @@ module net.cruhland.axioms.Sets.Finite
         x∈A = x∈fxs→x∈A (x∈A∪B-introᴸ a∈sa)
         xs⊆ᴸA = ⊆fin→⊆ᴸ (∪⊆-elimᴿ sx∪fxs⊆A)
 
-    ⊆→⊆ᴸ :
-      {A B : PSet₀ S′} {{_ : Finite A}} → A ⊆ B → toList A ⊆ᴸ B
+    ⊆→⊆ᴸ : {A B : PSet₀ S′} {{_ : Finite A}} → A ⊆ B → toList A ⊆ᴸ B
     ⊆→⊆ᴸ {{finA}} = ⊆fin→⊆ᴸ ∘ ⊆-substᴸ (≃-sym same-set)
 
     _⊆?_ :
-      (A B : PSet₀ S′) →
-        {{_ : Finite A}} {{_ : DecMembership B}} → Dec (A ⊆ B)
+      (A B : PSet₀ S′) {{_ : Finite A}} {{_ : DecMembership B}} → Dec (A ⊆ B)
     A ⊆? B = dec-map ⊆ᴸ→⊆ ⊆→⊆ᴸ (toList A ⊆ᴸ? B)
 
     _≃?_ :
-      (A B : PSet₀ S′) →
-      {{_ : DecMembership A}} {{_ : DecMembership B}} →
+      (A B : PSet₀ S′)
+      {{_ : DecMembership A}} {{_ : DecMembership B}}
       {{_ : Finite A}} {{_ : Finite B}} →
-      Dec (A ≃ B)
+        Dec (A ≃ B)
     A ≃? B = dec-map (uncurry ⊆-antisym) ≃→⊆⊇ ((A ⊆? B) ∧? (B ⊆? A))
       where
         ≃→⊆⊇ = λ A≃B → ∧-intro (≃→⊆ᴸ A≃B) (≃→⊆ᴿ A≃B)

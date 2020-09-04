@@ -6,7 +6,7 @@ import Data.List.Membership.DecSetoid as DecSetoidᴸ
 open import Function using (_∘_)
 open import Level using (_⊔_)
 open import net.cruhland.axioms.Sets.Base using
-  (α; σ₁; σ₂; S; El; SetAxioms; Setoid; Setoid₀; module DecSetoid; DecSetoid₀)
+  (α; σ₁; σ₂; S; El; module DecSetoid; DecSetoid₀; SetAxioms; Setoid; Setoid₀)
 open import net.cruhland.axioms.Sets.Empty using (EmptySet)
 import net.cruhland.axioms.Sets.Equality as Equality
 open import net.cruhland.axioms.Sets.Singleton using (SingletonSet)
@@ -37,14 +37,11 @@ module net.cruhland.axioms.Sets.PreFinite
 
   open Finite {{...}} public using (elements; same-set)
 
-  toList :
-    {S : Setoid₀} (A : PSet₀ S) {{_ : Finite A}} →
-      List (El S)
+  toList : {S : Setoid₀} (A : PSet₀ S) {{_ : Finite A}} → List (El S)
   toList A = elements
 
   toList⊆A :
-    {S : Setoid₀} (A : PSet₀ S) {{_ : Finite A}} →
-      All (_∈ A) (toList A)
+    {S : Setoid₀} (A : PSet₀ S) {{_ : Finite A}} → All (_∈ A) (toList A)
   toList⊆A {S = S} A = xs⊆A (toList A) (≃→⊆ᴸ same-set)
     where
       xs⊆A : (xs : List (El S)) → finite xs ⊆ A → All (_∈ A) xs

@@ -1,7 +1,7 @@
 module net.cruhland.models.Sets.Predicate where
 
 open import Function using (_∘_; const; flip; id)
-open import Level using (_⊔_; Level; Setω) renaming (suc to lsuc)
+open import Level using (_⊔_; Level; Setω) renaming (suc to sℓ)
 open import net.cruhland.axioms.Sets using
   ( Complement; Comprehension; Difference; EmptySet; PairSet
   ; PairwiseIntersection; PairwiseUnion; Replacement; module ReplacementDefs
@@ -12,8 +12,7 @@ open import net.cruhland.axioms.Sets.Base using
 open import net.cruhland.models.Logic using
   (_∧_; ∧-map; _∨_; ∨-map; _↔_; ↔-elimᴿ; ↔-intro; ↔-refl; ⊥ᴸᴾ; ⊥ᴸᴾ-elim)
 
-record PSet {σ₁ σ₂} (S : Setoid σ₁ σ₂) (α : Level)
-    : Set (σ₁ ⊔ σ₂ ⊔ lsuc α) where
+record PSet {σ₁ σ₂} (S : Setoid σ₁ σ₂) (α : Level) : Set (σ₁ ⊔ σ₂ ⊔ sℓ α) where
   open Setoid S using (_≈_)
 
   field
@@ -129,18 +128,16 @@ difference : Difference setAxioms
 difference = record { _∖_ = _∖_ ; x∈A∖B↔x∈A∧x∉B = ↔-refl }
 
 rep :
-  {S T : Setoid₀} →
-    (P : El S → El T → Set) → (A : PSet₀ S) → ReplProp {T = T} {A} P →
-      PSet₀ T
+  {S T : Setoid₀} (P : El S → El T → Set) (A : PSet₀ S) →
+    ReplProp {T = T} {A} P → PSet₀ T
 rep {S = S} {T} P A rp =
-  record { ap = λ x → ReplMembership {T = T} {A} x P ; cong = rep-cong }
+  record { ap = λ x → ReplMembership x P ; cong = rep-cong }
     where
       open Setoid S using () renaming (refl to ≈ˢ-refl)
       open Setoid T using (_≈_)
 
       rep-cong :
-        ∀ {x y} → x ≈ y → ReplMembership {T = T} {A} x P →
-          ReplMembership {T = T} {A} y P
+        ∀ {x y} → x ≈ y → ReplMembership {T = T} {A} x P → ReplMembership y P
       rep-cong x≈y record { a = a ; a∈A = a∈A ; Pax = Pax } =
         record { a = a ; a∈A = a∈A ; Pax = ReplProp.P-cong rp ≈ˢ-refl x≈y Pax }
 
