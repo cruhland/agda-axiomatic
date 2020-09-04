@@ -28,7 +28,7 @@ module net.cruhland.axioms.Sets.Properties
     ( _∪_; ∪-comm; x∈A∪B-elim; x∈A∪B-intro; x∈A∪B-introᴸ; x∈A∪B-introᴿ
     ; ∪-substᴸ; ∪-substᴿ
     )
-  open SetAxioms SA using (_∈_; _∉_; PSet)
+  open SetAxioms SA using (_∈_; _∉_; PSet; PSet₀)
   open SingletonSet SS using (singleton; x∈sa-elim; x∈sa-intro)
 
   open import Function using (_∘_; flip)
@@ -80,6 +80,20 @@ module net.cruhland.axioms.Sets.Properties
 
   ∩-∅ᴿ : {S : Setoid σ₁ σ₂} {A : PSet S α} → A ∩ ∅ ≃ (∅ {α = α})
   ∩-∅ᴿ = ≃-trans ∩-comm ∩-∅ᴸ
+
+  ∩⊆-introᴸ : {A B : PSet₀ S} → A ∩ B ⊆ A
+  ∩⊆-introᴸ = ⊆-intro x∈A∩B-elimᴸ
+
+  ∩⊆-introᴿ : {A B : PSet₀ S} → A ∩ B ⊆ B
+  ∩⊆-introᴿ = ⊆-intro x∈A∩B-elimᴿ
+
+  ∩-preserves-⊆ᴸ : {A B C : PSet₀ S} → A ⊆ B → C ∩ A ⊆ C ∩ B
+  ∩-preserves-⊆ᴸ {A = A} {B} {C} (⊆-intro x∈A→x∈B) = ⊆-intro x∈C∩A→x∈C∩B
+    where
+      x∈C∩A→x∈C∩B : ∀ {x} → x ∈ C ∩ A → x ∈ C ∩ B
+      x∈C∩A→x∈C∩B x∈C∩A =
+        let ∧-intro x∈C x∈A = x∈A∩B-elim x∈C∩A
+         in x∈A∩B-intro₂ x∈C (x∈A→x∈B x∈A)
 
   ∩-over-∪ᴿ :
     {A : PSet S α} {B : PSet S β} {C : PSet S χ} → (A ∪ B) ∩ C ≃ A ∩ C ∪ B ∩ C

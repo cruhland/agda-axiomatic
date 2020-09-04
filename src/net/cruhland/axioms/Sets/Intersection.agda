@@ -8,7 +8,7 @@ import net.cruhland.axioms.Sets.Decidable as Decidable
 import net.cruhland.axioms.Sets.Equality as Equality
 import net.cruhland.axioms.Sets.Subset as Subset
 open import net.cruhland.models.Logic using
-  ( _∧_; _∧?_; ∧-comm; ∧-elimᴸ; ∧-elimᴿ; ∧-intro
+  ( _∧_; _∧?_; ∧-comm; ∧-dup; ∧-elimᴸ; ∧-elimᴿ; ∧-intro
   ; _↔_; ↔-elimᴸ; ↔-elimᴿ
   ; curry; Dec; dec-map
   )
@@ -16,7 +16,7 @@ open import net.cruhland.models.Logic using
 record PairwiseIntersection (SA : SetAxioms) : Setω where
   open Decidable SA using (_∈?_; DecMembership; ∈?-intro)
   open Equality SA using (_≃_; ∈-substᴿ; ≃-sym; ≃-trans)
-  open SetAxioms SA using (_∈_; PSet)
+  open SetAxioms SA using (_∈_; PSet; PSet₀)
   open Subset SA using (_⊆_; ⊆-antisym; ⊆-intro)
 
   infixl 6 _∩_
@@ -94,6 +94,9 @@ record PairwiseIntersection (SA : SetAxioms) : Setω where
 
   ∩-substᴿ : {A : PSet S α} {B₁ B₂ : PSet S β} → B₁ ≃ B₂ → A ∩ B₁ ≃ A ∩ B₂
   ∩-substᴿ B₁≃B₂ = ≃-trans ∩-comm (≃-trans (∩-substᴸ B₁≃B₂) ∩-comm)
+
+  ∩-idempotent : {A : PSet₀ S} → A ∩ A ≃ A
+  ∩-idempotent = ⊆-antisym (⊆-intro x∈A∩B-elimᴸ) (⊆-intro (x∈A∩B-intro ∘ ∧-dup))
 
   instance
     ∩-∈? :
