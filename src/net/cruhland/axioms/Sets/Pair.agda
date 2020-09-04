@@ -8,7 +8,7 @@ open import net.cruhland.axioms.Sets.Base using
 import net.cruhland.axioms.Sets.Decidable as Decidable
 import net.cruhland.axioms.Sets.Equality as Equality
 open import net.cruhland.models.Logic using
-  ( _∨_; _∨?_; ∨-introᴸ; ∨-introᴿ
+  ( _∨_; _∨?_; ∨-introᴸ; ∨-introᴿ; ∨-map
   ; _↔_; ↔-elimᴸ; ↔-elimᴿ; ↔-sym; ↔-trans
   ; Dec; dec-map; no; yes
   )
@@ -32,10 +32,13 @@ record PairSet (SA : SetAxioms) : Setω where
       {S : Setoid σ₁ σ₂} {a b : El S} → is-pair {S = S} a b (pair a b)
 
   module _ {S : Setoid σ₁ σ₂} where
-    open Setoid S using (_≈_) renaming (refl to ≈-refl)
+    open Setoid S using (_≈_) renaming (refl to ≈-refl; sym to ≈-sym)
 
-    x∈pab-elim : {x a b : El S} → x ∈ pair {S = S} a b → a ≈ x ∨ b ≈ x
-    x∈pab-elim = ↔-elimᴸ x∈pab↔a≈x∨b≈x
+    x∈pab-elimᴸ : {x a b : El S} → x ∈ pair {S = S} a b → x ≈ a ∨ x ≈ b
+    x∈pab-elimᴸ = ∨-map ≈-sym ≈-sym ∘ (↔-elimᴸ x∈pab↔a≈x∨b≈x)
+
+    x∈pab-elimᴿ : {x a b : El S} → x ∈ pair {S = S} a b → a ≈ x ∨ b ≈ x
+    x∈pab-elimᴿ = ↔-elimᴸ x∈pab↔a≈x∨b≈x
 
     x∈pab-intro : {x a b : El S} → a ≈ x ∨ b ≈ x → x ∈ pair {S = S} a b
     x∈pab-intro = ↔-elimᴿ x∈pab↔a≈x∨b≈x
@@ -61,5 +64,5 @@ record PairSet (SA : SetAxioms) : Setω where
       {{DS : DecSetoid σ₁ σ₂}} →
         ∀ {a b} → DecMembership (pair {S = DecSetoid.setoid DS} a b)
     pair-∈? {{DS}} {a} {b} =
-      ∈?-intro (λ {x} → dec-map x∈pab-intro x∈pab-elim (a ≟ x ∨? b ≟ x))
+      ∈?-intro (λ {x} → dec-map x∈pab-intro x∈pab-elimᴿ (a ≟ x ∨? b ≟ x))
         where open DecSetoid DS using (_≈_; _≟_)

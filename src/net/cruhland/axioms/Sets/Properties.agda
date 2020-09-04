@@ -19,7 +19,7 @@ module net.cruhland.axioms.Sets.Properties
   open Complement CM using (∁; x∈∁A-elim; x∈∁A-intro)
   open Difference SD using (_∖_; x∈A∖B-elim; x∈A∖B-elimᴸ; x∈A∖B-intro)
   open EmptySet ES using (∅; x∉∅)
-  open PairSet PS using (pair; x∈pab-elim; x∈pab-introᴸ; x∈pab-introᴿ)
+  open PairSet PS using (pair; x∈pab-elimᴿ; x∈pab-introᴸ; x∈pab-introᴿ)
   open PairwiseIntersection PI using
     ( _∩_; ∩-comm; x∈A∩B-elim; x∈A∩B-elimᴸ; x∈A∩B-elimᴿ; x∈A∩B-intro₂
     ; ∩-substᴸ; ∩-substᴿ
@@ -66,7 +66,7 @@ module net.cruhland.axioms.Sets.Properties
       open Setoid S using (_≈_)
 
       forward : ∀ {x} → x ∈ pair a b → x ∈ singleton a ∪ singleton b
-      forward x∈pab with x∈pab-elim x∈pab
+      forward x∈pab with x∈pab-elimᴿ x∈pab
       ... | ∨-introᴸ x≈a = x∈A∪B-introᴸ (x∈sa-intro x≈a)
       ... | ∨-introᴿ x≈b = x∈A∪B-introᴿ (x∈sa-intro x≈b)
 
