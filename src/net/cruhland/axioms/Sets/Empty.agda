@@ -2,11 +2,11 @@ module net.cruhland.axioms.Sets.Empty where
 
 open import Function using (_∘_)
 open import Level using (_⊔_; Setω)
-open import net.cruhland.axioms.Sets.Base using
-  (α; El; S; SetAxioms; Setoid; σ₁; σ₂)
+open import net.cruhland.axioms.Sets.Base using (α; S; SetAxioms; σ₁; σ₂)
 import net.cruhland.axioms.Sets.Decidable as Decidable
 import net.cruhland.axioms.Sets.Equality as Equality
 open import net.cruhland.models.Logic using (⊥-elim; _↔_; ↔-intro; Dec; no)
+open import net.cruhland.models.Setoid using (El; Setoid)
 
 record EmptySet (SA : SetAxioms) : Setω where
   open Decidable SA using (DecMembership; ∈?-intro)

@@ -2,11 +2,11 @@ module net.cruhland.axioms.Sets.Comprehension where
 
 open import Level using (_⊔_; Setω)
 open import Relation.Unary using (Decidable)
-open import net.cruhland.axioms.Sets.Base using
-  (α; σ₁; σ₂; El; S; SetAxioms; Setoid)
+open import net.cruhland.axioms.Sets.Base using (α; σ₁; σ₂; S; SetAxioms)
 import net.cruhland.axioms.Sets.Decidable as Decidable
 open import net.cruhland.models.Logic using
   (_↔_; ↔-elimᴸ; ↔-elimᴿ; Dec; dec-map)
+open import net.cruhland.models.Setoid using (El; Setoid)
 
 module ComprehensionDefs where
 

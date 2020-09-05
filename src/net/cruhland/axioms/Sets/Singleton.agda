@@ -2,12 +2,12 @@ module net.cruhland.axioms.Sets.Singleton where
 
 open import Level using (_⊔_; Setω)
 open import Relation.Binary using (DecSetoid)
-open import net.cruhland.axioms.Sets.Base using
-  (El; S; SetAxioms; Setoid; σ₁; σ₂)
+open import net.cruhland.axioms.Sets.Base using (S; SetAxioms; σ₁; σ₂)
 import net.cruhland.axioms.Sets.Decidable as Decidable
 import net.cruhland.axioms.Sets.Equality as Equality
 open import net.cruhland.models.Logic using
   (_↔_; ↔-elimᴸ; ↔-elimᴿ; ↔-sym; ↔-trans; Dec; dec-map; no; yes)
+open import net.cruhland.models.Setoid using (El; Setoid)
 
 module SingletonDef (SA : SetAxioms) where
   open SetAxioms SA using (_∈_; PSet)

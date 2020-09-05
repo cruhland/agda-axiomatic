@@ -1,12 +1,30 @@
-open import net.cruhland.axioms.Sets.Base using (SetAxioms)
+open import Data.List using ([]; _∷_; _++_; filter; foldr; List)
+import Data.List.Membership.DecSetoid as DecSetoidᴸ
+open import Data.List.Relation.Unary.All
+  using (All; all; lookupAny) renaming ([] to []ᴬ; _∷_ to _∷ᴬ_)
+open import Data.List.Relation.Unary.Any using (here; there)
+open import Function using (_∘_)
+open import Level using (_⊔_)
+open import Relation.Binary using (DecSetoid)
+open import net.cruhland.axioms.Sets.Base using (α; β; σ₁; σ₂; S; SetAxioms)
 open import net.cruhland.axioms.Sets.Complement using (Complement)
+import net.cruhland.axioms.Sets.Decidable as Decidable
 open import net.cruhland.axioms.Sets.Difference using (Difference)
 open import net.cruhland.axioms.Sets.Empty using (EmptySet)
+import net.cruhland.axioms.Sets.Equality as Equality
 open import net.cruhland.axioms.Sets.Intersection using (PairwiseIntersection)
 open import net.cruhland.axioms.Sets.Pair using (PairSet)
 import net.cruhland.axioms.Sets.PreFinite as PreFinite
-open import net.cruhland.axioms.Sets.Union using (PairwiseUnion)
+import net.cruhland.axioms.Sets.Properties as Properties
 open import net.cruhland.axioms.Sets.Singleton using (SingletonSet)
+import net.cruhland.axioms.Sets.Subset as Subset
+open import net.cruhland.axioms.Sets.Union using (PairwiseUnion)
+open import net.cruhland.models.Logic using
+  ( _∧_; _∧?_; ∧-intro; uncurry
+  ; _∨_; ∨-introᴸ; ∨-introᴿ
+  ; ⊥-elim; Dec; dec-map; no; yes
+  )
+open import net.cruhland.models.Setoid using (DecSetoid₀; El; Setoid; Setoid₀)
 
 module net.cruhland.axioms.Sets.Finite
     (SA : SetAxioms)
@@ -17,10 +35,13 @@ module net.cruhland.axioms.Sets.Finite
     (PU : PairwiseUnion SA ES)
     (SD : Difference SA)
     (SS : SingletonSet SA) where
-  open SetAxioms SA using (_∈_; _∉_; PSet; PSet₀; PSet-cong)
   open Complement CM using (∁; ∁-∈?)
+  open Decidable SA using (_∈?_; DecMembership)
   open Difference SD using (_∖_)
   open EmptySet ES using (∅; x∉∅)
+  open Equality SA using
+    (_≃_; ≃-refl; ∈-substᴿ; ≃-sym; ≃-trans; module ≃-Reasoning)
+  open ≃-Reasoning
   open PairSet PS using (pair)
   open PairwiseIntersection PI using
     (_∩_; ∩-comm; x∈A∩B-elim; x∈A∩B-elimᴸ; x∈A∩B-intro₂; ∩-substᴸ)
@@ -29,31 +50,11 @@ module net.cruhland.axioms.Sets.Finite
     ; x∈A∪B-introᴸ; x∈A∪B-introᴿ; ∪-substᴸ; ∪-substᴿ
     )
   open PreFinite SA ES PU SS using (∈fin→∈ᴸ; Finite; finite; same-set; toList)
-  open SingletonSet SS using (singleton; a∈sa; x∈sa-elim; x∈sa-intro)
-
-  open import Data.List using ([]; _∷_; _++_; filter; foldr; List)
-  import Data.List.Membership.DecSetoid as DecSetoidᴸ
-  open import Data.List.Relation.Unary.All
-    using (All; all; lookupAny) renaming ([] to []ᴬ; _∷_ to _∷ᴬ_)
-  open import Data.List.Relation.Unary.Any using (here; there)
-  open import Function using (_∘_)
-  open import Level using (_⊔_)
-  open import Relation.Binary using (DecSetoid)
-  open import net.cruhland.axioms.Sets.Base using
-    (α; β; σ₁; σ₂; S; DecSetoid₀; El; Setoid; Setoid₀)
-  open import net.cruhland.axioms.Sets.Decidable SA using (_∈?_; DecMembership)
-  open import net.cruhland.axioms.Sets.Equality SA using
-    (_≃_; ≃-refl; ∈-substᴿ; ≃-sym; ≃-trans; module ≃-Reasoning)
-  open ≃-Reasoning
-  open import net.cruhland.axioms.Sets.Properties SA CM ES PI PS PU SD SS using
+  open Properties SA CM ES PI PS PU SD SS using
     (A⊆∅→A≃∅; ∪⊆-elimᴿ; pab≃sa∪sb; ∩-∅ᴸ; ∩-over-∪ᴿ; A∖B≃A∩∁B)
-  open import net.cruhland.axioms.Sets.Subset SA using
-    (_⊆_; ≃→⊆ᴸ; ≃→⊆ᴿ; ⊆-antisym; ⊆-intro; ⊆-substᴸ)
-  open import net.cruhland.models.Logic using
-    ( _∧_; _∧?_; ∧-intro; uncurry
-    ; _∨_; ∨-introᴸ; ∨-introᴿ
-    ; ⊥-elim; Dec; dec-map; no; yes
-    )
+  open SetAxioms SA using (_∈_; _∉_; PSet; PSet₀; PSet-cong)
+  open SingletonSet SS using (singleton; a∈sa; x∈sa-elim; x∈sa-intro)
+  open Subset SA using (_⊆_; ≃→⊆ᴸ; ≃→⊆ᴿ; ⊆-antisym; ⊆-intro; ⊆-substᴸ)
 
   ∪-finite :
     {S : Setoid₀} (xs ys : List (El S)) →

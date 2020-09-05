@@ -1,7 +1,7 @@
 open import Level using (_⊔_)
 open import Relation.Nullary using (Dec)
-open import net.cruhland.axioms.Sets.Base using
-  (α; σ₁; σ₂; El; S; SetAxioms; Setoid)
+open import net.cruhland.axioms.Sets.Base using (α; σ₁; σ₂; S; SetAxioms)
+open import net.cruhland.models.Setoid using (El; Setoid)
 
 module net.cruhland.axioms.Sets.Decidable (SA : SetAxioms) where
 open SetAxioms SA using (_∈_; PSet)

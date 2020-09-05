@@ -5,14 +5,15 @@ open import Data.List.Relation.Unary.Any using (Any; here; there)
 import Data.List.Membership.DecSetoid as DecSetoidᴸ
 open import Function using (_∘_)
 open import Level using (_⊔_)
-open import net.cruhland.axioms.Sets.Base using
-  (α; σ₁; σ₂; S; El; module DecSetoid; DecSetoid₀; SetAxioms; Setoid; Setoid₀)
+open import net.cruhland.axioms.Sets.Base using (α; σ₁; σ₂; S; SetAxioms)
 open import net.cruhland.axioms.Sets.Empty using (EmptySet)
 import net.cruhland.axioms.Sets.Equality as Equality
 open import net.cruhland.axioms.Sets.Singleton using (SingletonSet)
 import net.cruhland.axioms.Sets.Subset as Subset
 open import net.cruhland.axioms.Sets.Union using (PairwiseUnion)
 open import net.cruhland.models.Logic using (∨-introᴸ; ∨-introᴿ; ⊥-elim)
+open import net.cruhland.models.Setoid using
+  (El; module DecSetoid; DecSetoid₀; Setoid; Setoid₀)
 
 module net.cruhland.axioms.Sets.PreFinite
     (SA : SetAxioms)

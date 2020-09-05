@@ -2,8 +2,7 @@ module net.cruhland.axioms.Sets.Intersection where
 
 open import Function using (_∘_)
 open import Level using (_⊔_; Setω)
-open import net.cruhland.axioms.Sets.Base using
-  (α; β; χ; El; S; SetAxioms; Setoid; σ₁; σ₂)
+open import net.cruhland.axioms.Sets.Base using (α; β; χ; S; SetAxioms; σ₁; σ₂)
 import net.cruhland.axioms.Sets.Decidable as Decidable
 import net.cruhland.axioms.Sets.Equality as Equality
 import net.cruhland.axioms.Sets.Subset as Subset
@@ -12,6 +11,7 @@ open import net.cruhland.models.Logic using
   ; _↔_; ↔-elimᴸ; ↔-elimᴿ
   ; curry; Dec; dec-map
   )
+open import net.cruhland.models.Setoid using (El; Setoid)
 
 record PairwiseIntersection (SA : SetAxioms) : Setω where
   open Decidable SA using (_∈?_; DecMembership; ∈?-intro)

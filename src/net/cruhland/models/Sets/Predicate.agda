@@ -7,10 +7,10 @@ open import net.cruhland.axioms.Sets using
   ; PairwiseIntersection; PairwiseUnion; Replacement; module ReplacementDefs
   ; SetAxioms; SetTheory; SingletonSet
   )
-open import net.cruhland.axioms.Sets.Base using
-  (α; β; σ₁; σ₂; El; S; Setoid; Setoid₀)
+open import net.cruhland.axioms.Sets.Base using (α; β; σ₁; σ₂; S)
 open import net.cruhland.models.Logic using
   (_∧_; ∧-map; _∨_; ∨-map; _↔_; ↔-elimᴿ; ↔-intro; ↔-refl; ⊥ᴸᴾ; ⊥ᴸᴾ-elim)
+open import net.cruhland.models.Setoid using (El; Setoid; Setoid₀)
 
 record PSet {σ₁ σ₂} (S : Setoid σ₁ σ₂) (α : Level) : Set (σ₁ ⊔ σ₂ ⊔ sℓ α) where
   open Setoid S using (_≈_)

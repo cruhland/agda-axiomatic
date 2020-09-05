@@ -1,16 +1,14 @@
-open import net.cruhland.axioms.Sets.Base using (SetAxioms)
+open import Function using (_∘_; id)
+open import Level using (_⊔_)
+open import net.cruhland.axioms.Sets.Base using (α; β; χ; S; σ₁; σ₂; SetAxioms)
 import net.cruhland.axioms.Sets.Equality as Equality
+open import net.cruhland.models.Logic using (_↔_; ↔-intro; ¬_)
+open import net.cruhland.models.Setoid using (El; Setoid)
 
 module net.cruhland.axioms.Sets.Subset (SA : SetAxioms) where
   open Equality SA using
     (_≃_; ≃-elimᴸ; ≃-elimᴿ; ≃-intro; ∈-substᴿ; ∉-substᴿ; ≃-sym)
   open SetAxioms SA using (_∈_; _∉_; PSet)
-
-  open import Function using (_∘_; id)
-  open import Level using (_⊔_)
-  open import net.cruhland.axioms.Sets.Base using
-    (α; β; χ; El; S; Setoid; σ₁; σ₂)
-  open import net.cruhland.models.Logic using (_↔_; ↔-intro; ¬_)
 
   infix 4 _⊆_ _⊈_ _⊊_
 

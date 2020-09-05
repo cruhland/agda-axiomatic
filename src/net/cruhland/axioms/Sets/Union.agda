@@ -2,8 +2,7 @@ module net.cruhland.axioms.Sets.Union where
 
 open import Function using (_∘_)
 open import Level using (_⊔_; Setω)
-open import net.cruhland.axioms.Sets.Base using
-  (α; β; χ; S; SetAxioms; Setoid; σ₁; σ₂)
+open import net.cruhland.axioms.Sets.Base using (α; β; χ; S; SetAxioms; σ₁; σ₂)
 open import net.cruhland.axioms.Sets.Empty using (EmptySet)
 import net.cruhland.axioms.Sets.Decidable as Decidable
 import net.cruhland.axioms.Sets.Equality as Equality
@@ -13,6 +12,7 @@ open import net.cruhland.models.Logic using
   ; _↔_; ↔-elimᴸ; ↔-elimᴿ
   ; Dec; dec-map
   )
+open import net.cruhland.models.Setoid using (Setoid)
 
 record PairwiseUnion (SA : SetAxioms) (ES : EmptySet SA) : Setω where
   open Decidable SA using (_∈?_; DecMembership; ∈?-intro)

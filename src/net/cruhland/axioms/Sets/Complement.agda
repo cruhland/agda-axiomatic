@@ -1,11 +1,11 @@
 module net.cruhland.axioms.Sets.Complement where
 
 open import Level using (_⊔_; Setω)
-open import net.cruhland.axioms.Sets.Base using
-  (α; σ₁; σ₂; El; S; SetAxioms; Setoid)
+open import net.cruhland.axioms.Sets.Base using (α; σ₁; σ₂; S; SetAxioms)
 import net.cruhland.axioms.Sets.Decidable as Decidable
 open import net.cruhland.models.Logic using
   (_↔_; ↔-elimᴸ; ↔-elimᴿ; ¬?; Dec; dec-map)
+open import net.cruhland.models.Setoid using (El; Setoid)
 
 record Complement (SA : SetAxioms) : Setω where
   open Decidable SA using (_∈?_; DecMembership; ∈?-intro)

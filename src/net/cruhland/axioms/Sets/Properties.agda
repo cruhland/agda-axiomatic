@@ -1,11 +1,17 @@
-open import net.cruhland.axioms.Sets.Base using (SetAxioms)
+open import Function using (_∘_; flip)
+open import net.cruhland.axioms.Sets.Base using (α; β; χ; σ₁; σ₂; S; SetAxioms)
 open import net.cruhland.axioms.Sets.Complement using (Complement)
 open import net.cruhland.axioms.Sets.Difference using (Difference)
 open import net.cruhland.axioms.Sets.Empty using (EmptySet)
+import net.cruhland.axioms.Sets.Equality as Equality
 open import net.cruhland.axioms.Sets.Intersection using (PairwiseIntersection)
 open import net.cruhland.axioms.Sets.Pair using (PairSet)
 open import net.cruhland.axioms.Sets.Singleton using (SingletonSet)
+import net.cruhland.axioms.Sets.Subset as Subset
 open import net.cruhland.axioms.Sets.Union using (PairwiseUnion)
+open import net.cruhland.models.Logic using
+  (_∧_; ∧-intro; _∨_; ∨-introᴸ; ∨-introᴿ; ∨-map; ∨-rec; ⊥-elim)
+open import net.cruhland.models.Setoid using (El; Setoid)
 
 module net.cruhland.axioms.Sets.Properties
     (SA : SetAxioms)
@@ -19,6 +25,8 @@ module net.cruhland.axioms.Sets.Properties
   open Complement CM using (∁; x∈∁A-elim; x∈∁A-intro)
   open Difference SD using (_∖_; x∈A∖B-elim; x∈A∖B-elimᴸ; x∈A∖B-intro)
   open EmptySet ES using (∅; x∉∅)
+  open Equality SA using (_≃_; ≃-trans; module ≃-Reasoning)
+  open ≃-Reasoning
   open PairSet PS using (pair; x∈pab-elimᴿ; x∈pab-introᴸ; x∈pab-introᴿ)
   open PairwiseIntersection PI using
     ( _∩_; ∩-comm; x∈A∩B-elim; x∈A∩B-elimᴸ; x∈A∩B-elimᴿ; x∈A∩B-intro₂
@@ -30,16 +38,7 @@ module net.cruhland.axioms.Sets.Properties
     )
   open SetAxioms SA using (_∈_; _∉_; PSet; PSet₀)
   open SingletonSet SS using (singleton; x∈sa-elim; x∈sa-intro)
-
-  open import Function using (_∘_; flip)
-  open import net.cruhland.axioms.Sets.Base using
-    (α; β; χ; σ₁; σ₂; El; S; Setoid)
-  open import net.cruhland.axioms.Sets.Equality SA using
-    (_≃_; ≃-trans; module ≃-Reasoning)
-  open ≃-Reasoning
-  open import net.cruhland.axioms.Sets.Subset SA using (_⊆_; ⊆-antisym; ⊆-intro)
-  open import net.cruhland.models.Logic using
-    (_∧_; ∧-intro; _∨_; ∨-introᴸ; ∨-introᴿ; ∨-map; ∨-rec; ⊥-elim)
+  open Subset SA using (_⊆_; ⊆-antisym; ⊆-intro)
 
   ∅-⊆ : {A : PSet S α} → (∅ {α = α}) ⊆ A
   ∅-⊆ = ⊆-intro (⊥-elim ∘ x∉∅)

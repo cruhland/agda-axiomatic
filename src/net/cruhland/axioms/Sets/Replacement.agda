@@ -9,8 +9,7 @@ open import Data.List.Relation.Unary.Any
 open import Function using (_∘_; const; flip)
 open import Level using (_⊔_; 0ℓ; Setω) renaming (suc to sℓ)
 open import Relation.Binary using (DecSetoid)
-open import net.cruhland.axioms.Sets.Base using
-  (α; β; σ₁; σ₂; S; El; SetAxioms; Setoid; Setoid₀)
+open import net.cruhland.axioms.Sets.Base using (α; β; σ₁; σ₂; S; SetAxioms)
 import net.cruhland.axioms.Sets.Decidable as Decidable
 open import net.cruhland.axioms.Sets.Empty using (EmptySet)
 import net.cruhland.axioms.Sets.Equality as Equality
@@ -22,9 +21,7 @@ open import net.cruhland.models.Logic using
   ( ⊤; _∧?_; ∧-intro; uncurry; ∨-introᴸ; ∨-introᴿ
   ; _↔_; ↔-elimᴸ; ↔-elimᴿ; ⊥-elim; Dec; dec-map
   )
-
-DecSetoid₀ : Set (sℓ 0ℓ)
-DecSetoid₀ = DecSetoid 0ℓ 0ℓ
+open import net.cruhland.models.Setoid using (DecSetoid₀; El; Setoid; Setoid₀)
 
 module ReplacementDefs (SA : SetAxioms) where
   open SetAxioms SA using (_∈_; PSet; PSet₀)

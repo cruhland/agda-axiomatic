@@ -36,7 +36,6 @@ record SetTheory : Setω where
     SS : SingletonSet SA
     RE : Replacement SA ES PU SS
 
-  open import net.cruhland.axioms.Sets.Base public using (El; Setoid; Setoid₀)
   open Complement CM public
   open Comprehension SC public
   open Decidable SA public
