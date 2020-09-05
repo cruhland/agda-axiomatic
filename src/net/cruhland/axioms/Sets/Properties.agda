@@ -52,6 +52,12 @@ module net.cruhland.axioms.Sets.Properties
   ∪⊆-elimᴿ : {A : PSet S α} {B : PSet S β} {C : PSet S χ} → A ∪ B ⊆ C → B ⊆ C
   ∪⊆-elimᴿ (⊆-intro x∈A∪B→x∈C) = ⊆-intro (x∈A∪B→x∈C ∘ x∈A∪B-introᴿ)
 
+  ⊆∪-introᴸ : {A B : PSet₀ S} → A ⊆ A ∪ B
+  ⊆∪-introᴸ = ⊆-intro x∈A∪B-introᴸ
+
+  ⊆∪-introᴿ : {A B : PSet₀ S} → B ⊆ A ∪ B
+  ⊆∪-introᴿ = ⊆-intro x∈A∪B-introᴿ
+
   ∪⊆-intro₂ :
     {A : PSet S α} {B : PSet S β} {C : PSet S χ} → A ⊆ C → B ⊆ C → A ∪ B ⊆ C
   ∪⊆-intro₂ (⊆-intro x∈A→x∈C) (⊆-intro x∈B→x∈C) =
