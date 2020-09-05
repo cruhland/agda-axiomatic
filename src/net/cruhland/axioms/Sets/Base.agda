@@ -21,8 +21,8 @@ record SetAxioms : Setω where
   infix 4 _∈_ _∉_
 
   field
-    PSet : ∀ {σ₁ σ₂} → Setoid σ₁ σ₂ → ∀ α → Set (σ₁ ⊔ σ₂ ⊔ sℓ α)
-    _∈_ : {S : Setoid σ₁ σ₂} → El S → PSet S α → Set α
+    PSet : Setoid σ₁ σ₂ → ∀ α → Set (σ₁ ⊔ σ₂ ⊔ sℓ α)
+    _∈_ : El S → PSet S α → Set α
 
     PSet-cong :
       {S : Setoid σ₁ σ₂} {x y : El S} {A : PSet S α} →
