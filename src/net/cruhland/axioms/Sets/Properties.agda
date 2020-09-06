@@ -52,6 +52,9 @@ module net.cruhland.axioms.Sets.Properties
   ∪⊆-elimᴿ : {A : PSet S α} {B : PSet S β} {C : PSet S χ} → A ∪ B ⊆ C → B ⊆ C
   ∪⊆-elimᴿ (⊆-intro x∈A∪B→x∈C) = ⊆-intro (x∈A∪B→x∈C ∘ x∈A∪B-introᴿ)
 
+  ∪⊆-elim : {A B C : PSet₀ S} → A ∪ B ⊆ C → A ⊆ C ∧ B ⊆ C
+  ∪⊆-elim A∪B⊆C = ∧-intro (∪⊆-elimᴸ A∪B⊆C) (∪⊆-elimᴿ A∪B⊆C)
+
   ⊆∪-introᴸ : {A B : PSet₀ S} → A ⊆ A ∪ B
   ⊆∪-introᴸ = ⊆-intro x∈A∪B-introᴸ
 
@@ -91,6 +94,19 @@ module net.cruhland.axioms.Sets.Properties
 
   ∩⊆-introᴿ : {A B : PSet₀ S} → A ∩ B ⊆ B
   ∩⊆-introᴿ = ⊆-intro x∈A∩B-elimᴿ
+
+  ⊆∩-intro₂ : {A B C : PSet₀ S} → C ⊆ A → C ⊆ B → C ⊆ A ∩ B
+  ⊆∩-intro₂ (⊆-intro x∈C→x∈A) (⊆-intro x∈C→x∈B) =
+    ⊆-intro λ x∈C → x∈A∩B-intro₂ (x∈C→x∈A x∈C) (x∈C→x∈B x∈C)
+
+  ⊆∩-elimᴸ : {A B C : PSet₀ S} → C ⊆ A ∩ B → C ⊆ A
+  ⊆∩-elimᴸ (⊆-intro x∈C→x∈A∩B) = ⊆-intro (x∈A∩B-elimᴸ ∘ x∈C→x∈A∩B)
+
+  ⊆∩-elimᴿ : {A B C : PSet₀ S} → C ⊆ A ∩ B → C ⊆ B
+  ⊆∩-elimᴿ (⊆-intro x∈C→x∈A∩B) = ⊆-intro (x∈A∩B-elimᴿ ∘ x∈C→x∈A∩B)
+
+  ⊆∩-elim : {A B C : PSet₀ S} → C ⊆ A ∩ B → C ⊆ A ∧ C ⊆ B
+  ⊆∩-elim C⊆A∩B = ∧-intro (⊆∩-elimᴸ C⊆A∩B) (⊆∩-elimᴿ C⊆A∩B)
 
   ∩-preserves-⊆ᴸ : {A B C : PSet₀ S} → A ⊆ B → C ∩ A ⊆ C ∩ B
   ∩-preserves-⊆ᴸ {A = A} {B} {C} (⊆-intro x∈A→x∈B) = ⊆-intro x∈C∩A→x∈C∩B
