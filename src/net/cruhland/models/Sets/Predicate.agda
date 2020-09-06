@@ -1,6 +1,7 @@
 module net.cruhland.models.Sets.Predicate where
 
 open import Function using (_∘_; const; flip; id)
+open import Function.Equivalence using (Equivalence)
 open import Level using (_⊔_; Level; Setω) renaming (suc to sℓ)
 open import net.cruhland.axioms.Sets using
   ( Complement; Comprehension; Difference; EmptySet; PairSet
@@ -10,7 +11,8 @@ open import net.cruhland.axioms.Sets using
 open import net.cruhland.axioms.Sets.Base using (α; β; σ₁; σ₂; S)
 open import net.cruhland.models.Logic using
   (_∧_; ∧-map; _∨_; ∨-map; _↔_; ↔-elimᴿ; ↔-intro; ↔-refl; ⊥ᴸᴾ; ⊥ᴸᴾ-elim)
-open import net.cruhland.models.Setoid using (El; Setoid; Setoid₀)
+open import net.cruhland.models.Setoid
+  using (_⟨$⟩_; El; Setoid; Setoid₀; SPred₀) renaming (cong to ⟶-cong)
 
 record PSet {σ₁ σ₂} (S : Setoid σ₁ σ₂) (α : Level) : Set (σ₁ ⊔ σ₂ ⊔ sℓ α) where
   open Setoid S using (_≈_)
@@ -32,12 +34,11 @@ open SetAxioms setAxioms using (_∈_; _∉_; PSet₀)
 open ReplacementDefs setAxioms using (ReplMembership; ReplProp)
 
 comprehension : Comprehension setAxioms
-comprehension = record
-  { ⟨_~_⟩ = λ ap cong → record { ap = ap ; cong = cong }
-  ; x∈⟨P⟩↔Px = ↔-refl
-  }
-
-open Comprehension comprehension using (congProp)
+comprehension = record { ⟨_⟩ = SPred→PSet ; x∈⟨P⟩↔Px = ↔-refl }
+  where
+    SPred→PSet : {S : Setoid₀} → SPred₀ S → PSet₀ S
+    SPred→PSet P =
+      record { ap = _⟨$⟩_ P ; cong = _⟨$⟩_ ∘ Equivalence.to ∘ (⟶-cong P) }
 
 ∅ : PSet S α
 ∅ = record { ap = const ⊥ᴸᴾ ; cong = const id }
@@ -121,7 +122,7 @@ _∖_ {α = α} {β = β} {S = S} A B = record { ap = in-diff ; cong = diff-cong
     in-diff : El S → Set (α ⊔ β)
     in-diff x = x ∈ A ∧ x ∉ B
 
-    diff-cong : congProp {S = S} in-diff
+    diff-cong : ∀ {x y} → x ≈ y → in-diff x → in-diff y
     diff-cong x≈y = ∧-map (cong A x≈y) (_∘ cong B (≈-sym x≈y))
 
 difference : Difference setAxioms

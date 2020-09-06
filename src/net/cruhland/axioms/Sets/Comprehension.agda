@@ -1,45 +1,28 @@
 module net.cruhland.axioms.Sets.Comprehension where
 
-open import Level using (_⊔_; Setω)
-open import Relation.Unary using (Decidable)
-open import net.cruhland.axioms.Sets.Base using (α; σ₁; σ₂; S; SetAxioms)
+open import Level using (Setω)
+open import net.cruhland.axioms.Sets.Base using (SetAxioms)
 import net.cruhland.axioms.Sets.Decidable as Decidable
 open import net.cruhland.models.Logic using
   (_↔_; ↔-elimᴸ; ↔-elimᴿ; Dec; dec-map)
-open import net.cruhland.models.Setoid using (El; Setoid)
-
-module ComprehensionDefs where
-
-  congProp : {S : Setoid σ₁ σ₂} → (El S → Set α) → Set (σ₁ ⊔ σ₂ ⊔ α)
-  congProp {S = S} P = ∀ {x y} → x ≈ y → P x → P y
-    where open Setoid S using (_≈_)
+open import net.cruhland.models.Setoid using (_⟨$⟩_; Setoid₀; SPred₀)
 
 record Comprehension (SA : SetAxioms) : Setω where
-  open ComprehensionDefs public using (congProp)
   open Decidable SA using (DecMembership; ∈?-intro)
-  open SetAxioms SA using (_∈_; PSet)
+  open SetAxioms SA using (_∈_; PSet₀)
 
   field
-    ⟨_~_⟩ :
-      let open Setoid S using (_≈_)
-       in (P : El S → Set α) → congProp {S = S} P → PSet S α
+    ⟨_⟩ : {S : Setoid₀} → SPred₀ S → PSet₀ S
+    x∈⟨P⟩↔Px : {S : Setoid₀} {P : SPred₀ S} → ∀ {x} → x ∈ ⟨ P ⟩ ↔ P ⟨$⟩ x
 
-    x∈⟨P⟩↔Px :
-      {S : Setoid σ₁ σ₂} {P : El S → Set α} {P-cong : congProp {S = S} P} →
-        ∀ {x} → x ∈ ⟨_~_⟩ {S = S} P P-cong ↔ P x
-
-  x∈⟨P⟩-elim :
-    {S : Setoid σ₁ σ₂} {P : El S → Set α} {P-cong : congProp {S = S} P} →
-      ∀ {x} → x ∈ ⟨_~_⟩ {S = S} P P-cong → P x
+  x∈⟨P⟩-elim : {S : Setoid₀} {P : SPred₀ S} → ∀ {x} → x ∈ ⟨ P ⟩ → P ⟨$⟩ x
   x∈⟨P⟩-elim = ↔-elimᴸ x∈⟨P⟩↔Px
 
-  x∈⟨P⟩-intro :
-    {S : Setoid σ₁ σ₂} {P : El S → Set α} {P-cong : congProp {S = S} P} →
-      ∀ {x} → P x → x ∈ ⟨_~_⟩ {S = S} P P-cong
+  x∈⟨P⟩-intro : {S : Setoid₀} {P : SPred₀ S} → ∀ {x} → P ⟨$⟩ x → x ∈ ⟨ P ⟩
   x∈⟨P⟩-intro = ↔-elimᴿ x∈⟨P⟩↔Px
 
   instance
     ⟨P⟩-∈? :
-      {P : El S → Set α} {P-cong : congProp {S = S} P} →
-        {{decP : ∀ {x} → Dec (P x)}} → DecMembership (⟨_~_⟩ {S = S} P P-cong)
+      {S : Setoid₀} {P : SPred₀ S} {{decP : ∀ {x} → Dec (P ⟨$⟩ x)}} →
+        DecMembership ⟨ P ⟩
     ⟨P⟩-∈? {{decP}} = ∈?-intro (dec-map x∈⟨P⟩-intro x∈⟨P⟩-elim decP)
