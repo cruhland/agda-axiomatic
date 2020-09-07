@@ -4,9 +4,9 @@ open import Level using (0ℓ) renaming (suc to sℓ)
 
 -- Export standard library definitions
 open import Function.Equivalence public
-  using (⇔-setoid) renaming (id to equivalence-id)
+  using (Equivalence; ⇔-setoid) renaming (id to equivalence-id)
 open import Function.Equality public
-  using (_⟶_; _⇨_; _⟨$⟩_; cong) renaming (const to SPred-const)
+  using (_⟶_; _⇨_; _⟨$⟩_; cong; Π) renaming (const to SPred-const)
 open import Relation.Binary public using (DecSetoid; module DecSetoid; Setoid)
 open Setoid public using () renaming (Carrier to El)
 

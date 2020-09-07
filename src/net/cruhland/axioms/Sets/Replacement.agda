@@ -6,7 +6,7 @@ open import Data.List.Relation.Unary.All
   using (All) renaming ([] to []ᴬ; _∷_ to _∷ᴬ_)
 open import Data.List.Relation.Unary.Any
   using (Any; any) renaming (map to map-any)
-open import Function using (_∘_; const; flip)
+open import Function using (_∘_; const)
 open import Level using (_⊔_; 0ℓ; Setω) renaming (suc to sℓ)
 open import Relation.Binary using (DecSetoid)
 open import net.cruhland.axioms.Sets.Base using (α; β; σ₁; σ₂; S; SetAxioms)
@@ -21,34 +21,31 @@ open import net.cruhland.models.Logic using
   ( ⊤; _∧?_; ∧-intro; uncurry; ∨-introᴸ; ∨-introᴿ
   ; _↔_; ↔-elimᴸ; ↔-elimᴿ; ⊥-elim; Dec; dec-map
   )
-open import net.cruhland.models.Setoid using (DecSetoid₀; El; Setoid; Setoid₀)
+open import net.cruhland.models.Setoid
+  using (_⟨$⟩_; DecSetoid₀; El; Equivalence; Setoid; Setoid₀; SRel₀)
+  renaming (cong to SRel-cong)
 
 module ReplacementDefs (SA : SetAxioms) where
   open SetAxioms SA using (_∈_; PSet; PSet₀)
 
-  record ReplProp
-      {S T : Setoid₀} {A : PSet₀ S} (P : El S → El T → Set) : Set where
-    open Setoid S using () renaming (_≈_ to _≈ˢ_)
-    open Setoid T using () renaming (_≈_ to _≈ᵀ_)
+  record ReplProp {S T : Setoid₀} {A : PSet₀ S} (P : SRel₀ S T) : Set where
+    open Setoid T using (_≈_)
 
     field
-      P-cong : ∀ {x₁ x₂ y₁ y₂} → x₁ ≈ˢ x₂ → y₁ ≈ᵀ y₂ → P x₁ y₁ → P x₂ y₂
-      P-most : ∀ {x y} → x ∈ A → P x y → ∀ {z} → P x z → y ≈ᵀ z
+      P-most : ∀ {x y} → x ∈ A → P ⟨$⟩ x ⟨$⟩ y → ∀ {z} → P ⟨$⟩ x ⟨$⟩ z → y ≈ z
 
-  record ReplFun
-      {S T : Setoid₀} {A : PSet₀ S} (P : El S → El T → Set) : Set where
+  record ReplFun {S T : Setoid₀} {A : PSet₀ S} (P : SRel₀ S T) : Set where
     field
       f : El S → El T
-      Pf : ∀ {x} → x ∈ A → P x (f x)
+      Pf : ∀ {x} → x ∈ A → P ⟨$⟩ x ⟨$⟩ f x
 
   record ReplMembership
-      {S T : Setoid₀} {A : PSet₀ S} (x : El T) (P : El S → El T → Set)
-        : Set where
+      {S T : Setoid₀} {A : PSet₀ S} (x : El T) (P : SRel₀ S T) : Set where
     constructor ReplMembership-intro
     field
       {a} : El S
       a∈A : a ∈ A
-      Pax : P a x
+      Pax : P ⟨$⟩ a ⟨$⟩ x
 
 record Replacement
     (SA : SetAxioms)
@@ -72,34 +69,31 @@ record Replacement
 
   field
     replacement :
-      {S T : Setoid₀} (P : El S → El T → Set) (A : PSet₀ S) → ReplProp P →
-        PSet₀ T
+      {S T : Setoid₀} (P : SRel₀ S T) (A : PSet₀ S) → ReplProp P → PSet₀ T
 
     x∈rep↔Pax :
       {S T : Setoid₀} {x : El T} {A : PSet₀ S}
-        {P : El S → El T → Set} {rp : ReplProp {T = T} P} →
+        {P : SRel₀ S T} {rp : ReplProp {T = T} P} →
           x ∈ replacement P A rp ↔ ReplMembership {T = T} x P
 
   x∈rep-elim :
-    {S T : Setoid₀} {x : El T} {A : PSet₀ S} {P : El S → El T → Set}
+    {S T : Setoid₀} {x : El T} {A : PSet₀ S} {P : SRel₀ S T}
       {rp : ReplProp {T = T} P} → x ∈ replacement P A rp → ReplMembership x P
   x∈rep-elim = ↔-elimᴸ x∈rep↔Pax
 
   x∈rep-intro :
-    {S T : Setoid₀} {x : El T} {A : PSet₀ S} {P : El S → El T → Set}
+    {S T : Setoid₀} {x : El T} {A : PSet₀ S} {P : SRel₀ S T}
       {rp : ReplProp {T = T} P} → ReplMembership x P → x ∈ replacement P A rp
   x∈rep-intro = ↔-elimᴿ x∈rep↔Pax
 
   ReplProp-subst :
-    {S T : Setoid₀} {P : El S → El T → Set} {A₁ A₂ : PSet₀ S} →
+    {S T : Setoid₀} {P : SRel₀ S T} {A₁ A₂ : PSet₀ S} →
       A₁ ≃ A₂ → ReplProp {T = T} {A₁} P → ReplProp {A = A₂} P
-  ReplProp-subst A₁≃A₂ record { P-cong = P-cong ; P-most = P-most } = record
-    { P-cong = P-cong
-    ; P-most = λ x∈A₂ Pxy Pxz → P-most (∈-substᴿ (≃-sym A₁≃A₂) x∈A₂) Pxy Pxz
-    }
+  ReplProp-subst A₁≃A₂ record { P-most = P-most } = record
+    { P-most = λ x∈A₂ Pxy Pxz → P-most (∈-substᴿ (≃-sym A₁≃A₂) x∈A₂) Pxy Pxz }
 
   rep-subst :
-    {S T : Setoid₀} {P : El S → El T → Set} {A₁ A₂ : PSet₀ S}
+    {S T : Setoid₀} {P : SRel₀ S T} {A₁ A₂ : PSet₀ S}
       {rp : ReplProp {T = T} {A₁} P} (A₁≃A₂ : A₁ ≃ A₂) →
         replacement P A₁ rp ≃ replacement P A₂ (ReplProp-subst A₁≃A₂ rp)
   rep-subst {P = P} {A₁} {A₂} {rp} A₁≃A₂ =
@@ -123,8 +117,8 @@ record Replacement
     rep-∈? :
       {{DS : DecSetoid₀}} {T : Setoid₀} →
         let S′ = DecSetoid.setoid DS
-         in {A : PSet₀ S′} {P : El S′ → El T → Set} {rp : ReplProp {T = T} P}
-              {{_ : Finite A}} {{_ : ∀ {x y} → Dec (P x y)}} →
+         in {A : PSet₀ S′} {P : SRel₀ S′ T} {rp : ReplProp {T = T} P}
+              {{_ : Finite A}} {{_ : ∀ {x y} → Dec (P ⟨$⟩ x ⟨$⟩ y)}} →
                 DecMembership (replacement {T = T} P A rp)
     rep-∈? {{DS}} {T} {A} {P} {rp} {{finA}} {{decP}} =
       ∈?-intro (dec-map x∈rep-intro x∈rep-elim ReplMembership?)
@@ -136,22 +130,24 @@ record Replacement
           ReplMembership? {x} =
             dec-map fwd rev (any (λ a → decP {a} {x}) (toList A))
               where
-                fwd : Any (flip P x) (toList A) → ReplMembership x P
+                fwd : Any (λ a → P ⟨$⟩ a ⟨$⟩ x) (toList A) → ReplMembership x P
                 fwd Pax∈ᴸlA =
                   let S′ = DecSetoid.setoid DS
                       ∧-intro a (∧-intro a∈ᴸlA Pax) = find S′ Pax∈ᴸlA
                       a∈fin[lA] = ∈ᴸ→∈fin {DS = DS} a∈ᴸlA
                    in ReplMembership-intro (∈-substᴿ same-set a∈fin[lA]) Pax
 
-                rev : ReplMembership x P → Any (flip P x) (toList A)
+                rev : ReplMembership x P → Any (λ a → P ⟨$⟩ a ⟨$⟩ x) (toList A)
                 rev record { a = a ; a∈A = a∈A ; Pax = Pax } =
                   let a∈fin[lA] = ∈-substᴿ (≃-sym same-set) a∈A
-                      a∈ᴸlA = ∈fin→∈ᴸ {DS = DS} a∈fin[lA]
-                      P-cong = ReplProp.P-cong
-                   in map-any (λ a≈a′ → P-cong rp a≈a′ ≈ᵀ-refl Pax) a∈ᴸlA
+                      a∈ᴸlA = ∈fin→∈ᴸ {DS = DS} {xs = toList A} a∈fin[lA]
+                   in map-any
+                     (λ a≈a′ →
+                       Equivalence.to (SRel-cong P a≈a′ ≈ᵀ-refl) ⟨$⟩ Pax)
+                     a∈ᴸlA
 
     rep-finite :
-      {S T : Setoid₀} {A : PSet₀ S} {P : El S → El T → Set} {rp : ReplProp P}
+      {S T : Setoid₀} {A : PSet₀ S} {P : SRel₀ S T} {rp : ReplProp P}
         {{finA : Finite A}} {{rf : ReplFun {T = T} P}} →
           Finite (replacement P A rp)
     rep-finite {S} {T} {A} {P} {rp} {{finA}} {{rf}} =
@@ -195,8 +191,7 @@ record Replacement
           ∎
           where
             rpl′ = record
-              { P-cong = ReplProp.P-cong rpl
-              ; P-most = λ w∈fxs Pwy Pwz →
+              { P-most = λ w∈fxs Pwy Pwz →
                   ReplProp.P-most rpl (x∈A∪B-introᴿ w∈fxs) Pwy Pwz
               }
 
@@ -208,7 +203,7 @@ record Replacement
             ... | ∨-introᴸ z∈sfx =
               let fx≈z = x∈sa-elim z∈sfx
                   Pxfx = ReplFun.Pf rf x∈A
-                  Pxz = ReplProp.P-cong rpl ≈ˢ-refl fx≈z Pxfx
+                  Pxz = Equivalence.to (SRel-cong P ≈ˢ-refl fx≈z) ⟨$⟩ Pxfx
                in x∈rep-intro (ReplMembership-intro (x∈A∪B-introᴸ a∈sa) Pxz)
             ... | ∨-introᴿ z∈rep′ =
               let ReplMembership-intro x∈fxs Pxz = x∈rep-elim z∈rep′
@@ -222,7 +217,8 @@ record Replacement
             ... | ReplMembership-intro a∈f[x∷xs] Paz with x∈A∪B-elim a∈f[x∷xs]
             ... | ∨-introᴸ a∈sx =
               let x≈a = x∈sa-elim a∈sx
-                  Pxz = ReplProp.P-cong rpl (≈ˢ-sym x≈a) ≈ᵀ-refl Paz
+                  Pxz =
+                    Equivalence.to (SRel-cong P (≈ˢ-sym x≈a) ≈ᵀ-refl) ⟨$⟩ Paz
                   Px[fx] = ReplFun.Pf rf x∈A
                   fx≈z = ReplProp.P-most rpl (x∈A∪B-introᴸ a∈sa) Px[fx] Pxz
                in x∈A∪B-introᴸ (x∈sa-intro fx≈z)

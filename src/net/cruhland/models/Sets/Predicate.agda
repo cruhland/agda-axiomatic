@@ -12,7 +12,7 @@ open import net.cruhland.axioms.Sets.Base using (α; β; σ₁; σ₂; S)
 open import net.cruhland.models.Logic using
   (_∧_; ∧-map; _∨_; ∨-map; _↔_; ↔-elimᴿ; ↔-intro; ↔-refl; ⊥ᴸᴾ; ⊥ᴸᴾ-elim)
 open import net.cruhland.models.Setoid
-  using (_⟨$⟩_; El; Setoid; Setoid₀; SPred₀) renaming (cong to ⟶-cong)
+  using (_⟨$⟩_; El; Setoid; Setoid₀; SPred₀; SRel₀) renaming (cong to ⟶-cong)
 
 record PSet {σ₁ σ₂} (S : Setoid σ₁ σ₂) (α : Level) : Set (σ₁ ⊔ σ₂ ⊔ sℓ α) where
   open Setoid S using (_≈_)
@@ -129,8 +129,8 @@ difference : Difference setAxioms
 difference = record { _∖_ = _∖_ ; x∈A∖B↔x∈A∧x∉B = ↔-refl }
 
 rep :
-  {S T : Setoid₀} (P : El S → El T → Set) (A : PSet₀ S) →
-    ReplProp {T = T} {A} P → PSet₀ T
+  {S T : Setoid₀} (P : SRel₀ S T) (A : PSet₀ S) → ReplProp {T = T} {A} P →
+    PSet₀ T
 rep {S = S} {T} P A rp =
   record { ap = λ x → ReplMembership x P ; cong = rep-cong }
     where
@@ -139,8 +139,11 @@ rep {S = S} {T} P A rp =
 
       rep-cong :
         ∀ {x y} → x ≈ y → ReplMembership {T = T} {A} x P → ReplMembership y P
-      rep-cong x≈y record { a = a ; a∈A = a∈A ; Pax = Pax } =
-        record { a = a ; a∈A = a∈A ; Pax = ReplProp.P-cong rp ≈ˢ-refl x≈y Pax }
+      rep-cong x≈y record { a = a ; a∈A = a∈A ; Pax = Pax } = record
+        { a = a
+        ; a∈A = a∈A
+        ; Pax = Equivalence.to (⟶-cong P ≈ˢ-refl x≈y) ⟨$⟩ Pax
+        }
 
 replacement : Replacement setAxioms emptySet pairwiseUnion singletonSet
 replacement = record { replacement = rep ; x∈rep↔Pax = ↔-refl }
