@@ -1,9 +1,9 @@
-open import Level using (_⊔_) renaming (suc to lsuc)
+open import Level using (_⊔_; 0ℓ) renaming (suc to sℓ)
 open import Relation.Binary using (IsEquivalence)
 open import net.cruhland.axioms.Sets.Base using (α; β; S; σ₁; σ₂; SetAxioms)
 open import net.cruhland.models.Logic using
   (¬_; _↔_; ↔-elimᴸ; ↔-elimᴿ; ↔-refl; ↔-sym; ↔-trans)
-open import net.cruhland.models.Setoid using (El; Setoid)
+open import net.cruhland.models.Setoid using (El; Setoid; Setoid₀)
 
 module net.cruhland.axioms.Sets.Equality (SA : SetAxioms) where
   open SetAxioms SA using (_∈_; _∉_; PSet; PSet-cong)
@@ -37,9 +37,12 @@ module net.cruhland.axioms.Sets.Equality (SA : SetAxioms) where
   ≃-IsEquivalence : IsEquivalence (_≃_ {σ₁} {σ₂} {α} {S})
   ≃-IsEquivalence = record { refl = ≃-refl ; sym = ≃-sym ; trans = ≃-trans }
 
-  PSet-Setoid : Setoid σ₁ σ₂ → ∀ α → Setoid (σ₁ ⊔ σ₂ ⊔ lsuc α) (σ₁ ⊔ α)
+  PSet-Setoid : Setoid σ₁ σ₂ → ∀ α → Setoid (σ₁ ⊔ σ₂ ⊔ sℓ α) (σ₁ ⊔ α)
   PSet-Setoid S α =
     record { Carrier = PSet S α ; _≈_ = _≃_ ; isEquivalence = ≃-IsEquivalence }
+
+  PSet-Setoid₀ : Setoid σ₁ 0ℓ → Setoid (σ₁ ⊔ sℓ 0ℓ) σ₁
+  PSet-Setoid₀ S = PSet-Setoid S 0ℓ
 
   ∈-substᴿ :
     {S : Setoid σ₁ σ₂} {A B : PSet S α} {x : El S} → A ≃ B → x ∈ A → x ∈ B
