@@ -31,7 +31,7 @@ setAxioms = record
   }
 
 open SetAxioms setAxioms using (_∈_; _∉_; PSet₀)
-open ReplacementDefs setAxioms using (ReplMembership; ReplProp)
+open ReplacementDefs setAxioms using (ReplMem; ReplRel)
 
 comprehension : Comprehension setAxioms
 comprehension = record { ⟨_⟩ = SPred→PSet ; x∈⟨P⟩↔Px = ↔-refl }
@@ -128,25 +128,24 @@ _∖_ {α = α} {β = β} {S = S} A B = record { ap = in-diff ; cong = diff-cong
 difference : Difference setAxioms
 difference = record { _∖_ = _∖_ ; x∈A∖B↔x∈A∧x∉B = ↔-refl }
 
-rep :
-  {S T : Setoid₀} (P : SRel₀ S T) (A : PSet₀ S) → ReplProp {T = T} {A} P →
-    PSet₀ T
-rep {S = S} {T} P A rp =
-  record { ap = λ x → ReplMembership x P ; cong = rep-cong }
+rep : {S T : Setoid₀} (A : PSet₀ S) → ReplRel A T → PSet₀ T
+rep {S = S} {T} A RR =
+  record { ap = λ x → ReplMem x RR ; cong = rep-cong }
     where
       open Setoid S using () renaming (refl to ≈ˢ-refl)
       open Setoid T using (_≈_)
+      open ReplRel RR using (R)
 
       rep-cong :
-        ∀ {x y} → x ≈ y → ReplMembership {T = T} {A} x P → ReplMembership y P
-      rep-cong x≈y record { a = a ; a∈A = a∈A ; Pax = Pax } = record
+        ∀ {x y} → x ≈ y → ReplMem x RR → ReplMem y RR
+      rep-cong x≈y record { a = a ; a∈A = a∈A ; Rax = Rax } = record
         { a = a
         ; a∈A = a∈A
-        ; Pax = Equivalence.to (⟶-cong P ≈ˢ-refl x≈y) ⟨$⟩ Pax
+        ; Rax = Equivalence.to (⟶-cong R ≈ˢ-refl x≈y) ⟨$⟩ Rax
         }
 
 replacement : Replacement setAxioms emptySet pairwiseUnion singletonSet
-replacement = record { replacement = rep ; x∈rep↔Pax = ↔-refl }
+replacement = record { replacement = rep ; x∈rep↔Rax = ↔-refl }
 
 setTheory : SetTheory
 setTheory = record
