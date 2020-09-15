@@ -6,7 +6,7 @@ open import Data.List.Relation.Unary.Any using (here; there)
 open import Function using (_∘_)
 open import Level using (_⊔_)
 open import Relation.Binary using (DecSetoid)
-open import net.cruhland.axioms.Sets.Base using (α; β; σ₁; σ₂; S; SetAxioms)
+open import net.cruhland.axioms.Sets.Base using (SetAxioms)
 open import net.cruhland.axioms.Sets.Complement using (Complement)
 import net.cruhland.axioms.Sets.Decidable as Decidable
 open import net.cruhland.axioms.Sets.Difference using (Difference)
@@ -52,24 +52,27 @@ module net.cruhland.axioms.Sets.Finite
   open PreFinite SA ES PU SS using (∈fin→∈ᴸ; Finite; finite; same-set; toList)
   open Properties SA CM ES PI PS PU SD SS using
     (A⊆∅→A≃∅; ∪⊆-elimᴿ; pab≃sa∪sb; ∩-∅ᴸ; ∩-over-∪ᴿ; A∖B≃A∩∁B)
-  open SetAxioms SA using (_∈_; _∉_; PSet; PSet₀; PSet-cong)
+  open SetAxioms SA using (_∈_; _∉_; PSet₀; PSet-cong)
   open SingletonSet SS using (singleton; a∈sa; x∈sa-elim; x∈sa-intro)
   open Subset SA using (_⊆_; ≃→⊆ᴸ; ≃→⊆ᴿ; ⊆-antisym; ⊆-intro; ⊆-substᴸ)
 
+  private
+    variable
+      S : Setoid₀
+      A B : PSet₀ S
+
   ∪-finite :
-    {S : Setoid₀} (xs ys : List (El S)) →
-      finite {S = S} xs ∪ finite ys ≃ finite (xs ++ ys)
+    (xs ys : List (El S)) → finite {S = S} xs ∪ finite ys ≃ finite (xs ++ ys)
   ∪-finite [] ys = ∪-∅ᴸ
   ∪-finite (x ∷ xs) ys = ≃-trans ∪-assoc (∪-substᴿ (∪-finite xs ys))
 
   infixl 7 _∩ᴾ_
 
-  _∩ᴾ_ :
-    List (El S) → (A : PSet S α) → {{_ : DecMembership A}} → List (El S)
+  _∩ᴾ_ : List (El S) → (A : PSet₀ S) → {{_ : DecMembership A}} → List (El S)
   xs ∩ᴾ A = filter (_∈? A) xs
 
   singleton-∈∩ᴸ :
-    {S : Setoid σ₁ σ₂} {A : PSet S σ₂} {a : El S} →
+    {S : Setoid₀} {A : PSet₀ S} {a : El S} →
       a ∈ A → singleton a ∩ A ≃ singleton a
   singleton-∈∩ᴸ {S = S} {A} {a} a∈A =
     ⊆-antisym (⊆-intro forward) (⊆-intro backward)
@@ -82,7 +85,7 @@ module net.cruhland.axioms.Sets.Finite
           where open Setoid S using (_≈_)
 
   singleton-∉∩ᴸ :
-    {S : Setoid σ₁ σ₂} {A : PSet S σ₂} {a : El S} → a ∉ A → singleton a ∩ A ≃ ∅
+    {S : Setoid₀} {A : PSet₀ S} {a : El S} → a ∉ A → singleton a ∩ A ≃ ∅
   singleton-∉∩ᴸ {S = S} {A} {a} a∉A = A⊆∅→A≃∅ (⊆-intro x∈sa∩A→x∈∅)
     where
       open Setoid S using (_≈_) renaming (sym to ≈-sym)
@@ -93,15 +96,14 @@ module net.cruhland.axioms.Sets.Finite
          in ⊥-elim (a∉A (PSet-cong (≈-sym (x∈sa-elim x∈sa)) x∈A))
 
   ∩-finite-lemma :
-    {S : Setoid₀} {x : El S}
-      (xs : List (El S)) (A : PSet₀ S) {{_ : DecMembership A}} →
-        singleton x ∩ A ∪ finite (xs ∩ᴾ A) ≃ finite ((x ∷ xs) ∩ᴾ A)
+    {x : El S} (xs : List (El S)) (A : PSet₀ S) {{_ : DecMembership A}} →
+      singleton x ∩ A ∪ finite (xs ∩ᴾ A) ≃ finite ((x ∷ xs) ∩ᴾ A)
   ∩-finite-lemma {S = S} {x} xs A {{decMem}} with (x ∈? A) {{decMem}}
   ... | yes x∈A = ∪-substᴸ (singleton-∈∩ᴸ x∈A)
   ... | no x∉A = ≃-trans (∪-substᴸ (singleton-∉∩ᴸ x∉A)) ∪-∅ᴸ
 
   ∩-finite :
-    {S : Setoid₀} (xs : List (El S)) (A : PSet₀ S) {{_ : DecMembership A}} →
+    (xs : List (El S)) (A : PSet₀ S) {{_ : DecMembership A}} →
       finite xs ∩ A ≃ finite (xs ∩ᴾ A)
   ∩-finite [] A = ∩-∅ᴸ
   ∩-finite (x ∷ xs) A =
@@ -143,9 +145,7 @@ module net.cruhland.axioms.Sets.Finite
             pair a b
           ∎
 
-    Finite-∪ :
-      {S : Setoid₀} {A B : PSet₀ S} {{_ : Finite A}} {{_ : Finite B}} →
-        Finite (A ∪ B)
+    Finite-∪ : {{_ : Finite A}} {{_ : Finite B}} → Finite (A ∪ B)
     Finite-∪ {A = A} {B} = record { elements = ∪-list ; same-set = list≃∪ }
       where
         ∪-list = toList A ++ toList B
@@ -163,9 +163,7 @@ module net.cruhland.axioms.Sets.Finite
             A ∪ B
           ∎
 
-    Finite-∩ᴸ :
-      {A B : PSet₀ S} {{_ : Finite A}} {{_ : DecMembership B}} →
-        Finite (A ∩ B)
+    Finite-∩ᴸ : {{_ : Finite A}} {{_ : DecMembership B}} → Finite (A ∩ B)
     Finite-∩ᴸ {A = A} {B} = record { elements = ∩-list ; same-set = list≃∩ }
       where
         ∩-list = toList A ∩ᴾ B
@@ -181,9 +179,7 @@ module net.cruhland.axioms.Sets.Finite
             A ∩ B
           ∎
 
-    Finite-∩ᴿ :
-      {A B : PSet₀ S} {{_ : DecMembership A}} {{_ : Finite B}} →
-        Finite (A ∩ B)
+    Finite-∩ᴿ : {{_ : DecMembership A}} {{_ : Finite B}} → Finite (A ∩ B)
     Finite-∩ᴿ {A = A} {B} = record { elements = ∩-list ; same-set = list≃∩ }
       where
         ∩-list = toList B ∩ᴾ A
@@ -199,9 +195,7 @@ module net.cruhland.axioms.Sets.Finite
             A ∩ B
           ∎
 
-    Finite-∖ :
-      {A B : PSet₀ S} {{_ : Finite A}} {{_ : DecMembership B}} →
-        Finite (A ∖ B)
+    Finite-∖ : {{_ : Finite A}} {{_ : DecMembership B}} → Finite (A ∖ B)
     Finite-∖ {A = A} {B} = record { elements = ∖-list ; same-set = list≃∖ }
       where
         ∖-list = toList A ∩ᴾ ∁ B
