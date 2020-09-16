@@ -5,7 +5,7 @@ open import Data.List.Relation.Unary.Any using (Any; here; there)
 import Data.List.Membership.DecSetoid as DecSetoidᴸ
 open import Function using (_∘_)
 open import Level using (_⊔_)
-open import net.cruhland.axioms.Sets.Base using (α; σ₁; σ₂; S; SetAxioms)
+open import net.cruhland.axioms.Sets.Base using (SetAxioms)
 open import net.cruhland.axioms.Sets.Empty using (EmptySet)
 import net.cruhland.axioms.Sets.Equality as Equality
 open import net.cruhland.axioms.Sets.Singleton using (SingletonSet)
@@ -28,21 +28,24 @@ module net.cruhland.axioms.Sets.PreFinite
   open SingletonSet SS using (singleton; x∈sa-elim; x∈sa-intro; a∈sa)
   open Subset SA using (_⊆_; ⊆-intro; ≃→⊆ᴸ)
 
-  finite : {S : Setoid₀} → List (El S) → PSet₀ S
+  private
+    variable
+      S : Setoid₀
+
+  finite : List (El S) → PSet₀ S
   finite = foldr (λ x acc → singleton x ∪ acc) ∅
 
-  record Finite {S : Setoid₀} (A : PSet₀ S) : Set where
+  record Finite (A : PSet₀ S) : Set where
     field
       elements : List (El S)
       same-set : finite elements ≃ A
 
   open Finite {{...}} public using (elements; same-set)
 
-  toList : {S : Setoid₀} (A : PSet₀ S) {{_ : Finite A}} → List (El S)
+  toList : (A : PSet₀ S) {{_ : Finite A}} → List (El S)
   toList A = elements
 
-  toList⊆A :
-    {S : Setoid₀} (A : PSet₀ S) {{_ : Finite A}} → All (_∈ A) (toList A)
+  toList⊆A : (A : PSet₀ S) {{_ : Finite A}} → All (_∈ A) (toList A)
   toList⊆A {S = S} A = xs⊆A (toList A) (≃→⊆ᴸ same-set)
     where
       xs⊆A : (xs : List (El S)) → finite xs ⊆ A → All (_∈ A) xs
