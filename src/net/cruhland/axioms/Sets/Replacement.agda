@@ -25,24 +25,27 @@ open import net.cruhland.models.Setoid
   using (_⟨$⟩_; DecSetoid₀; El; Equivalence; Setoid; Setoid₀; SRel₀)
   renaming (cong to SRel-cong)
 
+private
+  variable
+    S T : Setoid₀
+
 module ReplacementDefs (SA : SetAxioms) where
   open SetAxioms SA using (_∈_; PSet; PSet₀)
 
-  record ReplRel {S : Setoid₀} (A : PSet₀ S) (T : Setoid₀) : Set₁ where
+  record ReplRel (A : PSet₀ S) (T : Setoid₀) : Set₁ where
     open Setoid T renaming (_≈_ to _≈ᵀ_)
 
     field
       R : SRel₀ S T
       R-most : ∀ {x y} → x ∈ A → R ⟨$⟩ x ⟨$⟩ y → ∀ {z} → R ⟨$⟩ x ⟨$⟩ z → y ≈ᵀ z
 
-  record ReplFun {S T : Setoid₀} {A : PSet₀ S} (RR : ReplRel A T) : Set where
+  record ReplFun {A : PSet₀ S} (RR : ReplRel A T) : Set where
     open ReplRel RR using (R)
     field
       f : El S → El T
       Rxfx : ∀ {x} → x ∈ A → R ⟨$⟩ x ⟨$⟩ f x
 
-  record ReplMem
-      {S T : Setoid₀} {A : PSet₀ S} (x : El T) (RR : ReplRel A T) : Set where
+  record ReplMem {A : PSet₀ S} (x : El T) (RR : ReplRel A T) : Set where
     constructor ReplMem-intro
     open ReplRel RR using (R)
     field
@@ -71,15 +74,14 @@ record Replacement
   open Subset SA using (⊆-antisym; ⊆-intro)
 
   field
-    replacement : {S T : Setoid₀} (A : PSet₀ S) → ReplRel A T → PSet₀ T
+    replacement : (A : PSet₀ S) → ReplRel A T → PSet₀ T
 
     x∈rep↔Rax :
-      {S T : Setoid₀} {x : El T} {A : PSet₀ S} {R : ReplRel A T} →
+      {x : El T} {A : PSet₀ S} {R : ReplRel A T} →
         x ∈ replacement A R ↔ ReplMem x R
 
   private
     variable
-      S T : Setoid₀
       A : PSet₀ S
       RR : ReplRel A T
 
