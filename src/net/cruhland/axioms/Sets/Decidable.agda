@@ -1,12 +1,11 @@
-open import Level using (_⊔_)
 open import Relation.Nullary using (Dec)
-open import net.cruhland.axioms.Sets.Base using (α; σ₁; σ₂; S; SetAxioms)
-open import net.cruhland.models.Setoid using (El; Setoid)
+open import net.cruhland.axioms.Sets.Base using (SetAxioms)
+open import net.cruhland.models.Setoid using (El; Setoid₀)
 
 module net.cruhland.axioms.Sets.Decidable (SA : SetAxioms) where
-open SetAxioms SA using (_∈_; PSet)
+open SetAxioms SA using (_∈_; PSet₀)
 
-record DecMembership {S : Setoid σ₁ σ₂} (A : PSet S α) : Set (σ₁ ⊔ α) where
+record DecMembership {S : Setoid₀} (A : PSet₀ S) : Set where
   constructor ∈?-intro
   field
     ∈?-elim : ∀ {x} → Dec (x ∈ A)
@@ -14,6 +13,5 @@ record DecMembership {S : Setoid σ₁ σ₂} (A : PSet S α) : Set (σ₁ ⊔ �
 open DecMembership {{...}} public
 
 _∈?_ :
-  {S : Setoid σ₁ σ₂} (x : El S) (A : PSet S α) →
-    {{_ : DecMembership A}} → Dec (x ∈ A)
+  {S : Setoid₀} (x : El S) (A : PSet₀ S) {{_ : DecMembership A}} → Dec (x ∈ A)
 x ∈? A = ∈?-elim

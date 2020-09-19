@@ -6,7 +6,7 @@ open import net.cruhland.axioms.Sets.Base using (α; S; SetAxioms; σ₁; σ₂)
 import net.cruhland.axioms.Sets.Decidable as Decidable
 import net.cruhland.axioms.Sets.Equality as Equality
 open import net.cruhland.models.Logic using (⊥-elim; _↔_; ↔-intro; Dec; no)
-open import net.cruhland.models.Setoid using (El; Setoid)
+open import net.cruhland.models.Setoid using (El; Setoid; Setoid₀)
 
 record EmptySet (SA : SetAxioms) : Setω where
   open Decidable SA using (DecMembership; ∈?-intro)
@@ -26,5 +26,5 @@ record EmptySet (SA : SetAxioms) : Setω where
   ∅-unique x∉∅′ = ≃-intro (↔-intro (⊥-elim ∘ x∉∅) (⊥-elim ∘ x∉∅′))
 
   instance
-    ∅-∈? : DecMembership (∅ {S = S} {α})
+    ∅-∈? : {S : Setoid₀} → DecMembership (∅ {S = S})
     ∅-∈? = ∈?-intro (no x∉∅)

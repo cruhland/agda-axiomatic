@@ -7,7 +7,7 @@ import net.cruhland.axioms.Sets.Decidable as Decidable
 import net.cruhland.axioms.Sets.Equality as Equality
 open import net.cruhland.models.Logic using
   (_↔_; ↔-elimᴸ; ↔-elimᴿ; ↔-sym; ↔-trans; Dec; dec-map; no; yes)
-open import net.cruhland.models.Setoid using (El; Setoid)
+open import net.cruhland.models.Setoid using (DecSetoid₀; El; Setoid)
 
 module SingletonDef (SA : SetAxioms) where
   open SetAxioms SA using (_∈_; PSet)
@@ -45,7 +45,7 @@ record SingletonSet (SA : SetAxioms) : Setω where
 
   instance
     singleton-∈? :
-      {{DS : DecSetoid σ₁ σ₂}} →
+      {{DS : DecSetoid₀}} →
         ∀ {a} → DecMembership (singleton {S = DecSetoid.setoid DS} a)
     singleton-∈? {{DS}} {a} =
       ∈?-intro (λ {x} → dec-map x∈sa-intro x∈sa-elim (a ≟ x))
