@@ -2,23 +2,30 @@ module net.cruhland.models.Sets.Predicate where
 
 open import Function using (_∘_; const; flip; id)
 open import Function.Equivalence using (Equivalence)
-open import Level using (_⊔_; Level; Setω) renaming (suc to sℓ)
+open import Level using (_⊔_; Level; Setω; 0ℓ) renaming (suc to sℓ)
 open import net.cruhland.axioms.Sets using
   ( Complement; Comprehension; Difference; EmptySet; PairSet
   ; PairwiseIntersection; PairwiseUnion; Replacement; module ReplacementDefs
   ; SetAxioms; SetTheory; SingletonSet
   )
-open import net.cruhland.axioms.Sets.Base using (α; β; σ₁; σ₂; S)
 open import net.cruhland.models.Logic using
   (_∧_; ∧-map; _∨_; ∨-map; _↔_; ↔-elimᴿ; ↔-intro; ↔-refl; ⊥ᴸᴾ; ⊥ᴸᴾ-elim)
 open import net.cruhland.models.Setoid
   using (_⟨$⟩_; El; Setoid; Setoid₀; SPred₀; SRel₀) renaming (cong to ⟶-cong)
 
-record PSet {σ₁ σ₂} (S : Setoid σ₁ σ₂) (α : Level) : Set (σ₁ ⊔ σ₂ ⊔ sℓ α) where
+private
+  variable
+    σ₁ σ₂ : Level
+    S : Setoid₀
+
+-- The Setoid's parameters need to vary to support nested sets.  And
+-- ap's return type of Set σ₂ _forces_ PSet to have sℓ σ₂ ⊔ sℓ 0ℓ in
+-- its Level.
+record PSet (S : Setoid σ₁ σ₂) : Set (σ₁ ⊔ sℓ σ₂ ⊔ sℓ 0ℓ) where
   open Setoid S using (_≈_)
 
   field
-    ap : El S → Set α
+    ap : El S → Set σ₂
     cong : ∀ {x y} → x ≈ y → ap x → ap y
 
 open PSet using (cong)
@@ -27,7 +34,7 @@ setAxioms : SetAxioms
 setAxioms = record
   { PSet = PSet
   ; _∈_ = flip PSet.ap
-  ; PSet-cong = λ {_ _ _ _ _ _ A} → PSet.cong A
+  ; PSet-cong = λ {_ _ _ _ _ A} → PSet.cong A
   }
 
 open SetAxioms setAxioms using (_∈_; _∉_; PSet₀)
@@ -36,21 +43,25 @@ open ReplacementDefs setAxioms using (ReplMem; ReplRel)
 comprehension : Comprehension setAxioms
 comprehension = record { ⟨_⟩ = SPred→PSet ; x∈⟨P⟩↔Px = ↔-refl }
   where
-    SPred→PSet : {S : Setoid₀} → SPred₀ S → PSet₀ S
+    SPred→PSet : SPred₀ S → PSet₀ S
     SPred→PSet P =
       record { ap = _⟨$⟩_ P ; cong = _⟨$⟩_ ∘ Equivalence.to ∘ (⟶-cong P) }
 
-∅ : PSet S α
+-- Level parameters needed for supporting nested sets
+∅ : {S : Setoid σ₁ σ₂} → PSet S
 ∅ = record { ap = const ⊥ᴸᴾ ; cong = const id }
 
 emptySet : EmptySet setAxioms
 emptySet = record { ∅ = ∅ ; x∉∅ = ⊥ᴸᴾ-elim }
 
-singleton : {S : Setoid σ₁ σ₂} → El S → PSet S σ₂
+-- Level parameters needed for supporting nested sets
+singleton : {S : Setoid σ₁ σ₂} → El S → PSet S
 singleton {σ₂ = σ₂} {S} a = record { ap = in-singleton ; cong = singleton-cong }
   where
     open Setoid S using (_≈_) renaming (trans to ≈-trans)
 
+    -- Using Setoid equality here forces σ₂ to appear in the type of
+    -- _∈_, and thus also in the type of PSet.
     in-singleton : El S → Set σ₂
     in-singleton x = a ≈ x
 
@@ -60,11 +71,14 @@ singleton {σ₂ = σ₂} {S} a = record { ap = in-singleton ; cong = singleton-
 singletonSet : SingletonSet setAxioms
 singletonSet = record { singleton = singleton ; x∈sa↔a≈x = ↔-refl }
 
-pair : {S : Setoid σ₁ σ₂} → El S → El S → PSet S σ₂
+-- Level parameters needed for supporting nested sets
+pair : {S : Setoid σ₁ σ₂} → El S → El S → PSet S
 pair {σ₂ = σ₂} {S} a b = record { ap = in-pair ; cong = pair-cong }
   where
     open Setoid S using (_≈_) renaming (trans to ≈-trans)
 
+    -- Using Setoid equality here forces σ₂ to appear in the type of
+    -- _∈_, and thus also in the type of PSet.
     in-pair : El S → Set σ₂
     in-pair x = a ≈ x ∨ b ≈ x
 
@@ -114,7 +128,7 @@ pairwiseIntersection = record { _∩_ = _∩_ ; x∈A∩B↔x∈A∧x∈B = ↔-
 complement : Complement setAxioms
 complement = record { ∁ = ∁ ; x∈∁A↔x∉A = ↔-refl }
 
-_∖_ : {S : Setoid₀} → PSet₀ S → PSet₀ S → PSet₀ S
+_∖_ : PSet₀ S → PSet₀ S → PSet₀ S
 _∖_ {S = S} A B = record { ap = in-diff ; cong = diff-cong }
   where
     open Setoid S using (_≈_) renaming (sym to ≈-sym)
@@ -128,7 +142,7 @@ _∖_ {S = S} A B = record { ap = in-diff ; cong = diff-cong }
 difference : Difference setAxioms
 difference = record { _∖_ = _∖_ ; x∈A∖B↔x∈A∧x∉B = ↔-refl }
 
-rep : {S T : Setoid₀} (A : PSet₀ S) → ReplRel A T → PSet₀ T
+rep : {T : Setoid₀} (A : PSet₀ S) → ReplRel A T → PSet₀ T
 rep {S = S} {T} A RR =
   record { ap = λ x → ReplMem x RR ; cong = rep-cong }
     where

@@ -46,7 +46,7 @@ module net.cruhland.axioms.Sets.Properties
       S : Setoid₀
       A B C : PSet₀ S
 
-  ∅-⊆ : (∅ {α = 0ℓ}) ⊆ A
+  ∅-⊆ : ∅ ⊆ A
   ∅-⊆ = ⊆-intro (⊥-elim ∘ x∉∅)
 
   A⊆∅→A≃∅ : A ⊆ ∅ → A ≃ ∅
@@ -86,7 +86,7 @@ module net.cruhland.axioms.Sets.Properties
       ... | ∨-introᴸ x∈sa = x∈pab-introᴸ (x∈sa-elim x∈sa)
       ... | ∨-introᴿ x∈sb = x∈pab-introᴿ (x∈sa-elim x∈sb)
 
-  ∩-∅ᴸ : ∅ ∩ A ≃ (∅ {α = 0ℓ})
+  ∩-∅ᴸ : ∅ ∩ A ≃ ∅
   ∩-∅ᴸ = A⊆∅→A≃∅ (⊆-intro x∈A∩B-elimᴸ)
 
   ∩-∅ᴿ : A ∩ ∅ ≃ ∅

@@ -13,14 +13,16 @@ open import net.cruhland.models.Logic using
   )
 open import net.cruhland.models.Setoid using (DecSetoid₀; El; Setoid; Setoid₀)
 
+-- This Setoid also needs level parameters, to support nested sets
 private
   variable
     σ₁ σ₂ : Level
+    S : Setoid σ₁ σ₂
 
 module PairDef (SA : SetAxioms) where
   open SetAxioms SA using (_∈_; PSet; PSet₀)
 
-  is-pair : {S : Setoid σ₁ σ₂} → El S → El S → PSet S σ₂ → Set (σ₁ ⊔ σ₂)
+  is-pair : {S : Setoid σ₁ σ₂} → El S → El S → PSet S → Set (σ₁ ⊔ σ₂)
   is-pair {S = S} a b A = ∀ {x} → x ∈ A ↔ a ≈ x ∨ b ≈ x
     where open Setoid S using (_≈_)
 
@@ -31,7 +33,7 @@ record PairSet (SA : SetAxioms) : Setω where
   open PairDef SA using (is-pair)
 
   field
-    pair : {S : Setoid σ₁ σ₂} → El S → El S → PSet S σ₂
+    pair : El S → El S → PSet S
     x∈pab↔a≈x∨b≈x :
       {S : Setoid σ₁ σ₂} {a b : El S} → is-pair {S = S} a b (pair a b)
 
@@ -63,7 +65,7 @@ record PairSet (SA : SetAxioms) : Setω where
     b∈pab : b ∈ pair {S = S} a b
     b∈pab = x∈pab-introᴿ ≈-refl
 
-    pair-unique : {A : PSet S σ₂} → is-pair a b A → pair a b ≃ A
+    pair-unique : {A : PSet S} → is-pair a b A → pair a b ≃ A
     pair-unique x∈A↔x≈a∨x≈b =
       ≃-intro (↔-trans x∈pab↔a≈x∨b≈x (↔-sym x∈A↔x≈a∨x≈b))
 
