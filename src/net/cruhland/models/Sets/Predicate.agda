@@ -74,12 +74,12 @@ pair {σ₂ = σ₂} {S} a b = record { ap = in-pair ; cong = pair-cong }
 pairSet : PairSet setAxioms
 pairSet = record { pair = pair ; x∈pab↔a≈x∨b≈x = ↔-refl }
 
-_∪_ : PSet S α → PSet S β → PSet S (α ⊔ β)
-_∪_ {S = S} {α} {β} A B = record { ap = in-union ; cong = union-cong }
+_∪_ : PSet₀ S → PSet₀ S → PSet₀ S
+_∪_ {S = S} A B = record { ap = in-union ; cong = union-cong }
   where
     open Setoid S using (_≈_)
 
-    in-union : El S → Set (α ⊔ β)
+    in-union : El S → Set
     in-union x = x ∈ A ∨ x ∈ B
 
     union-cong : {x y : El S} → x ≈ y → in-union x → in-union y
@@ -88,13 +88,13 @@ _∪_ {S = S} {α} {β} A B = record { ap = in-union ; cong = union-cong }
 pairwiseUnion : PairwiseUnion setAxioms emptySet
 pairwiseUnion = record { _∪_ = _∪_ ; x∈A∪B↔x∈A∨x∈B = ↔-refl }
 
-_∩_ : PSet S α → PSet S β → PSet S (α ⊔ β)
-_∩_ {S = S} {α} {β} A B =
+_∩_ : PSet₀ S → PSet₀ S → PSet₀ S
+_∩_ {S = S} A B =
   record { ap = in-intersection ; cong = intersection-cong }
     where
       open Setoid S using (_≈_)
 
-      in-intersection : El S → Set (α ⊔ β)
+      in-intersection : El S → Set
       in-intersection x = x ∈ A ∧ x ∈ B
 
       intersection-cong :
@@ -104,7 +104,7 @@ _∩_ {S = S} {α} {β} A B =
 pairwiseIntersection : PairwiseIntersection setAxioms
 pairwiseIntersection = record { _∩_ = _∩_ ; x∈A∩B↔x∈A∧x∈B = ↔-refl }
 
-∁ : PSet S α → PSet S α
+∁ : PSet₀ S → PSet₀ S
 ∁ {S = S} A = record
   { ap = λ x → x ∉ A
   ; cong = λ x≈y x∉A y∈A → x∉A (cong A (≈-sym x≈y) y∈A)
@@ -114,12 +114,12 @@ pairwiseIntersection = record { _∩_ = _∩_ ; x∈A∩B↔x∈A∧x∈B = ↔-
 complement : Complement setAxioms
 complement = record { ∁ = ∁ ; x∈∁A↔x∉A = ↔-refl }
 
-_∖_ : {S : Setoid σ₁ σ₂} → PSet S α → PSet S β → PSet S (α ⊔ β)
-_∖_ {α = α} {β = β} {S = S} A B = record { ap = in-diff ; cong = diff-cong }
+_∖_ : {S : Setoid₀} → PSet₀ S → PSet₀ S → PSet₀ S
+_∖_ {S = S} A B = record { ap = in-diff ; cong = diff-cong }
   where
     open Setoid S using (_≈_) renaming (sym to ≈-sym)
 
-    in-diff : El S → Set (α ⊔ β)
+    in-diff : El S → Set
     in-diff x = x ∈ A ∧ x ∉ B
 
     diff-cong : ∀ {x y} → x ≈ y → in-diff x → in-diff y
