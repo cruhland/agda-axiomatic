@@ -2,7 +2,7 @@ module net.cruhland.models.Sets.Predicate where
 
 open import Function using (_∘_; const; flip; id)
 open import Function.Equivalence using (Equivalence)
-open import Level using (_⊔_; Level; Setω; 0ℓ) renaming (suc to sℓ)
+open import Level using (_⊔_; Level; Setω) renaming (suc to sℓ)
 open import net.cruhland.axioms.Sets using
   ( Complement; Comprehension; Difference; EmptySet; PairSet
   ; PairwiseIntersection; PairwiseUnion; Replacement; module ReplacementDefs
@@ -19,9 +19,9 @@ private
     S : Setoid₀
 
 -- The Setoid's parameters need to vary to support nested sets.  And
--- ap's return type of Set σ₂ _forces_ PSet to have sℓ σ₂ ⊔ sℓ 0ℓ in
--- its Level.
-record PSet (S : Setoid σ₁ σ₂) : Set (σ₁ ⊔ sℓ σ₂ ⊔ sℓ 0ℓ) where
+-- ap's return type of Set σ₂ _forces_ PSet to have sℓ σ₂ in its
+-- Level.
+record PSet (S : Setoid σ₁ σ₂) : Set (σ₁ ⊔ sℓ σ₂) where
   open Setoid S using (_≈_)
 
   field
