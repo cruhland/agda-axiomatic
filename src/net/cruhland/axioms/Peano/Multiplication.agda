@@ -223,3 +223,6 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
   ... | tri-< a<b = ⊥-elim (<→≢ (*-preserves-< a<b c≢z) ac≡bc)
   ... | tri-≡ a≡b = a≡b
   ... | tri-> a>b = ⊥-elim (<→≢ (*-preserves-< a>b c≢z) (sym ac≡bc))
+
+  *-cancelᴸ : ∀ {a b c} → a ≢ zero → a * b ≡ a * c → b ≡ c
+  *-cancelᴸ a≢z ab≡ac = *-cancelᴿ a≢z (trans *-comm (trans ab≡ac *-comm))
