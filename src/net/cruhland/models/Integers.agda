@@ -1,6 +1,6 @@
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 
-module net.cruhland.axioms.Integers (PA : PeanoArithmetic) where
+module net.cruhland.models.Integers (PA : PeanoArithmetic) where
 
 open import Agda.Builtin.FromNat using (Number)
 open import Agda.Builtin.FromNeg using (Negative)
