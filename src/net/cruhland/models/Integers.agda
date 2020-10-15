@@ -23,16 +23,16 @@ data ℤ : Set where
 
 infix 4 _≃_
 record _≃_ (a b : ℤ) : Set where
-  constructor ≃-intro
+  instance constructor ≃-intro
   field
-    ≃-elim : ℤ⁺ a +ᴺ ℤ⁻ b ≡ ℤ⁺ b +ᴺ ℤ⁻ a
+    {{≃-elim}} : ℤ⁺ a +ᴺ ℤ⁻ b ≡ ℤ⁺ b +ᴺ ℤ⁻ a
 
 infix 4 _≄_
 _≄_ : ℤ → ℤ → Set
 x ≄ y = ¬ (x ≃ y)
 
 ≃-refl : ∀ {a} → a ≃ a
-≃-refl {a⁺ — a⁻} = ≃-intro refl
+≃-refl {a⁺ — a⁻} = ≃-intro
 
 infixl 6 _+_
 _+_ : ℤ → ℤ → ℤ
@@ -41,6 +41,9 @@ a⁺ — a⁻ + b⁺ — b⁻ = (a⁺ +ᴺ b⁺) — (a⁻ +ᴺ b⁻)
 fromNat : Nat.Nat → {{_ : ⊤}} → ℤ
 fromNat Nat.zero = 0 — 0
 fromNat (Nat.suc n) = 1 — 0 + fromNat n
+
+fromℕ : ℕ → ℤ
+fromℕ n = n — 0
 
 infix 8 -_
 -_ : ℤ → ℤ
