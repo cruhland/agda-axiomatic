@@ -7,7 +7,7 @@ open import Agda.Builtin.FromNeg using (Negative)
 import Agda.Builtin.Nat as Nat
 open import Function using (const)
 open import net.cruhland.axioms.Eq using
-  (_≃_; _≄_; Eq; sym; trans; module ≃-Reasoning)
+  (_≃_; _≄_; _≄ⁱ_; ≄ⁱ-elim; Eq; sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
 open import net.cruhland.models.Logic using (⊤; ¬_)
 open PeanoArithmetic PA using (ℕ) renaming
@@ -96,9 +96,22 @@ open _≃ᶻ_ public using (≃ᶻ-elim)
         (c⁺ +ᴺ a⁻) +ᴺ (b⁺ +ᴺ b⁻)
       ∎
 
+data _≄ᶻⁱ_ (a b : ℤ) : Set where
+  instance ≃ᶻⁱ-intro : {{i : ℤ⁺ a +ᴺ ℤ⁻ b ≄ⁱ ℤ⁺ b +ᴺ ℤ⁻ a}} → a ≄ᶻⁱ b
+
+≄ᶻⁱ-elim : ∀ {a b} {{i : a ≄ᶻⁱ b}} → ¬ (a ≃ᶻ b)
+≄ᶻⁱ-elim {{≃ᶻⁱ-intro {{≄ⁱ-ℕ}}}} (≃ᶻ-intro {{≃-ℕ}}) = ≄ⁱ-elim {{i = ≄ⁱ-ℕ}} ≃-ℕ
+
 instance
   eq : Eq ℤ
-  eq = record { _≃_ = _≃ᶻ_ ; refl = ≃ᶻ-refl ; sym = ≃ᶻ-sym ; trans = ≃ᶻ-trans }
+  eq = record
+    { _≃_ = _≃ᶻ_
+    ; refl = ≃ᶻ-refl
+    ; sym = ≃ᶻ-sym
+    ; trans = ≃ᶻ-trans
+    ; _≄ⁱ_ = _≄ᶻⁱ_
+    ; ≄ⁱ-elim = λ {{i}} → ≄ᶻⁱ-elim {{i}}
+    }
 
 open Eq eq using (_≃_) public
 

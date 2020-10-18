@@ -10,11 +10,21 @@ record Eq (A : Set) : Set₁ where
     sym : ∀ {x y} → x ≃ y → y ≃ x
     trans : ∀ {x y z} → x ≃ y → y ≃ z → x ≃ z
 
-open Eq {{...}} public
+  infix 4 _≄_
+  _≄_ : A → A → Set
+  x ≄ y = ¬ (x ≃ y)
 
-infix 4 _≄_
-_≄_ : {A : Set} {{_ : Eq A}} → A → A → Set
-x ≄ y = ¬ (x ≃ y)
+  -- An alternative form of inequality for use in "instance
+  -- arguments".  Agda doesn't allow standard inequality as the type
+  -- of instance arguments, because it's a function type with an
+  -- explicit parameter (only implicit and instance parameters are
+  -- allowed in instance types).
+  infix 4 _≄ⁱ_
+  field
+    _≄ⁱ_ : A → A → Set
+    ≄ⁱ-elim : ∀ {x y} {{i : x ≄ⁱ y}} → x ≄ y
+
+open Eq {{...}} public
 
 ¬sym : {A : Set} {{_ : Eq A}} {x y : A} → x ≄ y → y ≄ x
 ¬sym x≄y = λ y≃x → x≄y (sym y≃x)
