@@ -29,6 +29,9 @@ open Eq {{...}} public
 ≃-intro : {A : Set} {{eq : Eq A}} {x y : A} {{x≃y : x ≃ y}} → x ≃ y
 ≃-intro {{x≃y = x≃y}} = x≃y
 
+≄-intro : {A : Set} {{eq : Eq A}} {x y : A} {{x≄ⁱy : x ≄ⁱ y}} → x ≄ y
+≄-intro = ≄ⁱ-elim
+
 ¬sym : {A : Set} {{_ : Eq A}} {x y : A} → x ≄ y → y ≄ x
 ¬sym x≄y = λ y≃x → x≄y (sym y≃x)
 
