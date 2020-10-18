@@ -5,7 +5,7 @@ open import Data.List.Membership.Setoid using (find)
 open import Data.List.Relation.Unary.All
   using (All) renaming ([] to []ᴬ; _∷_ to _∷ᴬ_)
 open import Data.List.Relation.Unary.Any
-  using (Any; any) renaming (map to map-any)
+  using (Any; any?) renaming (map to map-any)
 open import Function using (_∘_; const)
 open import Level using (Setω)
 open import Relation.Binary using (DecSetoid)
@@ -140,7 +140,7 @@ record Replacement
 
           ReplMem? : ∀ {x} → Dec (ReplMem x RR)
           ReplMem? {x} =
-            dec-map fwd rev (any (λ a → decR {a} {x}) (toList A))
+            dec-map fwd rev (any? (λ a → decR {a} {x}) (toList A))
               where
                 fwd : Any (λ a → R ⟨$⟩ a ⟨$⟩ x) (toList A) → ReplMem x RR
                 fwd Rax∈ᴸlA =

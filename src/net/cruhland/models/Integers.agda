@@ -6,10 +6,53 @@ open import Agda.Builtin.FromNat using (Number)
 open import Agda.Builtin.FromNeg using (Negative)
 import Agda.Builtin.Nat as Nat
 open import Function using (const)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import net.cruhland.axioms.Eq using
+  (_≃_; _≄_; Eq; sym; trans; module ≃-Reasoning)
+open ≃-Reasoning
 open import net.cruhland.models.Logic using (⊤; ¬_)
 open PeanoArithmetic PA using (ℕ) renaming
-  (_+_ to _+ᴺ_; _*_ to _*ᴺ_; number to ℕ-number)
+  ( _+_ to _+ᴺ_; +-assoc to +ᴺ-assoc; +-cancelᴿ to +ᴺ-cancelᴿ
+  ; +-comm to +ᴺ-comm; +-substᴸ to +ᴺ-substᴸ; +-substᴿ to +ᴺ-substᴿ
+  ; _*_ to _*ᴺ_; number to ℕ-number
+  )
+
+[ab][cd]≃a[[bc]d] : ∀ {a b c d} → (a +ᴺ b) +ᴺ (c +ᴺ d) ≃ a +ᴺ ((b +ᴺ c) +ᴺ d)
+[ab][cd]≃a[[bc]d] {a} {b} {c} {d} =
+  begin
+    (a +ᴺ b) +ᴺ (c +ᴺ d)
+  ≃⟨ +ᴺ-assoc {a} ⟩
+    a +ᴺ (b +ᴺ (c +ᴺ d))
+  ≃˘⟨ +ᴺ-substᴿ (+ᴺ-assoc {b}) ⟩
+    a +ᴺ ((b +ᴺ c) +ᴺ d)
+  ∎
+
+swap-middle : ∀ {a b c d} → a +ᴺ ((b +ᴺ c) +ᴺ d) ≃ a +ᴺ ((c +ᴺ b) +ᴺ d)
+swap-middle {a} {b} {c} {d} = +ᴺ-substᴿ (+ᴺ-substᴸ (+ᴺ-comm {b}))
+
+regroup : ∀ a b c d → (a +ᴺ b) +ᴺ (c +ᴺ d) ≃ a +ᴺ ((b +ᴺ d) +ᴺ c)
+regroup a b c d =
+  begin
+    (a +ᴺ b) +ᴺ (c +ᴺ d)
+  ≃⟨ +ᴺ-substᴿ (+ᴺ-comm {c} {d}) ⟩
+    (a +ᴺ b) +ᴺ (d +ᴺ c)
+  ≃⟨ [ab][cd]≃a[[bc]d] {a} ⟩
+    a +ᴺ ((b +ᴺ d) +ᴺ c)
+  ∎
+
+a≃b+c≃d : ∀ {a b c d} → a ≃ b → c ≃ d → a +ᴺ c ≃ b +ᴺ d
+a≃b+c≃d {b = b} {c = c} a≃b c≃d = trans (+ᴺ-substᴸ a≃b) (+ᴺ-substᴿ c≃d)
+
+perm-adcb : ∀ {a b c d} → (a +ᴺ d) +ᴺ (c +ᴺ b) ≃ (a +ᴺ b) +ᴺ (c +ᴺ d)
+perm-adcb {a} {b} {c} {d} =
+  begin
+    (a +ᴺ d) +ᴺ (c +ᴺ b)
+  ≃⟨ regroup a d c b ⟩
+    a +ᴺ ((d +ᴺ b) +ᴺ c)
+  ≃⟨ swap-middle {a} {d} ⟩
+    a +ᴺ ((b +ᴺ d) +ᴺ c)
+  ≃˘⟨ regroup a b c d ⟩
+    (a +ᴺ b) +ᴺ (c +ᴺ d)
+  ∎
 
 infix 9 _—_
 data ℤ : Set where
@@ -21,18 +64,43 @@ data ℤ : Set where
 ℤ⁻ : ℤ → ℕ
 ℤ⁻ (_ — a⁻) = a⁻
 
-infix 4 _≃_
-record _≃_ (a b : ℤ) : Set where
-  instance constructor ≃-intro
+record _≃ᶻ_ (a b : ℤ) : Set where
+  instance constructor ≃ᶻ-intro
   field
-    {{≃-elim}} : ℤ⁺ a +ᴺ ℤ⁻ b ≡ ℤ⁺ b +ᴺ ℤ⁻ a
+    {{≃ᶻ-elim}} : ℤ⁺ a +ᴺ ℤ⁻ b ≃ ℤ⁺ b +ᴺ ℤ⁻ a
 
-infix 4 _≄_
-_≄_ : ℤ → ℤ → Set
-x ≄ y = ¬ (x ≃ y)
+open _≃ᶻ_ public using (≃ᶻ-elim)
 
-≃-refl : ∀ {a} → a ≃ a
-≃-refl {a⁺ — a⁻} = ≃-intro
+≃ᶻ-refl : ∀ {a} → a ≃ᶻ a
+≃ᶻ-refl {a⁺ — a⁻} = ≃ᶻ-intro
+
+≃ᶻ-sym : ∀ {a b} → a ≃ᶻ b → b ≃ᶻ a
+≃ᶻ-sym {a⁺ — a⁻} {b⁺ — b⁻} (≃ᶻ-intro {{eq}}) = ≃ᶻ-intro {{sym eq}}
+
+≃ᶻ-trans : ∀ {a b c} → a ≃ᶻ b → b ≃ᶻ c → a ≃ᶻ c
+≃ᶻ-trans
+  {a⁺ — a⁻} {b⁺ — b⁻} {c⁺ — c⁻}
+  (≃ᶻ-intro {{a⁺+b⁻≃b⁺+a⁻}}) (≃ᶻ-intro {{b⁺+c⁻≃c⁺+b⁻}}) =
+    ≃ᶻ-intro {{+ᴺ-cancelᴿ [a⁺+c⁻]+[b⁺+b⁻]≃[c⁺+a⁻]+[b⁺+b⁻]}}
+  where
+    [a⁺+c⁻]+[b⁺+b⁻]≃[c⁺+a⁻]+[b⁺+b⁻] =
+      begin
+        (a⁺ +ᴺ c⁻) +ᴺ (b⁺ +ᴺ b⁻)
+      ≃˘⟨ perm-adcb {a⁺} ⟩
+        (a⁺ +ᴺ b⁻) +ᴺ (b⁺ +ᴺ c⁻)
+      ≃⟨ a≃b+c≃d a⁺+b⁻≃b⁺+a⁻ b⁺+c⁻≃c⁺+b⁻ ⟩
+        (b⁺ +ᴺ a⁻) +ᴺ (c⁺ +ᴺ b⁻)
+      ≃⟨ perm-adcb {b⁺} ⟩
+        (b⁺ +ᴺ b⁻) +ᴺ (c⁺ +ᴺ a⁻)
+      ≃⟨ +ᴺ-comm {n = b⁺ +ᴺ b⁻} ⟩
+        (c⁺ +ᴺ a⁻) +ᴺ (b⁺ +ᴺ b⁻)
+      ∎
+
+instance
+  eq : Eq ℤ
+  eq = record { _≃_ = _≃ᶻ_ ; refl = ≃ᶻ-refl ; sym = ≃ᶻ-sym ; trans = ≃ᶻ-trans }
+
+open Eq eq using (_≃_) public
 
 infixl 6 _+_
 _+_ : ℤ → ℤ → ℤ

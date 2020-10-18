@@ -4,7 +4,9 @@ open import Data.Nat using (ℕ; _+_; _*_; _^_; zero) renaming (suc to step)
 open import Data.Nat.Properties
   using (+-comm; *-comm) renaming (suc-injective to step-injective)
 open import Function using (_∘_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Relation.Binary.PropositionalEquality using
+  (_≡_; cong; refl; sym; trans)
+open import net.cruhland.axioms.Eq using (Eq)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base using (Peano)
@@ -15,22 +17,37 @@ ind : (P : ℕ → Set) → P zero → (∀ {k} → P k → P (step k)) → ∀ 
 ind P Pz Ps zero = Pz
 ind P Pz Ps (step n) = ind (P ∘ step) (Ps Pz) Ps n
 
+instance
+  eq : Eq ℕ
+  eq = record { _≃_ = _≡_ ; refl = refl ; sym = sym ; trans = trans }
+
 base : Peano
 base = record
   { ℕ = ℕ
   ; zero = zero
   ; step = step
-  ; step≢zero = λ ()
+  ; eq = eq
+  ; step≄zero = λ ()
+  ; step-subst = cong step
   ; step-inj = step-injective
   ; ind = ind
   }
 
 addition : Addition base
-addition = record { _+_ = _+_ ; +-zeroᴸ = refl ; +-stepᴸ = refl }
+addition = record
+  { _+_ = _+_
+  ; +-zeroᴸ = refl
+  ; +-stepᴸ = refl
+  ; +-substᴸ = λ {_ _ m} → cong (_+ m)
+  }
 
 multiplication : Multiplication base addition
-multiplication =
-  record { _*_ = _*_ ; *-zeroᴸ = refl ; *-stepᴸ = λ {n m} → +-comm m (n * m) }
+multiplication = record
+  { _*_ = _*_
+  ; *-zeroᴸ = refl
+  ; *-stepᴸ = λ {n m} → +-comm m (n * m)
+  ; *-substᴸ = λ {_ _ m} → cong (_* m)
+  }
 
 exponentiation : Exponentiation base addition multiplication
 exponentiation =

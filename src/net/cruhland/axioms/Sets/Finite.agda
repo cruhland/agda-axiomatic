@@ -1,7 +1,7 @@
 open import Data.List using ([]; _∷_; _++_; filter; foldr; List)
 import Data.List.Membership.DecSetoid as DecSetoidᴸ
 open import Data.List.Relation.Unary.All
-  using (All; all; lookupAny) renaming ([] to []ᴬ; _∷_ to _∷ᴬ_)
+  using (All; all?; lookupAny) renaming ([] to []ᴬ; _∷_ to _∷ᴬ_)
 open import Data.List.Relation.Unary.Any using (here; there)
 open import Function using (_∘_)
 open import Level using (_⊔_)
@@ -223,7 +223,7 @@ module net.cruhland.axioms.Sets.Finite
 
     _⊆ᴸ?_ :
       (xs : List (El S′)) (B : PSet₀ S′) {{_ : DecMembership B}} → Dec (xs ⊆ᴸ B)
-    xs ⊆ᴸ? B = all (_∈? B) xs
+    xs ⊆ᴸ? B = all? (_∈? B) xs
 
     ⊆ᴸ→⊆ : {A B : PSet₀ S′} {{_ : Finite A}} → toList A ⊆ᴸ B → A ⊆ B
     ⊆ᴸ→⊆ {A = A} {B} A⊆ᴸB =

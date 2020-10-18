@@ -1,8 +1,7 @@
 module net.cruhland.axioms.Peano.Multiplication where
 
-import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; _≢_; sym; trans; cong)
-open Eq.≡-Reasoning
+open import net.cruhland.axioms.Eq using (_≄_; sym; trans; module ≃-Reasoning)
+open ≃-Reasoning
 open import net.cruhland.axioms.Peano.Addition
   using () renaming (Addition to PeanoAddition)
 open import net.cruhland.axioms.Peano.Base
@@ -14,52 +13,53 @@ open import net.cruhland.models.Logic using
 
 record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
   open PeanoAddition PA using
-    ( _+_; +-assoc; +-comm; +-stepᴿ; +-stepᴸ⃗ᴿ; with-+-assoc; +-zeroᴸ; +-zeroᴿ
-    ; Positive; +-both-zero
+    ( _+_; +-assoc; +-both-zero; +-comm; Positive; +-stepᴿ; +-stepᴸ⃗ᴿ
+    ; +-substᴸ; +-substᴿ; with-+-assoc; +-zeroᴸ; +-zeroᴿ
     )
-  open PeanoBase PB using (ℕ; ind; step; step-case; zero)
+  open PeanoBase PB using (ℕ; _≃_; ind; step; step-case; zero)
   open PeanoInspect PB using (case; case-step; case-zero; pred-intro)
   open PeanoOrdering PB PA using
-    (_<_; <→≢; <⁺→<; <→<⁺; <⁺-intro; tri-<; tri-≡; tri->; trichotomy)
+    (_<_; <→≄; <⁺→<; <→<⁺; <⁺-intro; tri-<; tri-≃; tri->; trichotomy)
 
   infixl 7 _*_
 
   field
     _*_ : ℕ → ℕ → ℕ
-    *-zeroᴸ : ∀ {m} → zero * m ≡ zero
-    *-stepᴸ : ∀ {n m} → step n * m ≡ n * m + m
+    *-zeroᴸ : ∀ {m} → zero * m ≃ zero
+    *-stepᴸ : ∀ {n m} → step n * m ≃ n * m + m
+    *-substᴸ : ∀ {n₁ n₂ m} → n₁ ≃ n₂ → n₁ * m ≃ n₂ * m
 
-  *-zeroᴿ : ∀ {n} → n * zero ≡ zero
+  *-zeroᴿ : ∀ {n} → n * zero ≃ zero
   *-zeroᴿ {n} = ind P Pz Ps n
     where
-      P = λ x → x * zero ≡ zero
+      P = λ x → x * zero ≃ zero
       Pz = *-zeroᴸ
 
       Ps : step-case P
       Ps {k} Pk =
         begin
           step k * zero
-        ≡⟨ *-stepᴸ ⟩
+        ≃⟨ *-stepᴸ ⟩
           k * zero + zero
-        ≡⟨ +-zeroᴿ ⟩
+        ≃⟨ +-zeroᴿ ⟩
           k * zero
-        ≡⟨ Pk ⟩
+        ≃⟨ Pk ⟩
           zero
         ∎
 
-  *-stepᴿ : ∀ {n m} → n * step m ≡ n * m + n
+  *-stepᴿ : ∀ {n m} → n * step m ≃ n * m + n
   *-stepᴿ {n} {m} = ind P Pz Ps n
     where
-      P = λ x → x * step m ≡ x * m + x
+      P = λ x → x * step m ≃ x * m + x
 
       Pz =
         begin
           zero * step m
-        ≡⟨ *-zeroᴸ ⟩
+        ≃⟨ *-zeroᴸ ⟩
           zero
-        ≡⟨ sym *-zeroᴸ ⟩
+        ≃⟨ sym *-zeroᴸ ⟩
           zero * m
-        ≡⟨ sym +-zeroᴿ ⟩
+        ≃⟨ sym +-zeroᴿ ⟩
           zero * m + zero
         ∎
 
@@ -67,162 +67,174 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
       Ps {k} Pk =
         begin
           step k * step m
-        ≡⟨ *-stepᴸ ⟩
+        ≃⟨ *-stepᴸ ⟩
           k * step m + step m
-        ≡⟨ cong (_+ step m) Pk ⟩
+        ≃⟨ +-substᴸ Pk ⟩
           k * m + k + step m
-        ≡⟨ with-+-assoc (trans +-comm +-stepᴸ⃗ᴿ) ⟩
+        ≃⟨ with-+-assoc (trans +-comm +-stepᴸ⃗ᴿ) ⟩
           k * m + m + step k
-        ≡⟨ cong (_+ step k) (sym *-stepᴸ) ⟩
+        ≃˘⟨ +-substᴸ *-stepᴸ ⟩
           step k * m + step k
         ∎
 
-  *-comm : ∀ {n m} → n * m ≡ m * n
+  *-comm : ∀ {n m} → n * m ≃ m * n
   *-comm {n} {m} = ind P Pz Ps n
     where
-      P = λ x → x * m ≡ m * x
+      P = λ x → x * m ≃ m * x
       Pz = trans *-zeroᴸ (sym *-zeroᴿ)
 
       Ps : step-case P
       Ps {k} Pk =
         begin
           step k * m
-        ≡⟨ *-stepᴸ ⟩
+        ≃⟨ *-stepᴸ ⟩
           k * m + m
-        ≡⟨ cong (_+ m) Pk ⟩
+        ≃⟨ +-substᴸ Pk ⟩
           m * k + m
-        ≡⟨ sym *-stepᴿ ⟩
+        ≃˘⟨ *-stepᴿ ⟩
           m * step k
         ∎
 
-  *-oneᴸ : ∀ {n} → step zero * n ≡ n
+  *-oneᴸ : ∀ {n} → step zero * n ≃ n
   *-oneᴸ {n} =
     begin
       step zero * n
-    ≡⟨ *-stepᴸ ⟩
+    ≃⟨ *-stepᴸ ⟩
       zero * n + n
-    ≡⟨ cong (_+ n) *-zeroᴸ ⟩
+    ≃⟨ +-substᴸ *-zeroᴸ ⟩
       zero + n
-    ≡⟨ +-zeroᴸ ⟩
+    ≃⟨ +-zeroᴸ ⟩
       n
     ∎
 
-  *-oneᴿ : ∀ {n} → n * step zero ≡ n
+  *-oneᴿ : ∀ {n} → n * step zero ≃ n
   *-oneᴿ = trans *-comm *-oneᴸ
 
-  *-either-zero : ∀ {n m} → n * m ≡ zero → n ≡ zero ∨ m ≡ zero
-  *-either-zero {n} {m} n*m≡z with case n
-  ... | case-zero n≡z = ∨-introᴸ n≡z
-  ... | case-step (pred-intro p n≡sp) = ∨-introᴿ m≡z
+  *-either-zero : ∀ {n m} → n * m ≃ zero → n ≃ zero ∨ m ≃ zero
+  *-either-zero {n} {m} n*m≃z with case n
+  ... | case-zero n≃z = ∨-introᴸ n≃z
+  ... | case-step (pred-intro p n≃sp) = ∨-introᴿ m≃z
     where
-      p*m+m≡z =
+      p*m+m≃z =
         begin
           p * m + m
-        ≡⟨ sym *-stepᴸ ⟩
+        ≃˘⟨ *-stepᴸ ⟩
           step p * m
-        ≡⟨ cong (_* m) (sym n≡sp) ⟩
+        ≃˘⟨ *-substᴸ n≃sp ⟩
           n * m
-        ≡⟨ n*m≡z ⟩
+        ≃⟨ n*m≃z ⟩
           zero
         ∎
 
-      m≡z = ∧-elimᴿ (+-both-zero p*m+m≡z)
+      m≃z = ∧-elimᴿ (+-both-zero p*m+m≃z)
 
-  *-distrib-+ᴸ : ∀ {a b c} → a * (b + c) ≡ a * b + a * c
+  *-substᴿ : ∀ {n m₁ m₂} → m₁ ≃ m₂ → n * m₁ ≃ n * m₂
+  *-substᴿ {n} {m₁} {m₂} m₁≃m₂ =
+    begin
+      n * m₁
+    ≃⟨ *-comm ⟩
+      m₁ * n
+    ≃⟨ *-substᴸ m₁≃m₂ ⟩
+      m₂ * n
+    ≃⟨ *-comm ⟩
+      n * m₂
+    ∎
+
+  *-distrib-+ᴸ : ∀ {a b c} → a * (b + c) ≃ a * b + a * c
   *-distrib-+ᴸ {a} {b} {c} = ind P Pz Ps c
     where
-      P = λ x → a * (b + x) ≡ a * b + a * x
+      P = λ x → a * (b + x) ≃ a * b + a * x
       Pz =
         begin
           a * (b + zero)
-        ≡⟨ cong (a *_) +-zeroᴿ ⟩
+        ≃⟨ *-substᴿ +-zeroᴿ ⟩
           a * b
-        ≡⟨ sym +-zeroᴿ ⟩
+        ≃˘⟨ +-zeroᴿ ⟩
           a * b + zero
-        ≡⟨ cong (a * b +_) (sym *-zeroᴿ) ⟩
+        ≃˘⟨ +-substᴿ *-zeroᴿ ⟩
           a * b + a * zero
         ∎
 
       Ps : step-case P
-      Ps {k} a[b+k]≡ab+ak =
+      Ps {k} a[b+k]≃ab+ak =
         begin
           a * (b + step k)
-        ≡⟨ cong (a *_) +-stepᴿ ⟩
+        ≃⟨ *-substᴿ +-stepᴿ ⟩
           a * step (b + k)
-        ≡⟨ *-stepᴿ ⟩
+        ≃⟨ *-stepᴿ ⟩
           a * (b + k) + a
-        ≡⟨ cong (_+ a) a[b+k]≡ab+ak ⟩
+        ≃⟨ +-substᴸ a[b+k]≃ab+ak ⟩
           a * b + a * k + a
-        ≡⟨ +-assoc ⟩
+        ≃⟨ +-assoc ⟩
           a * b + (a * k + a)
-        ≡⟨ cong (a * b +_) (sym *-stepᴿ) ⟩
+        ≃˘⟨ +-substᴿ *-stepᴿ ⟩
           a * b + a * step k
         ∎
 
-  *-distrib-+ᴿ : ∀ {a b c} → (a + b) * c ≡ a * c + b * c
+  *-distrib-+ᴿ : ∀ {a b c} → (a + b) * c ≃ a * c + b * c
   *-distrib-+ᴿ {a} {b} {c} =
     begin
       (a + b) * c
-    ≡⟨ *-comm ⟩
+    ≃⟨ *-comm ⟩
       c * (a + b)
-    ≡⟨ *-distrib-+ᴸ ⟩
+    ≃⟨ *-distrib-+ᴸ ⟩
       c * a + c * b
-    ≡⟨ cong (_+ c * b) *-comm ⟩
+    ≃⟨ +-substᴸ *-comm ⟩
       a * c + c * b
-    ≡⟨ cong (a * c +_) *-comm ⟩
+    ≃⟨ +-substᴿ *-comm ⟩
       a * c + b * c
     ∎
 
-  *-assoc : ∀ {a b c} → (a * b) * c ≡ a * (b * c)
+  *-assoc : ∀ {a b c} → (a * b) * c ≃ a * (b * c)
   *-assoc {a} {b} {c} = sym (ind P Pz Ps b)
     where
-      P = λ x → a * (x * c) ≡ (a * x) * c
+      P = λ x → a * (x * c) ≃ (a * x) * c
       Pz =
         begin
           a * (zero * c)
-        ≡⟨ cong (a *_) *-zeroᴸ ⟩
+        ≃⟨ *-substᴿ *-zeroᴸ ⟩
           a * zero
-        ≡⟨ *-zeroᴿ ⟩
+        ≃⟨ *-zeroᴿ ⟩
           zero
-        ≡⟨ sym *-zeroᴸ ⟩
+        ≃˘⟨ *-zeroᴸ ⟩
           zero * c
-        ≡⟨ cong (_* c) (sym *-zeroᴿ) ⟩
+        ≃˘⟨ *-substᴸ *-zeroᴿ ⟩
           (a * zero) * c
         ∎
 
       Ps : step-case P
-      Ps {k} a[kc]≡[ak]c =
+      Ps {k} a[kc]≃[ak]c =
         begin
           a * (step k * c)
-        ≡⟨ cong (a *_) *-stepᴸ ⟩
+        ≃⟨ *-substᴿ *-stepᴸ ⟩
           a * (k * c + c)
-        ≡⟨ *-distrib-+ᴸ ⟩
+        ≃⟨ *-distrib-+ᴸ ⟩
           a * (k * c) + a * c
-        ≡⟨ cong (_+ a * c) a[kc]≡[ak]c ⟩
+        ≃⟨ +-substᴸ a[kc]≃[ak]c ⟩
           (a * k) * c + a * c
-        ≡⟨ sym *-distrib-+ᴿ ⟩
+        ≃˘⟨ *-distrib-+ᴿ ⟩
           (a * k + a) * c
-        ≡⟨ cong (_* c) (sym *-stepᴿ) ⟩
+        ≃˘⟨ *-substᴸ *-stepᴿ ⟩
           (a * step k) * c
         ∎
 
   *-positive : ∀ {a b} → Positive a → Positive b → Positive (a * b)
-  *-positive {a} {b} a≢z b≢z ab≡z with *-either-zero ab≡z
-  ... | ∨-introᴸ a≡z = a≢z a≡z
-  ... | ∨-introᴿ b≡z = b≢z b≡z
+  *-positive {a} {b} a≄z b≄z ab≃z with *-either-zero ab≃z
+  ... | ∨-introᴸ a≃z = a≄z a≃z
+  ... | ∨-introᴿ b≃z = b≄z b≃z
 
-  *-preserves-< : ∀ {a b c} → a < b → c ≢ zero → a * c < b * c
-  *-preserves-< {a} {b} {c} a<b c≢z with <→<⁺ a<b
-  ... | <⁺-intro d d≢z a+d≡b = <⁺→< (<⁺-intro (d * c) dc≢z ac+dc≡bc)
+  *-preserves-< : ∀ {a b c} → a < b → c ≄ zero → a * c < b * c
+  *-preserves-< {a} {b} {c} a<b c≄z with <→<⁺ a<b
+  ... | <⁺-intro d d≄z a+d≃b = <⁺→< (<⁺-intro (d * c) dc≄z ac+dc≃bc)
     where
-      dc≢z = *-positive d≢z c≢z
-      ac+dc≡bc = trans (sym *-distrib-+ᴿ) (cong (_* c) a+d≡b)
+      dc≄z = *-positive d≄z c≄z
+      ac+dc≃bc = trans (sym *-distrib-+ᴿ) (*-substᴸ a+d≃b)
 
-  *-cancelᴿ : ∀ {a b c} → c ≢ zero → a * c ≡ b * c → a ≡ b
-  *-cancelᴿ c≢z ac≡bc with trichotomy
-  ... | tri-< a<b = ⊥-elim (<→≢ (*-preserves-< a<b c≢z) ac≡bc)
-  ... | tri-≡ a≡b = a≡b
-  ... | tri-> a>b = ⊥-elim (<→≢ (*-preserves-< a>b c≢z) (sym ac≡bc))
+  *-cancelᴿ : ∀ {a b c} → c ≄ zero → a * c ≃ b * c → a ≃ b
+  *-cancelᴿ c≄z ac≃bc with trichotomy
+  ... | tri-< a<b = ⊥-elim (<→≄ (*-preserves-< a<b c≄z) ac≃bc)
+  ... | tri-≃ a≃b = a≃b
+  ... | tri-> a>b = ⊥-elim (<→≄ (*-preserves-< a>b c≄z) (sym ac≃bc))
 
-  *-cancelᴸ : ∀ {a b c} → a ≢ zero → a * b ≡ a * c → b ≡ c
-  *-cancelᴸ a≢z ab≡ac = *-cancelᴿ a≢z (trans *-comm (trans ab≡ac *-comm))
+  *-cancelᴸ : ∀ {a b c} → a ≄ zero → a * b ≃ a * c → b ≃ c
+  *-cancelᴸ a≄z ab≃ac = *-cancelᴿ a≄z (trans *-comm (trans ab≃ac *-comm))
