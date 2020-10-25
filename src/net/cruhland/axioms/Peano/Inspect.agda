@@ -1,4 +1,5 @@
 open import net.cruhland.axioms.Eq using (_≄_; refl; sym; trans)
+open import net.cruhland.axioms.DecEq using (DecEq)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
 open import net.cruhland.models.Logic using (⊥-elim; Dec; no; yes)
@@ -33,8 +34,8 @@ module net.cruhland.axioms.Peano.Inspect (PB : PeanoBase) where
   ... | case-zero n≃z = ⊥-elim (n≄z n≃z)
   ... | case-step n≃s = n≃s
 
-  _≃?_ : (n m : ℕ) → Dec (n ≃ m)
-  n ≃? m = ind P Pz Ps n m
+  _≃?₀_ : (n m : ℕ) → Dec (n ≃ m)
+  n ≃?₀ m = ind P Pz Ps n m
     where
       P = λ x → ∀ y → Dec (x ≃ y)
 
@@ -54,3 +55,7 @@ module net.cruhland.axioms.Peano.Inspect (PB : PeanoBase) where
               where sk≃sj = trans (step-subst k≃j) (sym y≃sj)
       ...   | no k≄j = no sk≄sj
               where sk≄sj = λ sk≃y → k≄j (step-inj (trans sk≃y y≃sj))
+
+  instance
+    decEq : DecEq ℕ
+    decEq = record { _≃?_ = _≃?₀_ }

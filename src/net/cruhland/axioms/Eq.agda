@@ -1,17 +1,18 @@
 module net.cruhland.axioms.Eq where
 
+open import Level using () renaming (suc to sℓ)
 open import net.cruhland.models.Logic using (¬_)
 
-record Eq (A : Set) : Set₁ where
+record Eq {α} (A : Set α) : Set (sℓ α) where
   infix 4 _≃_
   field
-    _≃_ : A → A → Set
+    _≃_ : A → A → Set α
     {{refl}} : ∀ {x} → x ≃ x
     sym : ∀ {x y} → x ≃ y → y ≃ x
     trans : ∀ {x y z} → x ≃ y → y ≃ z → x ≃ z
 
   infix 4 _≄_
-  _≄_ : A → A → Set
+  _≄_ : A → A → Set α
   x ≄ y = ¬ (x ≃ y)
 
   -- An alternative form of inequality for use in "instance

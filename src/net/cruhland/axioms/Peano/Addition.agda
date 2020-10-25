@@ -1,6 +1,7 @@
 module net.cruhland.axioms.Peano.Addition where
 
 open import Function using (const)
+open import net.cruhland.axioms.DecEq using (_≃?_)
 open import net.cruhland.axioms.Eq using
   (_≄_; sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
@@ -13,7 +14,7 @@ open import net.cruhland.models.Logic using
 record Addition (PB : PeanoBase) : Set where
   open PeanoBase PB using
     (ℕ; _≃_; ind; step; step-case; step-inj; step-subst; step≄zero; zero)
-  open PeanoInspect PB using (_≃?_; case; case-zero; case-step; pred-intro)
+  open PeanoInspect PB using (case; case-zero; case-step; decEq; pred-intro)
 
   infixl 6 _+_
 

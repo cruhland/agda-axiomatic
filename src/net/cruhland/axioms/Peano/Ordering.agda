@@ -1,4 +1,5 @@
 open import Function using (_∘_; flip)
+open import net.cruhland.axioms.DecEq using (_≃?_)
 open import net.cruhland.axioms.Eq using
   (_≄_; refl; sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
@@ -24,7 +25,7 @@ module net.cruhland.axioms.Peano.Ordering
   open PeanoBase PB using
     (ℕ; _≃_; ind; step; step-case; step-inj; step-subst; step≄zero; zero)
   open PeanoInspect PB using
-    (_≃?_; Case; case; case-step; case-zero; pred-intro; pred)
+    (Case; case; case-step; case-zero; decEq; pred-intro; pred)
 
   infix 4 _≤_ _<_ _≰_ _≮_ _≥_ _>_ _≱_ _≯_
 

@@ -6,11 +6,12 @@ open import Agda.Builtin.FromNat using (Number)
 open import Agda.Builtin.FromNeg using (Negative)
 import Agda.Builtin.Nat as Nat
 open import Function using (_∘_; const; flip)
+open import net.cruhland.axioms.DecEq using (DecEq)
 open import net.cruhland.axioms.Eq using
-  (_≃_; _≄_; _≄ⁱ_; ≄ⁱ-elim; Eq; sym; trans; module ≃-Reasoning)
+  (_≃_; _≄_; _≄ⁱ_; ≄ⁱ-elim; Eq; sym; ¬sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
 open import net.cruhland.models.Logic using
-  (⊤; ∧-elimᴿ; _∨_; ∨-introᴸ; ∨-introᴿ; ⊥-elim; ¬_; Dec)
+  (⊤; ∧-elimᴿ; _∨_; ∨-introᴸ; ∨-introᴿ; ⊥-elim; ¬_; Dec; yes; no)
 module ℕ = PeanoArithmetic PA
 open ℕ using (ℕ; _<⁺_) renaming
   ( _+_ to _+ᴺ_; +-assoc to +ᴺ-assoc; +-cancelᴿ to +ᴺ-cancelᴿ
@@ -818,8 +819,10 @@ record ExactlyOneOf (A B C : Set) : Set where
     at-least-one : OneOfThree A B C
     at-most-one : ¬ TwoOfThree A B C
 
-order-trichotomy : ∀ {a b} → ExactlyOneOf (a < b) (a ≃ b) (a > b)
-order-trichotomy {a} {b} = record { at-least-one = 1≤ ; at-most-one = ≤1 }
+open ExactlyOneOf using (at-least-one)
+
+order-trichotomy : ∀ a b → ExactlyOneOf (a < b) (a ≃ b) (a > b)
+order-trichotomy a b = record { at-least-one = 1≤ ; at-most-one = ≤1 }
   where
     1≤ : OneOfThree (a < b) (a ≃ b) (a > b)
     1≤ with at-least (trichotomy (b - a))
@@ -831,3 +834,13 @@ order-trichotomy {a} {b} = record { at-least-one = 1≤ ; at-most-one = ≤1 }
     ≤1 (1∧2 (<-intro a≤b a≄b) a≃b) = a≄b a≃b
     ≤1 (1∧3 (<-intro a≤b a≄b) (<-intro b≤a b≄a)) = a≄b (≤-antisym a≤b b≤a)
     ≤1 (2∧3 a≃b (<-intro b≤a b≄a)) = b≄a (sym a≃b)
+
+_≃?₀_ : (a b : ℤ) → Dec (a ≃ b)
+a ≃?₀ b with at-least-one (order-trichotomy a b)
+a ≃?₀ b | 1st (<-intro a≤b a≄b) = no a≄b
+a ≃?₀ b | 2nd a≃b = yes a≃b
+a ≃?₀ b | 3rd (<-intro b≤a b≄a) = no (¬sym b≄a)
+
+instance
+  decEq : DecEq ℤ
+  decEq = record { _≃?_ = _≃?₀_ }
