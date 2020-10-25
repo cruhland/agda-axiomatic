@@ -434,6 +434,69 @@ a⁺ — a⁻ * b⁺ — b⁻ = (a⁺ *ᴺ b⁺ +ᴺ a⁻ *ᴺ b⁻) — (a⁺ *
     y * x + z * x
   ∎
 
+*-assoc : ∀ {x y z} → (x * y) * z ≃ x * (y * z)
+*-assoc {x⁺ — x⁻} {y⁺ — y⁻} {z⁺ — z⁻} = ≃ᶻ-intro {{eq′}}
+  where
+    assoc-four :
+      ∀ {a₁ a₂ a₃ b₁ b₂ b₃ c₁ c₂ c₃ d₁ d₂ d₃} →
+        ((a₁ *ᴺ a₂) *ᴺ a₃ +ᴺ (b₁ *ᴺ b₂) *ᴺ b₃) +ᴺ
+        ((c₁ *ᴺ c₂) *ᴺ c₃ +ᴺ (d₁ *ᴺ d₂) *ᴺ d₃) ≃
+        (a₁ *ᴺ (a₂ *ᴺ a₃) +ᴺ b₁ *ᴺ (b₂ *ᴺ b₃)) +ᴺ
+        (c₁ *ᴺ (c₂ *ᴺ c₃) +ᴺ d₁ *ᴺ (d₂ *ᴺ d₃))
+    assoc-four {a₁} {a₂} {a₃} {b₁} {b₂} {b₃} {c₁} {c₂} {c₃} {d₁} {d₂} {d₃} =
+      begin
+        ((a₁ *ᴺ a₂) *ᴺ a₃ +ᴺ (b₁ *ᴺ b₂) *ᴺ b₃) +ᴺ
+        ((c₁ *ᴺ c₂) *ᴺ c₃ +ᴺ (d₁ *ᴺ d₂) *ᴺ d₃)
+      ≃⟨ +ᴺ-substᴸ (+ᴺ-substᴸ (ℕ.*-assoc {a₁})) ⟩
+        (a₁ *ᴺ (a₂ *ᴺ a₃) +ᴺ (b₁ *ᴺ b₂) *ᴺ b₃) +ᴺ
+        ((c₁ *ᴺ c₂) *ᴺ c₃ +ᴺ (d₁ *ᴺ d₂) *ᴺ d₃)
+      ≃⟨ +ᴺ-substᴸ (+ᴺ-substᴿ {a₁ *ᴺ (a₂ *ᴺ a₃)} (ℕ.*-assoc {b₁})) ⟩
+        (a₁ *ᴺ (a₂ *ᴺ a₃) +ᴺ b₁ *ᴺ (b₂ *ᴺ b₃)) +ᴺ
+        ((c₁ *ᴺ c₂) *ᴺ c₃ +ᴺ (d₁ *ᴺ d₂) *ᴺ d₃)
+      ≃⟨ +ᴺ-substᴿ
+           {(a₁ *ᴺ (a₂ *ᴺ a₃) +ᴺ b₁ *ᴺ (b₂ *ᴺ b₃))}
+           (+ᴺ-substᴸ (ℕ.*-assoc {c₁}))
+       ⟩
+        (a₁ *ᴺ (a₂ *ᴺ a₃) +ᴺ b₁ *ᴺ (b₂ *ᴺ b₃)) +ᴺ
+        (c₁ *ᴺ (c₂ *ᴺ c₃) +ᴺ (d₁ *ᴺ d₂) *ᴺ d₃)
+      ≃⟨ +ᴺ-substᴿ
+           {(a₁ *ᴺ (a₂ *ᴺ a₃) +ᴺ b₁ *ᴺ (b₂ *ᴺ b₃))}
+           (+ᴺ-substᴿ (ℕ.*-assoc {d₁}))
+       ⟩
+        (a₁ *ᴺ (a₂ *ᴺ a₃) +ᴺ b₁ *ᴺ (b₂ *ᴺ b₃)) +ᴺ
+        (c₁ *ᴺ (c₂ *ᴺ c₃) +ᴺ d₁ *ᴺ (d₂ *ᴺ d₃))
+      ∎
+
+    refactor :
+      ∀ {b₁ b₂ a₁ a₂ a₃ a₄} →
+        (a₁ *ᴺ a₃ +ᴺ a₂ *ᴺ a₄) *ᴺ b₁ +ᴺ (a₁ *ᴺ a₄ +ᴺ a₂ *ᴺ a₃) *ᴺ b₂ ≃
+          a₁ *ᴺ (a₃ *ᴺ b₁ +ᴺ a₄ *ᴺ b₂) +ᴺ a₂ *ᴺ (a₃ *ᴺ b₂ +ᴺ a₄ *ᴺ b₁)
+    refactor {b₁} {b₂} {a₁} {a₂} {a₃} {a₄} =
+      begin
+        (a₁ *ᴺ a₃ +ᴺ a₂ *ᴺ a₄) *ᴺ b₁ +ᴺ (a₁ *ᴺ a₄ +ᴺ a₂ *ᴺ a₃) *ᴺ b₂
+      ≃⟨ distrib-twoᴿ {a = a₁ *ᴺ a₃} {d = a₁ *ᴺ a₄} ⟩
+        ((a₁ *ᴺ a₃) *ᴺ b₁ +ᴺ (a₂ *ᴺ a₄) *ᴺ b₁) +ᴺ
+        ((a₁ *ᴺ a₄) *ᴺ b₂ +ᴺ (a₂ *ᴺ a₃) *ᴺ b₂)
+      ≃⟨ transpose {(a₁ *ᴺ a₃) *ᴺ b₁}⟩
+        ((a₁ *ᴺ a₃) *ᴺ b₁ +ᴺ (a₁ *ᴺ a₄) *ᴺ b₂) +ᴺ
+        ((a₂ *ᴺ a₄) *ᴺ b₁ +ᴺ (a₂ *ᴺ a₃) *ᴺ b₂)
+      ≃⟨ +ᴺ-substᴿ
+           {(a₁ *ᴺ a₃) *ᴺ b₁ +ᴺ (a₁ *ᴺ a₄) *ᴺ b₂}
+           (+ᴺ-comm {(a₂ *ᴺ a₄) *ᴺ b₁})
+       ⟩
+        ((a₁ *ᴺ a₃) *ᴺ b₁ +ᴺ (a₁ *ᴺ a₄) *ᴺ b₂) +ᴺ
+        ((a₂ *ᴺ a₃) *ᴺ b₂ +ᴺ (a₂ *ᴺ a₄) *ᴺ b₁)
+      ≃⟨ assoc-four {a₁ = a₁} {b₁ = a₁} {c₁ = a₂} {d₁ = a₂} ⟩
+        (a₁ *ᴺ (a₃ *ᴺ b₁) +ᴺ a₁ *ᴺ (a₄ *ᴺ b₂)) +ᴺ
+        (a₂ *ᴺ (a₃ *ᴺ b₂) +ᴺ a₂ *ᴺ (a₄ *ᴺ b₁))
+      ≃˘⟨ distrib-twoᴸ {a = a₁} {d = a₂} ⟩
+        a₁ *ᴺ (a₃ *ᴺ b₁ +ᴺ a₄ *ᴺ b₂) +ᴺ a₂ *ᴺ (a₃ *ᴺ b₂ +ᴺ a₄ *ᴺ b₁)
+      ∎
+
+    eq′ = a≃b+c≃d
+           (refactor {z⁺} {z⁻} {x⁺} {x⁻})
+           (sym (refactor {z⁻} {z⁺} {x⁺} {x⁻}))
+
 *-negᴸ : ∀ {a b} → - a * b ≃ - (a * b)
 *-negᴸ {a⁺ — a⁻} {b⁺ — b⁻} = ≃ᶻ-intro {{eq′}}
   where
@@ -514,6 +577,18 @@ neg-mult {a⁺ — a⁻} = ≃ᶻ-intro {{a⁻+[[0+0]a⁻+[1+0]a⁺]≃[0+0]a⁺
     a * c + - (b * c)
   ≃⟨⟩
     a * c - b * c
+  ∎
+
+*-zeroᴸ : ∀ {x} → 0 * x ≃ 0
+*-zeroᴸ {x} =
+  begin
+    0 * x
+  ≃˘⟨ *-substᴸ +-inverseᴿ ⟩
+    (1 - 1) * x
+  ≃⟨ *-distrib-subᴿ ⟩
+    1 * x - 1 * x
+  ≃⟨ +-inverseᴿ ⟩
+    0
   ∎
 
 neg-sub-swap : ∀ {a b} → - (a - b) ≃ b - a
@@ -698,6 +773,11 @@ trichotomy (x⁺ — x⁻) = record { at-least = one≤ ; at-most = one≮ }
       b⁺≃b⁻ = ℕ.*-cancelᴸ n≄0 nb⁺≃nb⁻
       b⁺+0≃0+b⁻ = trans ℕ.+-zeroᴿ (trans b⁺≃b⁻ (sym ℕ.+-zeroᴸ))
    in ∨-introᴿ (≃ᶻ-intro {{b⁺+0≃0+b⁻}})
+
+*-neither-zero : ∀ {a b} → a ≄ 0 → b ≄ 0 → a * b ≄ 0
+*-neither-zero a≄0 b≄0 ab≃0 with *-either-zero ab≃0
+... | ∨-introᴸ a≃0 = a≄0 a≃0
+... | ∨-introᴿ b≃0 = b≄0 b≃0
 
 *-cancelᴿ : ∀ {a b c} → c ≄ 0 → a * c ≃ b * c → a ≃ b
 *-cancelᴿ {a} {b} {c} c≄0 ac≃bc with
