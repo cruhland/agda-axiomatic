@@ -5,12 +5,12 @@ module net.cruhland.models.Integers (PA : PeanoArithmetic) where
 open import Agda.Builtin.FromNat using (Number)
 open import Agda.Builtin.FromNeg using (Negative)
 import Agda.Builtin.Nat as Nat
-open import Function using (const)
+open import Function using (_∘_; const; flip)
 open import net.cruhland.axioms.Eq using
   (_≃_; _≄_; _≄ⁱ_; ≄ⁱ-elim; Eq; sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
 open import net.cruhland.models.Logic using
-  (⊤; _∨_; ∨-introᴸ; ∨-introᴿ; ⊥-elim; ¬_)
+  (⊤; ∧-elimᴿ; _∨_; ∨-introᴸ; ∨-introᴿ; ⊥-elim; ¬_; Dec)
 module ℕ = PeanoArithmetic PA
 open ℕ using (ℕ; _<⁺_) renaming
   ( _+_ to _+ᴺ_; +-assoc to +ᴺ-assoc; +-cancelᴿ to +ᴺ-cancelᴿ
@@ -221,6 +221,27 @@ instance
 fromℕ : ℕ → ℤ
 fromℕ n = n — 0
 
+fromℕ-subst : ∀ {n₁ n₂} → n₁ ≃ n₂ → fromℕ n₁ ≃ fromℕ n₂
+fromℕ-subst n₁≃n₂ = ≃ᶻ-intro {{+ᴺ-substᴸ n₁≃n₂}}
+
+ℕ≃→ℤ≃ : ∀ {n m} → n ≃ m → fromℕ n ≃ fromℕ m
+ℕ≃→ℤ≃ n≃m = ≃ᶻ-intro {{trans ℕ.+-zeroᴿ (trans n≃m (sym ℕ.+-zeroᴿ))}}
+
+ℤ≃→ℕ≃ : ∀ {n} → fromℕ n ≃ 0 → n ≃ 0
+ℤ≃→ℕ≃ {n} (≃ᶻ-intro {{n+0≃0+0}}) =
+  begin
+    n
+  ≃˘⟨ ℕ.+-zeroᴿ ⟩
+    n +ᴺ 0
+  ≃⟨ n+0≃0+0 ⟩
+    0 +ᴺ 0
+  ≃⟨ ℕ.+-zeroᴸ ⟩
+    0
+  ∎
+
++ᴺ-to-+ : ∀ {n m} → fromℕ (n +ᴺ m) ≃ fromℕ n + fromℕ m
++ᴺ-to-+ = ≃ᶻ-intro {{ℕ.+-substᴿ ℕ.+-zeroᴸ}}
+
 +-identityᴸ : ∀ {x} → 0 + x ≃ x
 +-identityᴸ {x⁺ — x⁻} = ≃ᶻ-intro {{[0+x⁺]+x⁻≃x⁺+[0+x⁻]}}
   where
@@ -251,6 +272,24 @@ instance
   negative : Negative ℤ
   negative = record { Constraint = const ⊤ ; fromNeg = λ n → - fromNat n }
 
+neg-subst : ∀ {a₁ a₂} → a₁ ≃ a₂ → - a₁ ≃ - a₂
+neg-subst {a₁⁺ — a₁⁻} {a₂⁺ — a₂⁻} a₁≃a₂ = ≃ᶻ-intro {{eq′}}
+  where
+    a₁⁺+a₂⁻≃a₂⁺+a₁⁻ = ≃ᶻ-elim a₁≃a₂
+    eq′ =
+      begin
+        a₁⁻ +ᴺ a₂⁺
+      ≃⟨ +ᴺ-comm {a₁⁻} ⟩
+        a₂⁺ +ᴺ a₁⁻
+      ≃˘⟨ a₁⁺+a₂⁻≃a₂⁺+a₁⁻ ⟩
+        a₁⁺ +ᴺ a₂⁻
+      ≃⟨ +ᴺ-comm {a₁⁺} ⟩
+        a₂⁻ +ᴺ a₁⁺
+      ∎
+
+neg-involutive : ∀ {a} → - (- a) ≃ a
+neg-involutive {a⁺ — a⁻} = ≃ᶻ-intro
+
 +-inverseᴸ : ∀ {x} → - x + x ≃ 0
 +-inverseᴸ {x⁺ — x⁻} = ≃ᶻ-intro {{[x⁻+x⁺]+0≃0+[x⁺+x⁻]}}
   where
@@ -279,6 +318,9 @@ x - y = x + (- y)
 
 sub-substᴸ : ∀ {a₁ a₂ b} → a₁ ≃ a₂ → a₁ - b ≃ a₂ - b
 sub-substᴸ = +-substᴸ
+
+sub-substᴿ : ∀ {a b₁ b₂} → b₁ ≃ b₂ → a - b₁ ≃ a - b₂
+sub-substᴿ = +-substᴿ ∘ neg-subst
 
 infixl 7 _*_
 _*_ : ℤ → ℤ → ℤ
@@ -344,6 +386,22 @@ a⁺ — a⁻ * b⁺ — b⁻ = (a⁺ *ᴺ b⁺ +ᴺ a⁻ *ᴺ b⁻) — (a⁺ *
     a * b₂
   ∎
 
+*ᴺ-to-* : ∀ {n m} → fromℕ (n *ᴺ m) ≃ fromℕ n * fromℕ m
+*ᴺ-to-* {n} {m} = ≃ᶻ-intro {{nm+n0+0m≃nm+00+0}}
+  where
+    nm+n0+0m≃nm+00+0 =
+      begin
+        n *ᴺ m +ᴺ (n *ᴺ 0 +ᴺ 0 *ᴺ m)
+      ≃⟨ ℕ.+-substᴿ (ℕ.+-substᴸ (ℕ.*-zeroᴿ {n})) ⟩
+        n *ᴺ m +ᴺ (0 +ᴺ 0 *ᴺ m)
+      ≃˘⟨ ℕ.+-substᴿ (ℕ.+-substᴸ ℕ.*-zeroᴸ) ⟩
+        n *ᴺ m +ᴺ (0 *ᴺ 0 +ᴺ 0 *ᴺ m)
+      ≃⟨ ℕ.+-substᴿ (ℕ.+-substᴿ ℕ.*-zeroᴸ) ⟩
+        n *ᴺ m +ᴺ (0 *ᴺ 0 +ᴺ 0)
+      ≃˘⟨ +ᴺ-assoc {n *ᴺ m} ⟩
+        n *ᴺ m +ᴺ 0 *ᴺ 0 +ᴺ 0
+      ∎
+
 *-distrib-+ᴸ : ∀ {x y z} → x * (y + z) ≃ x * y + x * z
 *-distrib-+ᴸ {x⁺ — x⁻} {y⁺ — y⁻} {z⁺ — z⁻} =
     ≃ᶻ-intro {{a≃b+c≃d (refactor {x⁺} {x⁻}) (sym (refactor {x⁺} {x⁻}))}}
@@ -387,6 +445,62 @@ a⁺ — a⁻ * b⁺ — b⁻ = (a⁺ *ᴺ b⁺ +ᴺ a⁻ *ᴺ b⁻) — (a⁺ *
         (a⁺ *ᴺ b⁻ +ᴺ a⁻ *ᴺ b⁺) +ᴺ (a⁻ *ᴺ b⁻ +ᴺ a⁺ *ᴺ b⁺)
       ∎
 
+*-negᴿ : ∀ {a b} → a * - b ≃ - (a * b)
+*-negᴿ {a} {b} =
+  begin
+    a * - b
+  ≃⟨ *-comm {a} ⟩
+    - b * a
+  ≃⟨ *-negᴸ {b} ⟩
+    - (b * a)
+  ≃⟨ neg-subst (*-comm {b}) ⟩
+    - (a * b)
+  ∎
+
+neg-mult : ∀ {a} → - a ≃ -1 * a
+neg-mult {a⁺ — a⁻} = ≃ᶻ-intro {{a⁻+[[0+0]a⁻+[1+0]a⁺]≃[0+0]a⁺+[1+0]a⁻+a⁺}}
+  where
+    a⁻+[[0+0]a⁻+[1+0]a⁺]≃[0+0]a⁺+[1+0]a⁻+a⁺ =
+      begin
+        a⁻ +ᴺ ((0 +ᴺ 0) *ᴺ a⁻ +ᴺ (1 +ᴺ 0) *ᴺ a⁺)
+      ≃⟨ ℕ.+-substᴿ (ℕ.+-substᴸ (ℕ.*-substᴸ ℕ.+-zeroᴸ)) ⟩
+        a⁻ +ᴺ (0 *ᴺ a⁻ +ᴺ (1 +ᴺ 0) *ᴺ a⁺)
+      ≃⟨ ℕ.+-substᴿ (ℕ.+-substᴸ ℕ.*-zeroᴸ) ⟩
+        a⁻ +ᴺ (0 +ᴺ (1 +ᴺ 0) *ᴺ a⁺)
+      ≃⟨ ℕ.+-substᴿ ℕ.+-zeroᴸ ⟩
+        a⁻ +ᴺ (1 +ᴺ 0) *ᴺ a⁺
+      ≃⟨ ℕ.+-substᴿ (ℕ.*-substᴸ ℕ.+-zeroᴿ) ⟩
+        a⁻ +ᴺ 1 *ᴺ a⁺
+      ≃⟨ ℕ.+-substᴿ ℕ.*-oneᴸ ⟩
+        a⁻ +ᴺ a⁺
+      ≃˘⟨ ℕ.+-substᴸ ℕ.*-oneᴸ ⟩
+        1 *ᴺ a⁻ +ᴺ a⁺
+      ≃˘⟨ ℕ.+-substᴸ (ℕ.*-substᴸ ℕ.+-zeroᴿ) ⟩
+        (1 +ᴺ 0) *ᴺ a⁻ +ᴺ a⁺
+      ≃˘⟨ ℕ.+-zeroᴸ ⟩
+        0 +ᴺ ((1 +ᴺ 0) *ᴺ a⁻ +ᴺ a⁺)
+      ≃˘⟨ ℕ.+-substᴸ ℕ.*-zeroᴸ ⟩
+        0 *ᴺ a⁺ +ᴺ ((1 +ᴺ 0) *ᴺ a⁻ +ᴺ a⁺)
+      ≃˘⟨ ℕ.+-substᴸ (ℕ.*-substᴸ ℕ.+-zeroᴸ) ⟩
+        (0 +ᴺ 0) *ᴺ a⁺ +ᴺ ((1 +ᴺ 0) *ᴺ a⁻ +ᴺ a⁺)
+      ≃˘⟨ ℕ.+-assoc ⟩
+        (0 +ᴺ 0) *ᴺ a⁺ +ᴺ (1 +ᴺ 0) *ᴺ a⁻ +ᴺ a⁺
+      ∎
+
+*-distrib-subᴸ : ∀ {a b c} → c * (a - b) ≃ c * a - c * b
+*-distrib-subᴸ {a} {b} {c} =
+  begin
+    c * (a - b)
+  ≃⟨⟩
+    c * (a + - b)
+  ≃⟨ *-distrib-+ᴸ {c} ⟩
+    c * a + c * - b
+  ≃⟨ +-substᴿ {c * a} (*-negᴿ {c}) ⟩
+    c * a + - (c * b)
+  ≃⟨⟩
+    c * a - c * b
+  ∎
+
 *-distrib-subᴿ : ∀ {a b c} → (a - b) * c ≃ a * c - b * c
 *-distrib-subᴿ {a} {b} {c} =
   begin
@@ -399,6 +513,42 @@ a⁺ — a⁻ * b⁺ — b⁻ = (a⁺ *ᴺ b⁺ +ᴺ a⁻ *ᴺ b⁻) — (a⁺ *
     a * c + - (b * c)
   ≃⟨⟩
     a * c - b * c
+  ∎
+
+neg-sub-swap : ∀ {a b} → - (a - b) ≃ b - a
+neg-sub-swap {a} {b} =
+  begin
+    - (a - b)
+  ≃⟨ neg-mult ⟩
+    -1 * (a - b)
+  ≃⟨ *-distrib-subᴸ {a} {b} { -1} ⟩
+    -1 * a - -1 * b
+  ≃˘⟨ +-substᴸ (neg-mult {a}) ⟩
+    - a - -1 * b
+  ≃˘⟨ +-substᴿ (neg-subst (neg-mult {b})) ⟩
+    - a - (- b)
+  ≃⟨ +-substᴿ (neg-involutive {b}) ⟩
+    - a + b
+  ≃˘⟨ +-comm {b} ⟩
+    b - a
+  ∎
+
+≃ᴸ-subᴿ-toᴸ : ∀ {a b c} → a - b ≃ c → a ≃ b + c
+≃ᴸ-subᴿ-toᴸ {a} {b} {c} a-b≃c =
+  begin
+    a
+  ≃˘⟨ +-identityᴿ ⟩
+    a + 0
+  ≃˘⟨ +-substᴿ (+-inverseᴿ {b}) ⟩
+    a + (b - b)
+  ≃⟨ +-substᴿ {a} (+-comm {b}) ⟩
+    a + (- b + b)
+  ≃˘⟨ +-assoc {a} ⟩
+    a - b + b
+  ≃⟨ +-substᴸ a-b≃c ⟩
+    c + b
+  ≃⟨ +-comm {c} ⟩
+    b + c
   ∎
 
 record IsPositive (x : ℤ) : Set where
@@ -577,3 +727,107 @@ trichotomy (x⁺ — x⁻) = record { at-least = one≤ ; at-most = one≮ }
   ∎
 *-cancelᴿ {a} {b} {c} c≄0 ac≃bc | ∨-introᴿ c≃0 =
   ⊥-elim (c≄0 c≃0)
+
+infix 4 _≤_
+record _≤_ (n m : ℤ) : Set where
+  constructor ≤-intro
+  field
+    a : ℕ
+    n≃m+a : m ≃ n + fromℕ a
+
+infix 4 _<_
+record _<_ (n m : ℤ) : Set where
+  constructor <-intro
+  field
+    n≤m : n ≤ m
+    n≄m : n ≄ m
+
+infix 4 _>_
+_>_ = flip _<_
+
+≤-antisym : ∀ {a b} → a ≤ b → b ≤ a → a ≃ b
+≤-antisym {a} {b} (≤-intro n₁ b≃a+n₁) (≤-intro n₂ a≃b+n₂) =
+  let n₁+ᴺn₂≃0 =
+        begin
+          fromℕ (n₁ +ᴺ n₂)
+        ≃⟨ +ᴺ-to-+ {n₁} ⟩
+          fromℕ n₁ + fromℕ n₂
+        ≃˘⟨ +-identityᴸ ⟩
+          0 + (fromℕ n₁ + fromℕ n₂)
+        ≃˘⟨ +-substᴸ (+-inverseᴸ {a}) ⟩
+          (- a) + a + (fromℕ n₁ + fromℕ n₂)
+        ≃⟨ +-assoc { - a} ⟩
+          (- a) + (a + (fromℕ n₁ + fromℕ n₂))
+        ≃˘⟨ +-substᴿ { - a} (+-assoc {a}) ⟩
+          (- a) + (a + fromℕ n₁ + fromℕ n₂)
+        ≃˘⟨ +-substᴿ { - a} (+-substᴸ b≃a+n₁) ⟩
+          (- a) + (b + fromℕ n₂)
+        ≃˘⟨ +-substᴿ a≃b+n₂ ⟩
+          (- a) + a
+        ≃⟨ +-inverseᴸ {a} ⟩
+          0
+        ∎
+      n₂≃0 = ∧-elimᴿ (ℕ.+-both-zero (ℤ≃→ℕ≃ n₁+ᴺn₂≃0))
+   in trans (trans a≃b+n₂ (+-substᴿ (fromℕ-subst n₂≃0))) +-identityᴿ
+
+sub-sign-swap : ∀ {a b} → IsNegative (a - b) → IsPositive (b - a)
+sub-sign-swap {a} {b} record { n = n ; pos = n≄0 ; x≃-n = a-b≃-n } =
+    record { n = n ; pos = n≄0 ; x≃n = b-a≃n }
+  where
+    b-a≃n =
+      begin
+        b - a
+      ≃˘⟨ neg-sub-swap {a} ⟩
+        - (a - b)
+      ≃⟨ neg-subst a-b≃-n ⟩
+        - (- fromℕ n)
+      ≃⟨ neg-involutive {fromℕ n} ⟩
+        fromℕ n
+      ∎
+
+pos→< : ∀ {x y} → IsPositive (y - x) → x < y
+pos→< {x} {y} record { n = n ; pos = n≄0 ; x≃n = y-x≃n } =
+    <-intro (≤-intro n (≃ᴸ-subᴿ-toᴸ y-x≃n)) x≄y
+  where
+    x≄y : x ≄ y
+    x≄y x≃y = n≄0 (ℤ≃→ℕ≃ n≃0)
+      where
+        n≃0 =
+          begin
+            fromℕ n
+          ≃˘⟨ y-x≃n ⟩
+            y - x
+          ≃⟨ sub-substᴿ x≃y ⟩
+            y - y
+          ≃⟨ +-inverseᴿ {y} ⟩
+            0
+          ∎
+
+data OneOfThree (A B C : Set) : Set where
+  1st : A → OneOfThree A B C
+  2nd : B → OneOfThree A B C
+  3rd : C → OneOfThree A B C
+
+data TwoOfThree (A B C : Set) : Set where
+  1∧2 : A → B → TwoOfThree A B C
+  1∧3 : A → C → TwoOfThree A B C
+  2∧3 : B → C → TwoOfThree A B C
+
+record ExactlyOneOf (A B C : Set) : Set where
+  field
+    at-least-one : OneOfThree A B C
+    at-most-one : ¬ TwoOfThree A B C
+
+order-trichotomy : ∀ {a b} → ExactlyOneOf (a < b) (a ≃ b) (a > b)
+order-trichotomy {a} {b} = record { at-least-one = 1≤ ; at-most-one = ≤1 }
+  where
+    1≤ : OneOfThree (a < b) (a ≃ b) (a > b)
+    1≤ with at-least (trichotomy (b - a))
+    1≤ | nil b-a≃0 = 2nd (sym (trans (≃ᴸ-subᴿ-toᴸ b-a≃0) +-identityᴿ))
+    1≤ | pos b-a>0 = 1st (pos→< b-a>0)
+    1≤ | neg b-a<0 = 3rd (pos→< (sub-sign-swap {b} b-a<0))
+
+    ≤1 : ¬ TwoOfThree (a < b) (a ≃ b) (a > b)
+    ≤1 (1∧2 (<-intro a≤b a≄b) a≃b) = a≄b a≃b
+    ≤1 (1∧3 (<-intro a≤b a≄b) (<-intro b≤a b≄a)) = a≄b (≤-antisym a≤b b≤a)
+    ≤1 (2∧3 a≃b (<-intro b≤a b≄a)) = b≄a (sym a≃b)
