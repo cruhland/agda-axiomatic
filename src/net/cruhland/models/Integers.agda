@@ -10,6 +10,7 @@ open import net.cruhland.axioms.DecEq using (DecEq)
 open import net.cruhland.axioms.Eq using
   (_≃_; _≄_; _≄ⁱ_; ≄ⁱ-elim; Eq; sym; ¬sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
+open import net.cruhland.axioms.Operators using (_+_; PlusOp)
 open import net.cruhland.models.Logic using
   (⊤; ∧-elimᴿ; _∨_; ∨-introᴸ; ∨-introᴿ; ⊥-elim; ¬_; Dec; yes; no)
 module ℕ = PeanoArithmetic PA
@@ -152,11 +153,15 @@ instance
     ; ≄ⁱ-elim = λ {{i}} → ≄ᶻⁱ-elim {{i}}
     }
 
-infixl 6 _+_
-_+_ : ℤ → ℤ → ℤ
-a⁺ — a⁻ + b⁺ — b⁻ = (a⁺ +ᴺ b⁺) — (a⁻ +ᴺ b⁻)
+instance
+  plus : PlusOp ℤ
+  plus = record { _+_ = _+₀_ }
+    where
+      infixl 6 _+₀_
+      _+₀_ : ℤ → ℤ → ℤ
+      a⁺ — a⁻ +₀ b⁺ — b⁻ = (a⁺ +ᴺ b⁺) — (a⁻ +ᴺ b⁻)
 
-+-comm : ∀ {a b} → a + b ≃ b + a
++-comm : {a b : ℤ} → a + b ≃ b + a
 +-comm {a⁺ — a⁻} {b⁺ — b⁻} = ≃ᶻ-intro {{eq′}}
   where
     eq′ =
@@ -168,7 +173,7 @@ a⁺ — a⁻ + b⁺ — b⁻ = (a⁺ +ᴺ b⁺) — (a⁻ +ᴺ b⁻)
         (b⁺ +ᴺ a⁺) +ᴺ (a⁻ +ᴺ b⁻)
       ∎
 
-+-substᴸ : ∀ {a₁ a₂ b} → a₁ ≃ a₂ → a₁ + b ≃ a₂ + b
++-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ + b ≃ a₂ + b
 +-substᴸ {a₁⁺ — a₁⁻} {a₂⁺ — a₂⁻} {b⁺ — b⁻} a₁≃a₂ = ≃ᶻ-intro {{eq′}}
   where
     a₁⁺+a₂⁻≃a₂⁺+a₁⁻ = ≃ᶻ-elim a₁≃a₂
@@ -195,7 +200,7 @@ a⁺ — a⁻ + b⁺ — b⁻ = (a⁺ +ᴺ b⁺) — (a⁻ +ᴺ b⁻)
     a + b₂
   ∎
 
-+-assoc : ∀ {x y z} → (x + y) + z ≃ x + (y + z)
++-assoc : {x y z : ℤ} → (x + y) + z ≃ x + (y + z)
 +-assoc {x⁺ — x⁻} {y⁺ — y⁻} {z⁺ — z⁻} = ≃ᶻ-intro {{eq′}}
   where
     eq′ =
@@ -239,7 +244,7 @@ fromℕ-subst n₁≃n₂ = ≃ᶻ-intro {{ℕ.+-substᴸ n₁≃n₂}}
 +ᴺ-to-+ : ∀ {n m} → fromℕ (n +ᴺ m) ≃ fromℕ n + fromℕ m
 +ᴺ-to-+ = ≃ᶻ-intro {{ℕ.+-substᴿ ℕ.+-zeroᴸ}}
 
-+-identityᴸ : ∀ {x} → 0 + x ≃ x
++-identityᴸ : {x : ℤ} → 0 + x ≃ x
 +-identityᴸ {x⁺ — x⁻} = ≃ᶻ-intro {{[0+x⁺]+x⁻≃x⁺+[0+x⁻]}}
   where
     [0+x⁺]+x⁻≃x⁺+[0+x⁻] =

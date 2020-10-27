@@ -5,6 +5,8 @@ record PlusOp (A : Set) : Set where
   field
     _+_ : A → A → A
 
+open PlusOp {{...}} public
+
 record StarOp (A : Set) : Set where
   infixl 7 _*_
   field
