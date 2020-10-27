@@ -14,82 +14,82 @@ open import net.cruhland.axioms.Operators using (_+_; PlusOp)
 open import net.cruhland.models.Logic using
   (⊤; ∧-elimᴿ; _∨_; ∨-introᴸ; ∨-introᴿ; ⊥-elim; ¬_; Dec; yes; no)
 module ℕ = PeanoArithmetic PA
-open ℕ using (ℕ; _<⁺_) renaming (_+_ to _+ᴺ_; _*_ to _*ᴺ_)
+open ℕ using (ℕ; _<⁺_) renaming (_*_ to _*ᴺ_)
 
-[ab][cd]≃a[[bc]d] : ∀ {a b c d} → (a +ᴺ b) +ᴺ (c +ᴺ d) ≃ a +ᴺ ((b +ᴺ c) +ᴺ d)
+[ab][cd]≃a[[bc]d] : ∀ {a b c d} → (a + b) + (c + d) ≃ a + ((b + c) + d)
 [ab][cd]≃a[[bc]d] {a} {b} {c} {d} =
   begin
-    (a +ᴺ b) +ᴺ (c +ᴺ d)
+    (a + b) + (c + d)
   ≃⟨ ℕ.+-assoc {a} ⟩
-    a +ᴺ (b +ᴺ (c +ᴺ d))
+    a + (b + (c + d))
   ≃˘⟨ ℕ.+-substᴿ (ℕ.+-assoc {b}) ⟩
-    a +ᴺ ((b +ᴺ c) +ᴺ d)
+    a + ((b + c) + d)
   ∎
 
-swap-middle : ∀ {a b c d} → a +ᴺ ((b +ᴺ c) +ᴺ d) ≃ a +ᴺ ((c +ᴺ b) +ᴺ d)
+swap-middle : ∀ {a b c d} → a + ((b + c) + d) ≃ a + ((c + b) + d)
 swap-middle {a} {b} {c} {d} = ℕ.+-substᴿ (ℕ.+-substᴸ (ℕ.+-comm {b}))
 
-regroup : ∀ a b c d → (a +ᴺ b) +ᴺ (c +ᴺ d) ≃ a +ᴺ ((b +ᴺ d) +ᴺ c)
+regroup : ∀ a b c d → (a + b) + (c + d) ≃ a + ((b + d) + c)
 regroup a b c d =
   begin
-    (a +ᴺ b) +ᴺ (c +ᴺ d)
+    (a + b) + (c + d)
   ≃⟨ ℕ.+-substᴿ (ℕ.+-comm {c} {d}) ⟩
-    (a +ᴺ b) +ᴺ (d +ᴺ c)
+    (a + b) + (d + c)
   ≃⟨ [ab][cd]≃a[[bc]d] {a} ⟩
-    a +ᴺ ((b +ᴺ d) +ᴺ c)
+    a + ((b + d) + c)
   ∎
 
-a≃b+c≃d : ∀ {a b c d} → a ≃ b → c ≃ d → a +ᴺ c ≃ b +ᴺ d
+a≃b+c≃d : {a b c d : ℕ} → a ≃ b → c ≃ d → a + c ≃ b + d
 a≃b+c≃d {b = b} {c = c} a≃b c≃d = trans (ℕ.+-substᴸ a≃b) (ℕ.+-substᴿ c≃d)
 
-perm-adcb : ∀ {a b c d} → (a +ᴺ d) +ᴺ (c +ᴺ b) ≃ (a +ᴺ b) +ᴺ (c +ᴺ d)
+perm-adcb : ∀ {a b c d} → (a + d) + (c + b) ≃ (a + b) + (c + d)
 perm-adcb {a} {b} {c} {d} =
   begin
-    (a +ᴺ d) +ᴺ (c +ᴺ b)
+    (a + d) + (c + b)
   ≃⟨ regroup a d c b ⟩
-    a +ᴺ ((d +ᴺ b) +ᴺ c)
+    a + ((d + b) + c)
   ≃⟨ swap-middle {a} {d} ⟩
-    a +ᴺ ((b +ᴺ d) +ᴺ c)
+    a + ((b + d) + c)
   ≃˘⟨ regroup a b c d ⟩
-    (a +ᴺ b) +ᴺ (c +ᴺ d)
+    (a + b) + (c + d)
   ∎
 
-transpose : ∀ {w x y z} → (w +ᴺ x) +ᴺ (y +ᴺ z) ≃ (w +ᴺ y) +ᴺ (x +ᴺ z)
+transpose : ∀ {w x y z} → (w + x) + (y + z) ≃ (w + y) + (x + z)
 transpose {w} {x} {y} {z} =
   begin
-    (w +ᴺ x) +ᴺ (y +ᴺ z)
+    (w + x) + (y + z)
   ≃⟨ [ab][cd]≃a[[bc]d] {w} ⟩
-    w +ᴺ ((x +ᴺ y) +ᴺ z)
+    w + ((x + y) + z)
   ≃⟨ swap-middle {w} {x} ⟩
-    w +ᴺ ((y +ᴺ x) +ᴺ z)
+    w + ((y + x) + z)
   ≃˘⟨ [ab][cd]≃a[[bc]d] {w} ⟩
-    (w +ᴺ y) +ᴺ (x +ᴺ z)
+    (w + y) + (x + z)
   ∎
 
 distrib-twoᴸ :
   ∀ {a b c d e f} →
-    a *ᴺ (b +ᴺ c) +ᴺ d *ᴺ (e +ᴺ f) ≃
-      (a *ᴺ b +ᴺ a *ᴺ c) +ᴺ (d *ᴺ e +ᴺ d *ᴺ f)
+    a *ᴺ (b + c) + d *ᴺ (e + f) ≃
+      (a *ᴺ b + a *ᴺ c) + (d *ᴺ e + d *ᴺ f)
 distrib-twoᴸ {a} {b} {c} {d} {e} {f} =
   begin
-    a *ᴺ (b +ᴺ c) +ᴺ d *ᴺ (e +ᴺ f)
+    a *ᴺ (b + c) + d *ᴺ (e + f)
   ≃⟨ ℕ.+-substᴸ (ℕ.*-distrib-+ᴸ {a}) ⟩
-    (a *ᴺ b +ᴺ a *ᴺ c) +ᴺ d *ᴺ (e +ᴺ f)
+    (a *ᴺ b + a *ᴺ c) + d *ᴺ (e + f)
   ≃⟨ ℕ.+-substᴿ (ℕ.*-distrib-+ᴸ {d}) ⟩
-    (a *ᴺ b +ᴺ a *ᴺ c) +ᴺ (d *ᴺ e +ᴺ d *ᴺ f)
+    (a *ᴺ b + a *ᴺ c) + (d *ᴺ e + d *ᴺ f)
   ∎
 
 distrib-twoᴿ :
   ∀ {a b c d e f} →
-    (a +ᴺ b) *ᴺ c +ᴺ (d +ᴺ e) *ᴺ f ≃
-      (a *ᴺ c +ᴺ b *ᴺ c) +ᴺ (d *ᴺ f +ᴺ e *ᴺ f)
+    (a + b) *ᴺ c + (d + e) *ᴺ f ≃
+      (a *ᴺ c + b *ᴺ c) + (d *ᴺ f + e *ᴺ f)
 distrib-twoᴿ {a} {b} {c} {d} {e} {f} =
   begin
-    (a +ᴺ b) *ᴺ c +ᴺ (d +ᴺ e) *ᴺ f
+    (a + b) *ᴺ c + (d + e) *ᴺ f
   ≃⟨ ℕ.+-substᴸ (ℕ.*-distrib-+ᴿ {a}) ⟩
-    (a *ᴺ c +ᴺ b *ᴺ c) +ᴺ (d +ᴺ e) *ᴺ f
+    (a *ᴺ c + b *ᴺ c) + (d + e) *ᴺ f
   ≃⟨ ℕ.+-substᴿ (ℕ.*-distrib-+ᴿ {d}) ⟩
-    (a *ᴺ c +ᴺ b *ᴺ c) +ᴺ (d *ᴺ f +ᴺ e *ᴺ f)
+    (a *ᴺ c + b *ᴺ c) + (d *ᴺ f + e *ᴺ f)
   ∎
 
 infix 9 _—_
@@ -107,7 +107,7 @@ record ℤ : Set where
 record _≃ᶻ_ (a b : ℤ) : Set where
   instance constructor ≃ᶻ-intro
   field
-    {{≃ᶻ-elim}} : ℤ⁺ a +ᴺ ℤ⁻ b ≃ ℤ⁺ b +ᴺ ℤ⁻ a
+    {{≃ᶻ-elim}} : ℤ⁺ a + ℤ⁻ b ≃ ℤ⁺ b + ℤ⁻ a
 
 open _≃ᶻ_ public using (≃ᶻ-elim)
 
@@ -125,19 +125,19 @@ open _≃ᶻ_ public using (≃ᶻ-elim)
   where
     [a⁺+c⁻]+[b⁺+b⁻]≃[c⁺+a⁻]+[b⁺+b⁻] =
       begin
-        (a⁺ +ᴺ c⁻) +ᴺ (b⁺ +ᴺ b⁻)
+        (a⁺ + c⁻) + (b⁺ + b⁻)
       ≃˘⟨ perm-adcb {a⁺} ⟩
-        (a⁺ +ᴺ b⁻) +ᴺ (b⁺ +ᴺ c⁻)
+        (a⁺ + b⁻) + (b⁺ + c⁻)
       ≃⟨ a≃b+c≃d a⁺+b⁻≃b⁺+a⁻ b⁺+c⁻≃c⁺+b⁻ ⟩
-        (b⁺ +ᴺ a⁻) +ᴺ (c⁺ +ᴺ b⁻)
+        (b⁺ + a⁻) + (c⁺ + b⁻)
       ≃⟨ perm-adcb {b⁺} ⟩
-        (b⁺ +ᴺ b⁻) +ᴺ (c⁺ +ᴺ a⁻)
-      ≃⟨ ℕ.+-comm {n = b⁺ +ᴺ b⁻} ⟩
-        (c⁺ +ᴺ a⁻) +ᴺ (b⁺ +ᴺ b⁻)
+        (b⁺ + b⁻) + (c⁺ + a⁻)
+      ≃⟨ ℕ.+-comm {n = b⁺ + b⁻} ⟩
+        (c⁺ + a⁻) + (b⁺ + b⁻)
       ∎
 
 data _≄ᶻⁱ_ (a b : ℤ) : Set where
-  instance ≃ᶻⁱ-intro : {{i : ℤ⁺ a +ᴺ ℤ⁻ b ≄ⁱ ℤ⁺ b +ᴺ ℤ⁻ a}} → a ≄ᶻⁱ b
+  instance ≃ᶻⁱ-intro : {{i : ℤ⁺ a + ℤ⁻ b ≄ⁱ ℤ⁺ b + ℤ⁻ a}} → a ≄ᶻⁱ b
 
 ≄ᶻⁱ-elim : ∀ {a b} {{i : a ≄ᶻⁱ b}} → ¬ (a ≃ᶻ b)
 ≄ᶻⁱ-elim {{≃ᶻⁱ-intro {{≄ⁱ-ℕ}}}} (≃ᶻ-intro {{≃-ℕ}}) = ≄ⁱ-elim {{i = ≄ⁱ-ℕ}} ≃-ℕ
@@ -159,18 +159,18 @@ instance
     where
       infixl 6 _+₀_
       _+₀_ : ℤ → ℤ → ℤ
-      a⁺ — a⁻ +₀ b⁺ — b⁻ = (a⁺ +ᴺ b⁺) — (a⁻ +ᴺ b⁻)
+      a⁺ — a⁻ +₀ b⁺ — b⁻ = (a⁺ + b⁺) — (a⁻ + b⁻)
 
 +-comm : {a b : ℤ} → a + b ≃ b + a
 +-comm {a⁺ — a⁻} {b⁺ — b⁻} = ≃ᶻ-intro {{eq′}}
   where
     eq′ =
       begin
-        (a⁺ +ᴺ b⁺) +ᴺ (b⁻ +ᴺ a⁻)
+        (a⁺ + b⁺) + (b⁻ + a⁻)
       ≃⟨ ℕ.+-substᴸ (ℕ.+-comm {a⁺}) ⟩
-        (b⁺ +ᴺ a⁺) +ᴺ (b⁻ +ᴺ a⁻)
-      ≃⟨ ℕ.+-substᴿ {b⁺ +ᴺ a⁺} (ℕ.+-comm {b⁻}) ⟩
-        (b⁺ +ᴺ a⁺) +ᴺ (a⁻ +ᴺ b⁻)
+        (b⁺ + a⁺) + (b⁻ + a⁻)
+      ≃⟨ ℕ.+-substᴿ {b⁺ + a⁺} (ℕ.+-comm {b⁻}) ⟩
+        (b⁺ + a⁺) + (a⁻ + b⁻)
       ∎
 
 +-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ + b ≃ a₂ + b
@@ -179,13 +179,13 @@ instance
     a₁⁺+a₂⁻≃a₂⁺+a₁⁻ = ≃ᶻ-elim a₁≃a₂
     eq′ =
       begin
-        (a₁⁺ +ᴺ b⁺) +ᴺ (a₂⁻ +ᴺ b⁻)
+        (a₁⁺ + b⁺) + (a₂⁻ + b⁻)
       ≃⟨ transpose {a₁⁺} ⟩
-        (a₁⁺ +ᴺ a₂⁻) +ᴺ (b⁺ +ᴺ b⁻)
+        (a₁⁺ + a₂⁻) + (b⁺ + b⁻)
       ≃⟨ ℕ.+-substᴸ a₁⁺+a₂⁻≃a₂⁺+a₁⁻ ⟩
-        (a₂⁺ +ᴺ a₁⁻) +ᴺ (b⁺ +ᴺ b⁻)
+        (a₂⁺ + a₁⁻) + (b⁺ + b⁻)
       ≃⟨ transpose {a₂⁺} ⟩
-        (a₂⁺ +ᴺ b⁺) +ᴺ (a₁⁻ +ᴺ b⁻)
+        (a₂⁺ + b⁺) + (a₁⁻ + b⁻)
       ∎
 
 +-substᴿ : ∀ {a b₁ b₂} → b₁ ≃ b₂ → a + b₁ ≃ a + b₂
@@ -205,11 +205,11 @@ instance
   where
     eq′ =
       begin
-        ((x⁺ +ᴺ y⁺) +ᴺ z⁺) +ᴺ (x⁻ +ᴺ (y⁻ +ᴺ z⁻))
+        ((x⁺ + y⁺) + z⁺) + (x⁻ + (y⁻ + z⁻))
       ≃⟨ ℕ.+-substᴸ (ℕ.+-assoc {x⁺}) ⟩
-        (x⁺ +ᴺ (y⁺ +ᴺ z⁺)) +ᴺ (x⁻ +ᴺ (y⁻ +ᴺ z⁻))
-      ≃˘⟨ ℕ.+-substᴿ {x⁺ +ᴺ (y⁺ +ᴺ z⁺)} (ℕ.+-assoc {x⁻}) ⟩
-        (x⁺ +ᴺ (y⁺ +ᴺ z⁺)) +ᴺ ((x⁻ +ᴺ y⁻) +ᴺ z⁻)
+        (x⁺ + (y⁺ + z⁺)) + (x⁻ + (y⁻ + z⁻))
+      ≃˘⟨ ℕ.+-substᴿ {x⁺ + (y⁺ + z⁺)} (ℕ.+-assoc {x⁻}) ⟩
+        (x⁺ + (y⁺ + z⁺)) + ((x⁻ + y⁻) + z⁻)
       ∎
 
 fromNat : Nat.Nat → {{_ : ⊤}} → ℤ
@@ -234,26 +234,26 @@ fromℕ-subst n₁≃n₂ = ≃ᶻ-intro {{ℕ.+-substᴸ n₁≃n₂}}
   begin
     n
   ≃˘⟨ ℕ.+-zeroᴿ ⟩
-    n +ᴺ 0
+    n + 0
   ≃⟨ n+0≃0+0 ⟩
-    0 +ᴺ 0
+    0 + 0
   ≃⟨ ℕ.+-zeroᴸ ⟩
     0
   ∎
 
-+ᴺ-to-+ : ∀ {n m} → fromℕ (n +ᴺ m) ≃ fromℕ n + fromℕ m
-+ᴺ-to-+ = ≃ᶻ-intro {{ℕ.+-substᴿ ℕ.+-zeroᴸ}}
++-to-+ : ∀ {n m} → fromℕ (n + m) ≃ fromℕ n + fromℕ m
++-to-+ = ≃ᶻ-intro {{ℕ.+-substᴿ ℕ.+-zeroᴸ}}
 
 +-identityᴸ : {x : ℤ} → 0 + x ≃ x
 +-identityᴸ {x⁺ — x⁻} = ≃ᶻ-intro {{[0+x⁺]+x⁻≃x⁺+[0+x⁻]}}
   where
     [0+x⁺]+x⁻≃x⁺+[0+x⁻] =
       begin
-        0 +ᴺ x⁺ +ᴺ x⁻
+        0 + x⁺ + x⁻
       ≃⟨ ℕ.+-substᴸ ℕ.+-comm ⟩
-        x⁺ +ᴺ 0 +ᴺ x⁻
+        x⁺ + 0 + x⁻
       ≃⟨ ℕ.+-assoc ⟩
-        x⁺ +ᴺ (0 +ᴺ x⁻)
+        x⁺ + (0 + x⁻)
       ∎
 
 +-identityᴿ : ∀ {x} → x + 0 ≃ x
@@ -280,13 +280,13 @@ neg-subst {a₁⁺ — a₁⁻} {a₂⁺ — a₂⁻} a₁≃a₂ = ≃ᶻ-intro
     a₁⁺+a₂⁻≃a₂⁺+a₁⁻ = ≃ᶻ-elim a₁≃a₂
     eq′ =
       begin
-        a₁⁻ +ᴺ a₂⁺
+        a₁⁻ + a₂⁺
       ≃⟨ ℕ.+-comm {a₁⁻} ⟩
-        a₂⁺ +ᴺ a₁⁻
+        a₂⁺ + a₁⁻
       ≃˘⟨ a₁⁺+a₂⁻≃a₂⁺+a₁⁻ ⟩
-        a₁⁺ +ᴺ a₂⁻
+        a₁⁺ + a₂⁻
       ≃⟨ ℕ.+-comm {a₁⁺} ⟩
-        a₂⁻ +ᴺ a₁⁺
+        a₂⁻ + a₁⁺
       ∎
 
 neg-involutive : ∀ {a} → - (- a) ≃ a
@@ -297,11 +297,11 @@ neg-involutive {a⁺ — a⁻} = ≃ᶻ-intro
   where
     [x⁻+x⁺]+0≃0+[x⁺+x⁻] =
       begin
-        (x⁻ +ᴺ x⁺) +ᴺ 0
+        (x⁻ + x⁺) + 0
       ≃⟨ ℕ.+-comm ⟩
-        0 +ᴺ (x⁻ +ᴺ x⁺)
+        0 + (x⁻ + x⁺)
       ≃⟨ ℕ.+-substᴿ ℕ.+-comm ⟩
-        0 +ᴺ (x⁺ +ᴺ x⁻)
+        0 + (x⁺ + x⁻)
       ∎
 
 +-inverseᴿ : ∀ {x} → x + - x ≃ 0
@@ -326,24 +326,24 @@ sub-substᴿ = +-substᴿ ∘ neg-subst
 
 infixl 7 _*_
 _*_ : ℤ → ℤ → ℤ
-a⁺ — a⁻ * b⁺ — b⁻ = (a⁺ *ᴺ b⁺ +ᴺ a⁻ *ᴺ b⁻) — (a⁺ *ᴺ b⁻ +ᴺ a⁻ *ᴺ b⁺)
+a⁺ — a⁻ * b⁺ — b⁻ = (a⁺ *ᴺ b⁺ + a⁻ *ᴺ b⁻) — (a⁺ *ᴺ b⁻ + a⁻ *ᴺ b⁺)
 
 *-comm : ∀ {a b} → a * b ≃ b * a
 *-comm {a⁺ — a⁻} {b⁺ — b⁻} = ≃ᶻ-intro {{eq′}}
   where
     eq′ =
       begin
-        (a⁺ *ᴺ b⁺ +ᴺ a⁻ *ᴺ b⁻) +ᴺ (b⁺ *ᴺ a⁻ +ᴺ b⁻ *ᴺ a⁺)
+        (a⁺ *ᴺ b⁺ + a⁻ *ᴺ b⁻) + (b⁺ *ᴺ a⁻ + b⁻ *ᴺ a⁺)
       ≃⟨ ℕ.+-substᴸ (ℕ.+-substᴸ (ℕ.*-comm {a⁺})) ⟩
-        (b⁺ *ᴺ a⁺ +ᴺ a⁻ *ᴺ b⁻) +ᴺ (b⁺ *ᴺ a⁻ +ᴺ b⁻ *ᴺ a⁺)
+        (b⁺ *ᴺ a⁺ + a⁻ *ᴺ b⁻) + (b⁺ *ᴺ a⁻ + b⁻ *ᴺ a⁺)
       ≃⟨ ℕ.+-substᴸ (ℕ.+-substᴿ {b⁺ *ᴺ a⁺} (ℕ.*-comm {a⁻})) ⟩
-        (b⁺ *ᴺ a⁺ +ᴺ b⁻ *ᴺ a⁻) +ᴺ (b⁺ *ᴺ a⁻ +ᴺ b⁻ *ᴺ a⁺)
-      ≃⟨ ℕ.+-substᴿ {b⁺ *ᴺ a⁺ +ᴺ b⁻ *ᴺ a⁻} (ℕ.+-comm {b⁺ *ᴺ a⁻}) ⟩
-        (b⁺ *ᴺ a⁺ +ᴺ b⁻ *ᴺ a⁻) +ᴺ (b⁻ *ᴺ a⁺ +ᴺ b⁺ *ᴺ a⁻)
-      ≃⟨ ℕ.+-substᴿ {b⁺ *ᴺ a⁺ +ᴺ b⁻ *ᴺ a⁻} (ℕ.+-substᴸ (ℕ.*-comm {b⁻})) ⟩
-        (b⁺ *ᴺ a⁺ +ᴺ b⁻ *ᴺ a⁻) +ᴺ (a⁺ *ᴺ b⁻ +ᴺ b⁺ *ᴺ a⁻)
-      ≃⟨ ℕ.+-substᴿ {b⁺ *ᴺ a⁺ +ᴺ b⁻ *ᴺ a⁻} (ℕ.+-substᴿ (ℕ.*-comm {b⁺})) ⟩
-        (b⁺ *ᴺ a⁺ +ᴺ b⁻ *ᴺ a⁻) +ᴺ (a⁺ *ᴺ b⁻ +ᴺ a⁻ *ᴺ b⁺)
+        (b⁺ *ᴺ a⁺ + b⁻ *ᴺ a⁻) + (b⁺ *ᴺ a⁻ + b⁻ *ᴺ a⁺)
+      ≃⟨ ℕ.+-substᴿ {b⁺ *ᴺ a⁺ + b⁻ *ᴺ a⁻} (ℕ.+-comm {b⁺ *ᴺ a⁻}) ⟩
+        (b⁺ *ᴺ a⁺ + b⁻ *ᴺ a⁻) + (b⁻ *ᴺ a⁺ + b⁺ *ᴺ a⁻)
+      ≃⟨ ℕ.+-substᴿ {b⁺ *ᴺ a⁺ + b⁻ *ᴺ a⁻} (ℕ.+-substᴸ (ℕ.*-comm {b⁻})) ⟩
+        (b⁺ *ᴺ a⁺ + b⁻ *ᴺ a⁻) + (a⁺ *ᴺ b⁻ + b⁺ *ᴺ a⁻)
+      ≃⟨ ℕ.+-substᴿ {b⁺ *ᴺ a⁺ + b⁻ *ᴺ a⁻} (ℕ.+-substᴿ (ℕ.*-comm {b⁺})) ⟩
+        (b⁺ *ᴺ a⁺ + b⁻ *ᴺ a⁻) + (a⁺ *ᴺ b⁻ + a⁻ *ᴺ b⁺)
       ∎
 
 *-substᴸ : ∀ {a₁ a₂ b} → a₁ ≃ a₂ → a₁ * b ≃ a₂ * b
@@ -351,29 +351,29 @@ a⁺ — a⁻ * b⁺ — b⁻ = (a⁺ *ᴺ b⁺ +ᴺ a⁻ *ᴺ b⁻) — (a⁺ *
   where
     rearr :
       ∀ {u v w x y z} →
-        (w *ᴺ u +ᴺ x *ᴺ v) +ᴺ (y *ᴺ v +ᴺ z *ᴺ u) ≃
-          (w +ᴺ z) *ᴺ u +ᴺ (y +ᴺ x) *ᴺ v
+        (w *ᴺ u + x *ᴺ v) + (y *ᴺ v + z *ᴺ u) ≃
+          (w + z) *ᴺ u + (y + x) *ᴺ v
     rearr {u} {v} {w} {x} {y} {z} =
       begin
-        (w *ᴺ u +ᴺ x *ᴺ v) +ᴺ (y *ᴺ v +ᴺ z *ᴺ u)
+        (w *ᴺ u + x *ᴺ v) + (y *ᴺ v + z *ᴺ u)
       ≃⟨ perm-adcb {w *ᴺ u} ⟩
-        (w *ᴺ u +ᴺ z *ᴺ u) +ᴺ (y *ᴺ v +ᴺ x *ᴺ v)
+        (w *ᴺ u + z *ᴺ u) + (y *ᴺ v + x *ᴺ v)
       ≃˘⟨ distrib-twoᴿ {a = w} {d = y} ⟩
-        (w +ᴺ z) *ᴺ u +ᴺ (y +ᴺ x) *ᴺ v
+        (w + z) *ᴺ u + (y + x) *ᴺ v
       ∎
 
     a₁⁺a₂⁻≃a₂⁺a₁⁻ = ≃ᶻ-elim a₁≃a₂
     eq′ =
       begin
-        (a₁⁺ *ᴺ b⁺ +ᴺ a₁⁻ *ᴺ b⁻) +ᴺ (a₂⁺ *ᴺ b⁻ +ᴺ a₂⁻ *ᴺ b⁺)
+        (a₁⁺ *ᴺ b⁺ + a₁⁻ *ᴺ b⁻) + (a₂⁺ *ᴺ b⁻ + a₂⁻ *ᴺ b⁺)
       ≃⟨ rearr {w = a₁⁺} {y = a₂⁺} ⟩
-        (a₁⁺ +ᴺ a₂⁻) *ᴺ b⁺ +ᴺ (a₂⁺ +ᴺ a₁⁻) *ᴺ b⁻
+        (a₁⁺ + a₂⁻) *ᴺ b⁺ + (a₂⁺ + a₁⁻) *ᴺ b⁻
       ≃⟨ ℕ.+-substᴸ (ℕ.*-substᴸ a₁⁺a₂⁻≃a₂⁺a₁⁻) ⟩
-        (a₂⁺ +ᴺ a₁⁻) *ᴺ b⁺ +ᴺ (a₂⁺ +ᴺ a₁⁻) *ᴺ b⁻
+        (a₂⁺ + a₁⁻) *ᴺ b⁺ + (a₂⁺ + a₁⁻) *ᴺ b⁻
       ≃˘⟨ ℕ.+-substᴿ (ℕ.*-substᴸ a₁⁺a₂⁻≃a₂⁺a₁⁻) ⟩
-        (a₂⁺ +ᴺ a₁⁻) *ᴺ b⁺ +ᴺ (a₁⁺ +ᴺ a₂⁻) *ᴺ b⁻
+        (a₂⁺ + a₁⁻) *ᴺ b⁺ + (a₁⁺ + a₂⁻) *ᴺ b⁻
       ≃˘⟨ rearr {w = a₂⁺} {y = a₁⁺} ⟩
-        (a₂⁺ *ᴺ b⁺ +ᴺ a₂⁻ *ᴺ b⁻) +ᴺ (a₁⁺ *ᴺ b⁻ +ᴺ a₁⁻ *ᴺ b⁺)
+        (a₂⁺ *ᴺ b⁺ + a₂⁻ *ᴺ b⁻) + (a₁⁺ *ᴺ b⁻ + a₁⁻ *ᴺ b⁺)
       ∎
 
 *-substᴿ : ∀ {a b₁ b₂} → b₁ ≃ b₂ → a * b₁ ≃ a * b₂
@@ -393,15 +393,15 @@ a⁺ — a⁻ * b⁺ — b⁻ = (a⁺ *ᴺ b⁺ +ᴺ a⁻ *ᴺ b⁻) — (a⁺ *
   where
     nm+n0+0m≃nm+00+0 =
       begin
-        n *ᴺ m +ᴺ (n *ᴺ 0 +ᴺ 0 *ᴺ m)
+        n *ᴺ m + (n *ᴺ 0 + 0 *ᴺ m)
       ≃⟨ ℕ.+-substᴿ (ℕ.+-substᴸ (ℕ.*-zeroᴿ {n})) ⟩
-        n *ᴺ m +ᴺ (0 +ᴺ 0 *ᴺ m)
+        n *ᴺ m + (0 + 0 *ᴺ m)
       ≃˘⟨ ℕ.+-substᴿ (ℕ.+-substᴸ ℕ.*-zeroᴸ) ⟩
-        n *ᴺ m +ᴺ (0 *ᴺ 0 +ᴺ 0 *ᴺ m)
+        n *ᴺ m + (0 *ᴺ 0 + 0 *ᴺ m)
       ≃⟨ ℕ.+-substᴿ (ℕ.+-substᴿ ℕ.*-zeroᴸ) ⟩
-        n *ᴺ m +ᴺ (0 *ᴺ 0 +ᴺ 0)
+        n *ᴺ m + (0 *ᴺ 0 + 0)
       ≃˘⟨ ℕ.+-assoc {n *ᴺ m} ⟩
-        n *ᴺ m +ᴺ 0 *ᴺ 0 +ᴺ 0
+        n *ᴺ m + 0 *ᴺ 0 + 0
       ∎
 
 *-distrib-+ᴸ : ∀ {x y z} → x * (y + z) ≃ x * y + x * z
@@ -410,15 +410,15 @@ a⁺ — a⁻ * b⁺ — b⁻ = (a⁺ *ᴺ b⁺ +ᴺ a⁻ *ᴺ b⁻) — (a⁺ *
   where
     refactor :
       ∀ {b₁ b₂ a₁ a₂ a₃ a₄} →
-        b₁ *ᴺ (a₁ +ᴺ a₃) +ᴺ b₂ *ᴺ (a₂ +ᴺ a₄) ≃
-          (b₁ *ᴺ a₁ +ᴺ b₂ *ᴺ a₂) +ᴺ (b₁ *ᴺ a₃ +ᴺ b₂ *ᴺ a₄)
+        b₁ *ᴺ (a₁ + a₃) + b₂ *ᴺ (a₂ + a₄) ≃
+          (b₁ *ᴺ a₁ + b₂ *ᴺ a₂) + (b₁ *ᴺ a₃ + b₂ *ᴺ a₄)
     refactor {b₁} {b₂} {a₁} {a₂} {a₃} {a₄} =
       begin
-        b₁ *ᴺ (a₁ +ᴺ a₃) +ᴺ b₂ *ᴺ (a₂ +ᴺ a₄)
+        b₁ *ᴺ (a₁ + a₃) + b₂ *ᴺ (a₂ + a₄)
       ≃⟨ distrib-twoᴸ {a = b₁} {d = b₂} ⟩
-        (b₁ *ᴺ a₁ +ᴺ b₁ *ᴺ a₃) +ᴺ (b₂ *ᴺ a₂ +ᴺ b₂ *ᴺ a₄)
+        (b₁ *ᴺ a₁ + b₁ *ᴺ a₃) + (b₂ *ᴺ a₂ + b₂ *ᴺ a₄)
       ≃⟨ transpose {b₁ *ᴺ a₁} ⟩
-        (b₁ *ᴺ a₁ +ᴺ b₂ *ᴺ a₂) +ᴺ (b₁ *ᴺ a₃ +ᴺ b₂ *ᴺ a₄)
+        (b₁ *ᴺ a₁ + b₂ *ᴺ a₂) + (b₁ *ᴺ a₃ + b₂ *ᴺ a₄)
       ∎
 
 *-distrib-+ᴿ : ∀ {x y z} → (y + z) * x ≃ y * x + z * x
@@ -440,58 +440,58 @@ a⁺ — a⁻ * b⁺ — b⁻ = (a⁺ *ᴺ b⁺ +ᴺ a⁻ *ᴺ b⁻) — (a⁺ *
   where
     assoc-four :
       ∀ {a₁ a₂ a₃ b₁ b₂ b₃ c₁ c₂ c₃ d₁ d₂ d₃} →
-        ((a₁ *ᴺ a₂) *ᴺ a₃ +ᴺ (b₁ *ᴺ b₂) *ᴺ b₃) +ᴺ
-        ((c₁ *ᴺ c₂) *ᴺ c₃ +ᴺ (d₁ *ᴺ d₂) *ᴺ d₃) ≃
-        (a₁ *ᴺ (a₂ *ᴺ a₃) +ᴺ b₁ *ᴺ (b₂ *ᴺ b₃)) +ᴺ
-        (c₁ *ᴺ (c₂ *ᴺ c₃) +ᴺ d₁ *ᴺ (d₂ *ᴺ d₃))
+        ((a₁ *ᴺ a₂) *ᴺ a₃ + (b₁ *ᴺ b₂) *ᴺ b₃) +
+        ((c₁ *ᴺ c₂) *ᴺ c₃ + (d₁ *ᴺ d₂) *ᴺ d₃) ≃
+        (a₁ *ᴺ (a₂ *ᴺ a₃) + b₁ *ᴺ (b₂ *ᴺ b₃)) +
+        (c₁ *ᴺ (c₂ *ᴺ c₃) + d₁ *ᴺ (d₂ *ᴺ d₃))
     assoc-four {a₁} {a₂} {a₃} {b₁} {b₂} {b₃} {c₁} {c₂} {c₃} {d₁} {d₂} {d₃} =
       begin
-        ((a₁ *ᴺ a₂) *ᴺ a₃ +ᴺ (b₁ *ᴺ b₂) *ᴺ b₃) +ᴺ
-        ((c₁ *ᴺ c₂) *ᴺ c₃ +ᴺ (d₁ *ᴺ d₂) *ᴺ d₃)
+        ((a₁ *ᴺ a₂) *ᴺ a₃ + (b₁ *ᴺ b₂) *ᴺ b₃) +
+        ((c₁ *ᴺ c₂) *ᴺ c₃ + (d₁ *ᴺ d₂) *ᴺ d₃)
       ≃⟨ ℕ.+-substᴸ (ℕ.+-substᴸ (ℕ.*-assoc {a₁})) ⟩
-        (a₁ *ᴺ (a₂ *ᴺ a₃) +ᴺ (b₁ *ᴺ b₂) *ᴺ b₃) +ᴺ
-        ((c₁ *ᴺ c₂) *ᴺ c₃ +ᴺ (d₁ *ᴺ d₂) *ᴺ d₃)
+        (a₁ *ᴺ (a₂ *ᴺ a₃) + (b₁ *ᴺ b₂) *ᴺ b₃) +
+        ((c₁ *ᴺ c₂) *ᴺ c₃ + (d₁ *ᴺ d₂) *ᴺ d₃)
       ≃⟨ ℕ.+-substᴸ (ℕ.+-substᴿ {a₁ *ᴺ (a₂ *ᴺ a₃)} (ℕ.*-assoc {b₁})) ⟩
-        (a₁ *ᴺ (a₂ *ᴺ a₃) +ᴺ b₁ *ᴺ (b₂ *ᴺ b₃)) +ᴺ
-        ((c₁ *ᴺ c₂) *ᴺ c₃ +ᴺ (d₁ *ᴺ d₂) *ᴺ d₃)
+        (a₁ *ᴺ (a₂ *ᴺ a₃) + b₁ *ᴺ (b₂ *ᴺ b₃)) +
+        ((c₁ *ᴺ c₂) *ᴺ c₃ + (d₁ *ᴺ d₂) *ᴺ d₃)
       ≃⟨ ℕ.+-substᴿ
-           {(a₁ *ᴺ (a₂ *ᴺ a₃) +ᴺ b₁ *ᴺ (b₂ *ᴺ b₃))}
+           {(a₁ *ᴺ (a₂ *ᴺ a₃) + b₁ *ᴺ (b₂ *ᴺ b₃))}
            (ℕ.+-substᴸ (ℕ.*-assoc {c₁}))
        ⟩
-        (a₁ *ᴺ (a₂ *ᴺ a₃) +ᴺ b₁ *ᴺ (b₂ *ᴺ b₃)) +ᴺ
-        (c₁ *ᴺ (c₂ *ᴺ c₃) +ᴺ (d₁ *ᴺ d₂) *ᴺ d₃)
+        (a₁ *ᴺ (a₂ *ᴺ a₃) + b₁ *ᴺ (b₂ *ᴺ b₃)) +
+        (c₁ *ᴺ (c₂ *ᴺ c₃) + (d₁ *ᴺ d₂) *ᴺ d₃)
       ≃⟨ ℕ.+-substᴿ
-           {(a₁ *ᴺ (a₂ *ᴺ a₃) +ᴺ b₁ *ᴺ (b₂ *ᴺ b₃))}
+           {(a₁ *ᴺ (a₂ *ᴺ a₃) + b₁ *ᴺ (b₂ *ᴺ b₃))}
            (ℕ.+-substᴿ (ℕ.*-assoc {d₁}))
        ⟩
-        (a₁ *ᴺ (a₂ *ᴺ a₃) +ᴺ b₁ *ᴺ (b₂ *ᴺ b₃)) +ᴺ
-        (c₁ *ᴺ (c₂ *ᴺ c₃) +ᴺ d₁ *ᴺ (d₂ *ᴺ d₃))
+        (a₁ *ᴺ (a₂ *ᴺ a₃) + b₁ *ᴺ (b₂ *ᴺ b₃)) +
+        (c₁ *ᴺ (c₂ *ᴺ c₃) + d₁ *ᴺ (d₂ *ᴺ d₃))
       ∎
 
     refactor :
       ∀ {b₁ b₂ a₁ a₂ a₃ a₄} →
-        (a₁ *ᴺ a₃ +ᴺ a₂ *ᴺ a₄) *ᴺ b₁ +ᴺ (a₁ *ᴺ a₄ +ᴺ a₂ *ᴺ a₃) *ᴺ b₂ ≃
-          a₁ *ᴺ (a₃ *ᴺ b₁ +ᴺ a₄ *ᴺ b₂) +ᴺ a₂ *ᴺ (a₃ *ᴺ b₂ +ᴺ a₄ *ᴺ b₁)
+        (a₁ *ᴺ a₃ + a₂ *ᴺ a₄) *ᴺ b₁ + (a₁ *ᴺ a₄ + a₂ *ᴺ a₃) *ᴺ b₂ ≃
+          a₁ *ᴺ (a₃ *ᴺ b₁ + a₄ *ᴺ b₂) + a₂ *ᴺ (a₃ *ᴺ b₂ + a₄ *ᴺ b₁)
     refactor {b₁} {b₂} {a₁} {a₂} {a₃} {a₄} =
       begin
-        (a₁ *ᴺ a₃ +ᴺ a₂ *ᴺ a₄) *ᴺ b₁ +ᴺ (a₁ *ᴺ a₄ +ᴺ a₂ *ᴺ a₃) *ᴺ b₂
+        (a₁ *ᴺ a₃ + a₂ *ᴺ a₄) *ᴺ b₁ + (a₁ *ᴺ a₄ + a₂ *ᴺ a₃) *ᴺ b₂
       ≃⟨ distrib-twoᴿ {a = a₁ *ᴺ a₃} {d = a₁ *ᴺ a₄} ⟩
-        ((a₁ *ᴺ a₃) *ᴺ b₁ +ᴺ (a₂ *ᴺ a₄) *ᴺ b₁) +ᴺ
-        ((a₁ *ᴺ a₄) *ᴺ b₂ +ᴺ (a₂ *ᴺ a₃) *ᴺ b₂)
+        ((a₁ *ᴺ a₃) *ᴺ b₁ + (a₂ *ᴺ a₄) *ᴺ b₁) +
+        ((a₁ *ᴺ a₄) *ᴺ b₂ + (a₂ *ᴺ a₃) *ᴺ b₂)
       ≃⟨ transpose {(a₁ *ᴺ a₃) *ᴺ b₁}⟩
-        ((a₁ *ᴺ a₃) *ᴺ b₁ +ᴺ (a₁ *ᴺ a₄) *ᴺ b₂) +ᴺ
-        ((a₂ *ᴺ a₄) *ᴺ b₁ +ᴺ (a₂ *ᴺ a₃) *ᴺ b₂)
+        ((a₁ *ᴺ a₃) *ᴺ b₁ + (a₁ *ᴺ a₄) *ᴺ b₂) +
+        ((a₂ *ᴺ a₄) *ᴺ b₁ + (a₂ *ᴺ a₃) *ᴺ b₂)
       ≃⟨ ℕ.+-substᴿ
-           {(a₁ *ᴺ a₃) *ᴺ b₁ +ᴺ (a₁ *ᴺ a₄) *ᴺ b₂}
+           {(a₁ *ᴺ a₃) *ᴺ b₁ + (a₁ *ᴺ a₄) *ᴺ b₂}
            (ℕ.+-comm {(a₂ *ᴺ a₄) *ᴺ b₁})
        ⟩
-        ((a₁ *ᴺ a₃) *ᴺ b₁ +ᴺ (a₁ *ᴺ a₄) *ᴺ b₂) +ᴺ
-        ((a₂ *ᴺ a₃) *ᴺ b₂ +ᴺ (a₂ *ᴺ a₄) *ᴺ b₁)
+        ((a₁ *ᴺ a₃) *ᴺ b₁ + (a₁ *ᴺ a₄) *ᴺ b₂) +
+        ((a₂ *ᴺ a₃) *ᴺ b₂ + (a₂ *ᴺ a₄) *ᴺ b₁)
       ≃⟨ assoc-four {a₁ = a₁} {b₁ = a₁} {c₁ = a₂} {d₁ = a₂} ⟩
-        (a₁ *ᴺ (a₃ *ᴺ b₁) +ᴺ a₁ *ᴺ (a₄ *ᴺ b₂)) +ᴺ
-        (a₂ *ᴺ (a₃ *ᴺ b₂) +ᴺ a₂ *ᴺ (a₄ *ᴺ b₁))
+        (a₁ *ᴺ (a₃ *ᴺ b₁) + a₁ *ᴺ (a₄ *ᴺ b₂)) +
+        (a₂ *ᴺ (a₃ *ᴺ b₂) + a₂ *ᴺ (a₄ *ᴺ b₁))
       ≃˘⟨ distrib-twoᴸ {a = a₁} {d = a₂} ⟩
-        a₁ *ᴺ (a₃ *ᴺ b₁ +ᴺ a₄ *ᴺ b₂) +ᴺ a₂ *ᴺ (a₃ *ᴺ b₂ +ᴺ a₄ *ᴺ b₁)
+        a₁ *ᴺ (a₃ *ᴺ b₁ + a₄ *ᴺ b₂) + a₂ *ᴺ (a₃ *ᴺ b₂ + a₄ *ᴺ b₁)
       ∎
 
     eq′ = a≃b+c≃d
@@ -503,11 +503,11 @@ a⁺ — a⁻ * b⁺ — b⁻ = (a⁺ *ᴺ b⁺ +ᴺ a⁻ *ᴺ b⁻) — (a⁺ *
   where
     eq′ =
       begin
-        (a⁻ *ᴺ b⁺ +ᴺ a⁺ *ᴺ b⁻) +ᴺ (a⁺ *ᴺ b⁺ +ᴺ a⁻ *ᴺ b⁻)
+        (a⁻ *ᴺ b⁺ + a⁺ *ᴺ b⁻) + (a⁺ *ᴺ b⁺ + a⁻ *ᴺ b⁻)
       ≃⟨ ℕ.+-substᴸ (ℕ.+-comm {a⁻ *ᴺ b⁺}) ⟩
-        (a⁺ *ᴺ b⁻ +ᴺ a⁻ *ᴺ b⁺) +ᴺ (a⁺ *ᴺ b⁺ +ᴺ a⁻ *ᴺ b⁻)
-      ≃⟨ ℕ.+-substᴿ {a⁺ *ᴺ b⁻ +ᴺ a⁻ *ᴺ b⁺} (ℕ.+-comm {a⁺ *ᴺ b⁺}) ⟩
-        (a⁺ *ᴺ b⁻ +ᴺ a⁻ *ᴺ b⁺) +ᴺ (a⁻ *ᴺ b⁻ +ᴺ a⁺ *ᴺ b⁺)
+        (a⁺ *ᴺ b⁻ + a⁻ *ᴺ b⁺) + (a⁺ *ᴺ b⁺ + a⁻ *ᴺ b⁻)
+      ≃⟨ ℕ.+-substᴿ {a⁺ *ᴺ b⁻ + a⁻ *ᴺ b⁺} (ℕ.+-comm {a⁺ *ᴺ b⁺}) ⟩
+        (a⁺ *ᴺ b⁻ + a⁻ *ᴺ b⁺) + (a⁻ *ᴺ b⁻ + a⁺ *ᴺ b⁺)
       ∎
 
 *-negᴿ : ∀ {a b} → a * - b ≃ - (a * b)
@@ -527,29 +527,29 @@ neg-mult {a⁺ — a⁻} = ≃ᶻ-intro {{a⁻+[[0+0]a⁻+[1+0]a⁺]≃[0+0]a⁺
   where
     a⁻+[[0+0]a⁻+[1+0]a⁺]≃[0+0]a⁺+[1+0]a⁻+a⁺ =
       begin
-        a⁻ +ᴺ ((0 +ᴺ 0) *ᴺ a⁻ +ᴺ (1 +ᴺ 0) *ᴺ a⁺)
+        a⁻ + ((0 + 0) *ᴺ a⁻ + (1 + 0) *ᴺ a⁺)
       ≃⟨ ℕ.+-substᴿ (ℕ.+-substᴸ (ℕ.*-substᴸ ℕ.+-zeroᴸ)) ⟩
-        a⁻ +ᴺ (0 *ᴺ a⁻ +ᴺ (1 +ᴺ 0) *ᴺ a⁺)
+        a⁻ + (0 *ᴺ a⁻ + (1 + 0) *ᴺ a⁺)
       ≃⟨ ℕ.+-substᴿ (ℕ.+-substᴸ ℕ.*-zeroᴸ) ⟩
-        a⁻ +ᴺ (0 +ᴺ (1 +ᴺ 0) *ᴺ a⁺)
+        a⁻ + (0 + (1 + 0) *ᴺ a⁺)
       ≃⟨ ℕ.+-substᴿ ℕ.+-zeroᴸ ⟩
-        a⁻ +ᴺ (1 +ᴺ 0) *ᴺ a⁺
+        a⁻ + (1 + 0) *ᴺ a⁺
       ≃⟨ ℕ.+-substᴿ (ℕ.*-substᴸ ℕ.+-zeroᴿ) ⟩
-        a⁻ +ᴺ 1 *ᴺ a⁺
+        a⁻ + 1 *ᴺ a⁺
       ≃⟨ ℕ.+-substᴿ ℕ.*-oneᴸ ⟩
-        a⁻ +ᴺ a⁺
+        a⁻ + a⁺
       ≃˘⟨ ℕ.+-substᴸ ℕ.*-oneᴸ ⟩
-        1 *ᴺ a⁻ +ᴺ a⁺
+        1 *ᴺ a⁻ + a⁺
       ≃˘⟨ ℕ.+-substᴸ (ℕ.*-substᴸ ℕ.+-zeroᴿ) ⟩
-        (1 +ᴺ 0) *ᴺ a⁻ +ᴺ a⁺
+        (1 + 0) *ᴺ a⁻ + a⁺
       ≃˘⟨ ℕ.+-zeroᴸ ⟩
-        0 +ᴺ ((1 +ᴺ 0) *ᴺ a⁻ +ᴺ a⁺)
+        0 + ((1 + 0) *ᴺ a⁻ + a⁺)
       ≃˘⟨ ℕ.+-substᴸ ℕ.*-zeroᴸ ⟩
-        0 *ᴺ a⁺ +ᴺ ((1 +ᴺ 0) *ᴺ a⁻ +ᴺ a⁺)
+        0 *ᴺ a⁺ + ((1 + 0) *ᴺ a⁻ + a⁺)
       ≃˘⟨ ℕ.+-substᴸ (ℕ.*-substᴸ ℕ.+-zeroᴸ) ⟩
-        (0 +ᴺ 0) *ᴺ a⁺ +ᴺ ((1 +ᴺ 0) *ᴺ a⁻ +ᴺ a⁺)
+        (0 + 0) *ᴺ a⁺ + ((1 + 0) *ᴺ a⁻ + a⁺)
       ≃˘⟨ ℕ.+-assoc ⟩
-        (0 +ᴺ 0) *ᴺ a⁺ +ᴺ (1 +ᴺ 0) *ᴺ a⁻ +ᴺ a⁺
+        (0 + 0) *ᴺ a⁺ + (1 + 0) *ᴺ a⁻ + a⁺
       ∎
 
 *-distrib-subᴸ : ∀ {a b c} → c * (a - b) ≃ c * a - c * b
@@ -666,11 +666,11 @@ trichotomy (x⁺ — x⁻) = record { at-least = one≤ ; at-most = one≮ }
         let record { d = n ; d≄z = pos-n ; n+d≃m = x⁺+n≃x⁻ } = ℕ.<→<⁺ x⁺<x⁻
             x⁺+n≃0+x⁻ =
               begin
-                x⁺ +ᴺ n
+                x⁺ + n
               ≃⟨ x⁺+n≃x⁻ ⟩
                 x⁻
               ≃˘⟨ ℕ.+-zeroᴸ ⟩
-                0 +ᴺ x⁻
+                0 + x⁻
               ∎
          in neg (record { n = n ; pos = pos-n ; x≃-n = ≃ᶻ-intro {{x⁺+n≃0+x⁻}} })
     one≤ | ℕ.tri-≃ x⁺≃x⁻ =
@@ -679,13 +679,13 @@ trichotomy (x⁺ — x⁻) = record { at-least = one≤ ; at-most = one≮ }
       let record { d = n ; d≄z = pos-n ; n+d≃m = x⁻+n≃x⁺ } = ℕ.<→<⁺ x⁺>x⁻
           x⁺—x⁻≃n =
             begin
-              x⁺ +ᴺ 0
+              x⁺ + 0
             ≃⟨ ℕ.+-zeroᴿ ⟩
               x⁺
             ≃˘⟨ x⁻+n≃x⁺ ⟩
-              x⁻ +ᴺ n
+              x⁻ + n
             ≃⟨ ℕ.+-comm {x⁻} ⟩
-              n +ᴺ x⁻
+              n + x⁻
             ∎
        in pos (record { n = n ; pos = pos-n ; x≃n = ≃ᶻ-intro {{x⁺—x⁻≃n}} })
 
@@ -704,17 +704,17 @@ trichotomy (x⁺ — x⁻) = record { at-least = one≤ ; at-most = one≮ }
             record { n = n₂ ; pos = n₂≄0 ; x≃-n = ≃ᶻ-intro {{x⁺+n₂≃0+x⁻}} }) =
       let x⁺+[n₂+n₁]≃x⁺+0 =
             begin
-              x⁺ +ᴺ (n₂ +ᴺ n₁)
+              x⁺ + (n₂ + n₁)
             ≃˘⟨ ℕ.+-assoc {x⁺} ⟩
-              (x⁺ +ᴺ n₂) +ᴺ n₁
+              (x⁺ + n₂) + n₁
             ≃⟨ ℕ.+-substᴸ x⁺+n₂≃0+x⁻ ⟩
-              (0 +ᴺ x⁻) +ᴺ n₁
+              (0 + x⁻) + n₁
             ≃⟨ ℕ.+-substᴸ ℕ.+-zeroᴸ ⟩
-              x⁻ +ᴺ n₁
+              x⁻ + n₁
             ≃⟨ ℕ.+-comm {x⁻} ⟩
-              n₁ +ᴺ x⁻
+              n₁ + x⁻
             ≃˘⟨ x⁺+0≃n₁+x⁻ ⟩
-              x⁺ +ᴺ 0
+              x⁺ + 0
             ∎
        in ℕ.+-positive n₂≄0 (ℕ.+-cancelᴸ x⁺+[n₂+n₁]≃x⁺+0)
 
@@ -730,17 +730,17 @@ trichotomy (x⁺ — x⁻) = record { at-least = one≤ ; at-most = one≮ }
         begin
           n *ᴺ b⁺
         ≃˘⟨ ℕ.+-zeroᴿ ⟩
-          n *ᴺ b⁺ +ᴺ 0
+          n *ᴺ b⁺ + 0
         ≃˘⟨ ℕ.+-substᴿ ℕ.*-zeroᴸ ⟩
-          n *ᴺ b⁺ +ᴺ 0 *ᴺ b⁻
+          n *ᴺ b⁺ + 0 *ᴺ b⁻
         ≃˘⟨ ℕ.+-zeroᴿ ⟩
-          n *ᴺ b⁺ +ᴺ 0 *ᴺ b⁻ +ᴺ 0
+          n *ᴺ b⁺ + 0 *ᴺ b⁻ + 0
         ≃⟨ nb⁺+0b⁻+0≃0+[nb⁻+0b⁺] ⟩
-          0 +ᴺ (n *ᴺ b⁻ +ᴺ 0 *ᴺ b⁺)
+          0 + (n *ᴺ b⁻ + 0 *ᴺ b⁺)
         ≃⟨ ℕ.+-zeroᴸ ⟩
-          n *ᴺ b⁻ +ᴺ 0 *ᴺ b⁺
+          n *ᴺ b⁻ + 0 *ᴺ b⁺
         ≃⟨ ℕ.+-substᴿ ℕ.*-zeroᴸ ⟩
-          n *ᴺ b⁻ +ᴺ 0
+          n *ᴺ b⁻ + 0
         ≃⟨ ℕ.+-zeroᴿ ⟩
           n *ᴺ b⁻
         ∎
@@ -757,17 +757,17 @@ trichotomy (x⁺ — x⁻) = record { at-least = one≤ ; at-most = one≮ }
         begin
           n *ᴺ b⁺
         ≃˘⟨ ℕ.+-zeroᴸ ⟩
-          0 +ᴺ n *ᴺ b⁺
+          0 + n *ᴺ b⁺
         ≃˘⟨ ℕ.+-substᴸ ℕ.*-zeroᴸ ⟩
-          0 *ᴺ b⁻ +ᴺ n *ᴺ b⁺
+          0 *ᴺ b⁻ + n *ᴺ b⁺
         ≃˘⟨ ℕ.+-zeroᴸ ⟩
-          0 +ᴺ (0 *ᴺ b⁻ +ᴺ n *ᴺ b⁺)
+          0 + (0 *ᴺ b⁻ + n *ᴺ b⁺)
         ≃⟨ 0+[0b⁻+nb⁺]≃0b⁺+nb⁻+0 ⟩
-          0 *ᴺ b⁺ +ᴺ n *ᴺ b⁻ +ᴺ 0
+          0 *ᴺ b⁺ + n *ᴺ b⁻ + 0
         ≃⟨ ℕ.+-zeroᴿ ⟩
-          0 *ᴺ b⁺ +ᴺ n *ᴺ b⁻
+          0 *ᴺ b⁺ + n *ᴺ b⁻
         ≃⟨ ℕ.+-substᴸ ℕ.*-zeroᴸ ⟩
-          0 +ᴺ n *ᴺ b⁻
+          0 + n *ᴺ b⁻
         ≃⟨ ℕ.+-zeroᴸ ⟩
           n *ᴺ b⁻
         ∎
@@ -829,10 +829,10 @@ _>_ = flip _<_
 
 ≤-antisym : ∀ {a b} → a ≤ b → b ≤ a → a ≃ b
 ≤-antisym {a} {b} (≤-intro n₁ b≃a+n₁) (≤-intro n₂ a≃b+n₂) =
-  let n₁+ᴺn₂≃0 =
+  let n₁+n₂≃0 =
         begin
-          fromℕ (n₁ +ᴺ n₂)
-        ≃⟨ +ᴺ-to-+ {n₁} ⟩
+          fromℕ (n₁ + n₂)
+        ≃⟨ +-to-+ {n₁} ⟩
           fromℕ n₁ + fromℕ n₂
         ≃˘⟨ +-identityᴸ ⟩
           0 + (fromℕ n₁ + fromℕ n₂)
@@ -849,7 +849,7 @@ _>_ = flip _<_
         ≃⟨ +-inverseᴸ {a} ⟩
           0
         ∎
-      n₂≃0 = ∧-elimᴿ (ℕ.+-both-zero (ℤ≃→ℕ≃ n₁+ᴺn₂≃0))
+      n₂≃0 = ∧-elimᴿ (ℕ.+-both-zero (ℤ≃→ℕ≃ n₁+n₂≃0))
    in trans (trans a≃b+n₂ (+-substᴿ (fromℕ-subst n₂≃0))) +-identityᴿ
 
 sub-sign-swap : ∀ {a b} → IsNegative (a - b) → IsPositive (b - a)

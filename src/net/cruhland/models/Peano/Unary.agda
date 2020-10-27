@@ -52,8 +52,9 @@ base = record
   ; ind = ind
   }
 
-plus : PlusOp ℕ
-plus = record { _+_ = _+_ }
+instance
+  plus : PlusOp ℕ
+  plus = record { _+_ = _+_ }
 
 addition : Addition base
 addition = record
@@ -63,8 +64,9 @@ addition = record
   ; +-substᴸ = λ {_ _ m} → cong (_+ m)
   }
 
-star : StarOp ℕ
-star = record { _*_ = _*_ }
+instance
+  star : StarOp ℕ
+  star = record { _*_ = _*_ }
 
 multiplication : Multiplication base addition
 multiplication = record
