@@ -7,6 +7,7 @@ open import Function using (_∘_)
 open import Relation.Binary.PropositionalEquality using
   (_≡_; _≢_; cong; refl; sym; ≢-sym; trans)
 open import net.cruhland.axioms.Eq using (Eq)
+open import net.cruhland.axioms.Operators using (PlusOp; StarOp)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base using (Peano)
@@ -51,17 +52,23 @@ base = record
   ; ind = ind
   }
 
+plus : PlusOp ℕ
+plus = record { _+_ = _+_ }
+
 addition : Addition base
 addition = record
-  { _+_ = _+_
+  { plus = plus
   ; +-zeroᴸ = refl
   ; +-stepᴸ = refl
   ; +-substᴸ = λ {_ _ m} → cong (_+ m)
   }
 
+star : StarOp ℕ
+star = record { _*_ = _*_ }
+
 multiplication : Multiplication base addition
 multiplication = record
-  { _*_ = _*_
+  { star = star
   ; *-zeroᴸ = refl
   ; *-stepᴸ = λ {n m} → +-comm m (n * m)
   ; *-substᴸ = λ {_ _ m} → cong (_* m)

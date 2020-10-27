@@ -5,6 +5,7 @@ open import net.cruhland.axioms.DecEq using (_≃?_)
 open import net.cruhland.axioms.Eq using
   (_≄_; sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
+open import net.cruhland.axioms.Operators using (PlusOp)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
 import net.cruhland.axioms.Peano.Inspect as PeanoInspect
@@ -16,10 +17,12 @@ record Addition (PB : PeanoBase) : Set where
     (ℕ; _≃_; ind; step; step-case; step-inj; step-subst; step≄zero; zero)
   open PeanoInspect PB using (case; case-zero; case-step; decEq; pred-intro)
 
-  infixl 6 _+_
+  field
+    {{plus}} : PlusOp ℕ
+
+  open PlusOp plus public using (_+_)
 
   field
-    _+_ : ℕ → ℕ → ℕ
     +-zeroᴸ : ∀ {m} → zero + m ≃ m
     +-stepᴸ : ∀ {n m} → step n + m ≃ step (n + m)
     +-substᴸ : ∀ {n₁ n₂ m} → n₁ ≃ n₂ → n₁ + m ≃ n₂ + m
