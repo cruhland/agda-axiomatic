@@ -10,7 +10,7 @@ open import net.cruhland.axioms.DecEq using (DecEq)
 open import net.cruhland.axioms.Eq using
   (_≃_; _≄_; _≄ⁱ_; ≄ⁱ-elim; Eq; sym; ¬sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
-open import net.cruhland.axioms.Operators using (_+_; PlusOp)
+open import net.cruhland.axioms.Operators using (_+_; _*_; PlusOp; StarOp)
 open import net.cruhland.models.Logic using
   (⊤; ∧-elimᴿ; _∨_; ∨-introᴸ; ∨-introᴿ; ⊥-elim; ¬_; Dec; yes; no)
 module ℕ = PeanoArithmetic PA
@@ -324,11 +324,15 @@ sub-substᴸ = +-substᴸ
 sub-substᴿ : ∀ {a b₁ b₂} → b₁ ≃ b₂ → a - b₁ ≃ a - b₂
 sub-substᴿ = +-substᴿ ∘ neg-subst
 
-infixl 7 _*_
-_*_ : ℤ → ℤ → ℤ
-a⁺ — a⁻ * b⁺ — b⁻ = (a⁺ *ᴺ b⁺ + a⁻ *ᴺ b⁻) — (a⁺ *ᴺ b⁻ + a⁻ *ᴺ b⁺)
+instance
+  star : StarOp ℤ
+  star = record { _*_ = _*₀_ }
+    where
+      infixl 7 _*₀_
+      _*₀_ : ℤ → ℤ → ℤ
+      a⁺ — a⁻ *₀ b⁺ — b⁻ = (a⁺ *ᴺ b⁺ + a⁻ *ᴺ b⁻) — (a⁺ *ᴺ b⁻ + a⁻ *ᴺ b⁺)
 
-*-comm : ∀ {a b} → a * b ≃ b * a
+*-comm : {a b : ℤ} → a * b ≃ b * a
 *-comm {a⁺ — a⁻} {b⁺ — b⁻} = ≃ᶻ-intro {{eq′}}
   where
     eq′ =
@@ -346,7 +350,7 @@ a⁺ — a⁻ * b⁺ — b⁻ = (a⁺ *ᴺ b⁺ + a⁻ *ᴺ b⁻) — (a⁺ *ᴺ
         (b⁺ *ᴺ a⁺ + b⁻ *ᴺ a⁻) + (a⁺ *ᴺ b⁻ + a⁻ *ᴺ b⁺)
       ∎
 
-*-substᴸ : ∀ {a₁ a₂ b} → a₁ ≃ a₂ → a₁ * b ≃ a₂ * b
+*-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ * b ≃ a₂ * b
 *-substᴸ {a₁⁺ — a₁⁻} {a₂⁺ — a₂⁻} {b⁺ — b⁻} a₁≃a₂ = ≃ᶻ-intro {{eq′}}
   where
     rearr :
@@ -404,7 +408,7 @@ a⁺ — a⁻ * b⁺ — b⁻ = (a⁺ *ᴺ b⁺ + a⁻ *ᴺ b⁻) — (a⁺ *ᴺ
         n *ᴺ m + 0 *ᴺ 0 + 0
       ∎
 
-*-distrib-+ᴸ : ∀ {x y z} → x * (y + z) ≃ x * y + x * z
+*-distrib-+ᴸ : {x y z : ℤ} → x * (y + z) ≃ x * y + x * z
 *-distrib-+ᴸ {x⁺ — x⁻} {y⁺ — y⁻} {z⁺ — z⁻} =
     ≃ᶻ-intro {{a≃b+c≃d (refactor {x⁺} {x⁻}) (sym (refactor {x⁺} {x⁻}))}}
   where
@@ -435,7 +439,7 @@ a⁺ — a⁻ * b⁺ — b⁻ = (a⁺ *ᴺ b⁺ + a⁻ *ᴺ b⁻) — (a⁺ *ᴺ
     y * x + z * x
   ∎
 
-*-assoc : ∀ {x y z} → (x * y) * z ≃ x * (y * z)
+*-assoc : {x y z : ℤ} → (x * y) * z ≃ x * (y * z)
 *-assoc {x⁺ — x⁻} {y⁺ — y⁻} {z⁺ — z⁻} = ≃ᶻ-intro {{eq′}}
   where
     assoc-four :
@@ -775,7 +779,7 @@ trichotomy (x⁺ — x⁻) = record { at-least = one≤ ; at-most = one≮ }
       b⁺+0≃0+b⁻ = trans ℕ.+-zeroᴿ (trans b⁺≃b⁻ (sym ℕ.+-zeroᴸ))
    in ∨-introᴿ (≃ᶻ-intro {{b⁺+0≃0+b⁻}})
 
-*-neither-zero : ∀ {a b} → a ≄ 0 → b ≄ 0 → a * b ≄ 0
+*-neither-zero : {a b : ℤ} → a ≄ 0 → b ≄ 0 → a * b ≄ 0
 *-neither-zero a≄0 b≄0 ab≃0 with *-either-zero ab≃0
 ... | ∨-introᴸ a≃0 = a≄0 a≃0
 ... | ∨-introᴿ b≃0 = b≄0 b≃0
