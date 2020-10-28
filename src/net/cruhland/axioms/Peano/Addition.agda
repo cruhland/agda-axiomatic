@@ -1,9 +1,10 @@
 module net.cruhland.axioms.Peano.Addition where
 
 open import Function using (const)
+import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.DecEq using (_≃?_)
 open import net.cruhland.axioms.Eq using
-  (_≄_; sym; trans; module ≃-Reasoning)
+  (_≃_; _≄_; sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
 open import net.cruhland.axioms.Operators using (PlusOp)
 open import net.cruhland.axioms.Peano.Base
@@ -14,7 +15,7 @@ open import net.cruhland.models.Logic using
 
 record Addition (PB : PeanoBase) : Set where
   open PeanoBase PB using
-    (ℕ; _≃_; ind; step; step-case; step-inj; step-subst; step≄zero; zero)
+    (ℕ; ind; step; step-case; step-inj; step-subst; step≄zero; zero)
   open PeanoInspect PB using (case; case-zero; case-step; decEq; pred-intro)
 
   field
@@ -115,6 +116,10 @@ record Addition (PB : PeanoBase) : Set where
       n + m₂
     ∎
 
+  instance
+    +-substitutive : AA.Substitutive ℕ _+_
+    +-substitutive = record { substᴸ = +-substᴸ ; substᴿ = +-substᴿ }
+
   +-assoc : ∀ {n m p} → (n + m) + p ≃ n + (m + p)
   +-assoc {n} {m} {p} = ind P Pz Ps n
     where
@@ -143,15 +148,19 @@ record Addition (PB : PeanoBase) : Set where
           step k + (m + p)
         ∎
 
+  instance
+    +-associative : AA.Associative ℕ _+_
+    +-associative = record { assoc = +-assoc }
+
   with-+-assoc : ∀ {a b c d e} → b + c ≃ d + e → a + b + c ≃ a + d + e
   with-+-assoc {a} {b} {c} {d} {e} b+c≃d+e =
     begin
       a + b + c
-    ≃⟨ +-assoc ⟩
+    ≃⟨ AA.assoc ⟩
       a + (b + c)
-    ≃⟨ +-substᴿ b+c≃d+e ⟩
+    ≃⟨ AA.substᴿ b+c≃d+e ⟩
       a + (d + e)
-    ≃⟨ sym +-assoc ⟩
+    ≃˘⟨ AA.assoc ⟩
       a + d + e
     ∎
 
@@ -208,7 +217,7 @@ record Addition (PB : PeanoBase) : Set where
           n + step zero
         ≃⟨ +-stepᴿ⃗ᴸ ⟩
           step n + zero
-        ≃⟨ +-substᴸ (sym n≃sn) ⟩
+        ≃˘⟨ AA.substᴸ n≃sn ⟩
           n + zero
         ∎
 

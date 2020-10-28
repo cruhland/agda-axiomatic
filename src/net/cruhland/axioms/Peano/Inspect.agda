@@ -1,4 +1,4 @@
-open import net.cruhland.axioms.Eq using (_≄_; refl; sym; trans)
+open import net.cruhland.axioms.Eq using (_≃_; _≄_; refl; sym; trans)
 open import net.cruhland.axioms.DecEq using (DecEq)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
@@ -6,7 +6,7 @@ open import net.cruhland.models.Logic using (⊥-elim; Dec; no; yes)
 
 module net.cruhland.axioms.Peano.Inspect (PB : PeanoBase) where
   open PeanoBase PB using
-    (ℕ; _≃_; ind; step; step-case; step-inj; step-subst; step≄zero; zero)
+    (ℕ; ind; step; step-case; step-inj; step-subst; step≄zero; zero)
 
   _IsPred_ : ℕ → ℕ → Set
   m IsPred n = n ≃ step m

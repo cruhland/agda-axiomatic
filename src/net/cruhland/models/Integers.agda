@@ -6,6 +6,7 @@ open import Agda.Builtin.FromNat using (Number)
 open import Agda.Builtin.FromNeg using (Negative)
 import Agda.Builtin.Nat as Nat
 open import Function using (_∘_; const; flip)
+import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.DecEq using (DecEq)
 open import net.cruhland.axioms.Eq using
   (_≃_; _≄_; _≄ⁱ_; ≄ⁱ-elim; Eq; sym; ¬sym; trans; module ≃-Reasoning)
@@ -16,16 +17,6 @@ open import net.cruhland.models.Logic using
 module ℕ = PeanoArithmetic PA
 open ℕ using (ℕ; _<⁺_)
 
-[ab][cd]≃a[[bc]d] : ∀ {a b c d} → (a + b) + (c + d) ≃ a + ((b + c) + d)
-[ab][cd]≃a[[bc]d] {a} {b} {c} {d} =
-  begin
-    (a + b) + (c + d)
-  ≃⟨ ℕ.+-assoc {a} ⟩
-    a + (b + (c + d))
-  ≃˘⟨ ℕ.+-substᴿ (ℕ.+-assoc {b}) ⟩
-    a + ((b + c) + d)
-  ∎
-
 swap-middle : ∀ {a b c d} → a + ((b + c) + d) ≃ a + ((c + b) + d)
 swap-middle {a} {b} {c} {d} = ℕ.+-substᴿ (ℕ.+-substᴸ (ℕ.+-comm {b}))
 
@@ -35,7 +26,7 @@ regroup a b c d =
     (a + b) + (c + d)
   ≃⟨ ℕ.+-substᴿ (ℕ.+-comm {c} {d}) ⟩
     (a + b) + (d + c)
-  ≃⟨ [ab][cd]≃a[[bc]d] {a} ⟩
+  ≃⟨ AA.[ab][cd]≃a[[bc]d] ⟩
     a + ((b + d) + c)
   ∎
 
@@ -58,11 +49,11 @@ transpose : ∀ {w x y z} → (w + x) + (y + z) ≃ (w + y) + (x + z)
 transpose {w} {x} {y} {z} =
   begin
     (w + x) + (y + z)
-  ≃⟨ [ab][cd]≃a[[bc]d] {w} ⟩
+  ≃⟨ AA.[ab][cd]≃a[[bc]d] ⟩
     w + ((x + y) + z)
   ≃⟨ swap-middle {w} {x} ⟩
     w + ((y + x) + z)
-  ≃˘⟨ [ab][cd]≃a[[bc]d] {w} ⟩
+  ≃˘⟨ AA.[ab][cd]≃a[[bc]d] ⟩
     (w + y) + (x + z)
   ∎
 
@@ -392,6 +383,10 @@ instance
     a * b₂
   ∎
 
+instance
+  *-substitutive : AA.Substitutive ℤ _*_
+  *-substitutive = record { substᴸ = *-substᴸ ; substᴿ = *-substᴿ }
+
 *-to-* : ∀ {n m} → fromℕ (n * m) ≃ fromℕ n * fromℕ m
 *-to-* {n} {m} = ≃ᶻ-intro {{nm+n0+0m≃nm+00+0}}
   where
@@ -502,6 +497,10 @@ instance
            (refactor {z⁺} {z⁻} {x⁺} {x⁻})
            (sym (refactor {z⁻} {z⁺} {x⁺} {x⁻}))
 
+instance
+  *-associative : AA.Associative ℤ _*_
+  *-associative = record { assoc = *-assoc }
+
 *-negᴸ : ∀ {a b} → - a * b ≃ - (a * b)
 *-negᴸ {a⁺ — a⁻} {b⁺ — b⁻} = ≃ᶻ-intro {{eq′}}
   where
@@ -588,7 +587,7 @@ neg-mult {a⁺ — a⁻} = ≃ᶻ-intro {{a⁻+[[0+0]a⁻+[1+0]a⁺]≃[0+0]a⁺
 *-zeroᴸ {x} =
   begin
     0 * x
-  ≃˘⟨ *-substᴸ +-inverseᴿ ⟩
+  ≃˘⟨ AA.substᴸ +-inverseᴿ ⟩
     (1 - 1) * x
   ≃⟨ *-distrib-subᴿ ⟩
     1 * x - 1 * x
@@ -728,7 +727,7 @@ trichotomy (x⁺ — x⁻) = record { at-least = one≤ ; at-most = one≮ }
   ∨-introᴸ a≃0
 *-either-zero {a} {b⁺ — b⁻} ab≃0
     | pos record { n = n ; pos = n≄0 ; x≃n = a≃n—0 } =
-  let nb≃0 = trans (*-substᴸ {b = b⁺ — b⁻} (sym a≃n—0)) ab≃0
+  let nb≃0 = trans (AA.substᴸ {b = b⁺ — b⁻} (sym a≃n—0)) ab≃0
       nb⁺+0b⁻+0≃0+[nb⁻+0b⁺] = ≃ᶻ-elim nb≃0
       nb⁺≃nb⁻ =
         begin
@@ -753,7 +752,7 @@ trichotomy (x⁺ — x⁻) = record { at-least = one≤ ; at-most = one≮ }
    in ∨-introᴿ (≃ᶻ-intro {{b⁺+0≃0+b⁻}})
 *-either-zero {a} {b⁺ — b⁻} ab≃0
     | neg record { n = n ; pos = n≄0 ; x≃-n = a≃0—n } =
-  let ab≃[0—n]b = *-substᴸ {b = b⁺ — b⁻} a≃0—n
+  let ab≃[0—n]b = AA.substᴸ {b = b⁺ — b⁻} a≃0—n
       0≃-nb = trans (sym ab≃0) ab≃[0—n]b
       0+[0b⁻+nb⁺]≃0b⁺+nb⁻+0 = ≃ᶻ-elim 0≃-nb
       0+[0b⁻+nb⁺]≃0b⁺+nb⁻ = trans 0+[0b⁻+nb⁺]≃0b⁺+nb⁻+0 ℕ.+-zeroᴿ

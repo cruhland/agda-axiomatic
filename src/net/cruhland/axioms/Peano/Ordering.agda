@@ -1,7 +1,7 @@
 open import Function using (_∘_; flip)
 open import net.cruhland.axioms.DecEq using (_≃?_)
 open import net.cruhland.axioms.Eq using
-  (_≄_; refl; sym; trans; module ≃-Reasoning)
+  (_≃_; _≄_; refl; sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
 open import net.cruhland.axioms.Peano.Addition
   using () renaming (Addition to PeanoAddition)
@@ -23,7 +23,7 @@ module net.cruhland.axioms.Peano.Ordering
     ; Positive; +-both-zero; +-positive; +-unchanged
     )
   open PeanoBase PB using
-    (ℕ; _≃_; ind; step; step-case; step-inj; step-subst; step≄zero; zero)
+    (ℕ; ind; step; step-case; step-inj; step-subst; step≄zero; zero)
   open PeanoInspect PB using
     (Case; case; case-step; case-zero; decEq; pred-intro; pred)
 

@@ -1,6 +1,7 @@
 module net.cruhland.axioms.Peano.Multiplication where
 
-open import net.cruhland.axioms.Eq using (_≄_; sym; trans; module ≃-Reasoning)
+open import net.cruhland.axioms.Eq using
+  (_≃_; _≄_; sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
 open import net.cruhland.axioms.Operators using (StarOp)
 open import net.cruhland.axioms.Peano.Addition
@@ -17,7 +18,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
     ( _+_; +-assoc; +-both-zero; +-comm; Positive; +-stepᴿ; +-stepᴸ⃗ᴿ
     ; +-substᴸ; +-substᴿ; with-+-assoc; +-zeroᴸ; +-zeroᴿ
     )
-  open PeanoBase PB using (ℕ; _≃_; ind; step; step-case; zero)
+  open PeanoBase PB using (ℕ; ind; step; step-case; zero)
   open PeanoInspect PB using (case; case-step; case-zero; pred-intro)
   open PeanoOrdering PB PA using
     (_<_; <→≄; <⁺→<; <→<⁺; <⁺-intro; tri-<; tri-≃; tri->; trichotomy)
