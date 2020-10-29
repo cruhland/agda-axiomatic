@@ -16,6 +16,12 @@ record Associative (A : Set) {{eq : Eq A}} (_⊙_ : A → A → A) : Set₁ wher
 
 open Associative {{...}} public using (assoc)
 
+record Commutative (A : Set) {{eq : Eq A}} (_⊙_ : A → A → A) : Set₁ where
+  field
+    comm : ∀ {a b} → a ⊙ b ≃ b ⊙ a
+
+open Commutative {{...}} public using (comm)
+
 [ab][cd]≃a[[bc]d] :
   {A : Set} {_⊙_ : A → A → A}
     {{_ : Eq A}} {{_ : Associative A _⊙_}} {{_ : Substitutive A _⊙_}} →
@@ -28,3 +34,9 @@ open Associative {{...}} public using (assoc)
   ≃˘⟨ substᴿ assoc ⟩
     a ⊙ ((b ⊙ c) ⊙ d)
   ∎
+
+swap-middle :
+  {A : Set} {_⊙_ : A → A → A}
+    {{_ : Eq A}} {{_ : Commutative A _⊙_}} {{_ : Substitutive A _⊙_}} →
+      ∀ {a b c d} → a ⊙ ((b ⊙ c) ⊙ d) ≃ a ⊙ ((c ⊙ b) ⊙ d)
+swap-middle = substᴿ (substᴸ comm)

@@ -104,15 +104,19 @@ record Addition (PB : PeanoBase) : Set where
           m + step k
         ∎
 
+  instance
+    +-commutative : AA.Commutative ℕ _+_
+    +-commutative = record { comm = +-comm }
+
   +-substᴿ : ∀ {n m₁ m₂} → m₁ ≃ m₂ → n + m₁ ≃ n + m₂
   +-substᴿ {n} {m₁} {m₂} m₁≃m₂ =
     begin
       n + m₁
-    ≃⟨ +-comm ⟩
+    ≃⟨ AA.comm ⟩
       m₁ + n
     ≃⟨ +-substᴸ m₁≃m₂ ⟩
       m₂ + n
-    ≃⟨ +-comm ⟩
+    ≃⟨ AA.comm ⟩
       n + m₂
     ∎
 
@@ -201,11 +205,11 @@ record Addition (PB : PeanoBase) : Set where
       p+n≃p+m =
         begin
           p + n
-        ≃⟨ +-comm ⟩
+        ≃⟨ AA.comm ⟩
           n + p
         ≃⟨ n+p≃m+p ⟩
           m + p
-        ≃⟨ +-comm ⟩
+        ≃⟨ AA.comm ⟩
           p + m
         ∎
 
@@ -244,7 +248,7 @@ record Addition (PB : PeanoBase) : Set where
       where
         neither-positive : ¬ (a ≄ zero ∨ b ≄ zero)
         neither-positive (∨-introᴸ a≄z) = +-positive a≄z a+b≃z
-        neither-positive (∨-introᴿ b≄z) = +-positive b≄z (trans +-comm a+b≃z)
+        neither-positive (∨-introᴿ b≄z) = +-positive b≄z (trans AA.comm a+b≃z)
 
   +-unchanged : ∀ {n m} → n + m ≃ n → m ≃ zero
   +-unchanged {n} {m} n+m≃n = +-cancelᴸ (trans n+m≃n (sym +-zeroᴿ))

@@ -17,9 +17,6 @@ open import net.cruhland.models.Logic using
 module ℕ = PeanoArithmetic PA
 open ℕ using (ℕ; _<⁺_)
 
-swap-middle : ∀ {a b c d} → a + ((b + c) + d) ≃ a + ((c + b) + d)
-swap-middle {a} {b} {c} {d} = ℕ.+-substᴿ (ℕ.+-substᴸ (ℕ.+-comm {b}))
-
 regroup : ∀ a b c d → (a + b) + (c + d) ≃ a + ((b + d) + c)
 regroup a b c d =
   begin
@@ -39,19 +36,19 @@ perm-adcb {a} {b} {c} {d} =
     (a + d) + (c + b)
   ≃⟨ regroup a d c b ⟩
     a + ((d + b) + c)
-  ≃⟨ swap-middle {a} {d} ⟩
+  ≃⟨ AA.swap-middle ⟩
     a + ((b + d) + c)
   ≃˘⟨ regroup a b c d ⟩
     (a + b) + (c + d)
   ∎
 
-transpose : ∀ {w x y z} → (w + x) + (y + z) ≃ (w + y) + (x + z)
+transpose : {w x y z : ℕ} → (w + x) + (y + z) ≃ (w + y) + (x + z)
 transpose {w} {x} {y} {z} =
   begin
     (w + x) + (y + z)
   ≃⟨ AA.[ab][cd]≃a[[bc]d] ⟩
     w + ((x + y) + z)
-  ≃⟨ swap-middle {w} {x} ⟩
+  ≃⟨ AA.swap-middle ⟩
     w + ((y + x) + z)
   ≃˘⟨ AA.[ab][cd]≃a[[bc]d] ⟩
     (w + y) + (x + z)
@@ -341,6 +338,10 @@ instance
         (b⁺ * a⁺ + b⁻ * a⁻) + (a⁺ * b⁻ + a⁻ * b⁺)
       ∎
 
+instance
+  *-commutative : AA.Commutative ℤ _*_
+  *-commutative = record { comm = *-comm }
+
 *-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ * b ≃ a₂ * b
 *-substᴸ {a₁⁺ — a₁⁻} {a₂⁺ — a₂⁻} {b⁺ — b⁻} a₁≃a₂ = ≃ᶻ-intro {{eq′}}
   where
@@ -371,15 +372,15 @@ instance
         (a₂⁺ * b⁺ + a₂⁻ * b⁻) + (a₁⁺ * b⁻ + a₁⁻ * b⁺)
       ∎
 
-*-substᴿ : ∀ {a b₁ b₂} → b₁ ≃ b₂ → a * b₁ ≃ a * b₂
+*-substᴿ : {a b₁ b₂ : ℤ} → b₁ ≃ b₂ → a * b₁ ≃ a * b₂
 *-substᴿ {a} {b₁} {b₂} b₁≃b₂ =
   begin
     a * b₁
-  ≃⟨ *-comm {a} ⟩
+  ≃⟨ AA.comm ⟩
     b₁ * a
   ≃⟨ *-substᴸ b₁≃b₂ ⟩
     b₂ * a
-  ≃⟨ *-comm {b₂} ⟩
+  ≃⟨ AA.comm ⟩
     a * b₂
   ∎
 
@@ -424,13 +425,13 @@ instance
 *-distrib-+ᴿ {x} {y} {z} =
   begin
     (y + z) * x
-  ≃⟨ *-comm {y + z} ⟩
+  ≃⟨ AA.comm ⟩
     x * (y + z)
   ≃⟨ *-distrib-+ᴸ {x} ⟩
     x * y + x * z
-  ≃⟨ +-substᴸ (*-comm {x}) ⟩
+  ≃⟨ +-substᴸ AA.comm ⟩
     y * x + x * z
-  ≃⟨ +-substᴿ {y * x} (*-comm {x}) ⟩
+  ≃⟨ +-substᴿ {y * x} AA.comm ⟩
     y * x + z * x
   ∎
 
@@ -517,11 +518,11 @@ instance
 *-negᴿ {a} {b} =
   begin
     a * - b
-  ≃⟨ *-comm {a} ⟩
+  ≃⟨ AA.comm ⟩
     - b * a
   ≃⟨ *-negᴸ {b} ⟩
     - (b * a)
-  ≃⟨ neg-subst (*-comm {b}) ⟩
+  ≃⟨ neg-subst AA.comm ⟩
     - (a * b)
   ∎
 
