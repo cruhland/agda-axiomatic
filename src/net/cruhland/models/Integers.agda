@@ -339,7 +339,7 @@ instance
       ∎
 
 instance
-  *-commutative : AA.Commutative ℤ _*_
+  *-commutative : AA.Commutative _*_
   *-commutative = record { comm = *-comm }
 
 *-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ * b ≃ a₂ * b
@@ -385,7 +385,7 @@ instance
   ∎
 
 instance
-  *-substitutive : AA.Substitutive ℤ _*_
+  *-substitutive : AA.Substitutive₂ _*_
   *-substitutive = record { substᴸ = *-substᴸ ; substᴿ = *-substᴿ }
 
 *-to-* : ∀ {n m} → fromℕ (n * m) ≃ fromℕ n * fromℕ m
@@ -499,7 +499,7 @@ instance
            (sym (refactor {z⁻} {z⁺} {x⁺} {x⁻}))
 
 instance
-  *-associative : AA.Associative ℤ _*_
+  *-associative : AA.Associative _*_
   *-associative = record { assoc = *-assoc }
 
 *-negᴸ : ∀ {a b} → - a * b ≃ - (a * b)

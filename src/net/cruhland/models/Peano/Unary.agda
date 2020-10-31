@@ -6,6 +6,7 @@ open import Data.Nat.Properties
 open import Function using (_∘_)
 open import Relation.Binary.PropositionalEquality using
   (_≡_; _≢_; cong; refl; sym; ≢-sym; trans)
+import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq using (Eq)
 open import net.cruhland.axioms.Operators using (PlusOp; StarOp)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
@@ -40,14 +41,17 @@ instance
     ; ≄ⁱ-elim = ≢ⁱ-elim
     }
 
+  step-substitutive : AA.Substitutive₁ step
+  step-substitutive = record { subst = cong step }
+
 base : Peano
 base = record
   { ℕ = ℕ
   ; zero = zero
   ; step = step
   ; eq = eq
+  ; step-substitutive = step-substitutive
   ; step≄zero = λ ()
-  ; step-subst = cong step
   ; step-inj = step-injective
   ; ind = ind
   }

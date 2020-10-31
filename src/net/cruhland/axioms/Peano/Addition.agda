@@ -14,8 +14,7 @@ open import net.cruhland.models.Logic using
   (_∧_; _∨_; ∨-introᴸ; ∨-introᴿ; ¬_; ¬[¬a∨¬b]→a∧b)
 
 record Addition (PB : PeanoBase) : Set where
-  open PeanoBase PB using
-    (ℕ; ind; step; step-case; step-inj; step-subst; step≄zero; zero)
+  open PeanoBase PB using (ℕ; ind; step; step-case; step-inj; step≄zero; zero)
   open PeanoInspect PB using (case; case-zero; case-step; decEq; pred-intro)
 
   field
@@ -40,7 +39,7 @@ record Addition (PB : PeanoBase) : Set where
           step k + zero
         ≃⟨ +-stepᴸ ⟩
           step (k + zero)
-        ≃⟨ step-subst k+z≃k ⟩
+        ≃⟨ AA.subst k+z≃k ⟩
           step k
         ∎
 
@@ -54,7 +53,7 @@ record Addition (PB : PeanoBase) : Set where
           zero + step m
         ≃⟨ +-zeroᴸ ⟩
           step m
-        ≃⟨ step-subst (sym +-zeroᴸ) ⟩
+        ≃⟨ AA.subst (sym +-zeroᴸ) ⟩
           step (zero + m)
         ∎
 
@@ -64,9 +63,9 @@ record Addition (PB : PeanoBase) : Set where
           step k + step m
         ≃⟨ +-stepᴸ ⟩
           step (k + step m)
-        ≃⟨ step-subst k+sm≃s[k+m] ⟩
+        ≃⟨ AA.subst k+sm≃s[k+m] ⟩
           step (step (k + m))
-        ≃⟨ step-subst (sym +-stepᴸ) ⟩
+        ≃⟨ AA.subst (sym +-stepᴸ) ⟩
           step (step k + m)
         ∎
 
@@ -80,7 +79,7 @@ record Addition (PB : PeanoBase) : Set where
   step≃+ {n} =
     begin
       step n
-    ≃⟨ step-subst (sym +-zeroᴿ) ⟩
+    ≃⟨ AA.subst (sym +-zeroᴿ) ⟩
       step (n + zero)
     ≃⟨ sym +-stepᴿ ⟩
       n + step zero
@@ -98,14 +97,14 @@ record Addition (PB : PeanoBase) : Set where
           step k + m
         ≃⟨ +-stepᴸ ⟩
           step (k + m)
-        ≃⟨ step-subst k+m≃m+k ⟩
+        ≃⟨ AA.subst k+m≃m+k ⟩
           step (m + k)
         ≃⟨ sym +-stepᴿ ⟩
           m + step k
         ∎
 
   instance
-    +-commutative : AA.Commutative ℕ _+_
+    +-commutative : AA.Commutative _+_
     +-commutative = record { comm = +-comm }
 
   +-substᴿ : ∀ {n m₁ m₂} → m₁ ≃ m₂ → n + m₁ ≃ n + m₂
@@ -121,7 +120,7 @@ record Addition (PB : PeanoBase) : Set where
     ∎
 
   instance
-    +-substitutive : AA.Substitutive ℕ _+_
+    +-substitutive : AA.Substitutive₂ _+_
     +-substitutive = record { substᴸ = +-substᴸ ; substᴿ = +-substᴿ }
 
   +-assoc : ∀ {n m p} → (n + m) + p ≃ n + (m + p)
@@ -146,14 +145,14 @@ record Addition (PB : PeanoBase) : Set where
           step (k + m) + p
         ≃⟨ +-stepᴸ ⟩
           step ((k + m) + p)
-        ≃⟨ step-subst [k+m]+p≃k+[m+p] ⟩
+        ≃⟨ AA.subst [k+m]+p≃k+[m+p] ⟩
           step (k + (m + p))
         ≃⟨ sym +-stepᴸ ⟩
           step k + (m + p)
         ∎
 
   instance
-    +-associative : AA.Associative ℕ _+_
+    +-associative : AA.Associative _+_
     +-associative = record { assoc = +-assoc }
 
   with-+-assoc : ∀ {a b c d e} → b + c ≃ d + e → a + b + c ≃ a + d + e

@@ -1,5 +1,6 @@
 module net.cruhland.axioms.Peano.Base where
 
+import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq using (_≃_; _≄_; Eq)
 
 record Peano : Set₁ where
@@ -8,8 +9,8 @@ record Peano : Set₁ where
     zero : ℕ
     step : ℕ → ℕ
     {{eq}} : Eq ℕ
+    {{step-substitutive}} : AA.Substitutive₁ step
     step≄zero : ∀ {n} → step n ≄ zero
-    step-subst : ∀ {n m} → n ≃ m → step n ≃ step m
     step-inj : ∀ {n m} → step n ≃ step m → n ≃ m
 
   open Eq eq using (_≃_) public

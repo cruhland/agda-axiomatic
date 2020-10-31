@@ -1,4 +1,5 @@
 open import Function using (_∘_; flip)
+import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.DecEq using (_≃?_)
 open import net.cruhland.axioms.Eq using
   (_≃_; _≄_; refl; sym; trans; module ≃-Reasoning)
@@ -22,8 +23,7 @@ module net.cruhland.axioms.Peano.Ordering
     ; step≃+; +-zeroᴿ; +-assoc; +-cancelᴸ; +-cancelᴿ; +-comm; with-+-assoc
     ; Positive; +-both-zero; +-positive; +-unchanged
     )
-  open PeanoBase PB using
-    (ℕ; ind; step; step-case; step-inj; step-subst; step≄zero; zero)
+  open PeanoBase PB using (ℕ; ind; step; step-case; step-inj; step≄zero; zero)
   open PeanoInspect PB using
     (Case; case; case-step; case-zero; decEq; pred-intro; pred)
 
@@ -203,7 +203,7 @@ module net.cruhland.axioms.Peano.Ordering
       Ps z≤k = ≤-trans z≤k n≤sn
 
   ≤-step : ∀ {n m} → n ≤ m → step n ≤ step m
-  ≤-step (≤-intro d n+d≃m) = ≤-intro d (trans +-stepᴸ (step-subst n+d≃m))
+  ≤-step (≤-intro d n+d≃m) = ≤-intro d (trans +-stepᴸ (AA.subst n+d≃m))
 
   ≃→≤ : ∀ {n m} → n ≃ m → n ≤ m
   ≃→≤ n≃m = ≤-intro zero (trans +-zeroᴿ n≃m)
@@ -242,7 +242,7 @@ module net.cruhland.axioms.Peano.Ordering
       Ps (tri-< k<m) with ≤→<∨≃ (<→s≤ k<m)
       ... | ∨-introᴸ sk<m = tri-< sk<m
       ... | ∨-introᴿ sk≃m = tri-≃ sk≃m
-      Ps (tri-≃ k≃m) = tri-> (s≤→< (≃→≤ (step-subst (sym k≃m))))
+      Ps (tri-≃ k≃m) = tri-> (s≤→< (≃→≤ (AA.subst (sym k≃m))))
       Ps (tri-> k>m) = tri-> (<-trans k>m n<sn)
 
   <-zero : ∀ {n} → n ≮ zero

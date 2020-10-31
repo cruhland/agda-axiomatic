@@ -1,3 +1,4 @@
+import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq using (_≃_; _≄_; refl; sym; trans)
 open import net.cruhland.axioms.DecEq using (DecEq)
 open import net.cruhland.axioms.Peano.Base
@@ -5,8 +6,7 @@ open import net.cruhland.axioms.Peano.Base
 open import net.cruhland.models.Logic using (⊥-elim; Dec; no; yes)
 
 module net.cruhland.axioms.Peano.Inspect (PB : PeanoBase) where
-  open PeanoBase PB using
-    (ℕ; ind; step; step-case; step-inj; step-subst; step≄zero; zero)
+  open PeanoBase PB using (ℕ; ind; step; step-case; step-inj; step≄zero; zero)
 
   _IsPred_ : ℕ → ℕ → Set
   m IsPred n = n ≃ step m
@@ -52,7 +52,7 @@ module net.cruhland.axioms.Peano.Inspect (PB : PeanoBase) where
         where sk≄y = λ sk≃y → step≄zero (trans sk≃y y≃z)
       ... | case-step (pred-intro j y≃sj) with y→dec[k≃y] j
       ...   | yes k≃j = yes sk≃sj
-              where sk≃sj = trans (step-subst k≃j) (sym y≃sj)
+              where sk≃sj = trans (AA.subst k≃j) (sym y≃sj)
       ...   | no k≄j = no sk≄sj
               where sk≄sj = λ sk≃y → k≄j (step-inj (trans sk≃y y≃sj))
 
