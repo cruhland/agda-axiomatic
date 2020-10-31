@@ -6,6 +6,7 @@ open import Data.List.Relation.Unary.Any using (here; there)
 open import Function using (_∘_)
 open import Level using (_⊔_)
 open import Relation.Binary using (DecSetoid)
+open import net.cruhland.axioms.DecEq using (DecEq)
 open import net.cruhland.axioms.Eq using
   (_≃_; refl; sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
@@ -219,7 +220,7 @@ module net.cruhland.axioms.Sets.Finite
     S′ = DecSetoid.setoid DS
     open Setoid S′ using (_≈_) renaming (sym to ≈-sym)
 
-    infix 4 _⊆ᴸ_ _⊆ᴸ?_ _⊆?_ _≃?_
+    infix 4 _⊆ᴸ_ _⊆ᴸ?_ _⊆?_
 
     _⊆ᴸ_ : List (El S′) → PSet₀ S′ → Set
     xs ⊆ᴸ B = All (_∈ B) xs
@@ -251,11 +252,22 @@ module net.cruhland.axioms.Sets.Finite
       (A B : PSet₀ S′) {{_ : Finite A}} {{_ : DecMembership B}} → Dec (A ⊆ B)
     A ⊆? B = dec-map ⊆ᴸ→⊆ ⊆→⊆ᴸ (toList A ⊆ᴸ? B)
 
-    _≃?_ :
-      (A B : PSet₀ S′)
-      {{_ : DecMembership A}} {{_ : DecMembership B}}
-      {{_ : Finite A}} {{_ : Finite B}} →
-        Dec (A ≃ B)
-    A ≃? B = dec-map (uncurry ⊆-antisym) ≃→⊆⊇ ((A ⊆? B) ∧? (B ⊆? A))
+    decEq : DecEq (PSet₀ S′)
+    decEq = record { Constraint = Constraint ; _≃?_ = _≃?_}
       where
-        ≃→⊆⊇ = λ A≃B → ∧-intro (≃→⊆ᴸ A≃B) (≃→⊆ᴿ A≃B)
+        _≃?₀_ :
+          (A B : PSet₀ S′)
+            {{_ : DecMembership A}} {{_ : DecMembership B}}
+            {{_ : Finite A}} {{_ : Finite B}} →
+              Dec (A ≃ B)
+        A ≃?₀ B = dec-map (uncurry ⊆-antisym) ≃→⊆⊇ ((A ⊆? B) ∧? (B ⊆? A))
+          where
+            ≃→⊆⊇ = λ A≃B → ∧-intro (≃→⊆ᴸ A≃B) (≃→⊆ᴿ A≃B)
+
+        Constraint : PSet₀ S′ → PSet₀ S′ → Set₁
+        Constraint A B =
+          DecMembership A ∧ DecMembership B ∧ Finite A ∧ Finite B
+
+        _≃?_ : (A B : PSet₀ S′) {{_ : Constraint A B}} → Dec (A ≃ B)
+        (A ≃? B) {{∧-intro memA (∧-intro memB (∧-intro finA finB))}} =
+          (A ≃?₀ B) {{memA}} {{memB}} {{finA}} {{finB}}

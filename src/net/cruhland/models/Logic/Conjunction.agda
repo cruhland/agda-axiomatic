@@ -26,3 +26,7 @@ open import Data.Product public using (curry; uncurry) renaming
 
 ∧-dup : ∀ {α} {A : Set α} → A → A ∧ A
 ∧-dup a = ∧-intro a a
+
+instance
+  conjunction : ∀ {α β} {A : Set α} {B : Set β} {{_ : A}} {{_ : B}} → A ∧ B
+  conjunction {{a}} {{b}} = ∧-intro a b

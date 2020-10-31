@@ -8,6 +8,7 @@ record DecEq {α} (A : Set α) : Set (sℓ α) where
   infix 4 _≃?_
   field
     {{eq}} : Eq A
-    _≃?_ : (x y : A) → Dec (x ≃ y)
+    Constraint : A → A → Set α
+    _≃?_ : (x y : A) {{_ : Constraint x y}} → Dec (x ≃ y)
 
 open DecEq {{...}} public

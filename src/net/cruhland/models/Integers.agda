@@ -920,12 +920,12 @@ order-trichotomy a b = record { at-least-one = 1≤ ; at-most-one = ≤1 }
     ≤1 (1∧3 (<-intro a≤b a≄b) (<-intro b≤a b≄a)) = a≄b (≤-antisym a≤b b≤a)
     ≤1 (2∧3 a≃b (<-intro b≤a b≄a)) = b≄a (sym a≃b)
 
-_≃?₀_ : (a b : ℤ) → Dec (a ≃ b)
-a ≃?₀ b with at-least-one (order-trichotomy a b)
-a ≃?₀ b | 1st (<-intro a≤b a≄b) = no a≄b
-a ≃?₀ b | 2nd a≃b = yes a≃b
-a ≃?₀ b | 3rd (<-intro b≤a b≄a) = no (¬sym b≄a)
-
 instance
   decEq : DecEq ℤ
-  decEq = record { _≃?_ = _≃?₀_ }
+  decEq = record { Constraint = λ _ _ → ⊤ ; _≃?_ = _≃?_ }
+    where
+      _≃?_ : (a b : ℤ) {{_ : ⊤}} → Dec (a ≃ b)
+      a ≃? b with at-least-one (order-trichotomy a b)
+      a ≃? b | 1st (<-intro a≤b a≄b) = no a≄b
+      a ≃? b | 2nd a≃b = yes a≃b
+      a ≃? b | 3rd (<-intro b≤a b≄a) = no (¬sym b≄a)
