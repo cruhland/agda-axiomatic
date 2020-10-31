@@ -3,6 +3,7 @@ module net.cruhland.axioms.Sets.Pair where
 open import Function using (_∘_)
 open import Level using (_⊔_; Level; Setω)
 open import Relation.Binary using (DecSetoid)
+open import net.cruhland.axioms.Eq using (_≃_)
 open import net.cruhland.axioms.Sets.Base using (SetAxioms)
 import net.cruhland.axioms.Sets.Decidable as Decidable
 import net.cruhland.axioms.Sets.Equality as Equality
@@ -28,7 +29,8 @@ module PairDef (SA : SetAxioms) where
 
 record PairSet (SA : SetAxioms) : Setω where
   open Decidable SA using (DecMembership; ∈?-intro)
-  open Equality SA using (_≃_; ≃-intro)
+  private module ≃-SA = Equality SA
+  open ≃-SA using (≃-intro)
   open SetAxioms SA using (_∈_; PSet; PSet₀)
   open PairDef SA using (is-pair)
 

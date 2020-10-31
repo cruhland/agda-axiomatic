@@ -21,7 +21,7 @@ private
 -- The Setoid's parameters need to vary to support nested sets.  And
 -- ap's return type of Set σ₂ _forces_ PSet to have sℓ σ₂ in its
 -- Level.
-record PSet (S : Setoid σ₁ σ₂) : Set (σ₁ ⊔ sℓ σ₂) where
+record PSet (S : Setoid σ₁ σ₂) : Set (sℓ (σ₁ ⊔ σ₂)) where
   open Setoid S using (_≈_)
 
   field

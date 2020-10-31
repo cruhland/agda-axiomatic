@@ -5,6 +5,7 @@ open import Data.List.Relation.Unary.Any using (Any; here; there)
 import Data.List.Membership.DecSetoid as DecSetoidᴸ
 open import Function using (_∘_)
 open import Level using (_⊔_)
+open import net.cruhland.axioms.Eq using (_≃_)
 open import net.cruhland.axioms.Sets.Base using (SetAxioms)
 open import net.cruhland.axioms.Sets.Empty using (EmptySet)
 import net.cruhland.axioms.Sets.Equality as Equality
@@ -22,7 +23,7 @@ module net.cruhland.axioms.Sets.PreFinite
     (SS : SingletonSet SA)
     where
   open EmptySet ES using (∅; x∉∅)
-  open Equality SA using (_≃_)
+  private module ≃-SA = Equality SA
   open PairwiseUnion PU using (_∪_; x∈A∪B-elim; x∈A∪B-introᴸ; x∈A∪B-introᴿ)
   open SetAxioms SA using (_∈_; PSet; PSet₀)
   open SingletonSet SS using (singleton; x∈sa-elim; x∈sa-intro; a∈sa)
@@ -35,7 +36,7 @@ module net.cruhland.axioms.Sets.PreFinite
   finite : List (El S) → PSet₀ S
   finite = foldr (λ x acc → singleton x ∪ acc) ∅
 
-  record Finite (A : PSet₀ S) : Set where
+  record Finite (A : PSet₀ S) : Set₁ where
     field
       elements : List (El S)
       same-set : finite elements ≃ A

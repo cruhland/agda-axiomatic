@@ -2,6 +2,7 @@ module net.cruhland.axioms.Sets.Intersection where
 
 open import Function using (_∘_)
 open import Level using (Setω)
+open import net.cruhland.axioms.Eq using (_≃_; sym; trans)
 open import net.cruhland.axioms.Sets.Base using (SetAxioms)
 import net.cruhland.axioms.Sets.Decidable as Decidable
 import net.cruhland.axioms.Sets.Equality as Equality
@@ -19,7 +20,8 @@ private
 
 record PairwiseIntersection (SA : SetAxioms) : Setω where
   open Decidable SA using (_∈?_; DecMembership; ∈?-intro)
-  open Equality SA using (_≃_; ∈-substᴿ; ≃-sym; ≃-trans)
+  private module ≃-SA = Equality SA
+  open ≃-SA using (∈-substᴿ)
   open SetAxioms SA using (_∈_; PSet₀)
   open Subset SA using (_⊆_; ⊆-antisym; ⊆-intro)
 
@@ -87,10 +89,10 @@ record PairwiseIntersection (SA : SetAxioms) : Setω where
         backward : ∀ {x} → x ∈ A₂ ∩ B → x ∈ A₁ ∩ B
         backward x∈A₂B =
           let ∧-intro x∈A₂ x∈B = x∈A∩B-elim x∈A₂B
-           in x∈A∩B-intro₂ (∈-substᴿ (≃-sym A₁≃A₂) x∈A₂) x∈B
+           in x∈A∩B-intro₂ (∈-substᴿ (sym A₁≃A₂) x∈A₂) x∈B
 
   ∩-substᴿ : {B₁ B₂ : PSet₀ S} → B₁ ≃ B₂ → A ∩ B₁ ≃ A ∩ B₂
-  ∩-substᴿ B₁≃B₂ = ≃-trans ∩-comm (≃-trans (∩-substᴸ B₁≃B₂) ∩-comm)
+  ∩-substᴿ B₁≃B₂ = trans ∩-comm (trans (∩-substᴸ B₁≃B₂) ∩-comm)
 
   ∩-idempotent : A ∩ A ≃ A
   ∩-idempotent = ⊆-antisym (⊆-intro x∈A∩B-elimᴸ) (⊆-intro (x∈A∩B-intro ∘ ∧-dup))

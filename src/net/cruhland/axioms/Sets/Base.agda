@@ -17,7 +17,7 @@ record SetAxioms : Setω where
   infix 4 _∈_ _∉_
 
   field
-    PSet : Setoid σ₁ σ₂ → Set (σ₁ ⊔ sℓ σ₂)
+    PSet : Setoid σ₁ σ₂ → Set (sℓ (σ₁ ⊔ σ₂))
     _∈_ : {S : Setoid σ₁ σ₂} → El S → PSet S → Set σ₂
 
     PSet-cong :

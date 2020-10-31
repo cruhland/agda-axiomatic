@@ -1,9 +1,14 @@
 module net.cruhland.axioms.Eq where
 
-open import Level using () renaming (suc to sℓ)
+open import Level using (_⊔_; 0ℓ; Level) renaming (suc to sℓ)
 open import net.cruhland.models.Logic using (¬_)
 
-record Eq {α} (A : Set α) : Set (sℓ α) where
+private
+  variable
+    α : Level
+    A : Set α
+
+record Eq (A : Set α) : Set (sℓ α) where
   infix 4 _≃_
   field
     _≃_ : A → A → Set α
@@ -22,40 +27,42 @@ record Eq {α} (A : Set α) : Set (sℓ α) where
   -- allowed in instance types).
   infix 4 _≄ⁱ_
   field
-    _≄ⁱ_ : A → A → Set
+    _≄ⁱ_ : A → A → Set α
     ≄ⁱ-elim : ∀ {x y} {{i : x ≄ⁱ y}} → x ≄ y
 
 open Eq {{...}} public
 
-≃-gen : {A : Set} {{eq : Eq A}} {x y : A} {{x≃y : x ≃ y}} → x ≃ y
-≃-gen {{x≃y = x≃y}} = x≃y
+module _ {{eq : Eq A}} where
 
-≄-gen : {A : Set} {{eq : Eq A}} {x y : A} {{x≄ⁱy : x ≄ⁱ y}} → x ≄ y
-≄-gen = ≄ⁱ-elim
+  ≃-gen : {x y : A} {{x≃y : x ≃ y}} → x ≃ y
+  ≃-gen {{x≃y = x≃y}} = x≃y
 
-¬sym : {A : Set} {{_ : Eq A}} {x y : A} → x ≄ y → y ≄ x
-¬sym x≄y = λ y≃x → x≄y (sym y≃x)
+  ≄-gen : {x y : A} {{x≄ⁱy : x ≄ⁱ y}} → x ≄ y
+  ≄-gen = ≄ⁱ-elim
 
-module ≃-Reasoning where
+  ¬sym : {x y : A} → x ≄ y → y ≄ x
+  ¬sym x≄y = λ y≃x → x≄y (sym y≃x)
 
-  infix 3 _∎
-  infixr 2 _≃⟨⟩_ step-≃ step-≃˘
-  infix 1 begin_
+  module ≃-Reasoning where
 
-  begin_ : {A : Set} {{_ : Eq A}} {x y : A} → x ≃ y → x ≃ y
-  begin x≃y = x≃y
+    infix 3 _∎
+    infixr 2 _≃⟨⟩_ step-≃ step-≃˘
+    infix 1 begin_
 
-  _≃⟨⟩_ : {A : Set} {{_ : Eq A}} (x {y} : A) → x ≃ y → x ≃ y
-  _ ≃⟨⟩ x≃y = x≃y
+    begin_ : {x y : A} → x ≃ y → x ≃ y
+    begin x≃y = x≃y
 
-  step-≃ : {A : Set} {{_ : Eq A}} (x {y z} : A) → y ≃ z → x ≃ y → x ≃ z
-  step-≃ _ y≃z x≃y = trans x≃y y≃z
+    _≃⟨⟩_ : (x {y} : A) → x ≃ y → x ≃ y
+    _ ≃⟨⟩ x≃y = x≃y
 
-  step-≃˘ : {A : Set} {{_ : Eq A}} (x {y z} : A) → y ≃ z → y ≃ x → x ≃ z
-  step-≃˘ _ y≃z y≃x = trans (sym y≃x) y≃z
+    step-≃ : (x {y z} : A) → y ≃ z → x ≃ y → x ≃ z
+    step-≃ _ y≃z x≃y = trans x≃y y≃z
 
-  _∎ : {A : Set} {{_ : Eq A}} (x : A) → x ≃ x
-  _ ∎ = refl
+    step-≃˘ : (x {y z} : A) → y ≃ z → y ≃ x → x ≃ z
+    step-≃˘ _ y≃z y≃x = trans (sym y≃x) y≃z
 
-  syntax step-≃ x y≃z x≃y = x ≃⟨ x≃y ⟩ y≃z
-  syntax step-≃˘ x y≃z y≃x = x ≃˘⟨ y≃x ⟩ y≃z
+    _∎ : (x : A) → x ≃ x
+    _ ∎ = refl
+
+    syntax step-≃ x y≃z x≃y = x ≃⟨ x≃y ⟩ y≃z
+    syntax step-≃˘ x y≃z y≃x = x ≃˘⟨ y≃x ⟩ y≃z

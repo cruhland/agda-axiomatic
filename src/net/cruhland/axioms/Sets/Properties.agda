@@ -1,5 +1,7 @@
 open import Function using (_∘_; flip)
 open import Level using (0ℓ)
+open import net.cruhland.axioms.Eq using (_≃_; trans; module ≃-Reasoning)
+open ≃-Reasoning
 open import net.cruhland.axioms.Sets.Base using (SetAxioms)
 open import net.cruhland.axioms.Sets.Complement using (Complement)
 open import net.cruhland.axioms.Sets.Difference using (Difference)
@@ -26,8 +28,7 @@ module net.cruhland.axioms.Sets.Properties
   open Complement CM using (∁; x∈∁A-elim; x∈∁A-intro)
   open Difference SD using (_∖_; x∈A∖B-elim; x∈A∖B-elimᴸ; x∈A∖B-intro)
   open EmptySet ES using (∅; x∉∅)
-  open Equality SA using (_≃_; ≃-trans; module ≃-Reasoning)
-  open ≃-Reasoning
+  private module ≃-SA = Equality SA
   open PairSet PS using (pair; x∈pab-elimᴿ; x∈pab-introᴸ; x∈pab-introᴿ)
   open PairwiseIntersection PI using
     ( _∩_; ∩-comm; x∈A∩B-elim; x∈A∩B-elimᴸ; x∈A∩B-elimᴿ; x∈A∩B-intro₂
@@ -90,7 +91,7 @@ module net.cruhland.axioms.Sets.Properties
   ∩-∅ᴸ = A⊆∅→A≃∅ (⊆-intro x∈A∩B-elimᴸ)
 
   ∩-∅ᴿ : A ∩ ∅ ≃ ∅
-  ∩-∅ᴿ = ≃-trans ∩-comm ∩-∅ᴸ
+  ∩-∅ᴿ = trans ∩-comm ∩-∅ᴸ
 
   ∩⊆-introᴸ : A ∩ B ⊆ A
   ∩⊆-introᴸ = ⊆-intro x∈A∩B-elimᴸ

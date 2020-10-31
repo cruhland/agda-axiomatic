@@ -2,6 +2,7 @@ module net.cruhland.axioms.Sets.Singleton where
 
 open import Level using (_⊔_; Level; Setω; 0ℓ)
 open import Relation.Binary using (DecSetoid)
+open import net.cruhland.axioms.Eq using (_≃_)
 open import net.cruhland.axioms.Sets.Base using (SetAxioms)
 import net.cruhland.axioms.Sets.Decidable as Decidable
 import net.cruhland.axioms.Sets.Equality as Equality
@@ -26,7 +27,8 @@ module SingletonDef (SA : SetAxioms) where
 
 record SingletonSet (SA : SetAxioms) : Setω where
   open Decidable SA using (DecMembership; ∈?-intro)
-  open Equality SA using (_≃_; ≃-intro)
+  private module ≃-SA = Equality SA
+  open ≃-SA using (≃-intro)
   open SetAxioms SA using (_∈_; PSet)
   open SingletonDef SA using (is-singleton)
 

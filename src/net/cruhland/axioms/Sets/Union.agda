@@ -2,6 +2,7 @@ module net.cruhland.axioms.Sets.Union where
 
 open import Function using (_∘_)
 open import Level using (Setω)
+open import net.cruhland.axioms.Eq using (_≃_; sym; trans)
 open import net.cruhland.axioms.Sets.Base using (SetAxioms)
 open import net.cruhland.axioms.Sets.Empty using (EmptySet)
 import net.cruhland.axioms.Sets.Decidable as Decidable
@@ -20,7 +21,8 @@ private
 
 record PairwiseUnion (SA : SetAxioms) (ES : EmptySet SA) : Setω where
   open Decidable SA using (_∈?_; DecMembership; ∈?-intro)
-  open Equality SA using (_≃_; ≃-intro; ∈-substᴿ; ≃-sym; ≃-trans)
+  private module ≃-SA = Equality SA
+  open ≃-SA using (≃-intro; ∈-substᴿ)
   open EmptySet ES using (∅; x∉∅)
   open SetAxioms SA using (_∈_; PSet₀)
   open Subset SA using (_⊆_; ⊆-antisym; ⊆-intro)
@@ -93,11 +95,11 @@ record PairwiseUnion (SA : SetAxioms) (ES : EmptySet SA) : Setω where
 
         backward : ∀ {x} → x ∈ A₂ ∪ B → x ∈ A₁ ∪ B
         backward x∈A₂∪B with x∈A∪B-elim x∈A₂∪B
-        ... | ∨-introᴸ x∈A₂ = x∈A∪B-introᴸ (∈-substᴿ (≃-sym A₁≃A₂) x∈A₂)
+        ... | ∨-introᴸ x∈A₂ = x∈A∪B-introᴸ (∈-substᴿ (sym A₁≃A₂) x∈A₂)
         ... | ∨-introᴿ x∈B = x∈A∪B-introᴿ x∈B
 
   ∪-substᴿ : {B₁ B₂ : PSet₀ S} → B₁ ≃ B₂ → A ∪ B₁ ≃ A ∪ B₂
-  ∪-substᴿ B₁≃B₂ = ≃-trans ∪-comm (≃-trans (∪-substᴸ B₁≃B₂) ∪-comm)
+  ∪-substᴿ B₁≃B₂ = trans ∪-comm (trans (∪-substᴸ B₁≃B₂) ∪-comm)
 
   ∪-∅ᴸ : ∅ ∪ A ≃ A
   ∪-∅ᴸ {A = A} = ⊆-antisym (⊆-intro x∈∅∪A→x∈A) (⊆-intro x∈A∪B-introᴿ)
@@ -106,7 +108,7 @@ record PairwiseUnion (SA : SetAxioms) (ES : EmptySet SA) : Setω where
       x∈∅∪A→x∈A = ∨-forceᴿ x∉∅ ∘ x∈A∪B-elim
 
   ∪-∅ᴿ : A ∪ ∅ ≃ A
-  ∪-∅ᴿ = ≃-trans ∪-comm ∪-∅ᴸ
+  ∪-∅ᴿ = trans ∪-comm ∪-∅ᴸ
 
   instance
     ∪-∈? :

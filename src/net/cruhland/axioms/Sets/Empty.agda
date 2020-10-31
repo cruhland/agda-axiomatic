@@ -2,6 +2,7 @@ module net.cruhland.axioms.Sets.Empty where
 
 open import Function using (_∘_)
 open import Level using (_⊔_; Level; Setω; 0ℓ)
+open import net.cruhland.axioms.Eq using (_≃_)
 open import net.cruhland.axioms.Sets.Base using (SetAxioms)
 import net.cruhland.axioms.Sets.Decidable as Decidable
 import net.cruhland.axioms.Sets.Equality as Equality
@@ -17,7 +18,8 @@ private
 
 record EmptySet (SA : SetAxioms) : Setω where
   open Decidable SA using (DecMembership; ∈?-intro)
-  open Equality SA using (_≃_; ≃-intro)
+  private module ≃-SA = Equality SA
+  open ≃-SA using (≃-intro)
   open SetAxioms SA using (_∈_; _∉_; PSet)
 
   field

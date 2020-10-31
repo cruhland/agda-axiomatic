@@ -9,6 +9,8 @@ open import Data.List.Relation.Unary.Any
 open import Function using (_∘_; const)
 open import Level using (Setω)
 open import Relation.Binary using (DecSetoid)
+open import net.cruhland.axioms.Eq using (_≃_; sym; trans; module ≃-Reasoning)
+open ≃-Reasoning
 open import net.cruhland.axioms.Sets.Base using (SetAxioms)
 import net.cruhland.axioms.Sets.Decidable as Decidable
 open import net.cruhland.axioms.Sets.Empty using (EmptySet)
@@ -61,8 +63,8 @@ record Replacement
       : Setω where
   open Decidable SA using (_∈?_; DecMembership; ∈?-intro)
   open EmptySet ES using (∅; x∉∅)
-  open Equality SA using (_≃_; ∈-substᴿ; ≃-sym; ≃-trans; module ≃-Reasoning)
-  open ≃-Reasoning
+  private module ≃-SA = Equality SA
+  open ≃-SA using (∈-substᴿ)
   open PairwiseUnion PU using
     (_∪_; x∈A∪B-elim; x∈A∪B-introᴸ; x∈A∪B-introᴿ; ∪-substᴿ)
   open PreFinite SA ES PU SS using
@@ -96,14 +98,14 @@ record Replacement
   ReplRel-subst : {A₁ A₂ : PSet₀ S} → A₁ ≃ A₂ → ReplRel A₁ T → ReplRel A₂ T
   ReplRel-subst A₁≃A₂ record { R = R ; R-most = R-most } = record
     { R = R
-    ; R-most = λ x∈A₂ Rxy Rxz → R-most (∈-substᴿ (≃-sym A₁≃A₂) x∈A₂) Rxy Rxz
+    ; R-most = λ x∈A₂ Rxy Rxz → R-most (∈-substᴿ (sym A₁≃A₂) x∈A₂) Rxy Rxz
     }
 
   ReplFun-subst :
     {A₁ A₂ : PSet₀ S} {RR : ReplRel A₁ T} →
       (A₁≃A₂ : A₁ ≃ A₂) → ReplFun RR → ReplFun (ReplRel-subst A₁≃A₂ RR)
   ReplFun-subst A₁≃A₂ record { f = f ; Rxfx = Rxfx } =
-    record { f = f ; Rxfx = λ x∈A₂ → Rxfx (∈-substᴿ (≃-sym A₁≃A₂) x∈A₂) }
+    record { f = f ; Rxfx = λ x∈A₂ → Rxfx (∈-substᴿ (sym A₁≃A₂) x∈A₂) }
 
   rep-subst :
     {A₁ A₂ : PSet₀ S} {R : ReplRel A₁ T} (A₁≃A₂ : A₁ ≃ A₂) →
@@ -123,7 +125,7 @@ record Replacement
           x ∈ replacement A₁ R
       rev x∈rep₂ =
         let ReplMem-intro a∈A₂ Rax = x∈rep-elim x∈rep₂
-         in x∈rep-intro (ReplMem-intro (∈-substᴿ (≃-sym A₁≃A₂) a∈A₂) Rax)
+         in x∈rep-intro (ReplMem-intro (∈-substᴿ (sym A₁≃A₂) a∈A₂) Rax)
 
   instance
     rep-∈? :
@@ -151,7 +153,7 @@ record Replacement
 
                 rev : ReplMem x RR → Any (λ a → R ⟨$⟩ a ⟨$⟩ x) (toList A)
                 rev record { a = a ; a∈A = a∈A ; Rax = Rax } =
-                  let a∈fin[lA] = ∈-substᴿ (≃-sym same-set) a∈A
+                  let a∈fin[lA] = ∈-substᴿ (sym same-set) a∈A
                       a∈ᴸlA = ∈fin→∈ᴸ {DS = DS} {xs = toList A} a∈fin[lA]
                    in map-any
                      (λ a≈a′ →
@@ -163,13 +165,13 @@ record Replacement
         {{finA : Finite A}} {{rf : ReplFun RR}} →
           Finite (replacement A RR)
     rep-finite {S = S} {T} {A} {RR} {{finA}} {{rf}} =
-      let A≃flA = ≃-sym same-set
+      let A≃flA = sym same-set
           RR′ = ReplRel-subst A≃flA RR
           rf′ = ReplFun-subst A≃flA rf
           fin-map-xs≃rep-fin-xs = same-xs (toList⊆A A) RR′ rf′
        in record
          { elements = elements
-         ; same-set = ≃-trans fin-map-xs≃rep-fin-xs (≃-sym (rep-subst A≃flA))
+         ; same-set = trans fin-map-xs≃rep-fin-xs (sym (rep-subst A≃flA))
          }
       where
         open Setoid S using () renaming
