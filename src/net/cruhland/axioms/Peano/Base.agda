@@ -13,8 +13,6 @@ record Peano : Set₁ where
     step≄zero : ∀ {n} → step n ≄ zero
     step-inj : ∀ {n m} → step n ≃ step m → n ≃ m
 
-  open Eq eq using (_≃_) public
-
   step-case : (P : ℕ → Set) → Set
   step-case P = ∀ {k} → P k → P (step k)
 
