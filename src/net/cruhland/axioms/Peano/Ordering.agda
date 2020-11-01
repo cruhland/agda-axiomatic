@@ -18,9 +18,10 @@ open import net.cruhland.models.Logic using
 
 module net.cruhland.axioms.Peano.Ordering
     (PB : PeanoBase) (PA : PeanoAddition PB) where
-  open PeanoAddition PA using
-    ( _+_; n≄sn; +-substᴸ; +-substᴿ; +-stepᴸ; +-stepᴸ⃗ᴿ; +-stepᴿ⃗ᴸ
-    ; step≃+; +-zeroᴿ; +-assoc; +-cancelᴸ; +-cancelᴿ; +-comm; with-+-assoc
+  private module Add = PeanoAddition PA
+  open Add using
+    ( _+_; n≄sn; +-stepᴸ; +-stepᴸ⃗ᴿ; +-stepᴿ⃗ᴸ
+    ; step≃+; +-zeroᴿ; +-assoc; +-cancelᴸ; +-cancelᴿ; with-+-assoc
     ; Positive; +-both-zero; +-positive; +-unchanged
     )
   open PeanoBase PB using (ℕ; ind; step; step-case; step-inj; step≄zero; zero)
@@ -66,7 +67,7 @@ module net.cruhland.axioms.Peano.Ordering
       a + (b + c)
     ≃⟨ sym +-assoc ⟩
       (a + b) + c
-    ≃⟨ +-substᴸ a+b≃d ⟩
+    ≃⟨ AA.substᴸ a+b≃d ⟩
       d + c
     ≃⟨ d+c≃e ⟩
       e
@@ -86,7 +87,7 @@ module net.cruhland.axioms.Peano.Ordering
           n
         ≃˘⟨ +-zeroᴿ ⟩
           n + zero
-        ≃˘⟨ +-substᴿ a≃z ⟩
+        ≃˘⟨ AA.substᴿ a≃z ⟩
           n + a
         ≃⟨ n+a≃m ⟩
           m
@@ -98,9 +99,9 @@ module net.cruhland.axioms.Peano.Ordering
       a+c+d≃b+c =
         begin
           a + c + d
-        ≃⟨ with-+-assoc +-comm ⟩
+        ≃⟨ with-+-assoc AA.comm ⟩
           a + d + c
-        ≃⟨ +-substᴸ a+d≃b ⟩
+        ≃⟨ AA.substᴸ a+d≃b ⟩
           b + c
         ∎
 
@@ -110,7 +111,7 @@ module net.cruhland.axioms.Peano.Ordering
       a+d+c≃b+c =
         begin
           a + d + c
-        ≃⟨ with-+-assoc +-comm ⟩
+        ≃⟨ with-+-assoc AA.comm ⟩
           a + c + d
         ≃⟨ a+c+d≃b+c ⟩
           b + c
@@ -128,7 +129,7 @@ module net.cruhland.axioms.Peano.Ordering
               a
             ≃˘⟨ +-zeroᴿ ⟩
               a + zero
-            ≃˘⟨ +-substᴿ d≃z ⟩
+            ≃˘⟨ AA.substᴿ d≃z ⟩
               a + d
             ≃⟨ a+d≃b ⟩
               b
@@ -140,7 +141,7 @@ module net.cruhland.axioms.Peano.Ordering
           step a + e
         ≃⟨ +-stepᴸ⃗ᴿ ⟩
           a + step e
-        ≃˘⟨ +-substᴿ d≃se ⟩
+        ≃˘⟨ AA.substᴿ d≃se ⟩
           a + d
         ≃⟨ a+d≃b ⟩
           b
@@ -187,7 +188,7 @@ module net.cruhland.axioms.Peano.Ordering
           step a + p
         ≃⟨ +-stepᴸ⃗ᴿ ⟩
           a + step p
-        ≃˘⟨ +-substᴿ d≃sp ⟩
+        ≃˘⟨ AA.substᴿ d≃sp ⟩
           a + d
         ≃⟨ a+d≃b ⟩
           b

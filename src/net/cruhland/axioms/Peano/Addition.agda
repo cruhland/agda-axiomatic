@@ -13,7 +13,7 @@ import net.cruhland.axioms.Peano.Inspect as PeanoInspect
 open import net.cruhland.models.Logic using
   (_∧_; _∨_; ∨-introᴸ; ∨-introᴿ; ¬_; ¬[¬a∨¬b]→a∧b)
 
-record Addition (PB : PeanoBase) : Set where
+record Addition (PB : PeanoBase) : Set₁ where
   open PeanoBase PB using (ℕ; ind; step; step-case; step-inj; step≄zero; zero)
   open PeanoInspect PB using (case; case-zero; case-step; decEq; pred-intro)
 
@@ -25,7 +25,7 @@ record Addition (PB : PeanoBase) : Set where
   field
     +-zeroᴸ : ∀ {m} → zero + m ≃ m
     +-stepᴸ : ∀ {n m} → step n + m ≃ step (n + m)
-    +-substᴸ : ∀ {n₁ n₂ m} → n₁ ≃ n₂ → n₁ + m ≃ n₂ + m
+    {{+-substitutiveᴸ}} : AA.Substitutiveᴸ _+_
 
   +-zeroᴿ : ∀ {n} → n + zero ≃ n
   +-zeroᴿ {n} = ind P Pz Ps n
@@ -85,43 +85,37 @@ record Addition (PB : PeanoBase) : Set where
       n + step zero
     ∎
 
-  +-comm : ∀ {n m} → n + m ≃ m + n
-  +-comm {n} {m} = ind P Pz Ps n
-    where
-      P = λ x → x + m ≃ m + x
-      Pz = trans +-zeroᴸ (sym +-zeroᴿ)
-
-      Ps : step-case P
-      Ps {k} k+m≃m+k =
-        begin
-          step k + m
-        ≃⟨ +-stepᴸ ⟩
-          step (k + m)
-        ≃⟨ AA.subst k+m≃m+k ⟩
-          step (m + k)
-        ≃⟨ sym +-stepᴿ ⟩
-          m + step k
-        ∎
-
   instance
     +-commutative : AA.Commutative _+_
     +-commutative = record { comm = +-comm }
+      where
+        +-comm : ∀ {n m} → n + m ≃ m + n
+        +-comm {n} {m} = ind P Pz Ps n
+          where
+            P = λ x → x + m ≃ m + x
+            Pz =
+              begin
+                zero + m
+              ≃⟨ +-zeroᴸ ⟩
+                m
+              ≃˘⟨ +-zeroᴿ ⟩
+                m + zero
+              ∎
 
-  +-substᴿ : ∀ {n m₁ m₂} → m₁ ≃ m₂ → n + m₁ ≃ n + m₂
-  +-substᴿ {n} {m₁} {m₂} m₁≃m₂ =
-    begin
-      n + m₁
-    ≃⟨ AA.comm ⟩
-      m₁ + n
-    ≃⟨ +-substᴸ m₁≃m₂ ⟩
-      m₂ + n
-    ≃⟨ AA.comm ⟩
-      n + m₂
-    ∎
+            Ps : step-case P
+            Ps {k} k+m≃m+k =
+              begin
+                step k + m
+              ≃⟨ +-stepᴸ ⟩
+                step (k + m)
+              ≃⟨ AA.subst k+m≃m+k ⟩
+                step (m + k)
+              ≃˘⟨ +-stepᴿ ⟩
+                m + step k
+              ∎
 
-  instance
-    +-substitutive : AA.Substitutive₂ _+_
-    +-substitutive = record { substᴸ = +-substᴸ ; substᴿ = +-substᴿ }
+    +-substitutiveᴿ : AA.Substitutiveᴿ _+_
+    +-substitutiveᴿ = AA.substitutiveᴿ
 
   +-assoc : ∀ {n m p} → (n + m) + p ≃ n + (m + p)
   +-assoc {n} {m} {p} = ind P Pz Ps n
@@ -131,7 +125,7 @@ record Addition (PB : PeanoBase) : Set where
       Pz =
         begin
           (zero + m) + p
-        ≃⟨ +-substᴸ +-zeroᴸ ⟩
+        ≃⟨ AA.substᴸ +-zeroᴸ ⟩
           m + p
         ≃⟨ sym +-zeroᴸ ⟩
           zero + (m + p)
@@ -141,7 +135,7 @@ record Addition (PB : PeanoBase) : Set where
       Ps {k} [k+m]+p≃k+[m+p] =
         begin
           (step k + m) + p
-        ≃⟨ +-substᴸ +-stepᴸ ⟩
+        ≃⟨ AA.substᴸ +-stepᴸ ⟩
           step (k + m) + p
         ≃⟨ +-stepᴸ ⟩
           step ((k + m) + p)

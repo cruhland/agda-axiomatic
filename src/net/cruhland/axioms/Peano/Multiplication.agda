@@ -3,6 +3,7 @@ module net.cruhland.axioms.Peano.Multiplication where
 open import net.cruhland.axioms.Eq using
   (_≃_; _≄_; sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
+open import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Operators using (StarOp)
 open import net.cruhland.axioms.Peano.Addition
   using () renaming (Addition to PeanoAddition)
@@ -14,9 +15,10 @@ open import net.cruhland.models.Logic using
   (_∧_; ∧-elimᴿ; ∧-intro; _∨_; ∨-introᴸ; ∨-introᴿ; ⊥-elim)
 
 record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
-  open PeanoAddition PA using
-    ( _+_; +-assoc; +-both-zero; +-comm; Positive; +-stepᴿ; +-stepᴸ⃗ᴿ
-    ; +-substᴸ; +-substᴿ; with-+-assoc; +-zeroᴸ; +-zeroᴿ
+  private module Add = PeanoAddition PA
+  open Add using
+    ( _+_; +-assoc; +-both-zero; Positive; +-stepᴿ; +-stepᴸ⃗ᴿ
+    ; with-+-assoc; +-zeroᴸ; +-zeroᴿ
     )
   open PeanoBase PB using (ℕ; ind; step; step-case; zero)
   open PeanoInspect PB using (case; case-step; case-zero; pred-intro)
@@ -73,11 +75,11 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
           step k * step m
         ≃⟨ *-stepᴸ ⟩
           k * step m + step m
-        ≃⟨ +-substᴸ Pk ⟩
+        ≃⟨ AA.substᴸ Pk ⟩
           k * m + k + step m
-        ≃⟨ with-+-assoc (trans +-comm +-stepᴸ⃗ᴿ) ⟩
+        ≃⟨ with-+-assoc (trans AA.comm +-stepᴸ⃗ᴿ) ⟩
           k * m + m + step k
-        ≃˘⟨ +-substᴸ *-stepᴸ ⟩
+        ≃˘⟨ AA.substᴸ *-stepᴸ ⟩
           step k * m + step k
         ∎
 
@@ -93,7 +95,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
           step k * m
         ≃⟨ *-stepᴸ ⟩
           k * m + m
-        ≃⟨ +-substᴸ Pk ⟩
+        ≃⟨ AA.substᴸ Pk ⟩
           m * k + m
         ≃˘⟨ *-stepᴿ ⟩
           m * step k
@@ -105,7 +107,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
       step zero * n
     ≃⟨ *-stepᴸ ⟩
       zero * n + n
-    ≃⟨ +-substᴸ *-zeroᴸ ⟩
+    ≃⟨ AA.substᴸ *-zeroᴸ ⟩
       zero + n
     ≃⟨ +-zeroᴸ ⟩
       n
@@ -155,7 +157,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
           a * b
         ≃˘⟨ +-zeroᴿ ⟩
           a * b + zero
-        ≃˘⟨ +-substᴿ *-zeroᴿ ⟩
+        ≃˘⟨ AA.substᴿ *-zeroᴿ ⟩
           a * b + a * zero
         ∎
 
@@ -167,11 +169,11 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
           a * step (b + k)
         ≃⟨ *-stepᴿ ⟩
           a * (b + k) + a
-        ≃⟨ +-substᴸ a[b+k]≃ab+ak ⟩
+        ≃⟨ AA.substᴸ a[b+k]≃ab+ak ⟩
           a * b + a * k + a
         ≃⟨ +-assoc ⟩
           a * b + (a * k + a)
-        ≃˘⟨ +-substᴿ *-stepᴿ ⟩
+        ≃˘⟨ AA.substᴿ *-stepᴿ ⟩
           a * b + a * step k
         ∎
 
@@ -183,9 +185,9 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
       c * (a + b)
     ≃⟨ *-distrib-+ᴸ ⟩
       c * a + c * b
-    ≃⟨ +-substᴸ *-comm ⟩
+    ≃⟨ AA.substᴸ *-comm ⟩
       a * c + c * b
-    ≃⟨ +-substᴿ *-comm ⟩
+    ≃⟨ AA.substᴿ *-comm ⟩
       a * c + b * c
     ∎
 
@@ -214,7 +216,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
           a * (k * c + c)
         ≃⟨ *-distrib-+ᴸ ⟩
           a * (k * c) + a * c
-        ≃⟨ +-substᴸ a[kc]≃[ak]c ⟩
+        ≃⟨ AA.substᴸ a[kc]≃[ak]c ⟩
           (a * k) * c + a * c
         ≃˘⟨ *-distrib-+ᴿ ⟩
           (a * k + a) * c

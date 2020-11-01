@@ -49,8 +49,6 @@ base = record
   { ℕ = ℕ
   ; zero = zero
   ; step = step
-  ; eq = eq
-  ; step-substitutive = step-substitutive
   ; step≄zero = λ ()
   ; step-inj = step-injective
   ; ind = ind
@@ -60,13 +58,11 @@ instance
   plus : PlusOp ℕ
   plus = record { _+_ = _+_ }
 
+  +-substitutiveᴸ : AA.Substitutiveᴸ _+_
+  +-substitutiveᴸ = record { substᴸ = λ {_ _ m} → cong (_+ m) }
+
 addition : Addition base
-addition = record
-  { plus = plus
-  ; +-zeroᴸ = refl
-  ; +-stepᴸ = refl
-  ; +-substᴸ = λ {_ _ m} → cong (_+ m)
-  }
+addition = record { +-zeroᴸ = refl ; +-stepᴸ = refl }
 
 instance
   star : StarOp ℕ

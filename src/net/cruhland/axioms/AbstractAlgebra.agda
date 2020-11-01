@@ -9,12 +9,24 @@ record Substitutive₁ {A : Set} {{eq : Eq A}} (f : A → A) : Set₁ where
 
 open Substitutive₁ {{...}} public using (subst)
 
-record Substitutive₂ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set₁ where
+record Substitutiveᴸ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set₁ where
   field
     substᴸ : ∀ {a₁ a₂ b} → a₁ ≃ a₂ → a₁ ⊙ b ≃ a₂ ⊙ b
+
+open Substitutiveᴸ {{...}} public using (substᴸ)
+
+record Substitutiveᴿ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set₁ where
+  field
     substᴿ : ∀ {a b₁ b₂} → b₁ ≃ b₂ → a ⊙ b₁ ≃ a ⊙ b₂
 
-open Substitutive₂ {{...}} public using (substᴸ; substᴿ)
+open Substitutiveᴿ {{...}} public using (substᴿ)
+
+record Substitutive₂ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set₁ where
+  field
+    subst₂ᴸ : ∀ {a₁ a₂ b} → a₁ ≃ a₂ → a₁ ⊙ b ≃ a₂ ⊙ b
+    subst₂ᴿ : ∀ {a b₁ b₂} → b₁ ≃ b₂ → a ⊙ b₁ ≃ a ⊙ b₂
+
+open Substitutive₂ {{...}} public using (subst₂ᴸ; subst₂ᴿ)
 
 record Associative {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set₁ where
   field
@@ -28,9 +40,27 @@ record Commutative {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set₁ wher
 
 open Commutative {{...}} public using (comm)
 
+substitutiveᴿ :
+  {A : Set} {_⊙_ : A → A → A}
+    {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Substitutiveᴸ _⊙_}} →
+      Substitutiveᴿ _⊙_
+substitutiveᴿ {A} {_⊙_} = record { substᴿ = substᴿ₀ }
+  where
+    substᴿ₀ : ∀ {a b₁ b₂} → b₁ ≃ b₂ → a ⊙ b₁ ≃ a ⊙ b₂
+    substᴿ₀ {a} {b₁} {b₂} b₁≃b₂ =
+      begin
+        a ⊙ b₁
+      ≃⟨ comm ⟩
+        b₁ ⊙ a
+      ≃⟨ substᴸ b₁≃b₂ ⟩
+        b₂ ⊙ a
+      ≃⟨ comm ⟩
+        a ⊙ b₂
+      ∎
+
 [ab][cd]≃a[[bc]d] :
   {A : Set} {_⊙_ : A → A → A}
-    {{_ : Eq A}} {{_ : Associative _⊙_}} {{_ : Substitutive₂ _⊙_}} →
+    {{_ : Eq A}} {{_ : Associative _⊙_}} {{_ : Substitutiveᴿ _⊙_}} →
       ∀ {a b c d} → (a ⊙ b) ⊙ (c ⊙ d) ≃ a ⊙ ((b ⊙ c) ⊙ d)
 [ab][cd]≃a[[bc]d] {A} {_⊙_} {a} {b} {c} {d} =
   begin
@@ -43,6 +73,7 @@ open Commutative {{...}} public using (comm)
 
 swap-middle :
   {A : Set} {_⊙_ : A → A → A}
-    {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Substitutive₂ _⊙_}} →
+    {{_ : Eq A}} {{_ : Commutative _⊙_}}
+    {{_ : Substitutiveᴸ _⊙_}} {{_ : Substitutiveᴿ _⊙_}} →
       ∀ {a b c d} → a ⊙ ((b ⊙ c) ⊙ d) ≃ a ⊙ ((c ⊙ b) ⊙ d)
 swap-middle = substᴿ (substᴸ comm)
