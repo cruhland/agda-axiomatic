@@ -237,6 +237,3 @@ record Addition (PB : PeanoBase) : Set where
         neither-positive : ¬ (a ≄ zero ∨ b ≄ zero)
         neither-positive (∨-introᴸ a≄z) = +-positive a≄z a+b≃z
         neither-positive (∨-introᴿ b≄z) = +-positive b≄z (trans AA.comm a+b≃z)
-
-  +-unchanged : ∀ {n m} → n + m ≃ n → m ≃ zero
-  +-unchanged {n} {m} n+m≃n = AA.cancelᴸ (trans n+m≃n (sym AA.identᴿ))

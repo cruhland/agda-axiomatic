@@ -21,7 +21,7 @@ module net.cruhland.axioms.Peano.Ordering
   private module Add = PeanoAddition PA
   open Add using
     ( _+_; n≄sn; +-stepᴸ; +-stepᴸ⃗ᴿ; +-stepᴿ⃗ᴸ
-    ; step≃+; with-+-assoc; Positive; +-both-zero; +-positive; +-unchanged
+    ; step≃+; with-+-assoc; Positive; +-both-zero; +-positive
     )
   open PeanoBase PB using (ℕ; ind; step; step-case; step-inj; step≄zero; zero)
   open PeanoInspect PB using
@@ -79,8 +79,8 @@ module net.cruhland.axioms.Peano.Ordering
   ≤-antisym : ∀ {n m} → n ≤ m → m ≤ n → n ≃ m
   ≤-antisym {n} {m} (≤-intro a n+a≃m) (≤-intro b m+b≃n) = n≃m
     where
-      n+a+b≃n = a+b+c-reduce n+a≃m m+b≃n
-      a≃z = ∧-elimᴸ (+-both-zero (+-unchanged n+a+b≃n))
+      n+a+b≃n+z = trans (a+b+c-reduce n+a≃m m+b≃n) (sym AA.identᴿ)
+      a≃z = ∧-elimᴸ (+-both-zero (AA.cancelᴸ n+a+b≃n+z))
       n≃m =
         begin
           n

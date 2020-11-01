@@ -677,7 +677,7 @@ trichotomy (x⁺ — x⁻) = record { at-least = one≤ ; at-most = one≮ }
     one≮ (nil∧pos
             (≃ᶻ-intro {{x⁺+0≃0+x⁻}})
             record { n = n ; pos = n≄0 ; x≃n = ≃ᶻ-intro {{x⁺+0≃n+x⁻}} }) =
-      let x⁻+n≃x⁻ =
+      let x⁻+n≃x⁻+0 =
             begin
               x⁻ + n
             ≃⟨ AA.comm ⟩
@@ -686,10 +686,10 @@ trichotomy (x⁺ — x⁻) = record { at-least = one≤ ; at-most = one≮ }
               x⁺ + 0
             ≃⟨ x⁺+0≃0+x⁻ ⟩
               0 + x⁻
-            ≃⟨ AA.identᴸ ⟩
-              x⁻
+            ≃⟨ AA.comm ⟩
+              x⁻ + 0
             ∎
-       in n≄0 (ℕ.+-unchanged x⁻+n≃x⁻)
+       in n≄0 (AA.cancelᴸ x⁻+n≃x⁻+0)
     one≮ (nil∧neg
             (≃ᶻ-intro {{x⁺+0≃x⁻}})
             record { n = n ; pos = n≄0 ; x≃-n = ≃ᶻ-intro {{x⁺+n≃x⁻}} }) =
