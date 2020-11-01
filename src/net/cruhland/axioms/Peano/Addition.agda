@@ -121,37 +121,36 @@ record Addition (PB : PeanoBase) : Set₁ where
     +-substitutiveᴿ : AA.Substitutiveᴿ _+_
     +-substitutiveᴿ = AA.substitutiveᴿ
 
-  +-assoc : ∀ {n m p} → (n + m) + p ≃ n + (m + p)
-  +-assoc {n} {m} {p} = ind P Pz Ps n
-    where
-      P = λ x → (x + m) + p ≃ x + (m + p)
-
-      Pz =
-        begin
-          (zero + m) + p
-        ≃⟨ AA.substᴸ AA.identᴸ ⟩
-          m + p
-        ≃˘⟨ AA.identᴸ ⟩
-          zero + (m + p)
-        ∎
-
-      Ps : step-case P
-      Ps {k} [k+m]+p≃k+[m+p] =
-        begin
-          (step k + m) + p
-        ≃⟨ AA.substᴸ +-stepᴸ ⟩
-          step (k + m) + p
-        ≃⟨ +-stepᴸ ⟩
-          step ((k + m) + p)
-        ≃⟨ AA.subst [k+m]+p≃k+[m+p] ⟩
-          step (k + (m + p))
-        ≃⟨ sym +-stepᴸ ⟩
-          step k + (m + p)
-        ∎
-
-  instance
     +-associative : AA.Associative _+_
     +-associative = record { assoc = +-assoc }
+      where
+        +-assoc : ∀ {n m p} → (n + m) + p ≃ n + (m + p)
+        +-assoc {n} {m} {p} = ind P Pz Ps n
+          where
+            P = λ x → (x + m) + p ≃ x + (m + p)
+
+            Pz =
+              begin
+                (zero + m) + p
+              ≃⟨ AA.substᴸ AA.identᴸ ⟩
+                m + p
+              ≃˘⟨ AA.identᴸ ⟩
+                zero + (m + p)
+              ∎
+
+            Ps : step-case P
+            Ps {k} [k+m]+p≃k+[m+p] =
+              begin
+                (step k + m) + p
+              ≃⟨ AA.substᴸ +-stepᴸ ⟩
+                step (k + m) + p
+              ≃⟨ +-stepᴸ ⟩
+                step ((k + m) + p)
+              ≃⟨ AA.subst [k+m]+p≃k+[m+p] ⟩
+                step (k + (m + p))
+              ≃⟨ sym +-stepᴸ ⟩
+                step k + (m + p)
+              ∎
 
   with-+-assoc : ∀ {a b c d e} → b + c ≃ d + e → a + b + c ≃ a + d + e
   with-+-assoc {a} {b} {c} {d} {e} b+c≃d+e =

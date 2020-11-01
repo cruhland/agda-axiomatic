@@ -21,7 +21,7 @@ module net.cruhland.axioms.Peano.Ordering
   private module Add = PeanoAddition PA
   open Add using
     ( _+_; n≄sn; +-stepᴸ; +-stepᴸ⃗ᴿ; +-stepᴿ⃗ᴸ
-    ; step≃+; +-assoc; +-cancelᴸ; +-cancelᴿ; with-+-assoc
+    ; step≃+; +-cancelᴸ; +-cancelᴿ; with-+-assoc
     ; Positive; +-both-zero; +-positive; +-unchanged
     )
   open PeanoBase PB using (ℕ; ind; step; step-case; step-inj; step≄zero; zero)
@@ -65,7 +65,7 @@ module net.cruhland.axioms.Peano.Ordering
   a+b+c-reduce {a} {b} {c} {d} {e} a+b≃d d+c≃e =
     begin
       a + (b + c)
-    ≃⟨ sym +-assoc ⟩
+    ≃⟨ sym AA.assoc ⟩
       (a + b) + c
     ≃⟨ AA.substᴸ a+b≃d ⟩
       d + c

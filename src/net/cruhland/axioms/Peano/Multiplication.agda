@@ -16,8 +16,7 @@ open import net.cruhland.models.Logic using
 
 record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
   private module Add = PeanoAddition PA
-  open Add using
-    (_+_; +-assoc; +-both-zero; Positive; +-stepᴿ; +-stepᴸ⃗ᴿ; with-+-assoc)
+  open Add using (_+_; +-both-zero; Positive; +-stepᴿ; +-stepᴸ⃗ᴿ; with-+-assoc)
   open PeanoBase PB using (ℕ; ind; step; step-case; zero)
   open PeanoInspect PB using (case; case-step; case-zero; pred-intro)
   open PeanoOrdering PB PA using
@@ -169,7 +168,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
           a * (b + k) + a
         ≃⟨ AA.substᴸ a[b+k]≃ab+ak ⟩
           a * b + a * k + a
-        ≃⟨ +-assoc ⟩
+        ≃⟨ AA.assoc ⟩
           a * b + (a * k + a)
         ≃˘⟨ AA.substᴿ *-stepᴿ ⟩
           a * b + a * step k

@@ -194,9 +194,9 @@ instance
     eq′ =
       begin
         ((x⁺ + y⁺) + z⁺) + (x⁻ + (y⁻ + z⁻))
-      ≃⟨ AA.substᴸ (ℕ.+-assoc {x⁺}) ⟩
+      ≃⟨ AA.substᴸ AA.assoc ⟩
         (x⁺ + (y⁺ + z⁺)) + (x⁻ + (y⁻ + z⁻))
-      ≃˘⟨ AA.substᴿ (ℕ.+-assoc {x⁻}) ⟩
+      ≃˘⟨ AA.substᴿ AA.assoc ⟩
         (x⁺ + (y⁺ + z⁺)) + ((x⁻ + y⁻) + z⁻)
       ∎
 
@@ -240,7 +240,7 @@ fromℕ-subst n₁≃n₂ = ≃ᶻ-intro {{AA.substᴸ n₁≃n₂}}
         0 + x⁺ + x⁻
       ≃⟨ AA.substᴸ AA.comm ⟩
         x⁺ + 0 + x⁻
-      ≃⟨ ℕ.+-assoc ⟩
+      ≃⟨ AA.assoc ⟩
         x⁺ + (0 + x⁻)
       ∎
 
@@ -389,7 +389,7 @@ instance
         n * m + (0 * 0 + 0 * m)
       ≃⟨ AA.substᴿ (AA.substᴿ ℕ.*-zeroᴸ) ⟩
         n * m + (0 * 0 + 0)
-      ≃˘⟨ ℕ.+-assoc {n * m} ⟩
+      ≃˘⟨ AA.assoc ⟩
         n * m + 0 * 0 + 0
       ∎
 
@@ -532,7 +532,7 @@ neg-mult {a⁺ — a⁻} = ≃ᶻ-intro {{a⁻+[[0+0]a⁻+[1+0]a⁺]≃[0+0]a⁺
         0 * a⁺ + ((1 + 0) * a⁻ + a⁺)
       ≃˘⟨ AA.substᴸ (ℕ.*-substᴸ AA.identᴸ) ⟩
         (0 + 0) * a⁺ + ((1 + 0) * a⁻ + a⁺)
-      ≃˘⟨ ℕ.+-assoc ⟩
+      ≃˘⟨ AA.assoc ⟩
         (0 + 0) * a⁺ + (1 + 0) * a⁻ + a⁺
       ∎
 
@@ -700,7 +700,7 @@ trichotomy (x⁺ — x⁻) = record { at-least = one≤ ; at-most = one≮ }
       let x⁺+[n₂+n₁]≃x⁺+0 =
             begin
               x⁺ + (n₂ + n₁)
-            ≃˘⟨ ℕ.+-assoc {x⁺} ⟩
+            ≃˘⟨ AA.assoc ⟩
               (x⁺ + n₂) + n₁
             ≃⟨ AA.substᴸ x⁺+n₂≃0+x⁻ ⟩
               (0 + x⁻) + n₁
