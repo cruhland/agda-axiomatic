@@ -215,22 +215,22 @@ fromℕ-subst : ∀ {n₁ n₂} → n₁ ≃ n₂ → fromℕ n₁ ≃ fromℕ n
 fromℕ-subst n₁≃n₂ = ≃ᶻ-intro {{AA.substᴸ n₁≃n₂}}
 
 ℕ≃→ℤ≃ : ∀ {n m} → n ≃ m → fromℕ n ≃ fromℕ m
-ℕ≃→ℤ≃ n≃m = ≃ᶻ-intro {{trans ℕ.+-zeroᴿ (trans n≃m (sym ℕ.+-zeroᴿ))}}
+ℕ≃→ℤ≃ n≃m = ≃ᶻ-intro {{trans AA.identᴿ (trans n≃m (sym AA.identᴿ))}}
 
 ℤ≃→ℕ≃ : ∀ {n} → fromℕ n ≃ 0 → n ≃ 0
 ℤ≃→ℕ≃ {n} (≃ᶻ-intro {{n+0≃0+0}}) =
   begin
     n
-  ≃˘⟨ ℕ.+-zeroᴿ ⟩
+  ≃˘⟨ AA.identᴿ ⟩
     n + 0
   ≃⟨ n+0≃0+0 ⟩
     0 + 0
-  ≃⟨ ℕ.+-zeroᴸ ⟩
+  ≃⟨ AA.identᴸ ⟩
     0
   ∎
 
 +-to-+ : ∀ {n m} → fromℕ (n + m) ≃ fromℕ n + fromℕ m
-+-to-+ = ≃ᶻ-intro {{AA.substᴿ ℕ.+-zeroᴸ}}
++-to-+ = ≃ᶻ-intro {{AA.substᴿ AA.identᴸ}}
 
 +-identityᴸ : {x : ℤ} → 0 + x ≃ x
 +-identityᴸ {x⁺ — x⁻} = ≃ᶻ-intro {{[0+x⁺]+x⁻≃x⁺+[0+x⁻]}}
@@ -512,25 +512,25 @@ neg-mult {a⁺ — a⁻} = ≃ᶻ-intro {{a⁻+[[0+0]a⁻+[1+0]a⁺]≃[0+0]a⁺
     a⁻+[[0+0]a⁻+[1+0]a⁺]≃[0+0]a⁺+[1+0]a⁻+a⁺ =
       begin
         a⁻ + ((0 + 0) * a⁻ + (1 + 0) * a⁺)
-      ≃⟨ AA.substᴿ (AA.substᴸ (ℕ.*-substᴸ ℕ.+-zeroᴸ)) ⟩
+      ≃⟨ AA.substᴿ (AA.substᴸ (ℕ.*-substᴸ AA.identᴸ)) ⟩
         a⁻ + (0 * a⁻ + (1 + 0) * a⁺)
       ≃⟨ AA.substᴿ (AA.substᴸ ℕ.*-zeroᴸ) ⟩
         a⁻ + (0 + (1 + 0) * a⁺)
-      ≃⟨ AA.substᴿ ℕ.+-zeroᴸ ⟩
+      ≃⟨ AA.substᴿ AA.identᴸ ⟩
         a⁻ + (1 + 0) * a⁺
-      ≃⟨ AA.substᴿ (ℕ.*-substᴸ ℕ.+-zeroᴿ) ⟩
+      ≃⟨ AA.substᴿ (ℕ.*-substᴸ AA.identᴿ) ⟩
         a⁻ + 1 * a⁺
       ≃⟨ AA.substᴿ ℕ.*-oneᴸ ⟩
         a⁻ + a⁺
       ≃˘⟨ AA.substᴸ ℕ.*-oneᴸ ⟩
         1 * a⁻ + a⁺
-      ≃˘⟨ AA.substᴸ (ℕ.*-substᴸ ℕ.+-zeroᴿ) ⟩
+      ≃˘⟨ AA.substᴸ (ℕ.*-substᴸ AA.identᴿ) ⟩
         (1 + 0) * a⁻ + a⁺
-      ≃˘⟨ ℕ.+-zeroᴸ ⟩
+      ≃˘⟨ AA.identᴸ ⟩
         0 + ((1 + 0) * a⁻ + a⁺)
       ≃˘⟨ AA.substᴸ ℕ.*-zeroᴸ ⟩
         0 * a⁺ + ((1 + 0) * a⁻ + a⁺)
-      ≃˘⟨ AA.substᴸ (ℕ.*-substᴸ ℕ.+-zeroᴸ) ⟩
+      ≃˘⟨ AA.substᴸ (ℕ.*-substᴸ AA.identᴸ) ⟩
         (0 + 0) * a⁺ + ((1 + 0) * a⁻ + a⁺)
       ≃˘⟨ ℕ.+-assoc ⟩
         (0 + 0) * a⁺ + (1 + 0) * a⁻ + a⁺
@@ -653,18 +653,18 @@ trichotomy (x⁺ — x⁻) = record { at-least = one≤ ; at-most = one≮ }
                 x⁺ + n
               ≃⟨ x⁺+n≃x⁻ ⟩
                 x⁻
-              ≃˘⟨ ℕ.+-zeroᴸ ⟩
+              ≃˘⟨ AA.identᴸ ⟩
                 0 + x⁻
               ∎
          in neg (record { n = n ; pos = pos-n ; x≃-n = ≃ᶻ-intro {{x⁺+n≃0+x⁻}} })
     one≤ | ℕ.tri-≃ x⁺≃x⁻ =
-      nil (≃ᶻ-intro {{trans ℕ.+-zeroᴿ (trans x⁺≃x⁻ (sym ℕ.+-zeroᴸ))}})
+      nil (≃ᶻ-intro {{trans AA.identᴿ (trans x⁺≃x⁻ (sym AA.identᴸ))}})
     one≤ | ℕ.tri-> x⁺>x⁻ =
       let record { d = n ; d≄z = pos-n ; n+d≃m = x⁻+n≃x⁺ } = ℕ.<→<⁺ x⁺>x⁻
           x⁺—x⁻≃n =
             begin
               x⁺ + 0
-            ≃⟨ ℕ.+-zeroᴿ ⟩
+            ≃⟨ AA.identᴿ ⟩
               x⁺
             ≃˘⟨ x⁻+n≃x⁺ ⟩
               x⁻ + n
@@ -686,7 +686,7 @@ trichotomy (x⁺ — x⁻) = record { at-least = one≤ ; at-most = one≮ }
               x⁺ + 0
             ≃⟨ x⁺+0≃0+x⁻ ⟩
               0 + x⁻
-            ≃⟨ ℕ.+-zeroᴸ ⟩
+            ≃⟨ AA.identᴸ ⟩
               x⁻
             ∎
        in n≄0 (ℕ.+-unchanged x⁻+n≃x⁻)
@@ -704,7 +704,7 @@ trichotomy (x⁺ — x⁻) = record { at-least = one≤ ; at-most = one≮ }
               (x⁺ + n₂) + n₁
             ≃⟨ AA.substᴸ x⁺+n₂≃0+x⁻ ⟩
               (0 + x⁻) + n₁
-            ≃⟨ AA.substᴸ ℕ.+-zeroᴸ ⟩
+            ≃⟨ AA.substᴸ AA.identᴸ ⟩
               x⁻ + n₁
             ≃⟨ AA.comm ⟩
               n₁ + x⁻
@@ -724,50 +724,50 @@ trichotomy (x⁺ — x⁻) = record { at-least = one≤ ; at-most = one≮ }
       nb⁺≃nb⁻ =
         begin
           n * b⁺
-        ≃˘⟨ ℕ.+-zeroᴿ ⟩
+        ≃˘⟨ AA.identᴿ ⟩
           n * b⁺ + 0
         ≃˘⟨ AA.substᴿ ℕ.*-zeroᴸ ⟩
           n * b⁺ + 0 * b⁻
-        ≃˘⟨ ℕ.+-zeroᴿ ⟩
+        ≃˘⟨ AA.identᴿ ⟩
           n * b⁺ + 0 * b⁻ + 0
         ≃⟨ nb⁺+0b⁻+0≃0+[nb⁻+0b⁺] ⟩
           0 + (n * b⁻ + 0 * b⁺)
-        ≃⟨ ℕ.+-zeroᴸ ⟩
+        ≃⟨ AA.identᴸ ⟩
           n * b⁻ + 0 * b⁺
         ≃⟨ AA.substᴿ ℕ.*-zeroᴸ ⟩
           n * b⁻ + 0
-        ≃⟨ ℕ.+-zeroᴿ ⟩
+        ≃⟨ AA.identᴿ ⟩
           n * b⁻
         ∎
       b⁺≃b⁻ = ℕ.*-cancelᴸ n≄0 nb⁺≃nb⁻
-      b⁺+0≃0+b⁻ = trans ℕ.+-zeroᴿ (trans b⁺≃b⁻ (sym ℕ.+-zeroᴸ))
+      b⁺+0≃0+b⁻ = trans AA.identᴿ (trans b⁺≃b⁻ (sym AA.identᴸ))
    in ∨-introᴿ (≃ᶻ-intro {{b⁺+0≃0+b⁻}})
 *-either-zero {a} {b⁺ — b⁻} ab≃0
     | neg record { n = n ; pos = n≄0 ; x≃-n = a≃0—n } =
   let ab≃[0—n]b = AA.substᴸ {b = b⁺ — b⁻} a≃0—n
       0≃-nb = trans (sym ab≃0) ab≃[0—n]b
       0+[0b⁻+nb⁺]≃0b⁺+nb⁻+0 = ≃ᶻ-elim 0≃-nb
-      0+[0b⁻+nb⁺]≃0b⁺+nb⁻ = trans 0+[0b⁻+nb⁺]≃0b⁺+nb⁻+0 ℕ.+-zeroᴿ
+      0+[0b⁻+nb⁺]≃0b⁺+nb⁻ = trans 0+[0b⁻+nb⁺]≃0b⁺+nb⁻+0 AA.identᴿ
       nb⁺≃nb⁻ =
         begin
           n * b⁺
-        ≃˘⟨ ℕ.+-zeroᴸ ⟩
+        ≃˘⟨ AA.identᴸ ⟩
           0 + n * b⁺
         ≃˘⟨ AA.substᴸ ℕ.*-zeroᴸ ⟩
           0 * b⁻ + n * b⁺
-        ≃˘⟨ ℕ.+-zeroᴸ ⟩
+        ≃˘⟨ AA.identᴸ ⟩
           0 + (0 * b⁻ + n * b⁺)
         ≃⟨ 0+[0b⁻+nb⁺]≃0b⁺+nb⁻+0 ⟩
           0 * b⁺ + n * b⁻ + 0
-        ≃⟨ ℕ.+-zeroᴿ ⟩
+        ≃⟨ AA.identᴿ ⟩
           0 * b⁺ + n * b⁻
         ≃⟨ AA.substᴸ ℕ.*-zeroᴸ ⟩
           0 + n * b⁻
-        ≃⟨ ℕ.+-zeroᴸ ⟩
+        ≃⟨ AA.identᴸ ⟩
           n * b⁻
         ∎
       b⁺≃b⁻ = ℕ.*-cancelᴸ n≄0 nb⁺≃nb⁻
-      b⁺+0≃0+b⁻ = trans ℕ.+-zeroᴿ (trans b⁺≃b⁻ (sym ℕ.+-zeroᴸ))
+      b⁺+0≃0+b⁻ = trans AA.identᴿ (trans b⁺≃b⁻ (sym AA.identᴸ))
    in ∨-introᴿ (≃ᶻ-intro {{b⁺+0≃0+b⁻}})
 
 *-neither-zero : {a b : ℤ} → a ≄ 0 → b ≄ 0 → a * b ≄ 0

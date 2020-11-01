@@ -21,7 +21,7 @@ module net.cruhland.axioms.Peano.Ordering
   private module Add = PeanoAddition PA
   open Add using
     ( _+_; n≄sn; +-stepᴸ; +-stepᴸ⃗ᴿ; +-stepᴿ⃗ᴸ
-    ; step≃+; +-zeroᴿ; +-assoc; +-cancelᴸ; +-cancelᴿ; with-+-assoc
+    ; step≃+; +-assoc; +-cancelᴸ; +-cancelᴿ; with-+-assoc
     ; Positive; +-both-zero; +-positive; +-unchanged
     )
   open PeanoBase PB using (ℕ; ind; step; step-case; step-inj; step≄zero; zero)
@@ -56,7 +56,7 @@ module net.cruhland.axioms.Peano.Ordering
   _≯_ = flip _≮_
 
   ≤-refl : ∀ {n} → n ≤ n
-  ≤-refl = ≤-intro zero +-zeroᴿ
+  ≤-refl = ≤-intro zero AA.identᴿ
 
   n≤sn : ∀ {n} → n ≤ step n
   n≤sn = ≤-intro (step zero) (sym step≃+)
@@ -85,7 +85,7 @@ module net.cruhland.axioms.Peano.Ordering
       n≃m =
         begin
           n
-        ≃˘⟨ +-zeroᴿ ⟩
+        ≃˘⟨ AA.identᴿ ⟩
           n + zero
         ≃˘⟨ AA.substᴿ a≃z ⟩
           n + a
@@ -127,7 +127,7 @@ module net.cruhland.axioms.Peano.Ordering
           a≃b =
             begin
               a
-            ≃˘⟨ +-zeroᴿ ⟩
+            ≃˘⟨ AA.identᴿ ⟩
               a + zero
             ≃˘⟨ AA.substᴿ d≃z ⟩
               a + d
@@ -164,7 +164,7 @@ module net.cruhland.axioms.Peano.Ordering
               b
             ≃⟨ sym a≃b ⟩
               a
-            ≃⟨ sym +-zeroᴿ ⟩
+            ≃⟨ sym AA.identᴿ ⟩
               a + zero
             ∎
 
@@ -207,7 +207,7 @@ module net.cruhland.axioms.Peano.Ordering
   ≤-step (≤-intro d n+d≃m) = ≤-intro d (trans +-stepᴸ (AA.subst n+d≃m))
 
   ≃→≤ : ∀ {n m} → n ≃ m → n ≤ m
-  ≃→≤ n≃m = ≤-intro zero (trans +-zeroᴿ n≃m)
+  ≃→≤ n≃m = ≤-intro zero (trans AA.identᴿ n≃m)
 
   ≤→<∨≃ : ∀ {n m} → n ≤ m → n < m ∨ n ≃ m
   ≤→<∨≃ {n} {m} n≤m with n ≃? m

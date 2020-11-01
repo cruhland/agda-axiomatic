@@ -61,8 +61,11 @@ instance
   +-substitutiveᴸ : AA.Substitutiveᴸ _+_
   +-substitutiveᴸ = record { substᴸ = λ {_ _ m} → cong (_+ m) }
 
+  +-identityᴸ : AA.Identityᴸ _+_ zero
+  +-identityᴸ = record { identᴸ = refl }
+
 addition : Addition base
-addition = record { +-zeroᴸ = refl ; +-stepᴸ = refl }
+addition = record { +-stepᴸ = refl }
 
 instance
   star : StarOp ℕ

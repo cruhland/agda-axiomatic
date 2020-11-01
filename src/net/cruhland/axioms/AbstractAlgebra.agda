@@ -33,6 +33,18 @@ record Commutative {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set₁ wher
 
 open Commutative {{...}} public using (comm)
 
+record Identityᴸ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) (e : A) : Set₁ where
+  field
+    identᴸ : ∀ {a} → e ⊙ a ≃ a
+
+open Identityᴸ {{...}} public using (identᴸ)
+
+record Identityᴿ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) (e : A) : Set₁ where
+  field
+    identᴿ : ∀ {a} → a ⊙ e ≃ a
+
+open Identityᴿ {{...}} public using (identᴿ)
+
 substitutiveᴿ :
   {A : Set} {_⊙_ : A → A → A}
     {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Substitutiveᴸ _⊙_}} →

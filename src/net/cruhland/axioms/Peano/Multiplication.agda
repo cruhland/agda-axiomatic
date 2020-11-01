@@ -17,9 +17,7 @@ open import net.cruhland.models.Logic using
 record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
   private module Add = PeanoAddition PA
   open Add using
-    ( _+_; +-assoc; +-both-zero; Positive; +-stepᴿ; +-stepᴸ⃗ᴿ
-    ; with-+-assoc; +-zeroᴸ; +-zeroᴿ
-    )
+    (_+_; +-assoc; +-both-zero; Positive; +-stepᴿ; +-stepᴸ⃗ᴿ; with-+-assoc)
   open PeanoBase PB using (ℕ; ind; step; step-case; zero)
   open PeanoInspect PB using (case; case-step; case-zero; pred-intro)
   open PeanoOrdering PB PA using
@@ -47,7 +45,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
           step k * zero
         ≃⟨ *-stepᴸ ⟩
           k * zero + zero
-        ≃⟨ +-zeroᴿ ⟩
+        ≃⟨ AA.identᴿ ⟩
           k * zero
         ≃⟨ Pk ⟩
           zero
@@ -65,7 +63,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
           zero
         ≃⟨ sym *-zeroᴸ ⟩
           zero * m
-        ≃⟨ sym +-zeroᴿ ⟩
+        ≃⟨ sym AA.identᴿ ⟩
           zero * m + zero
         ∎
 
@@ -109,7 +107,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
       zero * n + n
     ≃⟨ AA.substᴸ *-zeroᴸ ⟩
       zero + n
-    ≃⟨ +-zeroᴸ ⟩
+    ≃⟨ AA.identᴸ ⟩
       n
     ∎
 
@@ -153,9 +151,9 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
       Pz =
         begin
           a * (b + zero)
-        ≃⟨ *-substᴿ +-zeroᴿ ⟩
+        ≃⟨ *-substᴿ AA.identᴿ ⟩
           a * b
-        ≃˘⟨ +-zeroᴿ ⟩
+        ≃˘⟨ AA.identᴿ ⟩
           a * b + zero
         ≃˘⟨ AA.substᴿ *-zeroᴿ ⟩
           a * b + a * zero
