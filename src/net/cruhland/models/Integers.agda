@@ -320,79 +320,62 @@ instance
       _*₀_ : ℤ → ℤ → ℤ
       a⁺ — a⁻ *₀ b⁺ — b⁻ = (a⁺ * b⁺ + a⁻ * b⁻) — (a⁺ * b⁻ + a⁻ * b⁺)
 
-*-comm : {a b : ℤ} → a * b ≃ b * a
-*-comm {a⁺ — a⁻} {b⁺ — b⁻} = ≃ᶻ-intro {{eq′}}
-  where
-    eq′ =
-      begin
-        (a⁺ * b⁺ + a⁻ * b⁻) + (b⁺ * a⁻ + b⁻ * a⁺)
-      ≃⟨ AA.substᴸ (AA.substᴸ (ℕ.*-comm {a⁺})) ⟩
-        (b⁺ * a⁺ + a⁻ * b⁻) + (b⁺ * a⁻ + b⁻ * a⁺)
-      ≃⟨ AA.substᴸ (AA.substᴿ (ℕ.*-comm {a⁻})) ⟩
-        (b⁺ * a⁺ + b⁻ * a⁻) + (b⁺ * a⁻ + b⁻ * a⁺)
-      ≃⟨ AA.substᴿ AA.comm ⟩
-        (b⁺ * a⁺ + b⁻ * a⁻) + (b⁻ * a⁺ + b⁺ * a⁻)
-      ≃⟨ AA.substᴿ (AA.substᴸ (ℕ.*-comm {b⁻})) ⟩
-        (b⁺ * a⁺ + b⁻ * a⁻) + (a⁺ * b⁻ + b⁺ * a⁻)
-      ≃⟨ AA.substᴿ (AA.substᴿ (ℕ.*-comm {b⁺})) ⟩
-        (b⁺ * a⁺ + b⁻ * a⁻) + (a⁺ * b⁻ + a⁻ * b⁺)
-      ∎
-
-instance
   *-commutative : AA.Commutative _*_
   *-commutative = record { comm = *-comm }
-
-*-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ * b ≃ a₂ * b
-*-substᴸ {a₁⁺ — a₁⁻} {a₂⁺ — a₂⁻} {b⁺ — b⁻} a₁≃a₂ = ≃ᶻ-intro {{eq′}}
-  where
-    rearr :
-      ∀ {u v w x y z} →
-        (w * u + x * v) + (y * v + z * u) ≃
-          (w + z) * u + (y + x) * v
-    rearr {u} {v} {w} {x} {y} {z} =
-      begin
-        (w * u + x * v) + (y * v + z * u)
-      ≃⟨ perm-adcb {w * u} ⟩
-        (w * u + z * u) + (y * v + x * v)
-      ≃˘⟨ distrib-twoᴿ {a = w} {d = y} ⟩
-        (w + z) * u + (y + x) * v
-      ∎
-
-    a₁⁺a₂⁻≃a₂⁺a₁⁻ = ≃ᶻ-elim a₁≃a₂
-    eq′ =
-      begin
-        (a₁⁺ * b⁺ + a₁⁻ * b⁻) + (a₂⁺ * b⁻ + a₂⁻ * b⁺)
-      ≃⟨ rearr {w = a₁⁺} {y = a₂⁺} ⟩
-        (a₁⁺ + a₂⁻) * b⁺ + (a₂⁺ + a₁⁻) * b⁻
-      ≃⟨ AA.substᴸ (ℕ.*-substᴸ a₁⁺a₂⁻≃a₂⁺a₁⁻) ⟩
-        (a₂⁺ + a₁⁻) * b⁺ + (a₂⁺ + a₁⁻) * b⁻
-      ≃˘⟨ AA.substᴿ (ℕ.*-substᴸ a₁⁺a₂⁻≃a₂⁺a₁⁻) ⟩
-        (a₂⁺ + a₁⁻) * b⁺ + (a₁⁺ + a₂⁻) * b⁻
-      ≃˘⟨ rearr {w = a₂⁺} {y = a₁⁺} ⟩
-        (a₂⁺ * b⁺ + a₂⁻ * b⁻) + (a₁⁺ * b⁻ + a₁⁻ * b⁺)
-      ∎
-
-*-substᴿ : {a b₁ b₂ : ℤ} → b₁ ≃ b₂ → a * b₁ ≃ a * b₂
-*-substᴿ {a} {b₁} {b₂} b₁≃b₂ =
-  begin
-    a * b₁
-  ≃⟨ AA.comm ⟩
-    b₁ * a
-  ≃⟨ *-substᴸ b₁≃b₂ ⟩
-    b₂ * a
-  ≃⟨ AA.comm ⟩
-    a * b₂
-  ∎
-
-instance
-  *-substitutive : AA.Substitutive₂ _*_
-  *-substitutive = record { subst₂ᴸ = *-substᴸ ; subst₂ᴿ = *-substᴿ }
+    where
+      *-comm : {a b : ℤ} → a * b ≃ b * a
+      *-comm {a⁺ — a⁻} {b⁺ — b⁻} = ≃ᶻ-intro {{eq′}}
+        where
+          eq′ =
+            begin
+              (a⁺ * b⁺ + a⁻ * b⁻) + (b⁺ * a⁻ + b⁻ * a⁺)
+            ≃⟨ AA.substᴸ (AA.substᴸ (ℕ.*-comm {a⁺})) ⟩
+              (b⁺ * a⁺ + a⁻ * b⁻) + (b⁺ * a⁻ + b⁻ * a⁺)
+            ≃⟨ AA.substᴸ (AA.substᴿ (ℕ.*-comm {a⁻})) ⟩
+              (b⁺ * a⁺ + b⁻ * a⁻) + (b⁺ * a⁻ + b⁻ * a⁺)
+            ≃⟨ AA.substᴿ AA.comm ⟩
+              (b⁺ * a⁺ + b⁻ * a⁻) + (b⁻ * a⁺ + b⁺ * a⁻)
+            ≃⟨ AA.substᴿ (AA.substᴸ (ℕ.*-comm {b⁻})) ⟩
+              (b⁺ * a⁺ + b⁻ * a⁻) + (a⁺ * b⁻ + b⁺ * a⁻)
+            ≃⟨ AA.substᴿ (AA.substᴿ (ℕ.*-comm {b⁺})) ⟩
+              (b⁺ * a⁺ + b⁻ * a⁻) + (a⁺ * b⁻ + a⁻ * b⁺)
+            ∎
 
   *-substitutiveᴸ : AA.Substitutiveᴸ _*_
   *-substitutiveᴸ = record { substᴸ = *-substᴸ }
+    where
+      *-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ * b ≃ a₂ * b
+      *-substᴸ {a₁⁺ — a₁⁻} {a₂⁺ — a₂⁻} {b⁺ — b⁻} a₁≃a₂ = ≃ᶻ-intro {{eq′}}
+        where
+          rearr :
+            ∀ {u v w x y z} →
+              (w * u + x * v) + (y * v + z * u) ≃
+                (w + z) * u + (y + x) * v
+          rearr {u} {v} {w} {x} {y} {z} =
+            begin
+              (w * u + x * v) + (y * v + z * u)
+            ≃⟨ perm-adcb {w * u} ⟩
+              (w * u + z * u) + (y * v + x * v)
+            ≃˘⟨ distrib-twoᴿ {a = w} {d = y} ⟩
+              (w + z) * u + (y + x) * v
+            ∎
 
-  *-substitutiveᴿ : AA.Substitutiveᴿ _*_
-  *-substitutiveᴿ = record { substᴿ = *-substᴿ }
+          a₁⁺a₂⁻≃a₂⁺a₁⁻ = ≃ᶻ-elim a₁≃a₂
+          eq′ =
+            begin
+              (a₁⁺ * b⁺ + a₁⁻ * b⁻) + (a₂⁺ * b⁻ + a₂⁻ * b⁺)
+            ≃⟨ rearr {w = a₁⁺} {y = a₂⁺} ⟩
+              (a₁⁺ + a₂⁻) * b⁺ + (a₂⁺ + a₁⁻) * b⁻
+            ≃⟨ AA.substᴸ (ℕ.*-substᴸ a₁⁺a₂⁻≃a₂⁺a₁⁻) ⟩
+              (a₂⁺ + a₁⁻) * b⁺ + (a₂⁺ + a₁⁻) * b⁻
+            ≃˘⟨ AA.substᴿ (ℕ.*-substᴸ a₁⁺a₂⁻≃a₂⁺a₁⁻) ⟩
+              (a₂⁺ + a₁⁻) * b⁺ + (a₁⁺ + a₂⁻) * b⁻
+            ≃˘⟨ rearr {w = a₂⁺} {y = a₁⁺} ⟩
+              (a₂⁺ * b⁺ + a₂⁻ * b⁻) + (a₁⁺ * b⁻ + a₁⁻ * b⁺)
+            ∎
+
+  *-substitutiveᴿ : AA.Substitutiveᴿ {A = ℤ} _*_
+  *-substitutiveᴿ = AA.substitutiveᴿ
 
 *-to-* : ∀ {n m} → fromℕ (n * m) ≃ fromℕ n * fromℕ m
 *-to-* {n} {m} = ≃ᶻ-intro {{nm+n0+0m≃nm+00+0}}
@@ -585,7 +568,7 @@ neg-mult {a⁺ — a⁻} = ≃ᶻ-intro {{a⁻+[[0+0]a⁻+[1+0]a⁺]≃[0+0]a⁺
 *-zeroᴸ {x} =
   begin
     0 * x
-  ≃˘⟨ AA.subst₂ᴸ +-inverseᴿ ⟩
+  ≃˘⟨ AA.substᴸ +-inverseᴿ ⟩
     (1 - 1) * x
   ≃⟨ *-distrib-subᴿ ⟩
     1 * x - 1 * x
@@ -736,7 +719,7 @@ trichotomy (x⁺ — x⁻) = record { at-least = one≤ ; at-most = one≮ }
   ∨-introᴸ a≃0
 *-either-zero {a} {b⁺ — b⁻} ab≃0
     | pos record { n = n ; pos = n≄0 ; x≃n = a≃n—0 } =
-  let nb≃0 = trans (AA.subst₂ᴸ {b = b⁺ — b⁻} (sym a≃n—0)) ab≃0
+  let nb≃0 = trans (AA.substᴸ {b = b⁺ — b⁻} (sym a≃n—0)) ab≃0
       nb⁺+0b⁻+0≃0+[nb⁻+0b⁺] = ≃ᶻ-elim nb≃0
       nb⁺≃nb⁻ =
         begin
@@ -761,7 +744,7 @@ trichotomy (x⁺ — x⁻) = record { at-least = one≤ ; at-most = one≮ }
    in ∨-introᴿ (≃ᶻ-intro {{b⁺+0≃0+b⁻}})
 *-either-zero {a} {b⁺ — b⁻} ab≃0
     | neg record { n = n ; pos = n≄0 ; x≃-n = a≃0—n } =
-  let ab≃[0—n]b = AA.subst₂ᴸ {b = b⁺ — b⁻} a≃0—n
+  let ab≃[0—n]b = AA.substᴸ {b = b⁺ — b⁻} a≃0—n
       0≃-nb = trans (sym ab≃0) ab≃[0—n]b
       0+[0b⁻+nb⁺]≃0b⁺+nb⁻+0 = ≃ᶻ-elim 0≃-nb
       0+[0b⁻+nb⁺]≃0b⁺+nb⁻ = trans 0+[0b⁻+nb⁺]≃0b⁺+nb⁻+0 ℕ.+-zeroᴿ

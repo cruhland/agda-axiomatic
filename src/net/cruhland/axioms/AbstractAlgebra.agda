@@ -21,13 +21,6 @@ record Substitutiveᴿ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set₁ 
 
 open Substitutiveᴿ {{...}} public using (substᴿ)
 
-record Substitutive₂ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set₁ where
-  field
-    subst₂ᴸ : ∀ {a₁ a₂ b} → a₁ ≃ a₂ → a₁ ⊙ b ≃ a₂ ⊙ b
-    subst₂ᴿ : ∀ {a b₁ b₂} → b₁ ≃ b₂ → a ⊙ b₁ ≃ a ⊙ b₂
-
-open Substitutive₂ {{...}} public using (subst₂ᴸ; subst₂ᴿ)
-
 record Associative {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set₁ where
   field
     assoc : ∀ {a b c} → (a ⊙ b) ⊙ c ≃ a ⊙ (b ⊙ c)
