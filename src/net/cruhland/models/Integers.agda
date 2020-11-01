@@ -109,7 +109,7 @@ open _≃ᶻ_ public using (≃ᶻ-elim)
 ≃ᶻ-trans
   {a⁺ — a⁻} {b⁺ — b⁻} {c⁺ — c⁻}
   (≃ᶻ-intro {{a⁺+b⁻≃b⁺+a⁻}}) (≃ᶻ-intro {{b⁺+c⁻≃c⁺+b⁻}}) =
-    ≃ᶻ-intro {{ℕ.+-cancelᴿ [a⁺+c⁻]+[b⁺+b⁻]≃[c⁺+a⁻]+[b⁺+b⁻]}}
+    ≃ᶻ-intro {{AA.cancelᴿ [a⁺+c⁻]+[b⁺+b⁻]≃[c⁺+a⁻]+[b⁺+b⁻]}}
   where
     [a⁺+c⁻]+[b⁺+b⁻]≃[c⁺+a⁻]+[b⁺+b⁻] =
       begin
@@ -693,7 +693,7 @@ trichotomy (x⁺ — x⁻) = record { at-least = one≤ ; at-most = one≮ }
     one≮ (nil∧neg
             (≃ᶻ-intro {{x⁺+0≃x⁻}})
             record { n = n ; pos = n≄0 ; x≃-n = ≃ᶻ-intro {{x⁺+n≃x⁻}} }) =
-      n≄0 (ℕ.+-cancelᴸ (trans x⁺+n≃x⁻ (sym x⁺+0≃x⁻)))
+      n≄0 (AA.cancelᴸ (trans x⁺+n≃x⁻ (sym x⁺+0≃x⁻)))
     one≮ (pos∧neg
             record { n = n₁ ; pos = n₁≄0 ; x≃n = ≃ᶻ-intro {{x⁺+0≃n₁+x⁻}} }
             record { n = n₂ ; pos = n₂≄0 ; x≃-n = ≃ᶻ-intro {{x⁺+n₂≃0+x⁻}} }) =
@@ -711,7 +711,7 @@ trichotomy (x⁺ — x⁻) = record { at-least = one≤ ; at-most = one≮ }
             ≃˘⟨ x⁺+0≃n₁+x⁻ ⟩
               x⁺ + 0
             ∎
-       in ℕ.+-positive n₂≄0 (ℕ.+-cancelᴸ x⁺+[n₂+n₁]≃x⁺+0)
+       in ℕ.+-positive n₂≄0 (AA.cancelᴸ x⁺+[n₂+n₁]≃x⁺+0)
 
 *-either-zero : ∀ {a b} → a * b ≃ 0 → a ≃ 0 ∨ b ≃ 0
 *-either-zero {a} {b} ab≃0 with at-least (trichotomy a)

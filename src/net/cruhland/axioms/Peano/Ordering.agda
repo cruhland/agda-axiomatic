@@ -21,8 +21,7 @@ module net.cruhland.axioms.Peano.Ordering
   private module Add = PeanoAddition PA
   open Add using
     ( _+_; n≄sn; +-stepᴸ; +-stepᴸ⃗ᴿ; +-stepᴿ⃗ᴸ
-    ; step≃+; +-cancelᴸ; +-cancelᴿ; with-+-assoc
-    ; Positive; +-both-zero; +-positive; +-unchanged
+    ; step≃+; with-+-assoc; Positive; +-both-zero; +-positive; +-unchanged
     )
   open PeanoBase PB using (ℕ; ind; step; step-case; step-inj; step≄zero; zero)
   open PeanoInspect PB using
@@ -116,7 +115,7 @@ module net.cruhland.axioms.Peano.Ordering
         ≃⟨ a+c+d≃b+c ⟩
           b + c
         ∎
-      a+d≃b = +-cancelᴿ a+d+c≃b+c
+      a+d≃b = AA.cancelᴿ a+d+c≃b+c
 
   <→s≤ : ∀ {a b} → a < b → step a ≤ b
   <→s≤ {a} {b} (<-intro (≤-intro d a+d≃b) a≄b) with pred d≄z
@@ -153,7 +152,7 @@ module net.cruhland.axioms.Peano.Ordering
       a≤b = ≤-trans n≤sn sa≤b
 
       a≄b : a ≄ b
-      a≄b a≃b = step≄zero (+-cancelᴸ a+sd≃a+z)
+      a≄b a≃b = step≄zero (AA.cancelᴸ a+sd≃a+z)
         where
           a+sd≃a+z =
             begin

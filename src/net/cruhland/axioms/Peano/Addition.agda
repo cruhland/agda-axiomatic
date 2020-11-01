@@ -13,7 +13,7 @@ import net.cruhland.axioms.Peano.Inspect as PeanoInspect
 open import net.cruhland.models.Logic using
   (_∧_; _∨_; ∨-introᴸ; ∨-introᴿ; ¬_; ¬[¬a∨¬b]→a∧b)
 
-record Addition (PB : PeanoBase) : Set₁ where
+record Addition (PB : PeanoBase) : Set where
   open PeanoBase PB using (ℕ; ind; step; step-case; step-inj; step≄zero; zero)
   open PeanoInspect PB using (case; case-zero; case-step; decEq; pred-intro)
 
@@ -152,6 +152,43 @@ record Addition (PB : PeanoBase) : Set₁ where
                 step k + (m + p)
               ∎
 
+    +-cancellativeᴸ : AA.Cancellativeᴸ _+_
+    +-cancellativeᴸ = record { cancelᴸ = +-cancelᴸ }
+      where
+        +-cancelᴸ : ∀ {n m p} → n + m ≃ n + p → m ≃ p
+        +-cancelᴸ {n} {m} {p} = ind P Pz Ps n
+          where
+            P = λ x → x + m ≃ x + p → m ≃ p
+
+            Pz : P zero
+            Pz z+m≃z+p =
+              begin
+                m
+              ≃˘⟨ AA.identᴸ ⟩
+                zero + m
+              ≃⟨ z+m≃z+p ⟩
+                zero + p
+              ≃⟨ AA.identᴸ ⟩
+                p
+              ∎
+
+            Ps : step-case P
+            Ps {k} k+m≃k+p→m≃p sk+m≃sk+p = k+m≃k+p→m≃p (step-inj s[k+m]≃s[k+p])
+              where
+                s[k+m]≃s[k+p] =
+                  begin
+                    step (k + m)
+                  ≃⟨ sym +-stepᴸ ⟩
+                    step k + m
+                  ≃⟨ sk+m≃sk+p ⟩
+                    step k + p
+                  ≃⟨ +-stepᴸ ⟩
+                    step (k + p)
+                  ∎
+
+    +-cancellativeᴿ : AA.Cancellativeᴿ _+_
+    +-cancellativeᴿ = AA.cancellativeᴿ
+
   with-+-assoc : ∀ {a b c d e} → b + c ≃ d + e → a + b + c ≃ a + d + e
   with-+-assoc {a} {b} {c} {d} {e} b+c≃d+e =
     begin
@@ -164,53 +201,8 @@ record Addition (PB : PeanoBase) : Set₁ where
       a + d + e
     ∎
 
-  +-cancelᴸ : ∀ {n m p} → n + m ≃ n + p → m ≃ p
-  +-cancelᴸ {n} {m} {p} = ind P Pz Ps n
-    where
-      P = λ x → x + m ≃ x + p → m ≃ p
-
-      Pz : P zero
-      Pz z+m≃z+p =
-        begin
-          m
-        ≃˘⟨ AA.identᴸ ⟩
-          zero + m
-        ≃⟨ z+m≃z+p ⟩
-          zero + p
-        ≃⟨ AA.identᴸ ⟩
-          p
-        ∎
-
-      Ps : step-case P
-      Ps {k} k+m≃k+p→m≃p sk+m≃sk+p = k+m≃k+p→m≃p (step-inj s[k+m]≃s[k+p])
-        where
-          s[k+m]≃s[k+p] =
-            begin
-              step (k + m)
-            ≃⟨ sym +-stepᴸ ⟩
-              step k + m
-            ≃⟨ sk+m≃sk+p ⟩
-              step k + p
-            ≃⟨ +-stepᴸ ⟩
-              step (k + p)
-            ∎
-
-  +-cancelᴿ : ∀ {n m p} → n + p ≃ m + p → n ≃ m
-  +-cancelᴿ {n} {m} {p} n+p≃m+p = +-cancelᴸ p+n≃p+m
-    where
-      p+n≃p+m =
-        begin
-          p + n
-        ≃⟨ AA.comm ⟩
-          n + p
-        ≃⟨ n+p≃m+p ⟩
-          m + p
-        ≃⟨ AA.comm ⟩
-          p + m
-        ∎
-
   n≄sn : ∀ {n} → n ≄ step n
-  n≄sn {n} n≃sn = step≄zero (+-cancelᴸ n+sz≃n+z)
+  n≄sn {n} n≃sn = step≄zero (AA.cancelᴸ n+sz≃n+z)
     where
       n+sz≃n+z =
         begin
@@ -247,4 +239,4 @@ record Addition (PB : PeanoBase) : Set₁ where
         neither-positive (∨-introᴿ b≄z) = +-positive b≄z (trans AA.comm a+b≃z)
 
   +-unchanged : ∀ {n m} → n + m ≃ n → m ≃ zero
-  +-unchanged {n} {m} n+m≃n = +-cancelᴸ (trans n+m≃n (sym AA.identᴿ))
+  +-unchanged {n} {m} n+m≃n = AA.cancelᴸ (trans n+m≃n (sym AA.identᴿ))

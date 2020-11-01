@@ -1,67 +1,89 @@
 module net.cruhland.axioms.AbstractAlgebra where
 
+open import Function using (_∘_)
 open import net.cruhland.axioms.Eq using (_≃_; Eq; module ≃-Reasoning)
 open ≃-Reasoning
 
-record Substitutive₁ {A : Set} {{eq : Eq A}} (f : A → A) : Set₁ where
+record Substitutive₁ {A : Set} {{eq : Eq A}} (f : A → A) : Set where
   field
     subst : ∀ {a₁ a₂} → a₁ ≃ a₂ → f a₁ ≃ f a₂
 
 open Substitutive₁ {{...}} public using (subst)
 
-record Substitutiveᴸ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set₁ where
+record Substitutiveᴸ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set where
   field
     substᴸ : ∀ {a₁ a₂ b} → a₁ ≃ a₂ → a₁ ⊙ b ≃ a₂ ⊙ b
 
 open Substitutiveᴸ {{...}} public using (substᴸ)
 
-record Substitutiveᴿ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set₁ where
+record Substitutiveᴿ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set where
   field
     substᴿ : ∀ {a b₁ b₂} → b₁ ≃ b₂ → a ⊙ b₁ ≃ a ⊙ b₂
 
 open Substitutiveᴿ {{...}} public using (substᴿ)
 
-record Associative {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set₁ where
+record Associative {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set where
   field
     assoc : ∀ {a b c} → (a ⊙ b) ⊙ c ≃ a ⊙ (b ⊙ c)
 
 open Associative {{...}} public using (assoc)
 
-record Commutative {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set₁ where
+record Commutative {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set where
   field
     comm : ∀ {a b} → a ⊙ b ≃ b ⊙ a
 
 open Commutative {{...}} public using (comm)
 
-record Identityᴸ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) (e : A) : Set₁ where
+record Identityᴸ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) (e : A) : Set where
   field
     identᴸ : ∀ {a} → e ⊙ a ≃ a
 
 open Identityᴸ {{...}} public using (identᴸ)
 
-record Identityᴿ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) (e : A) : Set₁ where
+record Identityᴿ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) (e : A) : Set where
   field
     identᴿ : ∀ {a} → a ⊙ e ≃ a
 
 open Identityᴿ {{...}} public using (identᴿ)
 
+record Cancellativeᴸ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set where
+  field
+    cancelᴸ : ∀ {a b₁ b₂} → a ⊙ b₁ ≃ a ⊙ b₂ → b₁ ≃ b₂
+
+open Cancellativeᴸ {{...}} public using (cancelᴸ)
+
+record Cancellativeᴿ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set where
+  field
+    cancelᴿ : ∀ {a₁ a₂ b} → a₁ ⊙ b ≃ a₂ ⊙ b → a₁ ≃ a₂
+
+open Cancellativeᴿ {{...}} public using (cancelᴿ)
+
+with-comm :
+  {A : Set} {_⊙_ : A → A → A}
+    {{_ : Eq A}} {{_ : Commutative _⊙_}} →
+      ∀ {a b c d} → b ⊙ a ≃ d ⊙ c → a ⊙ b ≃ c ⊙ d
+with-comm {A} {_⊙_} {a} {b} {c} {d} b⊙a≃d⊙c =
+  begin
+    a ⊙ b
+  ≃⟨ comm ⟩
+    b ⊙ a
+  ≃⟨ b⊙a≃d⊙c ⟩
+    d ⊙ c
+  ≃⟨ comm ⟩
+    c ⊙ d
+  ∎
+
 substitutiveᴿ :
   {A : Set} {_⊙_ : A → A → A}
     {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Substitutiveᴸ _⊙_}} →
       Substitutiveᴿ _⊙_
-substitutiveᴿ {A} {_⊙_} = record { substᴿ = substᴿ₀ }
-  where
-    substᴿ₀ : ∀ {a b₁ b₂} → b₁ ≃ b₂ → a ⊙ b₁ ≃ a ⊙ b₂
-    substᴿ₀ {a} {b₁} {b₂} b₁≃b₂ =
-      begin
-        a ⊙ b₁
-      ≃⟨ comm ⟩
-        b₁ ⊙ a
-      ≃⟨ substᴸ b₁≃b₂ ⟩
-        b₂ ⊙ a
-      ≃⟨ comm ⟩
-        a ⊙ b₂
-      ∎
+substitutiveᴿ = record { substᴿ = with-comm ∘ substᴸ }
+
+cancellativeᴿ :
+  {A : Set} {_⊙_ : A → A → A}
+    {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Cancellativeᴸ _⊙_}} →
+      Cancellativeᴿ _⊙_
+cancellativeᴿ = record { cancelᴿ = cancelᴸ ∘ with-comm }
 
 [ab][cd]≃a[[bc]d] :
   {A : Set} {_⊙_ : A → A → A}
