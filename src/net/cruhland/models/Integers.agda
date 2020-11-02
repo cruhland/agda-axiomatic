@@ -20,18 +20,6 @@ open ℕ using (ℕ; _<⁺_)
 a≃b+c≃d : {a b c d : ℕ} → a ≃ b → c ≃ d → a + c ≃ b + d
 a≃b+c≃d {b = b} {c = c} a≃b c≃d = trans (AA.substᴸ a≃b) (AA.substᴿ c≃d)
 
-perm-adcb : {a b c d : ℕ} → (a + d) + (c + b) ≃ (a + b) + (c + d)
-perm-adcb {a} {b} {c} {d} =
-  begin
-    (a + d) + (c + b)
-  ≃⟨ AA.regroup a d c b ⟩
-    a + ((d + b) + c)
-  ≃⟨ AA.swap-middle ⟩
-    a + ((b + d) + c)
-  ≃˘⟨ AA.regroup a b c d ⟩
-    (a + b) + (c + d)
-  ∎
-
 transpose : {w x y z : ℕ} → (w + x) + (y + z) ≃ (w + y) + (x + z)
 transpose {w} {x} {y} {z} =
   begin
@@ -104,11 +92,11 @@ open _≃ᶻ_ public using (≃ᶻ-elim)
     [a⁺+c⁻]+[b⁺+b⁻]≃[c⁺+a⁻]+[b⁺+b⁻] =
       begin
         (a⁺ + c⁻) + (b⁺ + b⁻)
-      ≃˘⟨ perm-adcb {a⁺} ⟩
+      ≃˘⟨ AA.perm-adcb ⟩
         (a⁺ + b⁻) + (b⁺ + c⁻)
       ≃⟨ a≃b+c≃d a⁺+b⁻≃b⁺+a⁻ b⁺+c⁻≃c⁺+b⁻ ⟩
         (b⁺ + a⁻) + (c⁺ + b⁻)
-      ≃⟨ perm-adcb {b⁺} ⟩
+      ≃⟨ AA.perm-adcb ⟩
         (b⁺ + b⁻) + (c⁺ + a⁻)
       ≃⟨ AA.comm ⟩
         (c⁺ + a⁻) + (b⁺ + b⁻)
@@ -344,7 +332,7 @@ instance
           rearr {u} {v} {w} {x} {y} {z} =
             begin
               (w * u + x * v) + (y * v + z * u)
-            ≃⟨ perm-adcb {w * u} ⟩
+            ≃⟨ AA.perm-adcb ⟩
               (w * u + z * u) + (y * v + x * v)
             ≃˘⟨ distrib-twoᴿ {a = w} {d = y} ⟩
               (w + z) * u + (y + x) * v

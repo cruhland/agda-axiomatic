@@ -118,3 +118,19 @@ regroup {A} {_⊙_} a b c d =
   ≃⟨ [ab][cd]≃a[[bc]d] ⟩
     a ⊙ ((b ⊙ d) ⊙ c)
   ∎
+
+perm-adcb :
+  {A : Set} {_⊙_ : A → A → A}
+    {{_ : Eq A}} {{_ : Associative _⊙_}} {{_ : Commutative _⊙_}}
+    {{_ : Substitutiveᴸ _⊙_}} {{_ : Substitutiveᴿ _⊙_}} →
+      ∀ {a b c d} → (a ⊙ d) ⊙ (c ⊙ b) ≃ (a ⊙ b) ⊙ (c ⊙ d)
+perm-adcb {A} {_⊙_} {a} {b} {c} {d} =
+  begin
+    (a ⊙ d) ⊙ (c ⊙ b)
+  ≃⟨ regroup a d c b ⟩
+    a ⊙ ((d ⊙ b) ⊙ c)
+  ≃⟨ swap-middle ⟩
+    a ⊙ ((b ⊙ d) ⊙ c)
+  ≃˘⟨ regroup a b c d ⟩
+    (a ⊙ b) ⊙ (c ⊙ d)
+  ∎
