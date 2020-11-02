@@ -182,19 +182,8 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
                 a * b + a * step k
               ∎
 
-  *-distrib-+ᴿ : ∀ {a b c} → (a + b) * c ≃ a * c + b * c
-  *-distrib-+ᴿ {a} {b} {c} =
-    begin
-      (a + b) * c
-    ≃⟨ AA.comm ⟩
-      c * (a + b)
-    ≃⟨ AA.distribᴸ ⟩
-      c * a + c * b
-    ≃⟨ AA.substᴸ AA.comm ⟩
-      a * c + c * b
-    ≃⟨ AA.substᴿ AA.comm ⟩
-      a * c + b * c
-    ∎
+    *-distributive-+ᴿ : AA.Distributiveᴿ _*_ _+_
+    *-distributive-+ᴿ = AA.distributiveᴿ
 
   *-assoc : ∀ {a b c} → (a * b) * c ≃ a * (b * c)
   *-assoc {a} {b} {c} = sym (ind P Pz Ps b)
@@ -223,7 +212,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
           a * (k * c) + a * c
         ≃⟨ AA.substᴸ a[kc]≃[ak]c ⟩
           (a * k) * c + a * c
-        ≃˘⟨ *-distrib-+ᴿ ⟩
+        ≃˘⟨ AA.distribᴿ ⟩
           (a * k + a) * c
         ≃˘⟨ *-substᴸ *-stepᴿ ⟩
           (a * step k) * c
@@ -239,7 +228,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
   ... | <⁺-intro d d≄z a+d≃b = <⁺→< (<⁺-intro (d * c) dc≄z ac+dc≃bc)
     where
       dc≄z = *-positive d≄z c≄z
-      ac+dc≃bc = trans (sym *-distrib-+ᴿ) (*-substᴸ a+d≃b)
+      ac+dc≃bc = trans (sym AA.distribᴿ) (*-substᴸ a+d≃b)
 
   *-cancelᴿ : ∀ {a b c} → c ≄ zero → a * c ≃ b * c → a ≃ b
   *-cancelᴿ c≄z ac≃bc with trichotomy

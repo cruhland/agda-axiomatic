@@ -17,19 +17,6 @@ open import net.cruhland.models.Logic using
 module ℕ = PeanoArithmetic PA
 open ℕ using (ℕ; _<⁺_)
 
-distrib-twoᴿ :
-  ∀ {a b c d e f} →
-    (a + b) * c + (d + e) * f ≃
-      (a * c + b * c) + (d * f + e * f)
-distrib-twoᴿ {a} {b} {c} {d} {e} {f} =
-  begin
-    (a + b) * c + (d + e) * f
-  ≃⟨ AA.substᴸ (ℕ.*-distrib-+ᴿ {a}) ⟩
-    (a * c + b * c) + (d + e) * f
-  ≃⟨ AA.substᴿ (ℕ.*-distrib-+ᴿ {d}) ⟩
-    (a * c + b * c) + (d * f + e * f)
-  ∎
-
 infix 9 _—_
 record ℤ : Set where
   constructor _—_
@@ -306,7 +293,7 @@ instance
               (w * u + x * v) + (y * v + z * u)
             ≃⟨ AA.perm-adcb ⟩
               (w * u + z * u) + (y * v + x * v)
-            ≃˘⟨ distrib-twoᴿ {a = w} {d = y} ⟩
+            ≃˘⟨ AA.distrib-twoᴿ ⟩
               (w + z) * u + (y + x) * v
             ∎
 
@@ -408,7 +395,7 @@ instance
     refactor {b₁} {b₂} {a₁} {a₂} {a₃} {a₄} =
       begin
         (a₁ * a₃ + a₂ * a₄) * b₁ + (a₁ * a₄ + a₂ * a₃) * b₂
-      ≃⟨ distrib-twoᴿ {a = a₁ * a₃} {d = a₁ * a₄} ⟩
+      ≃⟨ AA.distrib-twoᴿ ⟩
         ((a₁ * a₃) * b₁ + (a₂ * a₄) * b₁) +
         ((a₁ * a₄) * b₂ + (a₂ * a₃) * b₂)
       ≃⟨ AA.transpose ⟩

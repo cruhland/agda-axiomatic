@@ -97,6 +97,27 @@ cancellativeᴿ :
       Cancellativeᴿ _⊙_
 cancellativeᴿ = record { cancelᴿ = cancelᴸ ∘ with-comm }
 
+distributiveᴿ :
+  {A : Set} {_⊙_ _⊕_ : A → A → A}
+    {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Distributiveᴸ _⊙_ _⊕_}}
+    {{_ : Substitutiveᴸ _⊕_}} {{_ : Substitutiveᴿ _⊕_}} →
+      Distributiveᴿ _⊙_ _⊕_
+distributiveᴿ {A} {_⊙_} {_⊕_} = record { distribᴿ = distribᴿ₀ }
+  where
+    distribᴿ₀ : ∀ {a b c} → (a ⊕ b) ⊙ c ≃ (a ⊙ c) ⊕ (b ⊙ c)
+    distribᴿ₀ {a} {b} {c} =
+      begin
+        (a ⊕ b) ⊙ c
+      ≃⟨ comm ⟩
+        c ⊙ (a ⊕ b)
+      ≃⟨ distribᴸ ⟩
+        (c ⊙ a) ⊕ (c ⊙ b)
+      ≃⟨ substᴸ comm ⟩
+        (a ⊙ c) ⊕ (c ⊙ b)
+      ≃⟨ substᴿ comm ⟩
+        (a ⊙ c) ⊕ (b ⊙ c)
+      ∎
+
 [ab][cd]≃a[[bc]d] :
   {A : Set} {_⊙_ : A → A → A}
     {{_ : Eq A}} {{_ : Associative _⊙_}} {{_ : Substitutiveᴿ _⊙_}} →
@@ -190,4 +211,20 @@ distrib-twoᴸ {A} {_⊙_} {_⊕_} {a} {b} {c} {d} {e} {f} =
     ((a ⊙ b) ⊕ (a ⊙ c)) ⊕ (d ⊙ (e ⊕ f))
   ≃⟨ substᴿ distribᴸ ⟩
     ((a ⊙ b) ⊕ (a ⊙ c)) ⊕ ((d ⊙ e) ⊕ (d ⊙ f))
+  ∎
+
+distrib-twoᴿ :
+  {A : Set} {_⊙_ _⊕_ : A → A → A}
+    {{_ : Eq A}} {{_ : Distributiveᴿ _⊙_ _⊕_}}
+    {{_ : Substitutiveᴸ _⊕_}} {{_ : Substitutiveᴿ _⊕_}} →
+      ∀ {a b c d e f} →
+        ((a ⊕ b) ⊙ c) ⊕ ((d ⊕ e) ⊙ f) ≃
+          ((a ⊙ c) ⊕ (b ⊙ c)) ⊕ ((d ⊙ f) ⊕ (e ⊙ f))
+distrib-twoᴿ {A} {_⊙_} {_⊕_} {a} {b} {c} {d} {e} {f} =
+  begin
+    ((a ⊕ b) ⊙ c) ⊕ ((d ⊕ e) ⊙ f)
+  ≃⟨ substᴸ distribᴿ ⟩
+    ((a ⊙ c) ⊕ (b ⊙ c)) ⊕ ((d ⊕ e) ⊙ f)
+  ≃⟨ substᴿ distribᴿ ⟩
+    ((a ⊙ c) ⊕ (b ⊙ c)) ⊕ ((d ⊙ f) ⊕ (e ⊙ f))
   ∎
