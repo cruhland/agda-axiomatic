@@ -80,23 +80,27 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
           step k * m + step k
         ∎
 
-  *-comm : ∀ {n m} → n * m ≃ m * n
-  *-comm {n} {m} = ind P Pz Ps n
-    where
-      P = λ x → x * m ≃ m * x
-      Pz = trans *-zeroᴸ (sym *-zeroᴿ)
+  instance
+    *-commutative : AA.Commutative _*_
+    *-commutative = record { comm = *-comm }
+      where
+        *-comm : ∀ {n m} → n * m ≃ m * n
+        *-comm {n} {m} = ind P Pz Ps n
+          where
+            P = λ x → x * m ≃ m * x
+            Pz = trans *-zeroᴸ (sym *-zeroᴿ)
 
-      Ps : step-case P
-      Ps {k} Pk =
-        begin
-          step k * m
-        ≃⟨ *-stepᴸ ⟩
-          k * m + m
-        ≃⟨ AA.substᴸ Pk ⟩
-          m * k + m
-        ≃˘⟨ *-stepᴿ ⟩
-          m * step k
-        ∎
+            Ps : step-case P
+            Ps {k} Pk =
+              begin
+                step k * m
+              ≃⟨ *-stepᴸ ⟩
+                k * m + m
+              ≃⟨ AA.substᴸ Pk ⟩
+                m * k + m
+              ≃˘⟨ *-stepᴿ ⟩
+                m * step k
+              ∎
 
   *-oneᴸ : ∀ {n} → step zero * n ≃ n
   *-oneᴸ {n} =
@@ -111,7 +115,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
     ∎
 
   *-oneᴿ : ∀ {n} → n * step zero ≃ n
-  *-oneᴿ = trans *-comm *-oneᴸ
+  *-oneᴿ = trans AA.comm *-oneᴸ
 
   *-either-zero : ∀ {n m} → n * m ≃ zero → n ≃ zero ∨ m ≃ zero
   *-either-zero {n} {m} n*m≃z with case n
@@ -135,11 +139,11 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
   *-substᴿ {n} {m₁} {m₂} m₁≃m₂ =
     begin
       n * m₁
-    ≃⟨ *-comm ⟩
+    ≃⟨ AA.comm ⟩
       m₁ * n
     ≃⟨ *-substᴸ m₁≃m₂ ⟩
       m₂ * n
-    ≃⟨ *-comm ⟩
+    ≃⟨ AA.comm ⟩
       n * m₂
     ∎
 
@@ -182,13 +186,13 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
   *-distrib-+ᴿ {a} {b} {c} =
     begin
       (a + b) * c
-    ≃⟨ *-comm ⟩
+    ≃⟨ AA.comm ⟩
       c * (a + b)
     ≃⟨ AA.distribᴸ ⟩
       c * a + c * b
-    ≃⟨ AA.substᴸ *-comm ⟩
+    ≃⟨ AA.substᴸ AA.comm ⟩
       a * c + c * b
-    ≃⟨ AA.substᴿ *-comm ⟩
+    ≃⟨ AA.substᴿ AA.comm ⟩
       a * c + b * c
     ∎
 
@@ -244,4 +248,4 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
   ... | tri-> a>b = ⊥-elim (<→≄ (*-preserves-< a>b c≄z) (sym ac≃bc))
 
   *-cancelᴸ : ∀ {a b c} → a ≄ zero → a * b ≃ a * c → b ≃ c
-  *-cancelᴸ a≄z ab≃ac = *-cancelᴿ a≄z (trans *-comm (trans ab≃ac *-comm))
+  *-cancelᴸ a≄z ab≃ac = *-cancelᴿ a≄z (trans AA.comm (trans ab≃ac AA.comm))

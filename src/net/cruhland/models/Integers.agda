@@ -279,15 +279,15 @@ instance
           eq′ =
             begin
               (a⁺ * b⁺ + a⁻ * b⁻) + (b⁺ * a⁻ + b⁻ * a⁺)
-            ≃⟨ AA.substᴸ (AA.substᴸ (ℕ.*-comm {a⁺})) ⟩
+            ≃⟨ AA.substᴸ (AA.substᴸ AA.comm) ⟩
               (b⁺ * a⁺ + a⁻ * b⁻) + (b⁺ * a⁻ + b⁻ * a⁺)
-            ≃⟨ AA.substᴸ (AA.substᴿ (ℕ.*-comm {a⁻})) ⟩
+            ≃⟨ AA.substᴸ (AA.substᴿ AA.comm) ⟩
               (b⁺ * a⁺ + b⁻ * a⁻) + (b⁺ * a⁻ + b⁻ * a⁺)
             ≃⟨ AA.substᴿ AA.comm ⟩
               (b⁺ * a⁺ + b⁻ * a⁻) + (b⁻ * a⁺ + b⁺ * a⁻)
-            ≃⟨ AA.substᴿ (AA.substᴸ (ℕ.*-comm {b⁻})) ⟩
+            ≃⟨ AA.substᴿ (AA.substᴸ AA.comm) ⟩
               (b⁺ * a⁺ + b⁻ * a⁻) + (a⁺ * b⁻ + b⁺ * a⁻)
-            ≃⟨ AA.substᴿ (AA.substᴿ (ℕ.*-comm {b⁺})) ⟩
+            ≃⟨ AA.substᴿ (AA.substᴿ AA.comm) ⟩
               (b⁺ * a⁺ + b⁻ * a⁻) + (a⁺ * b⁻ + a⁻ * b⁺)
             ∎
 
