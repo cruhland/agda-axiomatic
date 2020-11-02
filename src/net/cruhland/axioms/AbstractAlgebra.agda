@@ -134,3 +134,16 @@ perm-adcb {A} {_⊙_} {a} {b} {c} {d} =
   ≃˘⟨ regroup a b c d ⟩
     (a ⊙ b) ⊙ (c ⊙ d)
   ∎
+
+[a≃b][c≃d] :
+  {A : Set} {_⊙_ : A → A → A}
+    {{_ : Eq A}} {{_ : Substitutiveᴸ _⊙_}} {{_ : Substitutiveᴿ _⊙_}} →
+      ∀ {a b c d} → a ≃ b → c ≃ d → a ⊙ c ≃ b ⊙ d
+[a≃b][c≃d] {A} {_⊙_} {a} {b} {c} {d} a≃b c≃d =
+  begin
+    a ⊙ c
+  ≃⟨ substᴸ a≃b ⟩
+    b ⊙ c
+  ≃⟨ substᴿ c≃d ⟩
+    b ⊙ d
+  ∎

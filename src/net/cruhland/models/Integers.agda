@@ -17,9 +17,6 @@ open import net.cruhland.models.Logic using
 module ℕ = PeanoArithmetic PA
 open ℕ using (ℕ; _<⁺_)
 
-a≃b+c≃d : {a b c d : ℕ} → a ≃ b → c ≃ d → a + c ≃ b + d
-a≃b+c≃d {b = b} {c = c} a≃b c≃d = trans (AA.substᴸ a≃b) (AA.substᴿ c≃d)
-
 transpose : {w x y z : ℕ} → (w + x) + (y + z) ≃ (w + y) + (x + z)
 transpose {w} {x} {y} {z} =
   begin
@@ -94,7 +91,7 @@ open _≃ᶻ_ public using (≃ᶻ-elim)
         (a⁺ + c⁻) + (b⁺ + b⁻)
       ≃˘⟨ AA.perm-adcb ⟩
         (a⁺ + b⁻) + (b⁺ + c⁻)
-      ≃⟨ a≃b+c≃d a⁺+b⁻≃b⁺+a⁻ b⁺+c⁻≃c⁺+b⁻ ⟩
+      ≃⟨ AA.[a≃b][c≃d] a⁺+b⁻≃b⁺+a⁻ b⁺+c⁻≃c⁺+b⁻ ⟩
         (b⁺ + a⁻) + (c⁺ + b⁻)
       ≃⟨ AA.perm-adcb ⟩
         (b⁺ + b⁻) + (c⁺ + a⁻)
@@ -373,7 +370,7 @@ instance
 
 *-distrib-+ᴸ : {x y z : ℤ} → x * (y + z) ≃ x * y + x * z
 *-distrib-+ᴸ {x⁺ — x⁻} {y⁺ — y⁻} {z⁺ — z⁻} =
-    ≃ᶻ-intro {{a≃b+c≃d (refactor {x⁺} {x⁻}) (sym (refactor {x⁺} {x⁻}))}}
+    ≃ᶻ-intro {{AA.[a≃b][c≃d] (refactor {x⁺} {x⁻}) (sym (refactor {x⁺} {x⁻}))}}
   where
     refactor :
       ∀ {b₁ b₂ a₁ a₂ a₃ a₄} →
@@ -452,7 +449,7 @@ instance
         a₁ * (a₃ * b₁ + a₄ * b₂) + a₂ * (a₃ * b₂ + a₄ * b₁)
       ∎
 
-    eq′ = a≃b+c≃d
+    eq′ = AA.[a≃b][c≃d]
            (refactor {z⁺} {z⁻} {x⁺} {x⁻})
            (sym (refactor {z⁻} {z⁺} {x⁺} {x⁻}))
 
