@@ -58,6 +58,18 @@ record Cancellativeᴿ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set whe
 
 open Cancellativeᴿ {{...}} public using (cancelᴿ)
 
+record Distributiveᴸ {A : Set} {{eq : Eq A}} (_⊙_ _⊕_ : A → A → A) : Set where
+  field
+    distribᴸ : ∀ {a b c} → a ⊙ (b ⊕ c) ≃ (a ⊙ b) ⊕ (a ⊙ c)
+
+open Distributiveᴸ {{...}} public using (distribᴸ)
+
+record Distributiveᴿ {A : Set} {{eq : Eq A}} (_⊙_ _⊕_ : A → A → A) : Set where
+  field
+    distribᴿ : ∀ {a b c} → (b ⊕ c) ⊙ a ≃ (b ⊙ a) ⊕ (c ⊙ a)
+
+open Distributiveᴿ {{...}} public using (distribᴿ)
+
 with-comm :
   {A : Set} {_⊙_ : A → A → A}
     {{_ : Eq A}} {{_ : Commutative _⊙_}} →
@@ -162,4 +174,20 @@ transpose {A} {_⊙_} {w} {x} {y} {z} =
     w ⊙ ((y ⊙ x) ⊙ z)
   ≃˘⟨ [ab][cd]≃a[[bc]d] ⟩
     (w ⊙ y) ⊙ (x ⊙ z)
+  ∎
+
+distrib-twoᴸ :
+  {A : Set} {_⊙_ _⊕_ : A → A → A}
+    {{_ : Eq A}} {{_ : Distributiveᴸ _⊙_ _⊕_}}
+    {{_ : Substitutiveᴸ _⊕_}} {{_ : Substitutiveᴿ _⊕_}} →
+      ∀ {a b c d e f} →
+        (a ⊙ (b ⊕ c)) ⊕ (d ⊙ (e ⊕ f)) ≃
+          ((a ⊙ b) ⊕ (a ⊙ c)) ⊕ ((d ⊙ e) ⊕ (d ⊙ f))
+distrib-twoᴸ {A} {_⊙_} {_⊕_} {a} {b} {c} {d} {e} {f} =
+  begin
+    (a ⊙ (b ⊕ c)) ⊕ (d ⊙ (e ⊕ f))
+  ≃⟨ substᴸ distribᴸ ⟩
+    ((a ⊙ b) ⊕ (a ⊙ c)) ⊕ (d ⊙ (e ⊕ f))
+  ≃⟨ substᴿ distribᴸ ⟩
+    ((a ⊙ b) ⊕ (a ⊙ c)) ⊕ ((d ⊙ e) ⊕ (d ⊙ f))
   ∎

@@ -17,19 +17,6 @@ open import net.cruhland.models.Logic using
 module ℕ = PeanoArithmetic PA
 open ℕ using (ℕ; _<⁺_)
 
-distrib-twoᴸ :
-  ∀ {a b c d e f} →
-    a * (b + c) + d * (e + f) ≃
-      (a * b + a * c) + (d * e + d * f)
-distrib-twoᴸ {a} {b} {c} {d} {e} {f} =
-  begin
-    a * (b + c) + d * (e + f)
-  ≃⟨ AA.substᴸ (ℕ.*-distrib-+ᴸ {a}) ⟩
-    (a * b + a * c) + d * (e + f)
-  ≃⟨ AA.substᴿ (ℕ.*-distrib-+ᴸ {d}) ⟩
-    (a * b + a * c) + (d * e + d * f)
-  ∎
-
 distrib-twoᴿ :
   ∀ {a b c d e f} →
     (a + b) * c + (d + e) * f ≃
@@ -367,7 +354,7 @@ instance
     refactor {b₁} {b₂} {a₁} {a₂} {a₃} {a₄} =
       begin
         b₁ * (a₁ + a₃) + b₂ * (a₂ + a₄)
-      ≃⟨ distrib-twoᴸ {a = b₁} {d = b₂} ⟩
+      ≃⟨ AA.distrib-twoᴸ ⟩
         (b₁ * a₁ + b₁ * a₃) + (b₂ * a₂ + b₂ * a₄)
       ≃⟨ AA.transpose ⟩
         (b₁ * a₁ + b₂ * a₂) + (b₁ * a₃ + b₂ * a₄)
@@ -433,7 +420,7 @@ instance
       ≃⟨ assoc-four {a₁ = a₁} {b₁ = a₁} {c₁ = a₂} {d₁ = a₂} ⟩
         (a₁ * (a₃ * b₁) + a₁ * (a₄ * b₂)) +
         (a₂ * (a₃ * b₂) + a₂ * (a₄ * b₁))
-      ≃˘⟨ distrib-twoᴸ {a = a₁} {d = a₂} ⟩
+      ≃˘⟨ AA.distrib-twoᴸ ⟩
         a₁ * (a₃ * b₁ + a₄ * b₂) + a₂ * (a₃ * b₂ + a₄ * b₁)
       ∎
 
