@@ -147,3 +147,19 @@ perm-adcb {A} {_⊙_} {a} {b} {c} {d} =
   ≃⟨ substᴿ c≃d ⟩
     b ⊙ d
   ∎
+
+transpose :
+  {A : Set} {_⊙_ : A → A → A}
+    {{_ : Eq A}} {{_ : Associative _⊙_}} {{_ : Commutative _⊙_}}
+    {{_ : Substitutiveᴸ _⊙_}} {{_ : Substitutiveᴿ _⊙_}} →
+      ∀ {w x y z} → (w ⊙ x) ⊙ (y ⊙ z) ≃ (w ⊙ y) ⊙ (x ⊙ z)
+transpose {A} {_⊙_} {w} {x} {y} {z} =
+  begin
+    (w ⊙ x) ⊙ (y ⊙ z)
+  ≃⟨ [ab][cd]≃a[[bc]d] ⟩
+    w ⊙ ((x ⊙ y) ⊙ z)
+  ≃⟨ swap-middle ⟩
+    w ⊙ ((y ⊙ x) ⊙ z)
+  ≃˘⟨ [ab][cd]≃a[[bc]d] ⟩
+    (w ⊙ y) ⊙ (x ⊙ z)
+  ∎
