@@ -104,3 +104,17 @@ swap-middle :
     {{_ : Substitutiveᴸ _⊙_}} {{_ : Substitutiveᴿ _⊙_}} →
       ∀ {a b c d} → a ⊙ ((b ⊙ c) ⊙ d) ≃ a ⊙ ((c ⊙ b) ⊙ d)
 swap-middle = substᴿ (substᴸ comm)
+
+regroup :
+  {A : Set} {_⊙_ : A → A → A}
+    {{_ : Eq A}} {{_ : Associative _⊙_}}
+    {{_ : Commutative _⊙_}} {{_ : Substitutiveᴿ _⊙_}} →
+      ∀ a b c d → (a ⊙ b) ⊙ (c ⊙ d) ≃ a ⊙ ((b ⊙ d) ⊙ c)
+regroup {A} {_⊙_} a b c d =
+  begin
+    (a ⊙ b) ⊙ (c ⊙ d)
+  ≃⟨ substᴿ comm ⟩
+    (a ⊙ b) ⊙ (d ⊙ c)
+  ≃⟨ [ab][cd]≃a[[bc]d] ⟩
+    a ⊙ ((b ⊙ d) ⊙ c)
+  ∎

@@ -17,28 +17,18 @@ open import net.cruhland.models.Logic using
 module ℕ = PeanoArithmetic PA
 open ℕ using (ℕ; _<⁺_)
 
-regroup : (a b c d : ℕ) → (a + b) + (c + d) ≃ a + ((b + d) + c)
-regroup a b c d =
-  begin
-    (a + b) + (c + d)
-  ≃⟨ AA.substᴿ AA.comm ⟩
-    (a + b) + (d + c)
-  ≃⟨ AA.[ab][cd]≃a[[bc]d] ⟩
-    a + ((b + d) + c)
-  ∎
-
 a≃b+c≃d : {a b c d : ℕ} → a ≃ b → c ≃ d → a + c ≃ b + d
 a≃b+c≃d {b = b} {c = c} a≃b c≃d = trans (AA.substᴸ a≃b) (AA.substᴿ c≃d)
 
-perm-adcb : ∀ {a b c d} → (a + d) + (c + b) ≃ (a + b) + (c + d)
+perm-adcb : {a b c d : ℕ} → (a + d) + (c + b) ≃ (a + b) + (c + d)
 perm-adcb {a} {b} {c} {d} =
   begin
     (a + d) + (c + b)
-  ≃⟨ regroup a d c b ⟩
+  ≃⟨ AA.regroup a d c b ⟩
     a + ((d + b) + c)
   ≃⟨ AA.swap-middle ⟩
     a + ((b + d) + c)
-  ≃˘⟨ regroup a b c d ⟩
+  ≃˘⟨ AA.regroup a b c d ⟩
     (a + b) + (c + d)
   ∎
 
