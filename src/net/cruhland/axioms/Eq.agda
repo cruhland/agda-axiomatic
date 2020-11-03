@@ -34,11 +34,11 @@ open Eq {{...}} public
 
 module _ {{eq : Eq A}} where
 
-  ≃-gen : {x y : A} {{x≃y : x ≃ y}} → x ≃ y
-  ≃-gen {{x≃y = x≃y}} = x≃y
+  ≃-derive : {x y : A} {{x≃y : x ≃ y}} → x ≃ y
+  ≃-derive {{x≃y = x≃y}} = x≃y
 
-  ≄-gen : {x y : A} {{x≄ⁱy : x ≄ⁱ y}} → x ≄ y
-  ≄-gen = ≄ⁱ-elim
+  ≄-derive : {x y : A} {{x≄ⁱy : x ≄ⁱ y}} → x ≄ y
+  ≄-derive = ≄ⁱ-elim
 
   ¬sym : {x y : A} → x ≄ y → y ≄ x
   ¬sym x≄y = λ y≃x → x≄y (sym y≃x)
