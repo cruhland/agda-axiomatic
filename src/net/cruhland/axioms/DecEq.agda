@@ -1,7 +1,9 @@
 module net.cruhland.axioms.DecEq where
 
 open import Level using () renaming (suc to sℓ)
-open import net.cruhland.axioms.Eq using (_≃_; Eq)
+open import Relation.Nullary.Decidable using
+  (False; toWitness; toWitnessFalse; True)
+open import net.cruhland.axioms.Eq using (_≃_; _≄_; Eq)
 open import net.cruhland.models.Logic using (Dec)
 
 record DecEq {α} (A : Set α) : Set (sℓ α) where
@@ -12,3 +14,15 @@ record DecEq {α} (A : Set α) : Set (sℓ α) where
     _≃?_ : (x y : A) {{_ : Constraint x y}} → Dec (x ≃ y)
 
 open DecEq {{...}} public
+
+≃-derive :
+  {A : Set} {x y : A}
+    {{deq : DecEq A}} {{c : Constraint x y}} {{eq : True (x ≃? y)}} →
+      x ≃ y
+≃-derive {{eq = eq}} = toWitness eq
+
+≄-derive :
+  {A : Set} {x y : A}
+    {{deq : DecEq A}} {{c : Constraint x y}} {{neq : False (x ≃? y)}} →
+      x ≄ y
+≄-derive {{neq = neq}} = toWitnessFalse neq

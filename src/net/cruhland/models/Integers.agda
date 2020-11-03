@@ -78,7 +78,6 @@ instance
     ; ≄ⁱ-elim = λ {{i}} → ≄ᶻⁱ-elim {{i}}
     }
 
-instance
   plus : PlusOp ℤ
   plus = record { _+_ = _+₀_ }
     where
