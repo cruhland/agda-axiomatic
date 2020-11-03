@@ -62,17 +62,7 @@ module net.cruhland.axioms.Sets.Equality (SA : SetAxioms) where
       ; refl = ≃₀-refl
       ; sym = ≃₀-sym
       ; trans = ≃₀-trans
-      ; _≄ⁱ_ = _≄₀ⁱ_
-      ; ≄ⁱ-elim = ≄₀ⁱ-elim
       }
-      where
-        record _≄₀ⁱ_ (A B : PSet S) : Set (sℓ (σ₁ ⊔ σ₂)) where
-          constructor ≄₀ⁱ-intro
-          field
-            elim : ¬ (∀ {x} → x ∈ A ↔ x ∈ B)
-
-        ≄₀ⁱ-elim : {A B : PSet S} {{_ : A ≄₀ⁱ B}} → ¬ (A ≃₀ B)
-        ≄₀ⁱ-elim {{≄₀ⁱ-intro ¬[x∈A↔x∈B]}} (≃-intro x∈A↔x∈B) = ¬[x∈A↔x∈B] x∈A↔x∈B
 
   private
     variable

@@ -9,7 +9,7 @@ open import Function using (_∘_; const; flip)
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.DecEq using (DecEq)
 open import net.cruhland.axioms.Eq using
-  (_≃_; _≄_; _≄ⁱ_; ≄ⁱ-elim; Eq; sym; ¬sym; trans; module ≃-Reasoning)
+  (_≃_; _≄_; Eq; sym; ¬sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
 open import net.cruhland.axioms.Operators using (_+_; _*_; PlusOp; StarOp)
 open import net.cruhland.models.Logic using
@@ -61,12 +61,6 @@ open _≃ᶻ_ public using (≃ᶻ-elim)
         (c⁺ + a⁻) + (b⁺ + b⁻)
       ∎
 
-data _≄ᶻⁱ_ (a b : ℤ) : Set where
-  instance ≃ᶻⁱ-intro : {{i : ℤ⁺ a + ℤ⁻ b ≄ⁱ ℤ⁺ b + ℤ⁻ a}} → a ≄ᶻⁱ b
-
-≄ᶻⁱ-elim : ∀ {a b} {{i : a ≄ᶻⁱ b}} → ¬ (a ≃ᶻ b)
-≄ᶻⁱ-elim {{≃ᶻⁱ-intro {{≄ⁱ-ℕ}}}} (≃ᶻ-intro {{≃-ℕ}}) = ≄ⁱ-elim {{i = ≄ⁱ-ℕ}} ≃-ℕ
-
 instance
   eq : Eq ℤ
   eq = record
@@ -74,8 +68,6 @@ instance
     ; refl = ≃ᶻ-refl
     ; sym = ≃ᶻ-sym
     ; trans = ≃ᶻ-trans
-    ; _≄ⁱ_ = _≄ᶻⁱ_
-    ; ≄ⁱ-elim = λ {{i}} → ≄ᶻⁱ-elim {{i}}
     }
 
   plus : PlusOp ℤ

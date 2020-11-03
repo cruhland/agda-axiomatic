@@ -19,17 +19,6 @@ ind : (P : ℕ → Set) → P zero → (∀ {k} → P k → P (step k)) → ∀ 
 ind P Pz Ps zero = Pz
 ind P Pz Ps (step n) = ind (P ∘ step) (Ps Pz) Ps n
 
-data _≢ⁱ_ : ℕ → ℕ → Set where
-  instance
-    z≢s : ∀ {m} → zero ≢ⁱ step m
-    s≢z : ∀ {n} → step n ≢ⁱ zero
-    s≢s : ∀ {n m} {{_ : n ≢ⁱ m}} → step n ≢ⁱ step m
-
-≢ⁱ-elim : ∀ {n m} {{_ : n ≢ⁱ m}} → n ≢ m
-≢ⁱ-elim {{z≢s}} = λ ()
-≢ⁱ-elim {{s≢z}} = λ ()
-≢ⁱ-elim {{s≢s}} = ≢ⁱ-elim ∘ step-injective
-
 instance
   eq : Eq ℕ
   eq = record
@@ -37,8 +26,6 @@ instance
     ; refl = refl
     ; sym = sym
     ; trans = trans
-    ; _≄ⁱ_ = _≢ⁱ_
-    ; ≄ⁱ-elim = ≢ⁱ-elim
     }
 
   step-substitutive : AA.Substitutive₁ step

@@ -20,16 +20,6 @@ record Eq (A : Set α) : Set (sℓ α) where
   _≄_ : A → A → Set α
   x ≄ y = ¬ (x ≃ y)
 
-  -- An alternative form of inequality for use in "instance
-  -- arguments".  Agda doesn't allow standard inequality as the type
-  -- of instance arguments, because it's a function type with an
-  -- explicit parameter (only implicit and instance parameters are
-  -- allowed in instance types).
-  infix 4 _≄ⁱ_
-  field
-    _≄ⁱ_ : A → A → Set α
-    ≄ⁱ-elim : ∀ {x y} {{i : x ≄ⁱ y}} → x ≄ y
-
 open Eq {{...}} public
 
 module _ {{eq : Eq A}} where
