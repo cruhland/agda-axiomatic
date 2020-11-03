@@ -9,7 +9,7 @@ open import Function using (_∘_; const; flip)
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.DecEq using (DecEq)
 open import net.cruhland.axioms.Eq using
-  (_≃_; _≄_; Eq; sym; ¬sym; trans; module ≃-Reasoning)
+  (_≃_; _≄_; Eq; refl; sym; ¬sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
 open import net.cruhland.axioms.Operators using (_+_; _*_; PlusOp; StarOp)
 open import net.cruhland.models.Logic using
@@ -30,23 +30,23 @@ record ℤ : Set where
 ℤ⁻ (_ — a⁻) = a⁻
 
 record _≃ᶻ_ (a b : ℤ) : Set where
-  instance constructor ≃ᶻ-intro
+  constructor ≃ᶻ-intro
   field
-    {{≃ᶻ-elim}} : ℤ⁺ a + ℤ⁻ b ≃ ℤ⁺ b + ℤ⁻ a
+    ≃ᶻ-elim : ℤ⁺ a + ℤ⁻ b ≃ ℤ⁺ b + ℤ⁻ a
 
 open _≃ᶻ_ public using (≃ᶻ-elim)
 
 ≃ᶻ-refl : ∀ {a} → a ≃ᶻ a
-≃ᶻ-refl {a⁺ — a⁻} = ≃ᶻ-intro
+≃ᶻ-refl = ≃ᶻ-intro refl
 
 ≃ᶻ-sym : ∀ {a b} → a ≃ᶻ b → b ≃ᶻ a
-≃ᶻ-sym {a⁺ — a⁻} {b⁺ — b⁻} (≃ᶻ-intro {{eq}}) = ≃ᶻ-intro {{sym eq}}
+≃ᶻ-sym = ≃ᶻ-intro ∘ sym ∘ ≃ᶻ-elim
 
 ≃ᶻ-trans : ∀ {a b c} → a ≃ᶻ b → b ≃ᶻ c → a ≃ᶻ c
 ≃ᶻ-trans
   {a⁺ — a⁻} {b⁺ — b⁻} {c⁺ — c⁻}
-  (≃ᶻ-intro {{a⁺+b⁻≃b⁺+a⁻}}) (≃ᶻ-intro {{b⁺+c⁻≃c⁺+b⁻}}) =
-    ≃ᶻ-intro {{AA.cancelᴿ [a⁺+c⁻]+[b⁺+b⁻]≃[c⁺+a⁻]+[b⁺+b⁻]}}
+  (≃ᶻ-intro a⁺+b⁻≃b⁺+a⁻) (≃ᶻ-intro b⁺+c⁻≃c⁺+b⁻) =
+    ≃ᶻ-intro (AA.cancelᴿ [a⁺+c⁻]+[b⁺+b⁻]≃[c⁺+a⁻]+[b⁺+b⁻])
   where
     [a⁺+c⁻]+[b⁺+b⁻]≃[c⁺+a⁻]+[b⁺+b⁻] =
       begin
@@ -78,7 +78,7 @@ instance
       a⁺ — a⁻ +₀ b⁺ — b⁻ = (a⁺ + b⁺) — (a⁻ + b⁻)
 
 +-comm : {a b : ℤ} → a + b ≃ b + a
-+-comm {a⁺ — a⁻} {b⁺ — b⁻} = ≃ᶻ-intro {{eq′}}
++-comm {a⁺ — a⁻} {b⁺ — b⁻} = ≃ᶻ-intro eq′
   where
     eq′ =
       begin
@@ -90,7 +90,7 @@ instance
       ∎
 
 +-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ + b ≃ a₂ + b
-+-substᴸ {a₁⁺ — a₁⁻} {a₂⁺ — a₂⁻} {b⁺ — b⁻} a₁≃a₂ = ≃ᶻ-intro {{eq′}}
++-substᴸ {a₁⁺ — a₁⁻} {a₂⁺ — a₂⁻} {b⁺ — b⁻} a₁≃a₂ = ≃ᶻ-intro eq′
   where
     a₁⁺+a₂⁻≃a₂⁺+a₁⁻ = ≃ᶻ-elim a₁≃a₂
     eq′ =
@@ -117,7 +117,7 @@ instance
   ∎
 
 +-assoc : {x y z : ℤ} → (x + y) + z ≃ x + (y + z)
-+-assoc {x⁺ — x⁻} {y⁺ — y⁻} {z⁺ — z⁻} = ≃ᶻ-intro {{eq′}}
++-assoc {x⁺ — x⁻} {y⁺ — y⁻} {z⁺ — z⁻} = ≃ᶻ-intro eq′
   where
     eq′ =
       begin
@@ -140,13 +140,13 @@ fromℕ : ℕ → ℤ
 fromℕ n = n — 0
 
 fromℕ-subst : ∀ {n₁ n₂} → n₁ ≃ n₂ → fromℕ n₁ ≃ fromℕ n₂
-fromℕ-subst n₁≃n₂ = ≃ᶻ-intro {{AA.substᴸ n₁≃n₂}}
+fromℕ-subst = ≃ᶻ-intro ∘ AA.substᴸ
 
 ℕ≃→ℤ≃ : ∀ {n m} → n ≃ m → fromℕ n ≃ fromℕ m
-ℕ≃→ℤ≃ n≃m = ≃ᶻ-intro {{trans AA.identᴿ (trans n≃m (sym AA.identᴿ))}}
+ℕ≃→ℤ≃ n≃m = ≃ᶻ-intro (trans AA.identᴿ (trans n≃m (sym AA.identᴿ)))
 
 ℤ≃→ℕ≃ : ∀ {n} → fromℕ n ≃ 0 → n ≃ 0
-ℤ≃→ℕ≃ {n} (≃ᶻ-intro {{n+0≃0+0}}) =
+ℤ≃→ℕ≃ {n} (≃ᶻ-intro n+0≃0+0) =
   begin
     n
   ≃˘⟨ AA.identᴿ ⟩
@@ -158,10 +158,10 @@ fromℕ-subst n₁≃n₂ = ≃ᶻ-intro {{AA.substᴸ n₁≃n₂}}
   ∎
 
 +-to-+ : ∀ {n m} → fromℕ (n + m) ≃ fromℕ n + fromℕ m
-+-to-+ = ≃ᶻ-intro {{AA.substᴿ AA.identᴸ}}
++-to-+ = ≃ᶻ-intro (AA.substᴿ AA.identᴸ)
 
 +-identityᴸ : {x : ℤ} → 0 + x ≃ x
-+-identityᴸ {x⁺ — x⁻} = ≃ᶻ-intro {{[0+x⁺]+x⁻≃x⁺+[0+x⁻]}}
++-identityᴸ {x⁺ — x⁻} = ≃ᶻ-intro [0+x⁺]+x⁻≃x⁺+[0+x⁻]
   where
     [0+x⁺]+x⁻≃x⁺+[0+x⁻] =
       begin
@@ -191,7 +191,7 @@ instance
   negative = record { Constraint = const ⊤ ; fromNeg = λ n → - fromNat n }
 
 neg-subst : ∀ {a₁ a₂} → a₁ ≃ a₂ → - a₁ ≃ - a₂
-neg-subst {a₁⁺ — a₁⁻} {a₂⁺ — a₂⁻} a₁≃a₂ = ≃ᶻ-intro {{eq′}}
+neg-subst {a₁⁺ — a₁⁻} {a₂⁺ — a₂⁻} a₁≃a₂ = ≃ᶻ-intro eq′
   where
     a₁⁺+a₂⁻≃a₂⁺+a₁⁻ = ≃ᶻ-elim a₁≃a₂
     eq′ =
@@ -206,10 +206,10 @@ neg-subst {a₁⁺ — a₁⁻} {a₂⁺ — a₂⁻} a₁≃a₂ = ≃ᶻ-intro
       ∎
 
 neg-involutive : ∀ {a} → - (- a) ≃ a
-neg-involutive {a⁺ — a⁻} = ≃ᶻ-intro
+neg-involutive = ≃ᶻ-intro refl
 
 +-inverseᴸ : ∀ {x} → - x + x ≃ 0
-+-inverseᴸ {x⁺ — x⁻} = ≃ᶻ-intro {{[x⁻+x⁺]+0≃0+[x⁺+x⁻]}}
++-inverseᴸ {x⁺ — x⁻} = ≃ᶻ-intro [x⁻+x⁺]+0≃0+[x⁺+x⁻]
   where
     [x⁻+x⁺]+0≃0+[x⁺+x⁻] =
       begin
@@ -252,7 +252,7 @@ instance
   *-commutative = record { comm = *-comm }
     where
       *-comm : {a b : ℤ} → a * b ≃ b * a
-      *-comm {a⁺ — a⁻} {b⁺ — b⁻} = ≃ᶻ-intro {{eq′}}
+      *-comm {a⁺ — a⁻} {b⁺ — b⁻} = ≃ᶻ-intro eq′
         where
           eq′ =
             begin
@@ -273,7 +273,7 @@ instance
   *-substitutiveᴸ = record { substᴸ = *-substᴸ }
     where
       *-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ * b ≃ a₂ * b
-      *-substᴸ {a₁⁺ — a₁⁻} {a₂⁺ — a₂⁻} {b⁺ — b⁻} a₁≃a₂ = ≃ᶻ-intro {{eq′}}
+      *-substᴸ {a₁⁺ — a₁⁻} {a₂⁺ — a₂⁻} {b⁺ — b⁻} a₁≃a₂ = ≃ᶻ-intro eq′
         where
           rearr :
             ∀ {u v w x y z} →
@@ -306,7 +306,7 @@ instance
   *-substitutiveᴿ = AA.substitutiveᴿ
 
 *-to-* : ∀ {n m} → fromℕ (n * m) ≃ fromℕ n * fromℕ m
-*-to-* {n} {m} = ≃ᶻ-intro {{nm+n0+0m≃nm+00+0}}
+*-to-* {n} {m} = ≃ᶻ-intro nm+n0+0m≃nm+00+0
   where
     nm+n0+0m≃nm+00+0 =
       begin
@@ -323,7 +323,7 @@ instance
 
 *-distrib-+ᴸ : {x y z : ℤ} → x * (y + z) ≃ x * y + x * z
 *-distrib-+ᴸ {x⁺ — x⁻} {y⁺ — y⁻} {z⁺ — z⁻} =
-    ≃ᶻ-intro {{AA.[a≃b][c≃d] (refactor {x⁺} {x⁻}) (sym (refactor {x⁺} {x⁻}))}}
+    ≃ᶻ-intro (AA.[a≃b][c≃d] (refactor {x⁺} {x⁻}) (sym (refactor {x⁺} {x⁻})))
   where
     refactor :
       ∀ {b₁ b₂ a₁ a₂ a₃ a₄} →
@@ -353,7 +353,7 @@ instance
   ∎
 
 *-assoc : {x y z : ℤ} → (x * y) * z ≃ x * (y * z)
-*-assoc {x⁺ — x⁻} {y⁺ — y⁻} {z⁺ — z⁻} = ≃ᶻ-intro {{eq′}}
+*-assoc {x⁺ — x⁻} {y⁺ — y⁻} {z⁺ — z⁻} = ≃ᶻ-intro eq′
   where
     assoc-four :
       ∀ {a₁ a₂ a₃ b₁ b₂ b₃ c₁ c₂ c₃ d₁ d₂ d₃} →
@@ -411,7 +411,7 @@ instance
   *-associative = record { assoc = *-assoc }
 
 *-negᴸ : ∀ {a b} → - a * b ≃ - (a * b)
-*-negᴸ {a⁺ — a⁻} {b⁺ — b⁻} = ≃ᶻ-intro {{eq′}}
+*-negᴸ {a⁺ — a⁻} {b⁺ — b⁻} = ≃ᶻ-intro eq′
   where
     eq′ =
       begin
@@ -435,7 +435,7 @@ instance
   ∎
 
 neg-mult : ∀ {a} → - a ≃ -1 * a
-neg-mult {a⁺ — a⁻} = ≃ᶻ-intro {{a⁻+[[0+0]a⁻+[1+0]a⁺]≃[0+0]a⁺+[1+0]a⁻+a⁺}}
+neg-mult {a⁺ — a⁻} = ≃ᶻ-intro a⁻+[[0+0]a⁻+[1+0]a⁺]≃[0+0]a⁺+[1+0]a⁻+a⁺
   where
     a⁻+[[0+0]a⁻+[1+0]a⁺]≃[0+0]a⁺+[1+0]a⁻+a⁺ =
       begin
@@ -584,9 +584,9 @@ trichotomy (x⁺ — x⁻) = record { at-least = one≤ ; at-most = one≮ }
               ≃˘⟨ AA.identᴸ ⟩
                 0 + x⁻
               ∎
-         in neg (record { n = n ; pos = pos-n ; x≃-n = ≃ᶻ-intro {{x⁺+n≃0+x⁻}} })
+         in neg (record { n = n ; pos = pos-n ; x≃-n = ≃ᶻ-intro x⁺+n≃0+x⁻ })
     one≤ | ℕ.tri-≃ x⁺≃x⁻ =
-      nil (≃ᶻ-intro {{trans AA.identᴿ (trans x⁺≃x⁻ (sym AA.identᴸ))}})
+      nil (≃ᶻ-intro (trans AA.identᴿ (trans x⁺≃x⁻ (sym AA.identᴸ))))
     one≤ | ℕ.tri-> x⁺>x⁻ =
       let record { d = n ; d≄z = pos-n ; n+d≃m = x⁻+n≃x⁺ } = ℕ.<→<⁺ x⁺>x⁻
           x⁺—x⁻≃n =
@@ -599,12 +599,12 @@ trichotomy (x⁺ — x⁻) = record { at-least = one≤ ; at-most = one≮ }
             ≃⟨ AA.comm ⟩
               n + x⁻
             ∎
-       in pos (record { n = n ; pos = pos-n ; x≃n = ≃ᶻ-intro {{x⁺—x⁻≃n}} })
+       in pos (record { n = n ; pos = pos-n ; x≃n = ≃ᶻ-intro x⁺—x⁻≃n })
 
     one≮ : ¬ MoreThanOne (x⁺ — x⁻)
     one≮ (nil∧pos
-            (≃ᶻ-intro {{x⁺+0≃0+x⁻}})
-            record { n = n ; pos = n≄0 ; x≃n = ≃ᶻ-intro {{x⁺+0≃n+x⁻}} }) =
+            (≃ᶻ-intro x⁺+0≃0+x⁻)
+            record { n = n ; pos = n≄0 ; x≃n = ≃ᶻ-intro x⁺+0≃n+x⁻ }) =
       let x⁻+n≃x⁻+0 =
             begin
               x⁻ + n
@@ -619,12 +619,12 @@ trichotomy (x⁺ — x⁻) = record { at-least = one≤ ; at-most = one≮ }
             ∎
        in n≄0 (AA.cancelᴸ x⁻+n≃x⁻+0)
     one≮ (nil∧neg
-            (≃ᶻ-intro {{x⁺+0≃x⁻}})
-            record { n = n ; pos = n≄0 ; x≃-n = ≃ᶻ-intro {{x⁺+n≃x⁻}} }) =
+            (≃ᶻ-intro x⁺+0≃x⁻)
+            record { n = n ; pos = n≄0 ; x≃-n = ≃ᶻ-intro x⁺+n≃x⁻ }) =
       n≄0 (AA.cancelᴸ (trans x⁺+n≃x⁻ (sym x⁺+0≃x⁻)))
     one≮ (pos∧neg
-            record { n = n₁ ; pos = n₁≄0 ; x≃n = ≃ᶻ-intro {{x⁺+0≃n₁+x⁻}} }
-            record { n = n₂ ; pos = n₂≄0 ; x≃-n = ≃ᶻ-intro {{x⁺+n₂≃0+x⁻}} }) =
+            record { n = n₁ ; pos = n₁≄0 ; x≃n = ≃ᶻ-intro x⁺+0≃n₁+x⁻ }
+            record { n = n₂ ; pos = n₂≄0 ; x≃-n = ≃ᶻ-intro x⁺+n₂≃0+x⁻ }) =
       let x⁺+[n₂+n₁]≃x⁺+0 =
             begin
               x⁺ + (n₂ + n₁)
@@ -669,7 +669,7 @@ trichotomy (x⁺ — x⁻) = record { at-least = one≤ ; at-most = one≮ }
         ∎
       b⁺≃b⁻ = ℕ.*-cancelᴸ n≄0 nb⁺≃nb⁻
       b⁺+0≃0+b⁻ = trans AA.identᴿ (trans b⁺≃b⁻ (sym AA.identᴸ))
-   in ∨-introᴿ (≃ᶻ-intro {{b⁺+0≃0+b⁻}})
+   in ∨-introᴿ (≃ᶻ-intro b⁺+0≃0+b⁻)
 *-either-zero {a} {b⁺ — b⁻} ab≃0
     | neg record { n = n ; pos = n≄0 ; x≃-n = a≃0—n } =
   let ab≃[0—n]b = AA.substᴸ {b = b⁺ — b⁻} a≃0—n
@@ -696,7 +696,7 @@ trichotomy (x⁺ — x⁻) = record { at-least = one≤ ; at-most = one≮ }
         ∎
       b⁺≃b⁻ = ℕ.*-cancelᴸ n≄0 nb⁺≃nb⁻
       b⁺+0≃0+b⁻ = trans AA.identᴿ (trans b⁺≃b⁻ (sym AA.identᴸ))
-   in ∨-introᴿ (≃ᶻ-intro {{b⁺+0≃0+b⁻}})
+   in ∨-introᴿ (≃ᶻ-intro b⁺+0≃0+b⁻)
 
 *-neither-zero : {a b : ℤ} → a ≄ 0 → b ≄ 0 → a * b ≄ 0
 *-neither-zero a≄0 b≄0 ab≃0 with *-either-zero ab≃0
