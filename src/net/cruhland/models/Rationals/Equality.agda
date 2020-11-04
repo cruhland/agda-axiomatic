@@ -1,6 +1,7 @@
 -- Needed for positive integer literals
 import Agda.Builtin.FromNat as FromNat
 open import Function using (_∘_)
+open import Relation.Nullary.Decidable using (fromWitnessFalse)
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.DecEq using (_≃?_; DecEq)
 open import net.cruhland.axioms.Eq using
@@ -84,7 +85,8 @@ record _≃₀_ (p q : ℚ) : Set where
           (r↑ * p↓) * (q↑ * q↓)
         ∎
       q↑q↓≄0 = AA.nonzero-prod q↑≄0 q↓≄0
-      p↑r↓≃r↑p↓ = ℤ.*-cancelᴿ q↑q↓≄0 p↑r↓[q↑q↓]≃r↑p↓[q↑q↓]
+      p↑r↓≃r↑p↓ =
+        AA.cancelᴿ {{c = fromWitnessFalse q↑q↓≄0}} p↑r↓[q↑q↓]≃r↑p↓[q↑q↓]
    in ≃₀-intro p↑r↓≃r↑p↓
 
 instance

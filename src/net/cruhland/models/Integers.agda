@@ -6,9 +6,9 @@ open import Agda.Builtin.FromNat using (Number)
 open import Agda.Builtin.FromNeg using (Negative)
 import Agda.Builtin.Nat as Nat
 open import Function using (_∘_; const; flip)
-open import Relation.Nullary.Decidable using (fromWitnessFalse)
+open import Relation.Nullary.Decidable using (False; fromWitnessFalse)
 import net.cruhland.axioms.AbstractAlgebra as AA
-open import net.cruhland.axioms.DecEq using (DecEq)
+open import net.cruhland.axioms.DecEq using (_≃?_; ≄-derive; DecEq)
 open import net.cruhland.axioms.Eq using
   (_≃_; _≄_; Eq; refl; sym; ¬sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
@@ -703,36 +703,6 @@ instance
             b⁺+0≃0+b⁻ = trans AA.identᴿ (trans b⁺≃b⁻ (sym AA.identᴸ))
          in ∨-introᴿ (≃ᶻ-intro b⁺+0≃0+b⁻)
 
-*-cancelᴿ : ∀ {a b c} → c ≄ 0 → a * c ≃ b * c → a ≃ b
-*-cancelᴿ {a} {b} {c} c≄0 ac≃bc with
-  let [a-b]c≃0 =
-        begin
-          (a - b) * c
-        ≃⟨ *-distrib-subᴿ {a} {b} ⟩
-          a * c - b * c
-        ≃⟨ sub-substᴸ {b = b * c} ac≃bc ⟩
-          b * c - b * c
-        ≃⟨ +-inverseᴿ {b * c} ⟩
-          0
-        ∎
-   in AA.zero-prod [a-b]c≃0
-*-cancelᴿ {a} {b} {c} c≄0 ac≃bc | ∨-introᴸ a-b≃0 =
-  begin
-    a
-  ≃˘⟨ +-identityᴿ ⟩
-    a + 0
-  ≃˘⟨ +-substᴿ {a} (+-inverseᴸ {b}) ⟩
-    a + (- b + b)
-  ≃˘⟨ +-assoc {a} ⟩
-    a - b + b
-  ≃⟨ +-substᴸ a-b≃0 ⟩
-    0 + b
-  ≃⟨ +-identityᴸ ⟩
-    b
-  ∎
-*-cancelᴿ {a} {b} {c} c≄0 ac≃bc | ∨-introᴿ c≃0 =
-  ⊥-elim (c≄0 c≃0)
-
 infix 4 _≤_
 record _≤_ (n m : ℤ) : Set where
   constructor ≤-intro
@@ -841,10 +811,48 @@ order-trichotomy a b = record { at-least-one = 1≤ ; at-most-one = ≤1 }
 
 instance
   decEq : DecEq ℤ
-  decEq = record { Constraint = λ _ _ → ⊤ ; _≃?_ = _≃?_ }
+  decEq = record { Constraint = λ _ _ → ⊤ ; _≃?_ = _≃?₀_ }
     where
-      _≃?_ : (a b : ℤ) {{_ : ⊤}} → Dec (a ≃ b)
-      a ≃? b with at-least-one (order-trichotomy a b)
-      a ≃? b | 1st (<-intro a≤b a≄b) = no a≄b
-      a ≃? b | 2nd a≃b = yes a≃b
-      a ≃? b | 3rd (<-intro b≤a b≄a) = no (¬sym b≄a)
+      _≃?₀_ : (a b : ℤ) {{_ : ⊤}} → Dec (a ≃ b)
+      a ≃?₀ b with at-least-one (order-trichotomy a b)
+      a ≃?₀ b | 1st (<-intro a≤b a≄b) = no a≄b
+      a ≃?₀ b | 2nd a≃b = yes a≃b
+      a ≃?₀ b | 3rd (<-intro b≤a b≄a) = no (¬sym b≄a)
+
+  *-cancellativeᴸ : AA.Cancellativeᴸ _*_
+  *-cancellativeᴸ = record { Constraint = Constraint ; cancelᴸ = *-cancelᴸ }
+    where
+      Constraint = λ a → False (a ≃? 0)
+
+      *-cancelᴸ : ∀ {a b c} {{_ : Constraint a}} → a * b ≃ a * c → b ≃ c
+      *-cancelᴸ {a} {b} {c} ab≃ac with
+        let a[b-c]≃0 =
+              begin
+                a * (b - c)
+              ≃⟨ *-distrib-subᴸ ⟩
+                a * b - a * c
+              ≃⟨ sub-substᴸ ab≃ac ⟩
+                a * c - a * c
+              ≃⟨ +-inverseᴿ ⟩
+                0
+              ∎
+         in AA.zero-prod a[b-c]≃0
+      *-cancelᴸ {a} {b} {c} ab≃ac | ∨-introᴸ a≃0 =
+        ⊥-elim (≄-derive a≃0)
+      *-cancelᴸ {a} {b} {c} ab≃ac | ∨-introᴿ b-c≃0 =
+        begin
+          b
+        ≃˘⟨ +-identityᴿ ⟩
+          b + 0
+        ≃˘⟨ +-substᴿ +-inverseᴸ ⟩
+          b + (- c + c)
+        ≃˘⟨ +-assoc ⟩
+          b - c + c
+        ≃⟨ +-substᴸ b-c≃0 ⟩
+          0 + c
+        ≃⟨ +-identityᴸ ⟩
+          c
+        ∎
+
+  *-cancellativeᴿ : AA.Cancellativeᴿ {A = ℤ} _*_
+  *-cancellativeᴿ = AA.cancellativeᴿ
