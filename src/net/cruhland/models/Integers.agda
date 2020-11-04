@@ -6,6 +6,7 @@ open import Agda.Builtin.FromNat using (Number)
 open import Agda.Builtin.FromNeg using (Negative)
 import Agda.Builtin.Nat as Nat
 open import Function using (_∘_; const; flip)
+open import Relation.Nullary.Decidable using (fromWitnessFalse)
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.DecEq using (DecEq)
 open import net.cruhland.axioms.Eq using
@@ -671,7 +672,7 @@ instance
               ≃⟨ AA.identᴿ ⟩
                 n * b⁻
               ∎
-            b⁺≃b⁻ = ℕ.*-cancelᴸ n≄0 nb⁺≃nb⁻
+            b⁺≃b⁻ = AA.cancelᴸ {{c = fromWitnessFalse n≄0}} nb⁺≃nb⁻
             b⁺+0≃0+b⁻ = trans AA.identᴿ (trans b⁺≃b⁻ (sym AA.identᴸ))
          in ∨-introᴿ (≃ᶻ-intro b⁺+0≃0+b⁻)
       *-either-zero {a} {b⁺ — b⁻} ab≃0
@@ -698,7 +699,7 @@ instance
               ≃⟨ AA.identᴸ ⟩
                 n * b⁻
               ∎
-            b⁺≃b⁻ = ℕ.*-cancelᴸ n≄0 nb⁺≃nb⁻
+            b⁺≃b⁻ = AA.cancelᴸ {{c = fromWitnessFalse n≄0}} nb⁺≃nb⁻
             b⁺+0≃0+b⁻ = trans AA.identᴿ (trans b⁺≃b⁻ (sym AA.identᴸ))
          in ∨-introᴿ (≃ᶻ-intro b⁺+0≃0+b⁻)
 

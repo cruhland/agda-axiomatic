@@ -47,15 +47,17 @@ record Identityᴿ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) (e : A) : Set
 
 open Identityᴿ {{...}} public using (identᴿ)
 
-record Cancellativeᴸ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set where
+record Cancellativeᴸ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set₁ where
   field
-    cancelᴸ : ∀ {a b₁ b₂} → a ⊙ b₁ ≃ a ⊙ b₂ → b₁ ≃ b₂
+    Constraint : A → Set
+    cancelᴸ : ∀ {a b₁ b₂} {{c : Constraint a}} → a ⊙ b₁ ≃ a ⊙ b₂ → b₁ ≃ b₂
 
 open Cancellativeᴸ {{...}} public using (cancelᴸ)
 
-record Cancellativeᴿ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set where
+record Cancellativeᴿ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set₁ where
   field
-    cancelᴿ : ∀ {a₁ a₂ b} → a₁ ⊙ b ≃ a₂ ⊙ b → a₁ ≃ a₂
+    Constraint : A → Set
+    cancelᴿ : ∀ {a₁ a₂ b} {{c : Constraint b}} → a₁ ⊙ b ≃ a₂ ⊙ b → a₁ ≃ a₂
 
 open Cancellativeᴿ {{...}} public using (cancelᴿ)
 
@@ -100,9 +102,12 @@ substitutiveᴿ = record { substᴿ = with-comm ∘ substᴸ }
 
 cancellativeᴿ :
   {A : Set} {_⊙_ : A → A → A}
-    {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Cancellativeᴸ _⊙_}} →
+    {{eq : Eq A}} {{⊙-comm : Commutative _⊙_}}
+    {{⊙-cancelᴸ : Cancellativeᴸ _⊙_}} →
       Cancellativeᴿ _⊙_
-cancellativeᴿ = record { cancelᴿ = cancelᴸ ∘ with-comm }
+cancellativeᴿ
+  {{⊙-cancelᴸ = record { Constraint = Constraint ; cancelᴸ = cancelᴸ₀}}} =
+    record { Constraint = Constraint ; cancelᴿ = cancelᴸ₀ ∘ with-comm }
 
 distributiveᴿ :
   {A : Set} {_⊙_ _⊕_ : A → A → A}

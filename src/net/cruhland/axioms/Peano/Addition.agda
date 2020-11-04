@@ -11,7 +11,7 @@ open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
 import net.cruhland.axioms.Peano.Inspect as PeanoInspect
 open import net.cruhland.models.Logic using
-  (_∧_; _∨_; ∨-introᴸ; ∨-introᴿ; ¬_; ¬[¬a∨¬b]→a∧b)
+  (⊤; _∧_; _∨_; ∨-introᴸ; ∨-introᴿ; ¬_; ¬[¬a∨¬b]→a∧b)
 
 record Addition (PB : PeanoBase) : Set where
   open PeanoBase PB using (ℕ; ind; step; step-case; step-inj; step≄zero; zero)
@@ -153,7 +153,7 @@ record Addition (PB : PeanoBase) : Set where
               ∎
 
     +-cancellativeᴸ : AA.Cancellativeᴸ _+_
-    +-cancellativeᴸ = record { cancelᴸ = +-cancelᴸ }
+    +-cancellativeᴸ = record { Constraint = λ _ → ⊤ ; cancelᴸ = +-cancelᴸ }
       where
         +-cancelᴸ : ∀ {n m p} → n + m ≃ n + p → m ≃ p
         +-cancelᴸ {n} {m} {p} = ind P Pz Ps n

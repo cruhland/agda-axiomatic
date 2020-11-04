@@ -258,8 +258,16 @@ module net.cruhland.axioms.Peano.Ordering
   <s→<∨≃ : ∀ {n m} → n < step m → n < m ∨ n ≃ m
   <s→<∨≃ = ≤→<∨≃ ∘ s≤s→≤ ∘ <→s≤
 
+  ≤-substᴸ : ∀ {n₁ n₂ m} → n₁ ≃ n₂ → n₁ ≤ m → n₂ ≤ m
+  ≤-substᴸ n₁≃n₂ (≤-intro d n₁+d≃m) =
+    ≤-intro d (trans (AA.substᴸ (sym n₁≃n₂)) n₁+d≃m)
+
   ≤-substᴿ : ∀ {n m₁ m₂} → m₁ ≃ m₂ → n ≤ m₁ → n ≤ m₂
   ≤-substᴿ m₁≃m₂ (≤-intro d n+d≃m₁) = ≤-intro d (trans n+d≃m₁ m₁≃m₂)
+
+  <-substᴸ : ∀ {n₁ n₂ m} → n₁ ≃ n₂ → n₁ < m → n₂ < m
+  <-substᴸ n₁≃n₂ (<-intro n₁≤m n₁≄m) =
+    <-intro (≤-substᴸ n₁≃n₂ n₁≤m) λ n₂≃m → n₁≄m (trans n₁≃n₂ n₂≃m)
 
   <-substᴿ : ∀ {n m₁ m₂} → m₁ ≃ m₂ → n < m₁ → n < m₂
   <-substᴿ m₁≃m₂ (<-intro n≤m₁ n≄m₁) =

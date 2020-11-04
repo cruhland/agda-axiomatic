@@ -1,5 +1,7 @@
 module net.cruhland.axioms.Peano.Multiplication where
 
+open import Relation.Nullary.Decidable using (False)
+open import net.cruhland.axioms.DecEq using (_≃?_; ≄-derive)
 open import net.cruhland.axioms.Eq using
   (_≃_; _≄_; sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
@@ -18,9 +20,12 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
   private module Add = PeanoAddition PA
   open Add using (_+_; +-both-zero; Positive; +-stepᴿ; +-stepᴸ⃗ᴿ; with-+-assoc)
   open PeanoBase PB using (ℕ; ind; step; step-case; zero)
-  open PeanoInspect PB using (case; case-step; case-zero; pred-intro)
+  private module Inspect = PeanoInspect PB
+  open Inspect using (case; case-step; case-zero; pred-intro)
   open PeanoOrdering PB PA using
-    (_<_; <→≄; <⁺→<; <→<⁺; <⁺-intro; tri-<; tri-≃; tri->; trichotomy)
+    ( _<_; <→≄; <⁺→<; <→<⁺; <⁺-intro; <-substᴸ; <-substᴿ
+    ; tri-<; tri-≃; tri->; trichotomy
+    )
 
   field
     {{star}} : StarOp ℕ
@@ -212,18 +217,27 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
           (a * step k) * c
         ∎
 
-  *-preserves-< : ∀ {a b c} → a < b → c ≄ zero → a * c < b * c
-  *-preserves-< {a} {b} {c} a<b c≄z with <→<⁺ a<b
+  *-preserves-<ᴿ : ∀ {a b c} → a < b → c ≄ zero → a * c < b * c
+  *-preserves-<ᴿ {a} {b} {c} a<b c≄z with <→<⁺ a<b
   ... | <⁺-intro d d≄z a+d≃b = <⁺→< (<⁺-intro (d * c) dc≄z ac+dc≃bc)
     where
       dc≄z = AA.nonzero-prod d≄z c≄z
       ac+dc≃bc = trans (sym AA.distribᴿ) (AA.substᴸ a+d≃b)
 
-  *-cancelᴿ : ∀ {a b c} → c ≄ zero → a * c ≃ b * c → a ≃ b
-  *-cancelᴿ c≄z ac≃bc with trichotomy
-  ... | tri-< a<b = ⊥-elim (<→≄ (*-preserves-< a<b c≄z) ac≃bc)
-  ... | tri-≃ a≃b = a≃b
-  ... | tri-> a>b = ⊥-elim (<→≄ (*-preserves-< a>b c≄z) (sym ac≃bc))
+  *-preserves-<ᴸ : ∀ {a b c} → b < c → a ≄ zero → a * b < a * c
+  *-preserves-<ᴸ b<c a≄z =
+    <-substᴸ AA.comm (<-substᴿ AA.comm (*-preserves-<ᴿ b<c a≄z))
 
-  *-cancelᴸ : ∀ {a b c} → a ≄ zero → a * b ≃ a * c → b ≃ c
-  *-cancelᴸ a≄z ab≃ac = *-cancelᴿ a≄z (trans AA.comm (trans ab≃ac AA.comm))
+  instance
+    *-cancellativeᴸ : AA.Cancellativeᴸ _*_
+    *-cancellativeᴸ =
+        record { Constraint = λ a → False (a ≃? zero) ; cancelᴸ = *-cancelᴸ }
+      where
+        *-cancelᴸ : ∀ {a b c} {{_ : False (a ≃? zero)}} → a * b ≃ a * c → b ≃ c
+        *-cancelᴸ ab≃ac with trichotomy
+        ... | tri-< b<c = ⊥-elim (<→≄ (*-preserves-<ᴸ b<c ≄-derive) ab≃ac)
+        ... | tri-≃ b≃c = b≃c
+        ... | tri-> b>c = ⊥-elim (<→≄ (*-preserves-<ᴸ b>c ≄-derive) (sym ab≃ac))
+
+    *-cancellativeᴿ : AA.Cancellativeᴿ _*_
+    *-cancellativeᴿ = AA.cancellativeᴿ
