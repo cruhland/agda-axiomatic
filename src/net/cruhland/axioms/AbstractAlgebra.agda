@@ -1,8 +1,9 @@
 module net.cruhland.axioms.AbstractAlgebra where
 
 open import Function using (_∘_)
-open import net.cruhland.axioms.Eq using (_≃_; Eq; module ≃-Reasoning)
+open import net.cruhland.axioms.Eq using (_≃_; _≄_; Eq; module ≃-Reasoning)
 open ≃-Reasoning
+open import net.cruhland.models.Logic using (_∨_; ∨-rec)
 
 record Substitutive₁ {A : Set} {{eq : Eq A}} (f : A → A) : Set where
   field
@@ -69,6 +70,12 @@ record Distributiveᴿ {A : Set} {{eq : Eq A}} (_⊙_ _⊕_ : A → A → A) : S
     distribᴿ : ∀ {a b c} → (b ⊕ c) ⊙ a ≃ (b ⊙ a) ⊕ (c ⊙ a)
 
 open Distributiveᴿ {{...}} public using (distribᴿ)
+
+record ZeroProduct {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) (z : A) : Set where
+  field
+    zero-prod : ∀ {a b} → a ⊙ b ≃ z → a ≃ z ∨ b ≃ z
+
+open ZeroProduct {{...}} public using (zero-prod)
 
 with-comm :
   {A : Set} {_⊙_ : A → A → A}
@@ -228,3 +235,9 @@ distrib-twoᴿ {A} {_⊙_} {_⊕_} {a} {b} {c} {d} {e} {f} =
   ≃⟨ substᴿ distribᴿ ⟩
     ((a ⊙ c) ⊕ (b ⊙ c)) ⊕ ((d ⊙ f) ⊕ (e ⊙ f))
   ∎
+
+nonzero-prod :
+  {A : Set} {_⊙_ : A → A → A} →
+    ∀ {a b z} {{_ : Eq A}} {{_ : ZeroProduct _⊙_ z}} →
+      a ≄ z → b ≄ z → a ⊙ b ≄ z
+nonzero-prod a≄z b≄z = ∨-rec a≄z b≄z ∘ zero-prod

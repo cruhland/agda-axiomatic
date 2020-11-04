@@ -58,13 +58,12 @@ instance
   star : StarOp ℕ
   star = record { _*_ = _*_ }
 
+  *-substitutiveᴸ : AA.Substitutiveᴸ _*_
+  *-substitutiveᴸ = record { substᴸ = λ {_ _ m} → cong (_* m) }
+
 multiplication : Multiplication base addition
-multiplication = record
-  { star = star
-  ; *-zeroᴸ = refl
-  ; *-stepᴸ = λ {n m} → +-comm m (n * m)
-  ; *-substᴸ = λ {_ _ m} → cong (_* m)
-  }
+multiplication =
+  record { *-zeroᴸ = refl ; *-stepᴸ = λ {n m} → +-comm m (n * m) }
 
 exponentiation : Exponentiation base addition multiplication
 exponentiation =

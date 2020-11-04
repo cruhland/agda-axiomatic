@@ -28,9 +28,9 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
   open StarOp star public using (_*_)
 
   field
+    {{*-substitutiveᴸ}} : AA.Substitutiveᴸ _*_
     *-zeroᴸ : ∀ {m} → zero * m ≃ zero
     *-stepᴸ : ∀ {n m} → step n * m ≃ n * m + m
-    *-substᴸ : ∀ {n₁ n₂ m} → n₁ ≃ n₂ → n₁ * m ≃ n₂ * m
 
   *-zeroᴿ : ∀ {n} → n * zero ≃ zero
   *-zeroᴿ {n} = ind P Pz Ps n
@@ -117,37 +117,31 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
   *-oneᴿ : ∀ {n} → n * step zero ≃ n
   *-oneᴿ = trans AA.comm *-oneᴸ
 
-  *-either-zero : ∀ {n m} → n * m ≃ zero → n ≃ zero ∨ m ≃ zero
-  *-either-zero {n} {m} n*m≃z with case n
-  ... | case-zero n≃z = ∨-introᴸ n≃z
-  ... | case-step (pred-intro p n≃sp) = ∨-introᴿ m≃z
-    where
-      p*m+m≃z =
-        begin
-          p * m + m
-        ≃˘⟨ *-stepᴸ ⟩
-          step p * m
-        ≃˘⟨ *-substᴸ n≃sp ⟩
-          n * m
-        ≃⟨ n*m≃z ⟩
-          zero
-        ∎
-
-      m≃z = ∧-elimᴿ (+-both-zero p*m+m≃z)
-
-  *-substᴿ : ∀ {n m₁ m₂} → m₁ ≃ m₂ → n * m₁ ≃ n * m₂
-  *-substᴿ {n} {m₁} {m₂} m₁≃m₂ =
-    begin
-      n * m₁
-    ≃⟨ AA.comm ⟩
-      m₁ * n
-    ≃⟨ *-substᴸ m₁≃m₂ ⟩
-      m₂ * n
-    ≃⟨ AA.comm ⟩
-      n * m₂
-    ∎
-
   instance
+    zero-product : AA.ZeroProduct _*_ zero
+    zero-product = record { zero-prod = *-either-zero }
+      where
+        *-either-zero : ∀ {n m} → n * m ≃ zero → n ≃ zero ∨ m ≃ zero
+        *-either-zero {n} {m} n*m≃z with case n
+        ... | case-zero n≃z = ∨-introᴸ n≃z
+        ... | case-step (pred-intro p n≃sp) = ∨-introᴿ m≃z
+          where
+            p*m+m≃z =
+              begin
+                p * m + m
+              ≃˘⟨ *-stepᴸ ⟩
+                step p * m
+              ≃˘⟨ AA.substᴸ n≃sp ⟩
+                n * m
+              ≃⟨ n*m≃z ⟩
+                zero
+              ∎
+
+            m≃z = ∧-elimᴿ (+-both-zero p*m+m≃z)
+
+    *-substitutiveᴿ : AA.Substitutiveᴿ _*_
+    *-substitutiveᴿ = AA.substitutiveᴿ
+
     *-distributive-+ᴸ : AA.Distributiveᴸ _*_ _+_
     *-distributive-+ᴸ = record { distribᴸ = *-distrib-+ᴸ }
       where
@@ -158,7 +152,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
             Pz =
               begin
                 a * (b + zero)
-              ≃⟨ *-substᴿ AA.identᴿ ⟩
+              ≃⟨ AA.substᴿ AA.identᴿ ⟩
                 a * b
               ≃˘⟨ AA.identᴿ ⟩
                 a * b + zero
@@ -170,7 +164,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
             Ps {k} a[b+k]≃ab+ak =
               begin
                 a * (b + step k)
-              ≃⟨ *-substᴿ +-stepᴿ ⟩
+              ≃⟨ AA.substᴿ +-stepᴿ ⟩
                 a * step (b + k)
               ≃⟨ *-stepᴿ ⟩
                 a * (b + k) + a
@@ -192,13 +186,13 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
       Pz =
         begin
           a * (zero * c)
-        ≃⟨ *-substᴿ *-zeroᴸ ⟩
+        ≃⟨ AA.substᴿ *-zeroᴸ ⟩
           a * zero
         ≃⟨ *-zeroᴿ ⟩
           zero
         ≃˘⟨ *-zeroᴸ ⟩
           zero * c
-        ≃˘⟨ *-substᴸ *-zeroᴿ ⟩
+        ≃˘⟨ AA.substᴸ *-zeroᴿ ⟩
           (a * zero) * c
         ∎
 
@@ -206,7 +200,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
       Ps {k} a[kc]≃[ak]c =
         begin
           a * (step k * c)
-        ≃⟨ *-substᴿ *-stepᴸ ⟩
+        ≃⟨ AA.substᴿ *-stepᴸ ⟩
           a * (k * c + c)
         ≃⟨ AA.distribᴸ ⟩
           a * (k * c) + a * c
@@ -214,21 +208,16 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
           (a * k) * c + a * c
         ≃˘⟨ AA.distribᴿ ⟩
           (a * k + a) * c
-        ≃˘⟨ *-substᴸ *-stepᴿ ⟩
+        ≃˘⟨ AA.substᴸ *-stepᴿ ⟩
           (a * step k) * c
         ∎
-
-  *-positive : ∀ {a b} → Positive a → Positive b → Positive (a * b)
-  *-positive {a} {b} a≄z b≄z ab≃z with *-either-zero ab≃z
-  ... | ∨-introᴸ a≃z = a≄z a≃z
-  ... | ∨-introᴿ b≃z = b≄z b≃z
 
   *-preserves-< : ∀ {a b c} → a < b → c ≄ zero → a * c < b * c
   *-preserves-< {a} {b} {c} a<b c≄z with <→<⁺ a<b
   ... | <⁺-intro d d≄z a+d≃b = <⁺→< (<⁺-intro (d * c) dc≄z ac+dc≃bc)
     where
-      dc≄z = *-positive d≄z c≄z
-      ac+dc≃bc = trans (sym AA.distribᴿ) (*-substᴸ a+d≃b)
+      dc≄z = AA.nonzero-prod d≄z c≄z
+      ac+dc≃bc = trans (sym AA.distribᴿ) (AA.substᴸ a+d≃b)
 
   *-cancelᴿ : ∀ {a b c} → c ≄ zero → a * c ≃ b * c → a ≃ b
   *-cancelᴿ c≄z ac≃bc with trichotomy

@@ -55,8 +55,8 @@ record _≃₀_ (p q : ℚ) : Set where
         ≃⟨ ℤ.*-zeroᴸ {r↓} ⟩
           0
         ∎
-      p↑≃0 = ∨-forceᴸ q↓≄0 (ℤ.*-either-zero {p↑} p↑q↓≃0)
-      r↑≃0 = ∨-forceᴸ q↓≄0 (ℤ.*-either-zero {r↑} r↑q↓≃0)
+      p↑≃0 = ∨-forceᴸ q↓≄0 (AA.zero-prod p↑q↓≃0)
+      r↑≃0 = ∨-forceᴸ q↓≄0 (AA.zero-prod r↑q↓≃0)
       p↑r↓≃r↑p↓ =
         begin
           p↑ * r↓
@@ -83,7 +83,7 @@ record _≃₀_ (p q : ℚ) : Set where
         ≃⟨ AA.comm {a = q↑ * q↓} ⟩
           (r↑ * p↓) * (q↑ * q↓)
         ∎
-      q↑q↓≄0 = ℤ.*-neither-zero q↑≄0 q↓≄0
+      q↑q↓≄0 = AA.nonzero-prod q↑≄0 q↓≄0
       p↑r↓≃r↑p↓ = ℤ.*-cancelᴿ q↑q↓≄0 p↑r↓[q↑q↓]≃r↑p↓[q↑q↓]
    in ≃₀-intro p↑r↓≃r↑p↓
 
