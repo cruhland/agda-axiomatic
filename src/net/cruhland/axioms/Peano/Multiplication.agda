@@ -147,6 +147,9 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
     *-substitutiveᴿ : AA.Substitutiveᴿ _*_
     *-substitutiveᴿ = AA.substitutiveᴿ
 
+    *-substitutive₂ : AA.Substitutive₂ _*_
+    *-substitutive₂ = AA.substitutive₂
+
     *-distributive-+ᴸ : AA.Distributiveᴸ _*_ _+_
     *-distributive-+ᴸ = record { distribᴸ = *-distrib-+ᴸ }
       where

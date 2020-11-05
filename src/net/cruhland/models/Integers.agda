@@ -306,6 +306,9 @@ instance
   *-substitutiveᴿ : AA.Substitutiveᴿ {A = ℤ} _*_
   *-substitutiveᴿ = AA.substitutiveᴿ
 
+  *-substitutive₂ : AA.Substitutive₂ {A = ℤ} _*_
+  *-substitutive₂ = AA.substitutive₂
+
 *-to-* : ∀ {n m} → fromℕ (n * m) ≃ fromℕ n * fromℕ m
 *-to-* {n} {m} = ≃ᶻ-intro nm+n0+0m≃nm+00+0
   where

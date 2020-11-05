@@ -23,6 +23,11 @@ record Substitutiveᴿ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set whe
 
 open Substitutiveᴿ {{...}} public using (substᴿ)
 
+record Substitutive₂ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set where
+  field
+    {{subst₂ᴸ}} : Substitutiveᴸ _⊙_
+    {{subst₂ᴿ}} : Substitutiveᴿ _⊙_
+
 record Associative {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set where
   field
     assoc : ∀ {a b c} → (a ⊙ b) ⊙ c ≃ a ⊙ (b ⊙ c)
@@ -100,6 +105,12 @@ substitutiveᴿ :
       Substitutiveᴿ _⊙_
 substitutiveᴿ = record { substᴿ = with-comm ∘ substᴸ }
 
+substitutive₂ :
+  {A : Set} {_⊙_ : A → A → A}
+    {{_ : Eq A}} {{_ : Substitutiveᴸ _⊙_}} {{_ : Substitutiveᴿ _⊙_}} →
+      Substitutive₂ _⊙_
+substitutive₂ = record {}
+
 cancellativeᴿ :
   {A : Set} {_⊙_ : A → A → A}
     {{eq : Eq A}} {{⊙-comm : Commutative _⊙_}}
@@ -112,7 +123,7 @@ cancellativeᴿ
 distributiveᴿ :
   {A : Set} {_⊙_ _⊕_ : A → A → A}
     {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Distributiveᴸ _⊙_ _⊕_}}
-    {{_ : Substitutiveᴸ _⊕_}} {{_ : Substitutiveᴿ _⊕_}} →
+    {{_ : Substitutive₂ _⊕_}} →
       Distributiveᴿ _⊙_ _⊕_
 distributiveᴿ {A} {_⊙_} {_⊕_} = record { distribᴿ = distribᴿ₀ }
   where
@@ -145,8 +156,7 @@ distributiveᴿ {A} {_⊙_} {_⊕_} = record { distribᴿ = distribᴿ₀ }
 
 swap-middle :
   {A : Set} {_⊙_ : A → A → A}
-    {{_ : Eq A}} {{_ : Commutative _⊙_}}
-    {{_ : Substitutiveᴸ _⊙_}} {{_ : Substitutiveᴿ _⊙_}} →
+    {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Substitutive₂ _⊙_}} →
       ∀ {a b c d} → a ⊙ ((b ⊙ c) ⊙ d) ≃ a ⊙ ((c ⊙ b) ⊙ d)
 swap-middle = substᴿ (substᴸ comm)
 
@@ -167,7 +177,7 @@ regroup {A} {_⊙_} a b c d =
 perm-adcb :
   {A : Set} {_⊙_ : A → A → A}
     {{_ : Eq A}} {{_ : Associative _⊙_}} {{_ : Commutative _⊙_}}
-    {{_ : Substitutiveᴸ _⊙_}} {{_ : Substitutiveᴿ _⊙_}} →
+    {{_ : Substitutive₂ _⊙_}} →
       ∀ {a b c d} → (a ⊙ d) ⊙ (c ⊙ b) ≃ (a ⊙ b) ⊙ (c ⊙ d)
 perm-adcb {A} {_⊙_} {a} {b} {c} {d} =
   begin
@@ -181,9 +191,8 @@ perm-adcb {A} {_⊙_} {a} {b} {c} {d} =
   ∎
 
 [a≃b][c≃d] :
-  {A : Set} {_⊙_ : A → A → A}
-    {{_ : Eq A}} {{_ : Substitutiveᴸ _⊙_}} {{_ : Substitutiveᴿ _⊙_}} →
-      ∀ {a b c d} → a ≃ b → c ≃ d → a ⊙ c ≃ b ⊙ d
+  {A : Set} {_⊙_ : A → A → A} {{_ : Eq A}} {{_ : Substitutive₂ _⊙_}} →
+    ∀ {a b c d} → a ≃ b → c ≃ d → a ⊙ c ≃ b ⊙ d
 [a≃b][c≃d] {A} {_⊙_} {a} {b} {c} {d} a≃b c≃d =
   begin
     a ⊙ c
@@ -196,7 +205,7 @@ perm-adcb {A} {_⊙_} {a} {b} {c} {d} =
 transpose :
   {A : Set} {_⊙_ : A → A → A}
     {{_ : Eq A}} {{_ : Associative _⊙_}} {{_ : Commutative _⊙_}}
-    {{_ : Substitutiveᴸ _⊙_}} {{_ : Substitutiveᴿ _⊙_}} →
+    {{_ : Substitutive₂ _⊙_}} →
       ∀ {w x y z} → (w ⊙ x) ⊙ (y ⊙ z) ≃ (w ⊙ y) ⊙ (x ⊙ z)
 transpose {A} {_⊙_} {w} {x} {y} {z} =
   begin
@@ -211,8 +220,7 @@ transpose {A} {_⊙_} {w} {x} {y} {z} =
 
 distrib-twoᴸ :
   {A : Set} {_⊙_ _⊕_ : A → A → A}
-    {{_ : Eq A}} {{_ : Distributiveᴸ _⊙_ _⊕_}}
-    {{_ : Substitutiveᴸ _⊕_}} {{_ : Substitutiveᴿ _⊕_}} →
+    {{_ : Eq A}} {{_ : Distributiveᴸ _⊙_ _⊕_}} {{_ : Substitutive₂ _⊕_}} →
       ∀ {a b c d e f} →
         (a ⊙ (b ⊕ c)) ⊕ (d ⊙ (e ⊕ f)) ≃
           ((a ⊙ b) ⊕ (a ⊙ c)) ⊕ ((d ⊙ e) ⊕ (d ⊙ f))
@@ -227,8 +235,7 @@ distrib-twoᴸ {A} {_⊙_} {_⊕_} {a} {b} {c} {d} {e} {f} =
 
 distrib-twoᴿ :
   {A : Set} {_⊙_ _⊕_ : A → A → A}
-    {{_ : Eq A}} {{_ : Distributiveᴿ _⊙_ _⊕_}}
-    {{_ : Substitutiveᴸ _⊕_}} {{_ : Substitutiveᴿ _⊕_}} →
+    {{_ : Eq A}} {{_ : Distributiveᴿ _⊙_ _⊕_}} {{_ : Substitutive₂ _⊕_}} →
       ∀ {a b c d e f} →
         ((a ⊕ b) ⊙ c) ⊕ ((d ⊕ e) ⊙ f) ≃
           ((a ⊙ c) ⊕ (b ⊙ c)) ⊕ ((d ⊙ f) ⊕ (e ⊙ f))

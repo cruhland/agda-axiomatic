@@ -121,6 +121,9 @@ record Addition (PB : PeanoBase) : Set where
     +-substitutiveᴿ : AA.Substitutiveᴿ _+_
     +-substitutiveᴿ = AA.substitutiveᴿ
 
+    +-substitutive₂ : AA.Substitutive₂ _+_
+    +-substitutive₂ = AA.substitutive₂
+
     +-associative : AA.Associative _+_
     +-associative = record { assoc = +-assoc }
       where
