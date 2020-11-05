@@ -6,7 +6,7 @@ open import net.cruhland.axioms.Peano.Base
 open import net.cruhland.models.Logic using (⊤; ⊥-elim; Dec; no; yes)
 
 module net.cruhland.axioms.Peano.Inspect (PB : PeanoBase) where
-  open PeanoBase PB using (ℕ; ind; step; step-case; step-inj; step≄zero; zero)
+  open PeanoBase PB using (ℕ; ind; step; step-case; step≄zero; zero)
 
   _IsPred_ : ℕ → ℕ → Set
   m IsPred n = n ≃ step m
@@ -58,4 +58,4 @@ module net.cruhland.axioms.Peano.Inspect (PB : PeanoBase) where
             ...   | yes k≃j = yes sk≃sj
                     where sk≃sj = trans (AA.subst k≃j) (sym y≃sj)
             ...   | no k≄j = no sk≄sj
-                    where sk≄sj = λ sk≃y → k≄j (step-inj (trans sk≃y y≃sj))
+                    where sk≄sj = λ sk≃y → k≄j (AA.inject (trans sk≃y y≃sj))

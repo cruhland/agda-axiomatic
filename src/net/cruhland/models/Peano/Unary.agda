@@ -2,7 +2,7 @@ module net.cruhland.models.Peano.Unary where
 
 open import Data.Nat using (ℕ; _+_; _*_; _^_; zero) renaming (suc to step)
 open import Data.Nat.Properties
-  using (+-comm; *-comm) renaming (suc-injective to step-injective)
+  using (+-comm; *-comm) renaming (suc-injective to step-inj)
 open import Function using (_∘_)
 open import Relation.Binary.PropositionalEquality using
   (_≡_; _≢_; cong; refl; sym; ≢-sym; trans)
@@ -31,13 +31,15 @@ instance
   step-substitutive : AA.Substitutive₁ step
   step-substitutive = record { subst = cong step }
 
+  step-injective : AA.Injective step
+  step-injective = record { inject = step-inj }
+
 base : Peano
 base = record
   { ℕ = ℕ
   ; zero = zero
   ; step = step
   ; step≄zero = λ ()
-  ; step-inj = step-injective
   ; ind = ind
   }
 

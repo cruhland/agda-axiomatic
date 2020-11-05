@@ -15,7 +15,7 @@ open import net.cruhland.models.Logic using
   (⊤; _∧_; _∨_; ∨-introᴸ; ∨-introᴿ; ¬_; ¬[¬a∨¬b]→a∧b)
 
 record Addition (PB : PeanoBase) : Set where
-  open PeanoBase PB using (ℕ; ind; step; step-case; step-inj; step≄zero; zero)
+  open PeanoBase PB using (ℕ; ind; step; step-case; step≄zero; zero)
   open PeanoInspect PB using (case; case-zero; case-step; decEq; pred-intro)
 
   field
@@ -173,7 +173,7 @@ record Addition (PB : PeanoBase) : Set where
               ∎
 
             Ps : step-case P
-            Ps {k} k+m≃k+p→m≃p sk+m≃sk+p = k+m≃k+p→m≃p (step-inj s[k+m]≃s[k+p])
+            Ps {k} k+m≃k+p→m≃p sk+m≃sk+p = k+m≃k+p→m≃p (AA.inject s[k+m]≃s[k+p])
               where
                 s[k+m]≃s[k+p] =
                   begin

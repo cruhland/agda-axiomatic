@@ -92,17 +92,11 @@ instance
   from-ℕ-substitutive₁ : AA.Substitutive₁ {A = ℕ} (_as ℤ)
   from-ℕ-substitutive₁ = record { subst = ≃ᶻ-intro ∘ AA.substᴸ }
 
-ℤ≃→ℕ≃ : {n : ℕ} → (n as ℤ) ≃ 0 → n ≃ 0
-ℤ≃→ℕ≃ {n} (≃ᶻ-intro n+0≃0+0) =
-  begin
-    n
-  ≃˘⟨ AA.identᴿ ⟩
-    n + 0
-  ≃⟨ n+0≃0+0 ⟩
-    0 + 0
-  ≃⟨ AA.identᴸ ⟩
-    0
-  ∎
+  from-ℕ-injective : AA.Injective {A = ℕ} (_as ℤ)
+  from-ℕ-injective = record { inject = from-ℕ-inject }
+    where
+      from-ℕ-inject : {n m : ℕ} → (n as ℤ) ≃ (m as ℤ) → n ≃ m
+      from-ℕ-inject (≃ᶻ-intro n+0≃m+0) = AA.cancelᴿ n+0≃m+0
 
 +-to-+ : {n m : ℕ} → (n + m as ℤ) ≃ (n as ℤ) + (m as ℤ)
 +-to-+ = ≃ᶻ-intro (AA.substᴿ AA.identᴸ)

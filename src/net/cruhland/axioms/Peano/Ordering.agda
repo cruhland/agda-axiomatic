@@ -24,7 +24,7 @@ module net.cruhland.axioms.Peano.Ordering
     ( n≄sn; +-stepᴸ; +-stepᴸ⃗ᴿ; +-stepᴿ⃗ᴸ
     ; step≃+; with-+-assoc; Positive; +-both-zero; +-positive
     )
-  open PeanoBase PB using (ℕ; ind; step; step-case; step-inj; step≄zero; zero)
+  open PeanoBase PB using (ℕ; ind; step; step-case; step≄zero; zero)
   open PeanoInspect PB using
     (Case; case; case-step; case-zero; decEq; pred-intro; pred)
 
@@ -251,7 +251,7 @@ module net.cruhland.axioms.Peano.Ordering
 
   s≤s→≤ : ∀ {n m} → step n ≤ step m → n ≤ m
   s≤s→≤ (≤-intro d sn+d≃sm) =
-    ≤-intro d (step-inj (trans (sym +-stepᴸ) sn+d≃sm))
+    ≤-intro d (AA.inject (trans (sym +-stepᴸ) sn+d≃sm))
 
   ≤s→≤∨≃s : ∀ {n m} → n ≤ step m → n ≤ m ∨ n ≃ step m
   ≤s→≤∨≃s n≤sm = ∨-mapᴸ (s≤s→≤ ∘ <→s≤) (≤→<∨≃ n≤sm)

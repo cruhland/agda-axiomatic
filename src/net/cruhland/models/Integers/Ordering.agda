@@ -17,7 +17,7 @@ module net.cruhland.models.Integers.Ordering (PA : PeanoArithmetic) where
 
 open module ℕ = PeanoArithmetic PA using (ℕ)
 import net.cruhland.models.Integers.Addition PA as Addition
-open Addition using (ℤ≃→ℕ≃; +-identityᴸ; +-identityᴿ; +-to-+)
+open Addition using (+-identityᴸ; +-identityᴿ; +-to-+)
 open import net.cruhland.models.Integers.Base PA using (ℤ)
 import net.cruhland.models.Integers.Equality PA as Equality
 import net.cruhland.models.Integers.Multiplication PA as Multiplication
@@ -67,7 +67,7 @@ _>_ = flip _<_
         ≃⟨ +-inverseᴸ ⟩
           0
         ∎
-      n₂≃0 = ∧-elimᴿ (ℕ.+-both-zero (ℤ≃→ℕ≃ n₁+n₂≃0))
+      n₂≃0 = ∧-elimᴿ (ℕ.+-both-zero (AA.inject n₁+n₂≃0))
    in trans (trans a≃b+n₂ (AA.substᴿ (AA.subst n₂≃0))) +-identityᴿ
 
 pos→< : ∀ {x y} → IsPositive (y - x) → x < y
@@ -75,7 +75,7 @@ pos→< {x} {y} record { n = n ; pos = n≄0 ; x≃n = y-x≃n } =
     <-intro (≤-intro n (≃ᴸ-subᴿ-toᴸ y-x≃n)) x≄y
   where
     x≄y : x ≄ y
-    x≄y x≃y = n≄0 (ℤ≃→ℕ≃ n≃0)
+    x≄y x≃y = n≄0 (AA.inject n≃0)
       where
         n≃0 =
           begin

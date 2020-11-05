@@ -10,8 +10,8 @@ record Peano : Set₁ where
     step : ℕ → ℕ
     {{eq}} : Eq ℕ
     {{step-substitutive}} : AA.Substitutive₁ step
+    {{step-injective}} : AA.Injective step
     step≄zero : ∀ {n} → step n ≄ zero
-    step-inj : ∀ {n m} → step n ≃ step m → n ≃ m
 
   step-case : (P : ℕ → Set) → Set
   step-case P = ∀ {k} → P k → P (step k)

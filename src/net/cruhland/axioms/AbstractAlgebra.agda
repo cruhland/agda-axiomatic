@@ -54,6 +54,12 @@ record Identityᴿ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) (e : A) : Set
 
 open Identityᴿ {{...}} public using (identᴿ)
 
+record Injective {A B : Set} {{eq : Eq A}} {{eq : Eq B}} (f : A → B) : Set where
+  field
+    inject : ∀ {a₁ a₂} → f a₁ ≃ f a₂ → a₁ ≃ a₂
+
+open Injective {{...}} public using (inject)
+
 record Cancellativeᴸ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set₁ where
   field
     Constraint : A → Set
