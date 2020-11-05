@@ -53,8 +53,11 @@ instance
   +-identityᴸ : AA.Identityᴸ _+_ zero
   +-identityᴸ = record { identᴸ = refl }
 
+  +-commutative-stepᴸ : AA.Commutativeᴸ step _+_
+  +-commutative-stepᴸ = record { commᴸ = refl }
+
 addition : Addition base
-addition = record { +-stepᴸ = refl }
+addition = record {}
 
 instance
   star : Op.Star ℕ

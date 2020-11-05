@@ -22,7 +22,7 @@ record Addition (PB : PeanoBase) : Set where
     {{plus}} : Op.Plus ℕ
     {{+-substitutiveᴸ}} : AA.Substitutiveᴸ _+_
     {{+-identityᴸ}} : AA.Identityᴸ _+_ zero
-    +-stepᴸ : ∀ {n m} → step n + m ≃ step (n + m)
+    {{+-commutative-stepᴸ}} : AA.Commutativeᴸ step _+_
 
   instance
     +-identityᴿ : AA.Identityᴿ _+_ zero
@@ -38,40 +38,43 @@ record Addition (PB : PeanoBase) : Set where
             Ps {k} k+z≃k =
               begin
                 step k + zero
-              ≃⟨ +-stepᴸ ⟩
+              ≃⟨ AA.commᴸ ⟩
                 step (k + zero)
               ≃⟨ AA.subst k+z≃k ⟩
                 step k
               ∎
 
-  +-stepᴿ : ∀ {n m} → n + step m ≃ step (n + m)
-  +-stepᴿ {n} {m} = ind P Pz Ps n
-    where
-      P = λ x → x + step m ≃ step (x + m)
+    +-commutative-stepᴿ : AA.Commutativeᴿ step _+_
+    +-commutative-stepᴿ = record { commᴿ = +-stepᴿ }
+      where
+        +-stepᴿ : ∀ {n m} → n + step m ≃ step (n + m)
+        +-stepᴿ {n} {m} = ind P Pz Ps n
+          where
+            P = λ x → x + step m ≃ step (x + m)
 
-      Pz =
-        begin
-          zero + step m
-        ≃⟨ AA.identᴸ ⟩
-          step m
-        ≃˘⟨ AA.subst AA.identᴸ ⟩
-          step (zero + m)
-        ∎
+            Pz =
+              begin
+                zero + step m
+              ≃⟨ AA.identᴸ ⟩
+                step m
+              ≃˘⟨ AA.subst AA.identᴸ ⟩
+                step (zero + m)
+              ∎
 
-      Ps : step-case P
-      Ps {k} k+sm≃s[k+m] =
-        begin
-          step k + step m
-        ≃⟨ +-stepᴸ ⟩
-          step (k + step m)
-        ≃⟨ AA.subst k+sm≃s[k+m] ⟩
-          step (step (k + m))
-        ≃⟨ AA.subst (sym +-stepᴸ) ⟩
-          step (step k + m)
-        ∎
+            Ps : step-case P
+            Ps {k} k+sm≃s[k+m] =
+              begin
+                step k + step m
+              ≃⟨ AA.commᴸ ⟩
+                step (k + step m)
+              ≃⟨ AA.subst k+sm≃s[k+m] ⟩
+                step (step (k + m))
+              ≃˘⟨ AA.subst AA.commᴸ ⟩
+                step (step k + m)
+              ∎
 
   +-stepᴸ⃗ᴿ : ∀ {n m} → step n + m ≃ n + step m
-  +-stepᴸ⃗ᴿ = trans +-stepᴸ (sym +-stepᴿ)
+  +-stepᴸ⃗ᴿ = trans AA.commᴸ (sym AA.commᴿ)
 
   +-stepᴿ⃗ᴸ : ∀ {n m} → n + step m ≃ step n + m
   +-stepᴿ⃗ᴸ = sym +-stepᴸ⃗ᴿ
@@ -82,7 +85,7 @@ record Addition (PB : PeanoBase) : Set where
       step n
     ≃˘⟨ AA.subst AA.identᴿ ⟩
       step (n + zero)
-    ≃˘⟨ +-stepᴿ ⟩
+    ≃˘⟨ AA.commᴿ ⟩
       n + step zero
     ∎
 
@@ -107,11 +110,11 @@ record Addition (PB : PeanoBase) : Set where
             Ps {k} k+m≃m+k =
               begin
                 step k + m
-              ≃⟨ +-stepᴸ ⟩
+              ≃⟨ AA.commᴸ ⟩
                 step (k + m)
               ≃⟨ AA.subst k+m≃m+k ⟩
                 step (m + k)
-              ≃˘⟨ +-stepᴿ ⟩
+              ≃˘⟨ AA.commᴿ ⟩
                 m + step k
               ∎
 
@@ -142,13 +145,13 @@ record Addition (PB : PeanoBase) : Set where
             Ps {k} [k+m]+p≃k+[m+p] =
               begin
                 (step k + m) + p
-              ≃⟨ AA.substᴸ +-stepᴸ ⟩
+              ≃⟨ AA.substᴸ AA.commᴸ ⟩
                 step (k + m) + p
-              ≃⟨ +-stepᴸ ⟩
+              ≃⟨ AA.commᴸ ⟩
                 step ((k + m) + p)
               ≃⟨ AA.subst [k+m]+p≃k+[m+p] ⟩
                 step (k + (m + p))
-              ≃⟨ sym +-stepᴸ ⟩
+              ≃˘⟨ AA.commᴸ ⟩
                 step k + (m + p)
               ∎
 
@@ -178,11 +181,11 @@ record Addition (PB : PeanoBase) : Set where
                 s[k+m]≃s[k+p] =
                   begin
                     step (k + m)
-                  ≃⟨ sym +-stepᴸ ⟩
+                  ≃˘⟨ AA.commᴸ ⟩
                     step k + m
                   ≃⟨ sk+m≃sk+p ⟩
                     step k + p
-                  ≃⟨ +-stepᴸ ⟩
+                  ≃⟨ AA.commᴸ ⟩
                     step (k + p)
                   ∎
 
@@ -228,7 +231,7 @@ record Addition (PB : PeanoBase) : Set where
       Pz = Positive-subst (sym AA.identᴿ) pos-a
 
       Ps : step-case P
-      Ps {k} _ = λ a+sk≃z → step≄zero (trans (sym +-stepᴿ) a+sk≃z)
+      Ps {k} _ = λ a+sk≃z → step≄zero (trans (sym AA.commᴿ) a+sk≃z)
 
   +-both-zero : ∀ {a b} → a + b ≃ zero → a ≃ zero ∧ b ≃ zero
   +-both-zero {a} {b} a+b≃z =

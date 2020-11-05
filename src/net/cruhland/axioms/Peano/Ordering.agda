@@ -21,7 +21,7 @@ module net.cruhland.axioms.Peano.Ordering
     (PB : PeanoBase) (PA : PeanoAddition PB) where
   private module Add = PeanoAddition PA
   open Add using
-    ( n≄sn; +-stepᴸ; +-stepᴸ⃗ᴿ; +-stepᴿ⃗ᴸ
+    ( n≄sn; +-stepᴸ⃗ᴿ; +-stepᴿ⃗ᴸ
     ; step≃+; with-+-assoc; Positive; +-both-zero; +-positive
     )
   open PeanoBase PB using (ℕ; ind; step; step-case; step≄zero; zero)
@@ -204,7 +204,7 @@ module net.cruhland.axioms.Peano.Ordering
       Ps z≤k = ≤-trans z≤k n≤sn
 
   ≤-step : ∀ {n m} → n ≤ m → step n ≤ step m
-  ≤-step (≤-intro d n+d≃m) = ≤-intro d (trans +-stepᴸ (AA.subst n+d≃m))
+  ≤-step (≤-intro d n+d≃m) = ≤-intro d (trans AA.commᴸ (AA.subst n+d≃m))
 
   ≃→≤ : ∀ {n m} → n ≃ m → n ≤ m
   ≃→≤ n≃m = ≤-intro zero (trans AA.identᴿ n≃m)
@@ -251,7 +251,7 @@ module net.cruhland.axioms.Peano.Ordering
 
   s≤s→≤ : ∀ {n m} → step n ≤ step m → n ≤ m
   s≤s→≤ (≤-intro d sn+d≃sm) =
-    ≤-intro d (AA.inject (trans (sym +-stepᴸ) sn+d≃sm))
+    ≤-intro d (AA.inject (trans (sym AA.commᴸ) sn+d≃sm))
 
   ≤s→≤∨≃s : ∀ {n m} → n ≤ step m → n ≤ m ∨ n ≃ step m
   ≤s→≤∨≃s n≤sm = ∨-mapᴸ (s≤s→≤ ∘ <→s≤) (≤→<∨≃ n≤sm)
@@ -303,7 +303,7 @@ module net.cruhland.axioms.Peano.Ordering
       Ps {k} k≤?y y with case y
       ... | case-zero y≃z =
         no λ { (≤-intro d sk+d≃y) →
-                 step≄zero (trans (sym +-stepᴸ) (trans sk+d≃y y≃z)) }
+                 step≄zero (trans (sym AA.commᴸ) (trans sk+d≃y y≃z)) }
       ... | case-step (pred-intro j y≃sj) =
          dec-map (≤-substᴿ (sym y≃sj) ∘ ≤-step) (s≤s→≤ ∘ ≤-substᴿ y≃sj) (k≤?y j)
 

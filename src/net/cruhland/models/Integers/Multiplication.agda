@@ -199,29 +199,23 @@ instance
   *-associative : AA.Associative _*_
   *-associative = record { assoc = *-assoc }
 
-*-negᴸ : {a b : ℤ} → - a * b ≃ - (a * b)
-*-negᴸ {a⁺ — a⁻} {b⁺ — b⁻} = ≃ᶻ-intro eq′
-  where
-    eq′ =
-      begin
-        (a⁻ * b⁺ + a⁺ * b⁻) + (a⁺ * b⁺ + a⁻ * b⁻)
-      ≃⟨ AA.substᴸ AA.comm ⟩
-        (a⁺ * b⁻ + a⁻ * b⁺) + (a⁺ * b⁺ + a⁻ * b⁻)
-      ≃⟨ AA.substᴿ AA.comm ⟩
-        (a⁺ * b⁻ + a⁻ * b⁺) + (a⁻ * b⁻ + a⁺ * b⁺)
-      ∎
+  *-commutative-negᴸ : AA.Commutativeᴸ -_ _*_
+  *-commutative-negᴸ = record { commᴸ = *-negᴸ }
+    where
+      *-negᴸ : {a b : ℤ} → - a * b ≃ - (a * b)
+      *-negᴸ {a⁺ — a⁻} {b⁺ — b⁻} = ≃ᶻ-intro eq′
+        where
+          eq′ =
+            begin
+              (a⁻ * b⁺ + a⁺ * b⁻) + (a⁺ * b⁺ + a⁻ * b⁻)
+            ≃⟨ AA.substᴸ AA.comm ⟩
+              (a⁺ * b⁻ + a⁻ * b⁺) + (a⁺ * b⁺ + a⁻ * b⁻)
+            ≃⟨ AA.substᴿ AA.comm ⟩
+              (a⁺ * b⁻ + a⁻ * b⁺) + (a⁻ * b⁻ + a⁺ * b⁺)
+            ∎
 
-*-negᴿ : ∀ {a b} → a * - b ≃ - (a * b)
-*-negᴿ {a} {b} =
-  begin
-    a * - b
-  ≃⟨ AA.comm ⟩
-    - b * a
-  ≃⟨ *-negᴸ {b} ⟩
-    - (b * a)
-  ≃⟨ AA.subst AA.comm ⟩
-    - (a * b)
-  ∎
+  *-commutative-negᴿ : AA.Commutativeᴿ -_ _*_
+  *-commutative-negᴿ = AA.commutativeᴿ
 
 neg-mult : {a : ℤ} → - a ≃ -1 * a
 neg-mult {a⁺ — a⁻} = ≃ᶻ-intro a⁻+[[0+0]a⁻+[1+0]a⁺]≃[0+0]a⁺+[1+0]a⁻+a⁺
@@ -261,7 +255,7 @@ neg-mult {a⁺ — a⁻} = ≃ᶻ-intro a⁻+[[0+0]a⁻+[1+0]a⁺]≃[0+0]a⁺+[
     c * (a + - b)
   ≃⟨ *-distrib-+ᴸ ⟩
     c * a + c * - b
-  ≃⟨ AA.substᴿ *-negᴿ ⟩
+  ≃⟨ AA.substᴿ AA.commᴿ ⟩
     c * a + - (c * b)
   ≃⟨⟩
     c * a - c * b
@@ -275,7 +269,7 @@ neg-mult {a⁺ — a⁻} = ≃ᶻ-intro a⁻+[[0+0]a⁻+[1+0]a⁺]≃[0+0]a⁺+[
     (a + - b) * c
   ≃⟨ *-distrib-+ᴿ ⟩
     a * c + (- b) * c
-  ≃⟨ AA.substᴿ *-negᴸ ⟩
+  ≃⟨ AA.substᴿ AA.commᴸ ⟩
     a * c + - (b * c)
   ≃⟨⟩
     a * c - b * c
@@ -389,7 +383,7 @@ instance
                 - 0 — n * b
               ≃˘⟨ AA.substᴸ (AA.subst a≃0—n) ⟩
                 - a * b
-              ≃⟨ *-negᴸ ⟩
+              ≃⟨ AA.commᴸ ⟩
                 - (a * b)
               ≃⟨ AA.subst ab≃0 ⟩
                 - 0

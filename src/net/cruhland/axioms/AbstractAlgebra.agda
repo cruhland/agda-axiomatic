@@ -42,6 +42,20 @@ record Commutative {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set where
 
 open Commutative {{...}} public using (comm)
 
+record Commutativeᴸ
+    {A : Set} {{eq : Eq A}} (f : A → A) (_⊙_ : A → A → A) : Set where
+  field
+    commᴸ : ∀ {a b} → f a ⊙ b ≃ f (a ⊙ b)
+
+open Commutativeᴸ {{...}} public using (commᴸ)
+
+record Commutativeᴿ
+    {A : Set} {{eq : Eq A}} (f : A → A) (_⊙_ : A → A → A) : Set where
+  field
+    commᴿ : ∀ {a b} → a ⊙ f b ≃ f (a ⊙ b)
+
+open Commutativeᴿ {{...}} public using (commᴿ)
+
 record Identityᴸ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) (e : A) : Set where
   field
     identᴸ : ∀ {a} → e ⊙ a ≃ a
@@ -130,6 +144,25 @@ substitutive₂ :
     {{_ : Eq A}} {{_ : Substitutiveᴸ _⊙_}} {{_ : Substitutiveᴿ _⊙_}} →
       Substitutive₂ _⊙_
 substitutive₂ = record {}
+
+commutativeᴿ :
+  {A : Set} {f : A → A} {_⊙_ : A → A → A}
+    {{_ : Eq A}} {{_ : Substitutive₁ f}}
+    {{_ : Commutative _⊙_}} {{_ : Commutativeᴸ f _⊙_}} →
+      Commutativeᴿ f _⊙_
+commutativeᴿ {A} {f} {_⊙_} = record { commᴿ = commᴿ₀ }
+  where
+    commᴿ₀ : ∀ {a b} → a ⊙ f b ≃ f (a ⊙ b)
+    commᴿ₀ {a} {b} =
+      begin
+        a ⊙ f b
+      ≃⟨ comm ⟩
+        f b ⊙ a
+      ≃⟨ commᴸ ⟩
+        f (b ⊙ a)
+      ≃⟨ subst comm ⟩
+        f (a ⊙ b)
+      ∎
 
 cancellativeᴿ :
   {A : Set} {_⊙_ : A → A → A}
