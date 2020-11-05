@@ -29,20 +29,23 @@ instance
   negative : Negative ℤ
   negative = record { Constraint = λ _ → ⊤ ; fromNeg = λ n → - fromNat n }
 
-neg-subst : ∀ {a₁ a₂} → a₁ ≃ a₂ → - a₁ ≃ - a₂
-neg-subst {a₁⁺ — a₁⁻} {a₂⁺ — a₂⁻} a₁≃a₂ = ≃ᶻ-intro eq′
-  where
-    a₁⁺+a₂⁻≃a₂⁺+a₁⁻ = ≃ᶻ-elim a₁≃a₂
-    eq′ =
-      begin
-        a₁⁻ + a₂⁺
-      ≃⟨ AA.comm ⟩
-        a₂⁺ + a₁⁻
-      ≃˘⟨ a₁⁺+a₂⁻≃a₂⁺+a₁⁻ ⟩
-        a₁⁺ + a₂⁻
-      ≃⟨ AA.comm ⟩
-        a₂⁻ + a₁⁺
-      ∎
+  neg-substitutive : AA.Substitutive₁ -_
+  neg-substitutive = record { subst = neg-subst }
+    where
+      neg-subst : ∀ {a₁ a₂} → a₁ ≃ a₂ → - a₁ ≃ - a₂
+      neg-subst {a₁⁺ — a₁⁻} {a₂⁺ — a₂⁻} a₁≃a₂ = ≃ᶻ-intro eq′
+        where
+          a₁⁺+a₂⁻≃a₂⁺+a₁⁻ = ≃ᶻ-elim a₁≃a₂
+          eq′ =
+            begin
+              a₁⁻ + a₂⁺
+            ≃⟨ AA.comm ⟩
+              a₂⁺ + a₁⁻
+            ≃˘⟨ a₁⁺+a₂⁻≃a₂⁺+a₁⁻ ⟩
+              a₁⁺ + a₂⁻
+            ≃⟨ AA.comm ⟩
+              a₂⁻ + a₁⁺
+            ∎
 
 neg-involutive : ∀ {a} → - (- a) ≃ a
 neg-involutive = ≃ᶻ-intro refl
@@ -77,7 +80,7 @@ sub-substᴸ : ∀ {a₁ a₂ b} → a₁ ≃ a₂ → a₁ - b ≃ a₂ - b
 sub-substᴸ = +-substᴸ
 
 sub-substᴿ : ∀ {a b₁ b₂} → b₁ ≃ b₂ → a - b₁ ≃ a - b₂
-sub-substᴿ = +-substᴿ ∘ neg-subst
+sub-substᴿ = +-substᴿ ∘ AA.subst
 
 ≃ᴸ-subᴿ-toᴸ : ∀ {a b c} → a - b ≃ c → a ≃ b + c
 ≃ᴸ-subᴿ-toᴸ {a} {b} {c} a-b≃c =

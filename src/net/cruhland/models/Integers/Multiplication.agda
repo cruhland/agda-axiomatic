@@ -2,7 +2,8 @@
 import Agda.Builtin.FromNat as FromNat
 open import Relation.Nullary.Decidable using (fromWitnessFalse)
 open import net.cruhland.axioms.AbstractAlgebra as AA
-open import net.cruhland.axioms.Eq using (_≃_; sym; trans; module ≃-Reasoning)
+open import net.cruhland.axioms.Eq using
+  (_≃_; _≄_; sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
 open import net.cruhland.axioms.Operators using (_+_; _*_; StarOp)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
@@ -20,7 +21,7 @@ open Equality using (≃ᶻ-elim; ≃ᶻ-intro)
 import net.cruhland.models.Integers.Negation PA as Negation
 open Negation using
   ( -_; _-_; +-inverseᴿ; IsNegative; IsPositive; neg-involutive
-  ; neg-subst; neg; nil; pos; Trichotomy; trichotomy
+  ; neg; nil; pos; Trichotomy; trichotomy
   )
 
 instance
@@ -216,7 +217,7 @@ instance
     - b * a
   ≃⟨ *-negᴸ {b} ⟩
     - (b * a)
-  ≃⟨ neg-subst AA.comm ⟩
+  ≃⟨ AA.subst AA.comm ⟩
     - (a * b)
   ∎
 
@@ -305,13 +306,13 @@ neg-sub-swap {a} {b} =
     -1 * (a - b)
   ≃⟨ *-distrib-subᴸ {a} {b} { -1} ⟩
     -1 * a - -1 * b
-  ≃˘⟨ +-substᴸ (neg-mult {a}) ⟩
+  ≃˘⟨ +-substᴸ neg-mult ⟩
     - a - -1 * b
-  ≃˘⟨ +-substᴿ (neg-subst (neg-mult {b})) ⟩
+  ≃˘⟨ +-substᴿ (AA.subst neg-mult) ⟩
     - a - (- b)
-  ≃⟨ +-substᴿ (neg-involutive {b}) ⟩
+  ≃⟨ +-substᴿ neg-involutive ⟩
     - a + b
-  ≃˘⟨ +-comm {b} ⟩
+  ≃˘⟨ +-comm ⟩
     b - a
   ∎
 
@@ -324,7 +325,7 @@ sub-sign-swap {a} {b} record { n = n ; pos = n≄0 ; x≃-n = a-b≃-n } =
         b - a
       ≃˘⟨ neg-sub-swap {a} ⟩
         - (a - b)
-      ≃⟨ neg-subst a-b≃-n ⟩
+      ≃⟨ AA.subst a-b≃-n ⟩
         - (- fromℕ n)
       ≃⟨ neg-involutive {fromℕ n} ⟩
         fromℕ n
@@ -334,15 +335,9 @@ instance
   zero-product : AA.ZeroProduct _*_ 0
   zero-product = record { zero-prod = *-either-zero }
     where
-      *-either-zero : ∀ {a b} → a * b ≃ 0 → a ≃ 0 ∨ b ≃ 0
-      *-either-zero {a} {b} ab≃0 with Trichotomy.at-least (trichotomy a)
-      *-either-zero {a} {b} ab≃0 | nil a≃0 =
-        ∨-introᴸ a≃0
-      *-either-zero {a} {b⁺ — b⁻} ab≃0
-          | pos record { n = n ; pos = n≄0 ; x≃n = a≃n—0 } =
-        let nb≃0 = trans (AA.substᴸ {b = b⁺ — b⁻} (sym a≃n—0)) ab≃0
-            nb⁺+0b⁻+0≃0+[nb⁻+0b⁺] = ≃ᶻ-elim nb≃0
-            nb⁺≃nb⁻ =
+      b≃0 : ∀ {n b} → n ≄ 0 → fromℕ n * b ≃ 0 → b ≃ 0
+      b≃0 {n} {b⁺ — b⁻} n≄0 (≃ᶻ-intro nb⁺+0b⁻+0≃0+[nb⁻+0b⁺]) =
+        let nb⁺≃nb⁻ =
               begin
                 n * b⁺
               ≃˘⟨ AA.identᴿ ⟩
@@ -362,31 +357,41 @@ instance
               ∎
             b⁺≃b⁻ = AA.cancelᴸ {{c = fromWitnessFalse n≄0}} nb⁺≃nb⁻
             b⁺+0≃0+b⁻ = trans AA.identᴿ (trans b⁺≃b⁻ (sym AA.identᴸ))
-         in ∨-introᴿ (≃ᶻ-intro b⁺+0≃0+b⁻)
-      *-either-zero {a} {b⁺ — b⁻} ab≃0
-          | neg record { n = n ; pos = n≄0 ; x≃-n = a≃0—n } =
-        let ab≃[0—n]b = AA.substᴸ {b = b⁺ — b⁻} a≃0—n
-            0≃-nb = trans (sym ab≃0) ab≃[0—n]b
-            0+[0b⁻+nb⁺]≃0b⁺+nb⁻+0 = ≃ᶻ-elim 0≃-nb
-            0+[0b⁻+nb⁺]≃0b⁺+nb⁻ = trans 0+[0b⁻+nb⁺]≃0b⁺+nb⁻+0 AA.identᴿ
-            nb⁺≃nb⁻ =
+         in ≃ᶻ-intro b⁺+0≃0+b⁻
+
+      *-either-zero : ∀ {a b} → a * b ≃ 0 → a ≃ 0 ∨ b ≃ 0
+      *-either-zero {a} {b} ab≃0 with Trichotomy.at-least (trichotomy a)
+      *-either-zero {a} {b} ab≃0 | nil a≃0 =
+        ∨-introᴸ a≃0
+      *-either-zero {a} {b} ab≃0
+          | pos record { n = n ; pos = n≄0 ; x≃n = a≃n—0 } =
+        let nb≃0 =
               begin
-                n * b⁺
-              ≃˘⟨ AA.identᴸ ⟩
-                0 + n * b⁺
-              ≃˘⟨ AA.substᴸ AA.absorbᴸ ⟩
-                0 * b⁻ + n * b⁺
-              ≃˘⟨ AA.identᴸ ⟩
-                0 + (0 * b⁻ + n * b⁺)
-              ≃⟨ 0+[0b⁻+nb⁺]≃0b⁺+nb⁻+0 ⟩
-                0 * b⁺ + n * b⁻ + 0
-              ≃⟨ AA.identᴿ ⟩
-                0 * b⁺ + n * b⁻
-              ≃⟨ AA.substᴸ AA.absorbᴸ ⟩
-                0 + n * b⁻
-              ≃⟨ AA.identᴸ ⟩
-                n * b⁻
+                fromℕ n * b
+              ≃⟨⟩
+                n — 0 * b
+              ≃˘⟨ AA.substᴸ a≃n—0 ⟩
+                a * b
+              ≃⟨ ab≃0 ⟩
+                0
               ∎
-            b⁺≃b⁻ = AA.cancelᴸ {{c = fromWitnessFalse n≄0}} nb⁺≃nb⁻
-            b⁺+0≃0+b⁻ = trans AA.identᴿ (trans b⁺≃b⁻ (sym AA.identᴸ))
-         in ∨-introᴿ (≃ᶻ-intro b⁺+0≃0+b⁻)
+         in ∨-introᴿ (b≃0 n≄0 nb≃0)
+      *-either-zero {a} {b} ab≃0
+          | neg record { n = n ; pos = n≄0 ; x≃-n = a≃0—n } =
+        let nb≃0 =
+              begin
+                fromℕ n * b
+              ≃⟨⟩
+                n — 0 * b
+              ≃⟨⟩
+                - 0 — n * b
+              ≃˘⟨ AA.substᴸ (AA.subst a≃0—n) ⟩
+                - a * b
+              ≃⟨ *-negᴸ ⟩
+                - (a * b)
+              ≃⟨ AA.subst ab≃0 ⟩
+                - 0
+              ≃⟨⟩
+                0
+              ∎
+         in ∨-introᴿ (b≃0 n≄0 nb≃0)
