@@ -43,7 +43,7 @@ record _≃₀_ (p q : ℚ) : Set where
           q↑ * p↓
         ≃⟨ AA.substᴸ q↑≃0 ⟩
           0 * p↓
-        ≃⟨ ℤ.*-zeroᴸ {p↓} ⟩
+        ≃⟨ AA.absorbᴸ ⟩
           0
         ∎
       r↑q↓≃0 =
@@ -53,7 +53,7 @@ record _≃₀_ (p q : ℚ) : Set where
           q↑ * r↓
         ≃⟨ AA.substᴸ q↑≃0 ⟩
           0 * r↓
-        ≃⟨ ℤ.*-zeroᴸ {r↓} ⟩
+        ≃⟨ AA.absorbᴸ ⟩
           0
         ∎
       p↑≃0 = ∨-forceᴸ q↓≄0 (AA.zero-prod p↑q↓≃0)
@@ -63,9 +63,9 @@ record _≃₀_ (p q : ℚ) : Set where
           p↑ * r↓
         ≃⟨ AA.substᴸ p↑≃0 ⟩
           0 * r↓
-        ≃⟨ ℤ.*-zeroᴸ {r↓} ⟩
+        ≃⟨ AA.absorbᴸ ⟩
           0
-        ≃˘⟨ ℤ.*-zeroᴸ {p↓} ⟩
+        ≃˘⟨ AA.absorbᴸ ⟩
           0 * p↓
         ≃˘⟨ AA.substᴸ r↑≃0 ⟩
           r↑ * p↓

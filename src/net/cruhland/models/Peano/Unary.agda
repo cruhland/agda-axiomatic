@@ -61,9 +61,11 @@ instance
   *-substitutiveᴸ : AA.Substitutiveᴸ _*_
   *-substitutiveᴸ = record { substᴸ = λ {_ _ m} → cong (_* m) }
 
+  *-absorptiveᴸ : AA.Absorptiveᴸ _*_ zero
+  *-absorptiveᴸ = record { absorbᴸ = refl }
+
 multiplication : Multiplication base addition
-multiplication =
-  record { *-zeroᴸ = refl ; *-stepᴸ = λ {n m} → +-comm m (n * m) }
+multiplication = record { *-stepᴸ = λ {n m} → +-comm m (n * m) }
 
 exponentiation : Exponentiation base addition multiplication
 exponentiation =

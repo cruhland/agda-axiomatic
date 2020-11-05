@@ -34,26 +34,30 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
 
   field
     {{*-substitutiveᴸ}} : AA.Substitutiveᴸ _*_
-    *-zeroᴸ : ∀ {m} → zero * m ≃ zero
+    {{*-absorptiveᴸ}} : AA.Absorptiveᴸ _*_ zero
     *-stepᴸ : ∀ {n m} → step n * m ≃ n * m + m
 
-  *-zeroᴿ : ∀ {n} → n * zero ≃ zero
-  *-zeroᴿ {n} = ind P Pz Ps n
-    where
-      P = λ x → x * zero ≃ zero
-      Pz = *-zeroᴸ
+  instance
+    *-absorptiveᴿ : AA.Absorptiveᴿ _*_ zero
+    *-absorptiveᴿ = record { absorbᴿ = *-zeroᴿ }
+      where
+        *-zeroᴿ : ∀ {n} → n * zero ≃ zero
+        *-zeroᴿ {n} = ind P Pz Ps n
+          where
+            P = λ x → x * zero ≃ zero
+            Pz = AA.absorbᴸ
 
-      Ps : step-case P
-      Ps {k} Pk =
-        begin
-          step k * zero
-        ≃⟨ *-stepᴸ ⟩
-          k * zero + zero
-        ≃⟨ AA.identᴿ ⟩
-          k * zero
-        ≃⟨ Pk ⟩
-          zero
-        ∎
+            Ps : step-case P
+            Ps {k} Pk =
+              begin
+                step k * zero
+              ≃⟨ *-stepᴸ ⟩
+                k * zero + zero
+              ≃⟨ AA.identᴿ ⟩
+                k * zero
+              ≃⟨ Pk ⟩
+                zero
+              ∎
 
   *-stepᴿ : ∀ {n m} → n * step m ≃ n * m + n
   *-stepᴿ {n} {m} = ind P Pz Ps n
@@ -63,11 +67,11 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
       Pz =
         begin
           zero * step m
-        ≃⟨ *-zeroᴸ ⟩
+        ≃⟨ AA.absorbᴸ ⟩
           zero
-        ≃⟨ sym *-zeroᴸ ⟩
+        ≃˘⟨ AA.absorbᴸ ⟩
           zero * m
-        ≃⟨ sym AA.identᴿ ⟩
+        ≃˘⟨ AA.identᴿ ⟩
           zero * m + zero
         ∎
 
@@ -93,7 +97,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
         *-comm {n} {m} = ind P Pz Ps n
           where
             P = λ x → x * m ≃ m * x
-            Pz = trans *-zeroᴸ (sym *-zeroᴿ)
+            Pz = trans AA.absorbᴸ (sym AA.absorbᴿ)
 
             Ps : step-case P
             Ps {k} Pk =
@@ -113,7 +117,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
       step zero * n
     ≃⟨ *-stepᴸ ⟩
       zero * n + n
-    ≃⟨ AA.substᴸ *-zeroᴸ ⟩
+    ≃⟨ AA.substᴸ AA.absorbᴸ ⟩
       zero + n
     ≃⟨ AA.identᴸ ⟩
       n
@@ -164,7 +168,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
                 a * b
               ≃˘⟨ AA.identᴿ ⟩
                 a * b + zero
-              ≃˘⟨ AA.substᴿ *-zeroᴿ ⟩
+              ≃˘⟨ AA.substᴿ AA.absorbᴿ ⟩
                 a * b + a * zero
               ∎
 
@@ -194,13 +198,13 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
       Pz =
         begin
           a * (zero * c)
-        ≃⟨ AA.substᴿ *-zeroᴸ ⟩
+        ≃⟨ AA.substᴿ AA.absorbᴸ ⟩
           a * zero
-        ≃⟨ *-zeroᴿ ⟩
+        ≃⟨ AA.absorbᴿ ⟩
           zero
-        ≃˘⟨ *-zeroᴸ ⟩
+        ≃˘⟨ AA.absorbᴸ ⟩
           zero * c
-        ≃˘⟨ AA.substᴸ *-zeroᴿ ⟩
+        ≃˘⟨ AA.substᴸ AA.absorbᴿ ⟩
           (a * zero) * c
         ∎
 

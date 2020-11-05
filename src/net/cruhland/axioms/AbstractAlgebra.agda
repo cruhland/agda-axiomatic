@@ -1,7 +1,8 @@
 module net.cruhland.axioms.AbstractAlgebra where
 
 open import Function using (_∘_)
-open import net.cruhland.axioms.Eq using (_≃_; _≄_; Eq; module ≃-Reasoning)
+open import net.cruhland.axioms.Eq using
+  (_≃_; _≄_; Eq; trans; module ≃-Reasoning)
 open ≃-Reasoning
 open import net.cruhland.models.Logic using (_∨_; ∨-rec)
 
@@ -84,6 +85,18 @@ record ZeroProduct {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) (z : A) : Set
 
 open ZeroProduct {{...}} public using (zero-prod)
 
+record Absorptiveᴸ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) (z : A) : Set where
+  field
+    absorbᴸ : ∀ {a} → z ⊙ a ≃ z
+
+open Absorptiveᴸ {{...}} public using (absorbᴸ)
+
+record Absorptiveᴿ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) (z : A) : Set where
+  field
+    absorbᴿ : ∀ {a} → a ⊙ z ≃ z
+
+open Absorptiveᴿ {{...}} public using (absorbᴿ)
+
 with-comm :
   {A : Set} {_⊙_ : A → A → A}
     {{_ : Eq A}} {{_ : Commutative _⊙_}} →
@@ -140,6 +153,12 @@ distributiveᴿ {A} {_⊙_} {_⊕_} = record { distribᴿ = distribᴿ₀ }
       ≃⟨ substᴿ comm ⟩
         (a ⊙ c) ⊕ (b ⊙ c)
       ∎
+
+absorptiveᴿ :
+  {A : Set} {_⊙_ : A → A → A} →
+    ∀ {z} {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Absorptiveᴸ _⊙_ z}} →
+      Absorptiveᴿ _⊙_ z
+absorptiveᴿ = record { absorbᴿ = trans comm absorbᴸ }
 
 [ab][cd]≃a[[bc]d] :
   {A : Set} {_⊙_ : A → A → A}

@@ -97,11 +97,11 @@ instance
     nm+n0+0m≃nm+00+0 =
       begin
         n * m + (n * 0 + 0 * m)
-      ≃⟨ AA.substᴿ (AA.substᴸ (ℕ.*-zeroᴿ {n})) ⟩
+      ≃⟨ AA.substᴿ (AA.substᴸ AA.absorbᴿ) ⟩
         n * m + (0 + 0 * m)
-      ≃˘⟨ AA.substᴿ (AA.substᴸ ℕ.*-zeroᴸ) ⟩
+      ≃˘⟨ AA.substᴿ (AA.substᴸ AA.absorbᴸ) ⟩
         n * m + (0 * 0 + 0 * m)
-      ≃⟨ AA.substᴿ (AA.substᴿ ℕ.*-zeroᴸ) ⟩
+      ≃⟨ AA.substᴿ (AA.substᴿ AA.absorbᴸ) ⟩
         n * m + (0 * 0 + 0)
       ≃˘⟨ AA.assoc ⟩
         n * m + 0 * 0 + 0
@@ -228,7 +228,7 @@ neg-mult {a⁺ — a⁻} = ≃ᶻ-intro a⁻+[[0+0]a⁻+[1+0]a⁺]≃[0+0]a⁺+[
         a⁻ + ((0 + 0) * a⁻ + (1 + 0) * a⁺)
       ≃⟨ AA.substᴿ (AA.substᴸ (AA.substᴸ AA.identᴸ)) ⟩
         a⁻ + (0 * a⁻ + (1 + 0) * a⁺)
-      ≃⟨ AA.substᴿ (AA.substᴸ ℕ.*-zeroᴸ) ⟩
+      ≃⟨ AA.substᴿ (AA.substᴸ AA.absorbᴸ) ⟩
         a⁻ + (0 + (1 + 0) * a⁺)
       ≃⟨ AA.substᴿ AA.identᴸ ⟩
         a⁻ + (1 + 0) * a⁺
@@ -242,7 +242,7 @@ neg-mult {a⁺ — a⁻} = ≃ᶻ-intro a⁻+[[0+0]a⁻+[1+0]a⁺]≃[0+0]a⁺+[
         (1 + 0) * a⁻ + a⁺
       ≃˘⟨ AA.identᴸ ⟩
         0 + ((1 + 0) * a⁻ + a⁺)
-      ≃˘⟨ AA.substᴸ ℕ.*-zeroᴸ ⟩
+      ≃˘⟨ AA.substᴸ AA.absorbᴸ ⟩
         0 * a⁺ + ((1 + 0) * a⁻ + a⁺)
       ≃˘⟨ AA.substᴸ (AA.substᴸ AA.identᴸ) ⟩
         (0 + 0) * a⁺ + ((1 + 0) * a⁻ + a⁺)
@@ -278,17 +278,24 @@ neg-mult {a⁺ — a⁻} = ≃ᶻ-intro a⁻+[[0+0]a⁻+[1+0]a⁺]≃[0+0]a⁺+[
     a * c - b * c
   ∎
 
-*-zeroᴸ : ∀ {x} → 0 * x ≃ 0
-*-zeroᴸ {x} =
-  begin
-    0 * x
-  ≃˘⟨ AA.substᴸ +-inverseᴿ ⟩
-    (1 - 1) * x
-  ≃⟨ *-distrib-subᴿ ⟩
-    1 * x - 1 * x
-  ≃⟨ +-inverseᴿ ⟩
-    0
-  ∎
+instance
+  *-absorptiveᴸ : AA.Absorptiveᴸ _*_ 0
+  *-absorptiveᴸ = record { absorbᴸ = *-zeroᴸ }
+    where
+      *-zeroᴸ : ∀ {x} → 0 * x ≃ 0
+      *-zeroᴸ {x} =
+        begin
+          0 * x
+        ≃˘⟨ AA.substᴸ +-inverseᴿ ⟩
+          (1 - 1) * x
+        ≃⟨ *-distrib-subᴿ ⟩
+          1 * x - 1 * x
+        ≃⟨ +-inverseᴿ ⟩
+          0
+        ∎
+
+  *-absorptiveᴿ : AA.Absorptiveᴿ {A = ℤ} _*_ 0
+  *-absorptiveᴿ = AA.absorptiveᴿ
 
 neg-sub-swap : ∀ {a b} → - (a - b) ≃ b - a
 neg-sub-swap {a} {b} =
@@ -340,7 +347,7 @@ instance
                 n * b⁺
               ≃˘⟨ AA.identᴿ ⟩
                 n * b⁺ + 0
-              ≃˘⟨ AA.substᴿ ℕ.*-zeroᴸ ⟩
+              ≃˘⟨ AA.substᴿ AA.absorbᴸ ⟩
                 n * b⁺ + 0 * b⁻
               ≃˘⟨ AA.identᴿ ⟩
                 n * b⁺ + 0 * b⁻ + 0
@@ -348,7 +355,7 @@ instance
                 0 + (n * b⁻ + 0 * b⁺)
               ≃⟨ AA.identᴸ ⟩
                 n * b⁻ + 0 * b⁺
-              ≃⟨ AA.substᴿ ℕ.*-zeroᴸ ⟩
+              ≃⟨ AA.substᴿ AA.absorbᴸ ⟩
                 n * b⁻ + 0
               ≃⟨ AA.identᴿ ⟩
                 n * b⁻
@@ -367,7 +374,7 @@ instance
                 n * b⁺
               ≃˘⟨ AA.identᴸ ⟩
                 0 + n * b⁺
-              ≃˘⟨ AA.substᴸ ℕ.*-zeroᴸ ⟩
+              ≃˘⟨ AA.substᴸ AA.absorbᴸ ⟩
                 0 * b⁻ + n * b⁺
               ≃˘⟨ AA.identᴸ ⟩
                 0 + (0 * b⁻ + n * b⁺)
@@ -375,7 +382,7 @@ instance
                 0 * b⁺ + n * b⁻ + 0
               ≃⟨ AA.identᴿ ⟩
                 0 * b⁺ + n * b⁻
-              ≃⟨ AA.substᴸ ℕ.*-zeroᴸ ⟩
+              ≃⟨ AA.substᴸ AA.absorbᴸ ⟩
                 0 + n * b⁻
               ≃⟨ AA.identᴸ ⟩
                 n * b⁻
