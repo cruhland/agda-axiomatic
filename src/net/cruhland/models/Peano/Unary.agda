@@ -8,7 +8,7 @@ open import Relation.Binary.PropositionalEquality using
   (_≡_; _≢_; cong; refl; sym; ≢-sym; trans)
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq using (Eq)
-open import net.cruhland.axioms.Operators using (PlusOp; StarOp)
+import net.cruhland.axioms.Operators as Op
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base using (Peano)
@@ -42,7 +42,7 @@ base = record
   }
 
 instance
-  plus : PlusOp ℕ
+  plus : Op.Plus ℕ
   plus = record { _+_ = _+_ }
 
   +-substitutiveᴸ : AA.Substitutiveᴸ _+_
@@ -55,7 +55,7 @@ addition : Addition base
 addition = record { +-stepᴸ = refl }
 
 instance
-  star : StarOp ℕ
+  star : Op.Star ℕ
   star = record { _*_ = _*_ }
 
   *-substitutiveᴸ : AA.Substitutiveᴸ _*_

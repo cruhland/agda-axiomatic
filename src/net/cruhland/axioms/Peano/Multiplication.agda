@@ -6,7 +6,8 @@ open import net.cruhland.axioms.Eq using
   (_≃_; _≄_; sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
 open import net.cruhland.axioms.AbstractAlgebra as AA
-open import net.cruhland.axioms.Operators using (StarOp)
+import net.cruhland.axioms.Operators as Op
+open Op using (_+_; _*_)
 open import net.cruhland.axioms.Peano.Addition
   using () renaming (Addition to PeanoAddition)
 open import net.cruhland.axioms.Peano.Base
@@ -18,7 +19,7 @@ open import net.cruhland.models.Logic using
 
 record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
   private module Add = PeanoAddition PA
-  open Add using (_+_; +-both-zero; Positive; +-stepᴿ; +-stepᴸ⃗ᴿ; with-+-assoc)
+  open Add using (+-both-zero; Positive; +-stepᴿ; +-stepᴸ⃗ᴿ; with-+-assoc)
   open PeanoBase PB using (ℕ; ind; step; step-case; zero)
   private module Inspect = PeanoInspect PB
   open Inspect using (case; case-step; case-zero; pred-intro)
@@ -28,11 +29,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
     )
 
   field
-    {{star}} : StarOp ℕ
-
-  open StarOp star public using (_*_)
-
-  field
+    {{star}} : Op.Star ℕ
     {{*-substitutiveᴸ}} : AA.Substitutiveᴸ _*_
     {{*-absorptiveᴸ}} : AA.Absorptiveᴸ _*_ zero
     *-stepᴸ : ∀ {n m} → step n * m ≃ n * m + m

@@ -5,7 +5,8 @@ open import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq using
   (_≃_; _≄_; sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
-open import net.cruhland.axioms.Operators using (_+_; _*_; StarOp)
+import net.cruhland.axioms.Operators as Op
+open Op using (_+_; _*_; -_; _-_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 -- Needed for instance of ⊤
 open import net.cruhland.models.Logic using (_∨_; ∨-introᴸ; ∨-introᴿ)
@@ -20,12 +21,12 @@ import net.cruhland.models.Integers.Equality PA as Equality
 open Equality using (≃ᶻ-elim; ≃ᶻ-intro)
 import net.cruhland.models.Integers.Negation PA as Negation
 open Negation using
-  ( -_; _-_; +-inverseᴿ; IsNegative; IsPositive; neg-involutive
+  ( +-inverseᴿ; IsNegative; IsPositive; neg-involutive
   ; neg; nil; pos; Trichotomy; trichotomy
   )
 
 instance
-  star : StarOp ℤ
+  star : Op.Star ℤ
   star = record { _*_ = _*₀_ }
     where
       infixl 7 _*₀_
@@ -197,7 +198,7 @@ instance
   *-associative : AA.Associative _*_
   *-associative = record { assoc = *-assoc }
 
-*-negᴸ : ∀ {a b} → - a * b ≃ - (a * b)
+*-negᴸ : {a b : ℤ} → - a * b ≃ - (a * b)
 *-negᴸ {a⁺ — a⁻} {b⁺ — b⁻} = ≃ᶻ-intro eq′
   where
     eq′ =
@@ -221,7 +222,7 @@ instance
     - (a * b)
   ∎
 
-neg-mult : ∀ {a} → - a ≃ -1 * a
+neg-mult : {a : ℤ} → - a ≃ -1 * a
 neg-mult {a⁺ — a⁻} = ≃ᶻ-intro a⁻+[[0+0]a⁻+[1+0]a⁺]≃[0+0]a⁺+[1+0]a⁻+a⁺
   where
     a⁻+[[0+0]a⁻+[1+0]a⁺]≃[0+0]a⁺+[1+0]a⁻+a⁺ =
@@ -251,7 +252,7 @@ neg-mult {a⁺ — a⁻} = ≃ᶻ-intro a⁻+[[0+0]a⁻+[1+0]a⁺]≃[0+0]a⁺+[
         (0 + 0) * a⁺ + (1 + 0) * a⁻ + a⁺
       ∎
 
-*-distrib-subᴸ : ∀ {a b c} → c * (a - b) ≃ c * a - c * b
+*-distrib-subᴸ : {a b c : ℤ} → c * (a - b) ≃ c * a - c * b
 *-distrib-subᴸ {a} {b} {c} =
   begin
     c * (a - b)
@@ -265,7 +266,7 @@ neg-mult {a⁺ — a⁻} = ≃ᶻ-intro a⁻+[[0+0]a⁻+[1+0]a⁺]≃[0+0]a⁺+[
     c * a - c * b
   ∎
 
-*-distrib-subᴿ : ∀ {a b c} → (a - b) * c ≃ a * c - b * c
+*-distrib-subᴿ : {a b c : ℤ} → (a - b) * c ≃ a * c - b * c
 *-distrib-subᴿ {a} {b} {c} =
   begin
     (a - b) * c
@@ -283,7 +284,7 @@ instance
   *-absorptiveᴸ : AA.Absorptiveᴸ _*_ 0
   *-absorptiveᴸ = record { absorbᴸ = *-zeroᴸ }
     where
-      *-zeroᴸ : ∀ {x} → 0 * x ≃ 0
+      *-zeroᴸ : {x : ℤ} → 0 * x ≃ 0
       *-zeroᴸ {x} =
         begin
           0 * x

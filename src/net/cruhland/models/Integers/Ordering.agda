@@ -7,7 +7,7 @@ open import net.cruhland.axioms.DecEq using (_≃?_; DecEq; ≄-derive)
 open import net.cruhland.axioms.Eq using
   (_≃_; _≄_; sym; ¬sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
-open import net.cruhland.axioms.Operators using (_+_; _*_)
+open import net.cruhland.axioms.Operators using (_+_; _*_; -_; _-_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.models.Logic using
   (⊤; ∧-elimᴿ; ∨-introᴸ; ∨-introᴿ; ⊥-elim; ¬_; Dec; no; yes)
@@ -22,8 +22,9 @@ open import net.cruhland.models.Integers.Base PA using (ℤ)
 import net.cruhland.models.Integers.Equality PA as Equality
 import net.cruhland.models.Integers.Multiplication PA as Multiplication
 open Multiplication using (*-distrib-subᴸ; sub-sign-swap)
-open import net.cruhland.models.Integers.Negation PA using
-  ( -_; _-_; +-inverseᴸ; +-inverseᴿ; IsPositive; neg; nil; pos
+import net.cruhland.models.Integers.Negation PA as Negation
+open Negation using
+  ( +-inverseᴸ; +-inverseᴿ; IsPositive; neg; nil; pos
   ; sub-substᴸ; sub-substᴿ; ≃ᴸ-subᴿ-toᴸ; Trichotomy; trichotomy
   )
 
@@ -133,7 +134,7 @@ instance
     where
       Constraint = λ a → False (a ≃? 0)
 
-      *-cancelᴸ : ∀ {a b c} {{_ : Constraint a}} → a * b ≃ a * c → b ≃ c
+      *-cancelᴸ : {a b c : ℤ} {{_ : Constraint a}} → a * b ≃ a * c → b ≃ c
       *-cancelᴸ {a} {b} {c} ab≃ac with
         let a[b-c]≃0 =
               begin

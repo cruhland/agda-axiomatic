@@ -6,7 +6,8 @@ open import net.cruhland.axioms.DecEq using (_≃?_)
 open import net.cruhland.axioms.Eq using
   (_≃_; _≄_; sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
-open import net.cruhland.axioms.Operators using (PlusOp)
+import net.cruhland.axioms.Operators as Op
+open Op using (_+_)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
 import net.cruhland.axioms.Peano.Inspect as PeanoInspect
@@ -18,11 +19,7 @@ record Addition (PB : PeanoBase) : Set where
   open PeanoInspect PB using (case; case-zero; case-step; decEq; pred-intro)
 
   field
-    {{plus}} : PlusOp ℕ
-
-  open PlusOp plus public using (_+_)
-
-  field
+    {{plus}} : Op.Plus ℕ
     {{+-substitutiveᴸ}} : AA.Substitutiveᴸ _+_
     {{+-identityᴸ}} : AA.Identityᴸ _+_ zero
     +-stepᴸ : ∀ {n m} → step n + m ≃ step (n + m)
@@ -192,7 +189,7 @@ record Addition (PB : PeanoBase) : Set where
     +-cancellativeᴿ : AA.Cancellativeᴿ _+_
     +-cancellativeᴿ = AA.cancellativeᴿ
 
-  with-+-assoc : ∀ {a b c d e} → b + c ≃ d + e → a + b + c ≃ a + d + e
+  with-+-assoc : {a b c d e : ℕ} → b + c ≃ d + e → a + b + c ≃ a + d + e
   with-+-assoc {a} {b} {c} {d} {e} b+c≃d+e =
     begin
       a + b + c

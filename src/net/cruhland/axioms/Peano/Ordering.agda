@@ -4,6 +4,7 @@ open import net.cruhland.axioms.DecEq using (_≃?_)
 open import net.cruhland.axioms.Eq using
   (_≃_; _≄_; refl; sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
+open import net.cruhland.axioms.Operators using (_+_)
 open import net.cruhland.axioms.Peano.Addition
   using () renaming (Addition to PeanoAddition)
 open import net.cruhland.axioms.Peano.Base
@@ -20,7 +21,7 @@ module net.cruhland.axioms.Peano.Ordering
     (PB : PeanoBase) (PA : PeanoAddition PB) where
   private module Add = PeanoAddition PA
   open Add using
-    ( _+_; n≄sn; +-stepᴸ; +-stepᴸ⃗ᴿ; +-stepᴿ⃗ᴸ
+    ( n≄sn; +-stepᴸ; +-stepᴸ⃗ᴿ; +-stepᴿ⃗ᴸ
     ; step≃+; with-+-assoc; Positive; +-both-zero; +-positive
     )
   open PeanoBase PB using (ℕ; ind; step; step-case; step-inj; step≄zero; zero)
@@ -60,7 +61,7 @@ module net.cruhland.axioms.Peano.Ordering
   n≤sn : ∀ {n} → n ≤ step n
   n≤sn = ≤-intro (step zero) (sym step≃+)
 
-  a+b+c-reduce : ∀ {a b c d e} → a + b ≃ d → d + c ≃ e → a + (b + c) ≃ e
+  a+b+c-reduce : {a b c d e : ℕ} → a + b ≃ d → d + c ≃ e → a + (b + c) ≃ e
   a+b+c-reduce {a} {b} {c} {d} {e} a+b≃d d+c≃e =
     begin
       a + (b + c)

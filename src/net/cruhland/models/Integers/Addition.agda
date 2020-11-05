@@ -4,7 +4,8 @@ open import Function using (_∘_)
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq using (_≃_; sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
-open import net.cruhland.axioms.Operators using (_+_; PlusOp)
+import net.cruhland.axioms.Operators as Op
+open Op using (_+_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.models.Logic using (⊤)
 
@@ -17,7 +18,7 @@ import net.cruhland.models.Integers.Equality PA as Equality
 open Equality using (≃ᶻ-elim; ≃ᶻ-intro)
 
 instance
-  plus : PlusOp ℤ
+  plus : Op.Plus ℤ
   plus = record { _+_ = _+₀_ }
     where
       infixl 6 _+₀_

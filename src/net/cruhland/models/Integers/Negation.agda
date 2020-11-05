@@ -6,7 +6,7 @@ import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq using
   (_≃_; refl; sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
-open import net.cruhland.axioms.Operators using (_+_)
+open import net.cruhland.axioms.Operators as Op using (_+_; -_; _-_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.models.Logic using (⊤; ¬_)
 
@@ -20,18 +20,17 @@ open import net.cruhland.models.Integers.Base PA using (_—_; ℤ)
 import net.cruhland.models.Integers.Equality PA as Equality
 open Equality using (≃ᶻ-elim; ≃ᶻ-intro)
 
-infix 8 -_
--_ : ℤ → ℤ
-- a — b = b — a
-
 instance
+  neg-dash : Op.Dashᴸ ℤ
+  neg-dash = record { -_ = λ { (a — b) → b — a } }
+
   negative : Negative ℤ
   negative = record { Constraint = λ _ → ⊤ ; fromNeg = λ n → - fromNat n }
 
-  neg-substitutive : AA.Substitutive₁ -_
+  neg-substitutive : AA.Substitutive₁ (λ x → - x)
   neg-substitutive = record { subst = neg-subst }
     where
-      neg-subst : ∀ {a₁ a₂} → a₁ ≃ a₂ → - a₁ ≃ - a₂
+      neg-subst : {a₁ a₂ : ℤ} → a₁ ≃ a₂ → - a₁ ≃ - a₂
       neg-subst {a₁⁺ — a₁⁻} {a₂⁺ — a₂⁻} a₁≃a₂ = ≃ᶻ-intro eq′
         where
           a₁⁺+a₂⁻≃a₂⁺+a₁⁻ = ≃ᶻ-elim a₁≃a₂
@@ -46,10 +45,10 @@ instance
               a₂⁻ + a₁⁺
             ∎
 
-neg-involutive : ∀ {a} → - (- a) ≃ a
+neg-involutive : {a : ℤ} → - (- a) ≃ a
 neg-involutive = ≃ᶻ-intro refl
 
-+-inverseᴸ : ∀ {x} → - x + x ≃ 0
++-inverseᴸ : {x : ℤ} → - x + x ≃ 0
 +-inverseᴸ {x⁺ — x⁻} = ≃ᶻ-intro [x⁻+x⁺]+0≃0+[x⁺+x⁻]
   where
     [x⁻+x⁺]+0≃0+[x⁺+x⁻] =
@@ -61,7 +60,7 @@ neg-involutive = ≃ᶻ-intro refl
         0 + (x⁺ + x⁻)
       ∎
 
-+-inverseᴿ : ∀ {x} → x + - x ≃ 0
++-inverseᴿ : {x : ℤ} → x + - x ≃ 0
 +-inverseᴿ {x} =
   begin
     x + - x
@@ -71,17 +70,17 @@ neg-involutive = ≃ᶻ-intro refl
     0
   ∎
 
-infixl 6 _-_
-_-_ : ℤ → ℤ → ℤ
-x - y = x + (- y)
+instance
+  sub-dash : Op.Dash₂ ℤ
+  sub-dash = Op.subtraction
 
-sub-substᴸ : ∀ {a₁ a₂ b} → a₁ ≃ a₂ → a₁ - b ≃ a₂ - b
+sub-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ - b ≃ a₂ - b
 sub-substᴸ = AA.substᴸ
 
-sub-substᴿ : ∀ {a b₁ b₂} → b₁ ≃ b₂ → a - b₁ ≃ a - b₂
+sub-substᴿ : {a b₁ b₂ : ℤ} → b₁ ≃ b₂ → a - b₁ ≃ a - b₂
 sub-substᴿ = AA.substᴿ ∘ AA.subst
 
-≃ᴸ-subᴿ-toᴸ : ∀ {a b c} → a - b ≃ c → a ≃ b + c
+≃ᴸ-subᴿ-toᴸ : {a b c : ℤ} → a - b ≃ c → a ≃ b + c
 ≃ᴸ-subᴿ-toᴸ {a} {b} {c} a-b≃c =
   begin
     a

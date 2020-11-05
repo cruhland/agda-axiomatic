@@ -1,5 +1,6 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
-open import net.cruhland.axioms.Operators using (_*_; StarOp)
+import net.cruhland.axioms.Operators as Op
+open Op using (_*_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 
 module net.cruhland.models.Rationals.Multiplication (PA : PeanoArithmetic) where
@@ -8,7 +9,7 @@ import net.cruhland.models.Integers PA as ℤ
 open import net.cruhland.models.Rationals.Base PA using (ℚ)
 
 instance
-  star : StarOp ℚ
+  star : Op.Star ℚ
   star = record { _*_ = _*₀_ }
     where
       _*₀_ : ℚ → ℚ → ℚ
