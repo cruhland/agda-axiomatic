@@ -2,6 +2,7 @@ open import Agda.Builtin.FromNat using (Number)
 import Agda.Builtin.Nat as Nat
 open import Function using (_∘_)
 import net.cruhland.axioms.AbstractAlgebra as AA
+open import net.cruhland.axioms.Cast using (_As_; _as_)
 open import net.cruhland.axioms.Eq using (_≃_; sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
 import net.cruhland.axioms.Operators as Op
@@ -77,24 +78,21 @@ instance
               (x⁺ + (y⁺ + z⁺)) + ((x⁻ + y⁻) + z⁻)
             ∎
 
-fromNat : Nat.Nat → {{_ : ⊤}} → ℤ
-fromNat Nat.zero = 0 — 0
-fromNat (Nat.suc n) = 1 — 0 + fromNat n
-
 instance
   number : Number ℤ
   number = record { Constraint = λ _ → ⊤ ; fromNat = fromNat }
+    where
+      fromNat : Nat.Nat → {{_ : ⊤}} → ℤ
+      fromNat Nat.zero = 0 — 0
+      fromNat (Nat.suc n) = 1 — 0 + fromNat n
 
-fromℕ : ℕ → ℤ
-fromℕ n = n — 0
+  from-ℕ : ℕ As ℤ
+  from-ℕ = record { cast = λ n → n — 0 }
 
-fromℕ-subst : ∀ {n₁ n₂} → n₁ ≃ n₂ → fromℕ n₁ ≃ fromℕ n₂
-fromℕ-subst = ≃ᶻ-intro ∘ AA.substᴸ
+  from-ℕ-substitutive₁ : AA.Substitutive₁ {A = ℕ} (_as ℤ)
+  from-ℕ-substitutive₁ = record { subst = ≃ᶻ-intro ∘ AA.substᴸ }
 
-ℕ≃→ℤ≃ : ∀ {n m} → n ≃ m → fromℕ n ≃ fromℕ m
-ℕ≃→ℤ≃ n≃m = ≃ᶻ-intro (trans AA.identᴿ (trans n≃m (sym AA.identᴿ)))
-
-ℤ≃→ℕ≃ : ∀ {n} → fromℕ n ≃ 0 → n ≃ 0
+ℤ≃→ℕ≃ : {n : ℕ} → (n as ℤ) ≃ 0 → n ≃ 0
 ℤ≃→ℕ≃ {n} (≃ᶻ-intro n+0≃0+0) =
   begin
     n
@@ -106,7 +104,7 @@ fromℕ-subst = ≃ᶻ-intro ∘ AA.substᴸ
     0
   ∎
 
-+-to-+ : ∀ {n m} → fromℕ (n + m) ≃ fromℕ n + fromℕ m
++-to-+ : {n m : ℕ} → (n + m as ℤ) ≃ (n as ℤ) + (m as ℤ)
 +-to-+ = ≃ᶻ-intro (AA.substᴿ AA.identᴸ)
 
 +-identityᴸ : {x : ℤ} → 0 + x ≃ x

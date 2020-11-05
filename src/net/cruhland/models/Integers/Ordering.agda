@@ -3,6 +3,7 @@ import Agda.Builtin.FromNat as FromNat
 open import Function using (flip)
 open import Relation.Nullary.Decidable using (False)
 import net.cruhland.axioms.AbstractAlgebra as AA
+open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.DecEq using (_≃?_; DecEq; ≄-derive)
 open import net.cruhland.axioms.Eq using
   (_≃_; _≄_; sym; ¬sym; trans; module ≃-Reasoning)
@@ -16,8 +17,7 @@ module net.cruhland.models.Integers.Ordering (PA : PeanoArithmetic) where
 
 open module ℕ = PeanoArithmetic PA using (ℕ)
 import net.cruhland.models.Integers.Addition PA as Addition
-open Addition using
-  (ℤ≃→ℕ≃; fromℕ; fromℕ-subst; +-identityᴸ; +-identityᴿ; +-to-+)
+open Addition using (ℤ≃→ℕ≃; +-identityᴸ; +-identityᴿ; +-to-+)
 open import net.cruhland.models.Integers.Base PA using (ℤ)
 import net.cruhland.models.Integers.Equality PA as Equality
 import net.cruhland.models.Integers.Multiplication PA as Multiplication
@@ -33,7 +33,7 @@ record _≤_ (n m : ℤ) : Set where
   constructor ≤-intro
   field
     a : ℕ
-    n≃m+a : m ≃ n + fromℕ a
+    n≃m+a : m ≃ n + (a as ℤ)
 
 infix 4 _<_
 record _<_ (n m : ℤ) : Set where
@@ -49,26 +49,26 @@ _>_ = flip _<_
 ≤-antisym {a} {b} (≤-intro n₁ b≃a+n₁) (≤-intro n₂ a≃b+n₂) =
   let n₁+n₂≃0 =
         begin
-          fromℕ (n₁ + n₂)
+          (n₁ + n₂ as ℤ)
         ≃⟨ +-to-+ ⟩
-          fromℕ n₁ + fromℕ n₂
+          (n₁ as ℤ) + (n₂ as ℤ)
         ≃˘⟨ +-identityᴸ ⟩
-          0 + (fromℕ n₁ + fromℕ n₂)
+          0 + ((n₁ as ℤ) + (n₂ as ℤ))
         ≃˘⟨ AA.substᴸ +-inverseᴸ ⟩
-          (- a) + a + (fromℕ n₁ + fromℕ n₂)
+          (- a) + a + ((n₁ as ℤ) + (n₂ as ℤ))
         ≃⟨ AA.assoc ⟩
-          (- a) + (a + (fromℕ n₁ + fromℕ n₂))
+          (- a) + (a + ((n₁ as ℤ) + (n₂ as ℤ)))
         ≃˘⟨ AA.substᴿ AA.assoc ⟩
-          (- a) + (a + fromℕ n₁ + fromℕ n₂)
+          (- a) + (a + (n₁ as ℤ) + (n₂ as ℤ))
         ≃˘⟨ AA.substᴿ (AA.substᴸ b≃a+n₁) ⟩
-          (- a) + (b + fromℕ n₂)
+          (- a) + (b + (n₂ as ℤ))
         ≃˘⟨ AA.substᴿ a≃b+n₂ ⟩
           (- a) + a
         ≃⟨ +-inverseᴸ ⟩
           0
         ∎
       n₂≃0 = ∧-elimᴿ (ℕ.+-both-zero (ℤ≃→ℕ≃ n₁+n₂≃0))
-   in trans (trans a≃b+n₂ (AA.substᴿ (fromℕ-subst n₂≃0))) +-identityᴿ
+   in trans (trans a≃b+n₂ (AA.substᴿ (AA.subst n₂≃0))) +-identityᴿ
 
 pos→< : ∀ {x y} → IsPositive (y - x) → x < y
 pos→< {x} {y} record { n = n ; pos = n≄0 ; x≃n = y-x≃n } =
@@ -79,7 +79,7 @@ pos→< {x} {y} record { n = n ; pos = n≄0 ; x≃n = y-x≃n } =
       where
         n≃0 =
           begin
-            fromℕ n
+            (n as ℤ)
           ≃˘⟨ y-x≃n ⟩
             y - x
           ≃⟨ sub-substᴿ x≃y ⟩

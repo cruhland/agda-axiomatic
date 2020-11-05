@@ -1,8 +1,9 @@
 -- Needed for positive integer literals
-import Agda.Builtin.FromNat as FromNat
+open import Agda.Builtin.FromNat as FromNat using (fromNat)
 open import Agda.Builtin.FromNeg using (Negative)
 open import Function using (_∘_)
 import net.cruhland.axioms.AbstractAlgebra as AA
+open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq using
   (_≃_; refl; sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
@@ -15,7 +16,7 @@ module net.cruhland.models.Integers.Negation (PA : PeanoArithmetic) where
 private module ℕ = PeanoArithmetic PA
 open ℕ using (ℕ)
 import net.cruhland.models.Integers.Addition PA as Addition
-open Addition using (fromNat; fromℕ; +-identityᴿ)
+open Addition using (+-identityᴿ)
 open import net.cruhland.models.Integers.Base PA using (_—_; ℤ)
 import net.cruhland.models.Integers.Equality PA as Equality
 open Equality using (≃ᶻ-elim; ≃ᶻ-intro)
@@ -102,13 +103,13 @@ record IsPositive (x : ℤ) : Set where
   field
     n : ℕ
     pos : ℕ.Positive n
-    x≃n : x ≃ fromℕ n
+    x≃n : x ≃ (n as ℤ)
 
 record IsNegative (x : ℤ) : Set where
   field
     n : ℕ
     pos : ℕ.Positive n
-    x≃-n : x ≃ - fromℕ n
+    x≃-n : x ≃ - (n as ℤ)
 
 data AtLeastOne (x : ℤ) : Set where
   nil : x ≃ 0 → AtLeastOne x

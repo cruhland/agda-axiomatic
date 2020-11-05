@@ -6,7 +6,8 @@ open import net.cruhland.axioms.Eq using
 open ≃-Reasoning
 open import net.cruhland.models.Logic using (_∨_; ∨-rec)
 
-record Substitutive₁ {A : Set} {{eq : Eq A}} (f : A → A) : Set where
+record Substitutive₁
+    {A B : Set} {{eqA : Eq A}} {{eqB : Eq B}} (f : A → B) : Set where
   field
     subst : ∀ {a₁ a₂} → a₁ ≃ a₂ → f a₁ ≃ f a₂
 

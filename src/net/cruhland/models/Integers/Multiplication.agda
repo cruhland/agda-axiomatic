@@ -2,6 +2,7 @@
 import Agda.Builtin.FromNat as FromNat
 open import Relation.Nullary.Decidable using (fromWitnessFalse)
 open import net.cruhland.axioms.AbstractAlgebra as AA
+open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq using
   (_≃_; _≄_; sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
@@ -14,8 +15,8 @@ open import net.cruhland.models.Logic using (_∨_; ∨-introᴸ; ∨-introᴿ)
 module net.cruhland.models.Integers.Multiplication (PA : PeanoArithmetic) where
 
 private module ℕ = PeanoArithmetic PA
+open ℕ using (ℕ)
 import net.cruhland.models.Integers.Addition PA as Addition
-open Addition using (fromℕ)
 open import net.cruhland.models.Integers.Base PA using (_—_; ℤ)
 import net.cruhland.models.Integers.Equality PA as Equality
 open Equality using (≃ᶻ-elim; ≃ᶻ-intro)
@@ -93,7 +94,7 @@ instance
   *-substitutive₂ : AA.Substitutive₂ {A = ℤ} _*_
   *-substitutive₂ = AA.substitutive₂
 
-*-to-* : ∀ {n m} → fromℕ (n * m) ≃ fromℕ n * fromℕ m
+*-to-* : {n m : ℕ} → (n * m as ℤ) ≃ (n as ℤ) * (m as ℤ)
 *-to-* {n} {m} = ≃ᶻ-intro nm+n0+0m≃nm+00+0
   where
     nm+n0+0m≃nm+00+0 =
@@ -327,17 +328,17 @@ sub-sign-swap {a} {b} record { n = n ; pos = n≄0 ; x≃-n = a-b≃-n } =
       ≃˘⟨ neg-sub-swap {a} ⟩
         - (a - b)
       ≃⟨ AA.subst a-b≃-n ⟩
-        - (- fromℕ n)
-      ≃⟨ neg-involutive {fromℕ n} ⟩
-        fromℕ n
+        - - (n as ℤ)
+      ≃⟨ neg-involutive {n as ℤ} ⟩
+        (n as ℤ)
       ∎
 
 instance
   zero-product : AA.ZeroProduct _*_ 0
   zero-product = record { zero-prod = *-either-zero }
     where
-      b≃0 : ∀ {n b} → n ≄ 0 → fromℕ n * b ≃ 0 → b ≃ 0
-      b≃0 {n} {b⁺ — b⁻} n≄0 (≃ᶻ-intro nb⁺+0b⁻+0≃0+[nb⁻+0b⁺]) =
+      b≃0 : ∀ {b} {n : ℕ} → n ≄ 0 → (n as ℤ) * b ≃ 0 → b ≃ 0
+      b≃0 {b⁺ — b⁻} {n} n≄0 (≃ᶻ-intro nb⁺+0b⁻+0≃0+[nb⁻+0b⁺]) =
         let nb⁺≃nb⁻ =
               begin
                 n * b⁺
@@ -368,7 +369,7 @@ instance
           | pos record { n = n ; pos = n≄0 ; x≃n = a≃n—0 } =
         let nb≃0 =
               begin
-                fromℕ n * b
+                (n as ℤ) * b
               ≃⟨⟩
                 n — 0 * b
               ≃˘⟨ AA.substᴸ a≃n—0 ⟩
@@ -381,7 +382,7 @@ instance
           | neg record { n = n ; pos = n≄0 ; x≃-n = a≃0—n } =
         let nb≃0 =
               begin
-                fromℕ n * b
+                (n as ℤ) * b
               ≃⟨⟩
                 n — 0 * b
               ≃⟨⟩
