@@ -17,9 +17,7 @@ module net.cruhland.models.Integers.Ordering (PA : PeanoArithmetic) where
 open module ℕ = PeanoArithmetic PA using (ℕ)
 import net.cruhland.models.Integers.Addition PA as Addition
 open Addition using
-  ( +-assoc; ℤ≃→ℕ≃; fromℕ; fromℕ-subst
-  ; +-identityᴸ; +-identityᴿ; +-substᴸ; +-substᴿ; +-to-+
-  )
+  (ℤ≃→ℕ≃; fromℕ; fromℕ-subst; +-identityᴸ; +-identityᴿ; +-to-+)
 open import net.cruhland.models.Integers.Base PA using (ℤ)
 import net.cruhland.models.Integers.Equality PA as Equality
 import net.cruhland.models.Integers.Multiplication PA as Multiplication
@@ -51,25 +49,25 @@ _>_ = flip _<_
   let n₁+n₂≃0 =
         begin
           fromℕ (n₁ + n₂)
-        ≃⟨ +-to-+ {n₁} ⟩
+        ≃⟨ +-to-+ ⟩
           fromℕ n₁ + fromℕ n₂
         ≃˘⟨ +-identityᴸ ⟩
           0 + (fromℕ n₁ + fromℕ n₂)
-        ≃˘⟨ +-substᴸ (+-inverseᴸ {a}) ⟩
+        ≃˘⟨ AA.substᴸ +-inverseᴸ ⟩
           (- a) + a + (fromℕ n₁ + fromℕ n₂)
-        ≃⟨ +-assoc { - a} ⟩
+        ≃⟨ AA.assoc ⟩
           (- a) + (a + (fromℕ n₁ + fromℕ n₂))
-        ≃˘⟨ +-substᴿ { - a} (+-assoc {a}) ⟩
+        ≃˘⟨ AA.substᴿ AA.assoc ⟩
           (- a) + (a + fromℕ n₁ + fromℕ n₂)
-        ≃˘⟨ +-substᴿ { - a} (+-substᴸ b≃a+n₁) ⟩
+        ≃˘⟨ AA.substᴿ (AA.substᴸ b≃a+n₁) ⟩
           (- a) + (b + fromℕ n₂)
-        ≃˘⟨ +-substᴿ a≃b+n₂ ⟩
+        ≃˘⟨ AA.substᴿ a≃b+n₂ ⟩
           (- a) + a
-        ≃⟨ +-inverseᴸ {a} ⟩
+        ≃⟨ +-inverseᴸ ⟩
           0
         ∎
       n₂≃0 = ∧-elimᴿ (ℕ.+-both-zero (ℤ≃→ℕ≃ n₁+n₂≃0))
-   in trans (trans a≃b+n₂ (+-substᴿ (fromℕ-subst n₂≃0))) +-identityᴿ
+   in trans (trans a≃b+n₂ (AA.substᴿ (fromℕ-subst n₂≃0))) +-identityᴿ
 
 pos→< : ∀ {x y} → IsPositive (y - x) → x < y
 pos→< {x} {y} record { n = n ; pos = n≄0 ; x≃n = y-x≃n } =
@@ -155,11 +153,11 @@ instance
           b
         ≃˘⟨ +-identityᴿ ⟩
           b + 0
-        ≃˘⟨ +-substᴿ +-inverseᴸ ⟩
+        ≃˘⟨ AA.substᴿ +-inverseᴸ ⟩
           b + (- c + c)
-        ≃˘⟨ +-assoc ⟩
+        ≃˘⟨ AA.assoc ⟩
           b - c + c
-        ≃⟨ +-substᴸ b-c≃0 ⟩
+        ≃⟨ AA.substᴸ b-c≃0 ⟩
           0 + c
         ≃⟨ +-identityᴸ ⟩
           c

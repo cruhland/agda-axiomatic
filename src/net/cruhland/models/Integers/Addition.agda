@@ -24,56 +24,57 @@ instance
       _+₀_ : ℤ → ℤ → ℤ
       a⁺ — a⁻ +₀ b⁺ — b⁻ = (a⁺ + b⁺) — (a⁻ + b⁻)
 
-+-comm : {a b : ℤ} → a + b ≃ b + a
-+-comm {a⁺ — a⁻} {b⁺ — b⁻} = ≃ᶻ-intro eq′
-  where
-    eq′ =
-      begin
-        (a⁺ + b⁺) + (b⁻ + a⁻)
-      ≃⟨ AA.substᴸ AA.comm ⟩
-        (b⁺ + a⁺) + (b⁻ + a⁻)
-      ≃⟨ AA.substᴿ AA.comm ⟩
-        (b⁺ + a⁺) + (a⁻ + b⁻)
-      ∎
+instance
+  +-commutative : AA.Commutative _+_
+  +-commutative = record { comm = +-comm }
+    where
+      +-comm : {a b : ℤ} → a + b ≃ b + a
+      +-comm {a⁺ — a⁻} {b⁺ — b⁻} = ≃ᶻ-intro eq′
+        where
+          eq′ =
+            begin
+              (a⁺ + b⁺) + (b⁻ + a⁻)
+            ≃⟨ AA.substᴸ AA.comm ⟩
+              (b⁺ + a⁺) + (b⁻ + a⁻)
+            ≃⟨ AA.substᴿ AA.comm ⟩
+              (b⁺ + a⁺) + (a⁻ + b⁻)
+            ∎
 
-+-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ + b ≃ a₂ + b
-+-substᴸ {a₁⁺ — a₁⁻} {a₂⁺ — a₂⁻} {b⁺ — b⁻} a₁≃a₂ = ≃ᶻ-intro eq′
-  where
-    a₁⁺+a₂⁻≃a₂⁺+a₁⁻ = ≃ᶻ-elim a₁≃a₂
-    eq′ =
-      begin
-        (a₁⁺ + b⁺) + (a₂⁻ + b⁻)
-      ≃⟨ AA.transpose ⟩
-        (a₁⁺ + a₂⁻) + (b⁺ + b⁻)
-      ≃⟨ AA.substᴸ a₁⁺+a₂⁻≃a₂⁺+a₁⁻ ⟩
-        (a₂⁺ + a₁⁻) + (b⁺ + b⁻)
-      ≃⟨ AA.transpose ⟩
-        (a₂⁺ + b⁺) + (a₁⁻ + b⁻)
-      ∎
+  +-substitutiveᴸ : AA.Substitutiveᴸ _+_
+  +-substitutiveᴸ = record { substᴸ = +-substᴸ }
+    where
+      +-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ + b ≃ a₂ + b
+      +-substᴸ {a₁⁺ — a₁⁻} {a₂⁺ — a₂⁻} {b⁺ — b⁻} a₁≃a₂ = ≃ᶻ-intro eq′
+        where
+          a₁⁺+a₂⁻≃a₂⁺+a₁⁻ = ≃ᶻ-elim a₁≃a₂
+          eq′ =
+            begin
+              (a₁⁺ + b⁺) + (a₂⁻ + b⁻)
+            ≃⟨ AA.transpose ⟩
+              (a₁⁺ + a₂⁻) + (b⁺ + b⁻)
+            ≃⟨ AA.substᴸ a₁⁺+a₂⁻≃a₂⁺+a₁⁻ ⟩
+              (a₂⁺ + a₁⁻) + (b⁺ + b⁻)
+            ≃⟨ AA.transpose ⟩
+              (a₂⁺ + b⁺) + (a₁⁻ + b⁻)
+            ∎
 
-+-substᴿ : ∀ {a b₁ b₂} → b₁ ≃ b₂ → a + b₁ ≃ a + b₂
-+-substᴿ {a} {b₁} {b₂} b₁≃b₂ =
-  begin
-    a + b₁
-  ≃⟨ +-comm {a} ⟩
-    b₁ + a
-  ≃⟨ +-substᴸ b₁≃b₂ ⟩
-    b₂ + a
-  ≃⟨ +-comm {b₂} ⟩
-    a + b₂
-  ∎
+  +-substitutiveᴿ : AA.Substitutiveᴿ {A = ℤ} _+_
+  +-substitutiveᴿ = AA.substitutiveᴿ
 
-+-assoc : {x y z : ℤ} → (x + y) + z ≃ x + (y + z)
-+-assoc {x⁺ — x⁻} {y⁺ — y⁻} {z⁺ — z⁻} = ≃ᶻ-intro eq′
-  where
-    eq′ =
-      begin
-        ((x⁺ + y⁺) + z⁺) + (x⁻ + (y⁻ + z⁻))
-      ≃⟨ AA.substᴸ AA.assoc ⟩
-        (x⁺ + (y⁺ + z⁺)) + (x⁻ + (y⁻ + z⁻))
-      ≃˘⟨ AA.substᴿ AA.assoc ⟩
-        (x⁺ + (y⁺ + z⁺)) + ((x⁻ + y⁻) + z⁻)
-      ∎
+  +-associative : AA.Associative _+_
+  +-associative = record { assoc = +-assoc }
+    where
+      +-assoc : {x y z : ℤ} → (x + y) + z ≃ x + (y + z)
+      +-assoc {x⁺ — x⁻} {y⁺ — y⁻} {z⁺ — z⁻} = ≃ᶻ-intro eq′
+        where
+          eq′ =
+            begin
+              ((x⁺ + y⁺) + z⁺) + (x⁻ + (y⁻ + z⁻))
+            ≃⟨ AA.substᴸ AA.assoc ⟩
+              (x⁺ + (y⁺ + z⁺)) + (x⁻ + (y⁻ + z⁻))
+            ≃˘⟨ AA.substᴿ AA.assoc ⟩
+              (x⁺ + (y⁺ + z⁺)) + ((x⁻ + y⁻) + z⁻)
+            ∎
 
 fromNat : Nat.Nat → {{_ : ⊤}} → ℤ
 fromNat Nat.zero = 0 — 0
@@ -119,11 +120,11 @@ fromℕ-subst = ≃ᶻ-intro ∘ AA.substᴸ
         x⁺ + (0 + x⁻)
       ∎
 
-+-identityᴿ : ∀ {x} → x + 0 ≃ x
++-identityᴿ : {x : ℤ} → x + 0 ≃ x
 +-identityᴿ {x} =
   begin
     x + 0
-  ≃⟨ +-comm {x} ⟩
+  ≃⟨ AA.comm ⟩
     0 + x
   ≃⟨ +-identityᴸ ⟩
     x

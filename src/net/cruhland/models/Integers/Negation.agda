@@ -15,8 +15,7 @@ module net.cruhland.models.Integers.Negation (PA : PeanoArithmetic) where
 private module ℕ = PeanoArithmetic PA
 open ℕ using (ℕ)
 import net.cruhland.models.Integers.Addition PA as Addition
-open Addition using
-  (+-assoc; +-comm; fromNat; fromℕ; +-identityᴿ; +-substᴸ; +-substᴿ)
+open Addition using (fromNat; fromℕ; +-identityᴿ)
 open import net.cruhland.models.Integers.Base PA using (_—_; ℤ)
 import net.cruhland.models.Integers.Equality PA as Equality
 open Equality using (≃ᶻ-elim; ≃ᶻ-intro)
@@ -66,9 +65,9 @@ neg-involutive = ≃ᶻ-intro refl
 +-inverseᴿ {x} =
   begin
     x + - x
-  ≃⟨ +-comm {x} ⟩
+  ≃⟨ AA.comm ⟩
     - x + x
-  ≃⟨ +-inverseᴸ {x} ⟩
+  ≃⟨ +-inverseᴸ ⟩
     0
   ∎
 
@@ -77,10 +76,10 @@ _-_ : ℤ → ℤ → ℤ
 x - y = x + (- y)
 
 sub-substᴸ : ∀ {a₁ a₂ b} → a₁ ≃ a₂ → a₁ - b ≃ a₂ - b
-sub-substᴸ = +-substᴸ
+sub-substᴸ = AA.substᴸ
 
 sub-substᴿ : ∀ {a b₁ b₂} → b₁ ≃ b₂ → a - b₁ ≃ a - b₂
-sub-substᴿ = +-substᴿ ∘ AA.subst
+sub-substᴿ = AA.substᴿ ∘ AA.subst
 
 ≃ᴸ-subᴿ-toᴸ : ∀ {a b c} → a - b ≃ c → a ≃ b + c
 ≃ᴸ-subᴿ-toᴸ {a} {b} {c} a-b≃c =
@@ -88,15 +87,15 @@ sub-substᴿ = +-substᴿ ∘ AA.subst
     a
   ≃˘⟨ +-identityᴿ ⟩
     a + 0
-  ≃˘⟨ +-substᴿ (+-inverseᴿ {b}) ⟩
+  ≃˘⟨ AA.substᴿ +-inverseᴿ ⟩
     a + (b - b)
-  ≃⟨ +-substᴿ {a} (+-comm {b}) ⟩
+  ≃⟨ AA.substᴿ AA.comm ⟩
     a + (- b + b)
-  ≃˘⟨ +-assoc {a} ⟩
+  ≃˘⟨ AA.assoc ⟩
     a - b + b
-  ≃⟨ +-substᴸ a-b≃c ⟩
+  ≃⟨ AA.substᴸ a-b≃c ⟩
     c + b
-  ≃⟨ +-comm {c} ⟩
+  ≃⟨ AA.comm ⟩
     b + c
   ∎
 

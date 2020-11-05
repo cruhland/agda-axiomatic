@@ -14,7 +14,7 @@ module net.cruhland.models.Integers.Multiplication (PA : PeanoArithmetic) where
 
 private module ℕ = PeanoArithmetic PA
 import net.cruhland.models.Integers.Addition PA as Addition
-open Addition using (+-comm; fromℕ; +-substᴸ; +-substᴿ)
+open Addition using (fromℕ)
 open import net.cruhland.models.Integers.Base PA using (_—_; ℤ)
 import net.cruhland.models.Integers.Equality PA as Equality
 open Equality using (≃ᶻ-elim; ≃ᶻ-intro)
@@ -125,17 +125,17 @@ instance
         (b₁ * a₁ + b₂ * a₂) + (b₁ * a₃ + b₂ * a₄)
       ∎
 
-*-distrib-+ᴿ : ∀ {x y z} → (y + z) * x ≃ y * x + z * x
+*-distrib-+ᴿ : {x y z : ℤ} → (y + z) * x ≃ y * x + z * x
 *-distrib-+ᴿ {x} {y} {z} =
   begin
     (y + z) * x
   ≃⟨ AA.comm ⟩
     x * (y + z)
-  ≃⟨ *-distrib-+ᴸ {x} ⟩
+  ≃⟨ *-distrib-+ᴸ ⟩
     x * y + x * z
-  ≃⟨ +-substᴸ AA.comm ⟩
+  ≃⟨ AA.substᴸ AA.comm ⟩
     y * x + x * z
-  ≃⟨ +-substᴿ {y * x} AA.comm ⟩
+  ≃⟨ AA.substᴿ AA.comm ⟩
     y * x + z * x
   ∎
 
@@ -257,9 +257,9 @@ neg-mult {a⁺ — a⁻} = ≃ᶻ-intro a⁻+[[0+0]a⁻+[1+0]a⁺]≃[0+0]a⁺+[
     c * (a - b)
   ≃⟨⟩
     c * (a + - b)
-  ≃⟨ *-distrib-+ᴸ {c} ⟩
+  ≃⟨ *-distrib-+ᴸ ⟩
     c * a + c * - b
-  ≃⟨ +-substᴿ {c * a} (*-negᴿ {c}) ⟩
+  ≃⟨ AA.substᴿ *-negᴿ ⟩
     c * a + - (c * b)
   ≃⟨⟩
     c * a - c * b
@@ -271,9 +271,9 @@ neg-mult {a⁺ — a⁻} = ≃ᶻ-intro a⁻+[[0+0]a⁻+[1+0]a⁺]≃[0+0]a⁺+[
     (a - b) * c
   ≃⟨⟩
     (a + - b) * c
-  ≃⟨ *-distrib-+ᴿ {c} {a} ⟩
+  ≃⟨ *-distrib-+ᴿ ⟩
     a * c + (- b) * c
-  ≃⟨ +-substᴿ {a * c} (*-negᴸ {b}) ⟩
+  ≃⟨ AA.substᴿ *-negᴸ ⟩
     a * c + - (b * c)
   ≃⟨⟩
     a * c - b * c
@@ -306,13 +306,13 @@ neg-sub-swap {a} {b} =
     -1 * (a - b)
   ≃⟨ *-distrib-subᴸ {a} {b} { -1} ⟩
     -1 * a - -1 * b
-  ≃˘⟨ +-substᴸ neg-mult ⟩
+  ≃˘⟨ AA.substᴸ neg-mult ⟩
     - a - -1 * b
-  ≃˘⟨ +-substᴿ (AA.subst neg-mult) ⟩
+  ≃˘⟨ AA.substᴿ (AA.subst neg-mult) ⟩
     - a - (- b)
-  ≃⟨ +-substᴿ neg-involutive ⟩
+  ≃⟨ AA.substᴿ neg-involutive ⟩
     - a + b
-  ≃˘⟨ +-comm ⟩
+  ≃˘⟨ AA.comm ⟩
     b - a
   ∎
 
