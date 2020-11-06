@@ -86,3 +86,6 @@ instance
 
   +-substitutiveᴿ : AA.Substitutiveᴿ {A = ℚ} _+_
   +-substitutiveᴿ = AA.substitutiveᴿ
+
+  +-substitutive₂ : AA.Substitutive₂ {A = ℚ} _+_
+  +-substitutive₂ = AA.substitutive₂

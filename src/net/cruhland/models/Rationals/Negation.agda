@@ -1,10 +1,15 @@
-open import net.cruhland.axioms.Operators as Op using (-_)
+import net.cruhland.axioms.AbstractAlgebra as AA
+open import net.cruhland.axioms.Eq using (_≃_; module ≃-Reasoning)
+open ≃-Reasoning
+open import net.cruhland.axioms.Operators as Op using (_*_; -_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 
 module net.cruhland.models.Rationals.Negation (PA : PeanoArithmetic) where
 
 import net.cruhland.models.Integers PA as ℤ
 open import net.cruhland.models.Rationals.Base PA using (ℚ)
+open import net.cruhland.models.Rationals.Equality PA as Equality using
+  (≃₀-intro)
 
 instance
   dashᴸ : Op.Dashᴸ ℚ
@@ -13,3 +18,24 @@ instance
       -₀_ : ℚ → ℚ
       -₀ record { n = p↑ ; d = p↓ ; d≄0 = p↓≄0 } =
         record { n = - p↑ ; d = p↓ ; d≄0 = p↓≄0 }
+
+  neg-substitutive₁ : AA.Substitutive₁ -_
+  neg-substitutive₁ = record { subst = neg-subst }
+    where
+      neg-subst : {a₁ a₂ : ℚ} → a₁ ≃ a₂ → - a₁ ≃ - a₂
+      neg-subst
+        {record { n = a₁↑ ; d = a₁↓ }}
+        {record { n = a₂↑ ; d = a₂↓ }}
+        (≃₀-intro a₁↑a₂↓≃a₂↑a₁↓) =
+          ≃₀-intro [-a₁↑]a₂↓≃[-a₂↑]a₁↓
+        where
+          [-a₁↑]a₂↓≃[-a₂↑]a₁↓ =
+            begin
+              - a₁↑ * a₂↓
+            ≃⟨ AA.commᴸ ⟩
+              - (a₁↑ * a₂↓)
+            ≃⟨ AA.subst a₁↑a₂↓≃a₂↑a₁↓ ⟩
+              - (a₂↑ * a₁↓)
+            ≃˘⟨ AA.commᴸ ⟩
+              - a₂↑ * a₁↓
+            ∎
