@@ -147,94 +147,88 @@ instance
   *-identityᴿ : AA.Identityᴿ {A = ℤ} _*_ 1
   *-identityᴿ = AA.identityᴿ
 
-*-distrib-+ᴸ : {x y z : ℤ} → x * (y + z) ≃ x * y + x * z
-*-distrib-+ᴸ {x⁺ — x⁻} {y⁺ — y⁻} {z⁺ — z⁻} =
-    ≃ᶻ-intro (AA.[a≃b][c≃d] (refactor {x⁺} {x⁻}) (sym (refactor {x⁺} {x⁻})))
-  where
-    refactor :
-      ∀ {b₁ b₂ a₁ a₂ a₃ a₄} →
-        b₁ * (a₁ + a₃) + b₂ * (a₂ + a₄) ≃
-          (b₁ * a₁ + b₂ * a₂) + (b₁ * a₃ + b₂ * a₄)
-    refactor {b₁} {b₂} {a₁} {a₂} {a₃} {a₄} =
-      begin
-        b₁ * (a₁ + a₃) + b₂ * (a₂ + a₄)
-      ≃⟨ AA.distrib-twoᴸ ⟩
-        (b₁ * a₁ + b₁ * a₃) + (b₂ * a₂ + b₂ * a₄)
-      ≃⟨ AA.transpose ⟩
-        (b₁ * a₁ + b₂ * a₂) + (b₁ * a₃ + b₂ * a₄)
-      ∎
+  *-distributive-+ᴸ : AA.Distributiveᴸ _*_ _+_
+  *-distributive-+ᴸ = record { distribᴸ = *-distrib-+ᴸ }
+    where
+      *-distrib-+ᴸ : {x y z : ℤ} → x * (y + z) ≃ x * y + x * z
+      *-distrib-+ᴸ {x⁺ — x⁻} {y⁺ — y⁻} {z⁺ — z⁻} =
+          ≃ᶻ-intro
+            (AA.[a≃b][c≃d] (refactor {x⁺} {x⁻})
+            (sym (refactor {x⁺} {x⁻})))
+        where
+          refactor :
+            ∀ {b₁ b₂ a₁ a₂ a₃ a₄} →
+              b₁ * (a₁ + a₃) + b₂ * (a₂ + a₄) ≃
+                (b₁ * a₁ + b₂ * a₂) + (b₁ * a₃ + b₂ * a₄)
+          refactor {b₁} {b₂} {a₁} {a₂} {a₃} {a₄} =
+            begin
+              b₁ * (a₁ + a₃) + b₂ * (a₂ + a₄)
+            ≃⟨ AA.distrib-twoᴸ ⟩
+              (b₁ * a₁ + b₁ * a₃) + (b₂ * a₂ + b₂ * a₄)
+            ≃⟨ AA.transpose ⟩
+              (b₁ * a₁ + b₂ * a₂) + (b₁ * a₃ + b₂ * a₄)
+            ∎
 
-*-distrib-+ᴿ : {x y z : ℤ} → (y + z) * x ≃ y * x + z * x
-*-distrib-+ᴿ {x} {y} {z} =
-  begin
-    (y + z) * x
-  ≃⟨ AA.comm ⟩
-    x * (y + z)
-  ≃⟨ *-distrib-+ᴸ ⟩
-    x * y + x * z
-  ≃⟨ AA.substᴸ AA.comm ⟩
-    y * x + x * z
-  ≃⟨ AA.substᴿ AA.comm ⟩
-    y * x + z * x
-  ∎
+  *-distributive-+ᴿ : AA.Distributiveᴿ {A = ℤ} _*_ _+_
+  *-distributive-+ᴿ = AA.distributiveᴿ
 
-*-assoc : {x y z : ℤ} → (x * y) * z ≃ x * (y * z)
-*-assoc {x⁺ — x⁻} {y⁺ — y⁻} {z⁺ — z⁻} = ≃ᶻ-intro eq′
-  where
-    assoc-four :
-      ∀ {a₁ a₂ a₃ b₁ b₂ b₃ c₁ c₂ c₃ d₁ d₂ d₃} →
-        ((a₁ * a₂) * a₃ + (b₁ * b₂) * b₃) +
-        ((c₁ * c₂) * c₃ + (d₁ * d₂) * d₃) ≃
-        (a₁ * (a₂ * a₃) + b₁ * (b₂ * b₃)) +
-        (c₁ * (c₂ * c₃) + d₁ * (d₂ * d₃))
-    assoc-four {a₁} {a₂} {a₃} {b₁} {b₂} {b₃} {c₁} {c₂} {c₃} {d₁} {d₂} {d₃} =
-      begin
-        ((a₁ * a₂) * a₃ + (b₁ * b₂) * b₃) +
-        ((c₁ * c₂) * c₃ + (d₁ * d₂) * d₃)
-      ≃⟨ AA.substᴸ (AA.substᴸ (ℕ.*-assoc {a₁})) ⟩
-        (a₁ * (a₂ * a₃) + (b₁ * b₂) * b₃) +
-        ((c₁ * c₂) * c₃ + (d₁ * d₂) * d₃)
-      ≃⟨ AA.substᴸ (AA.substᴿ (ℕ.*-assoc {b₁})) ⟩
-        (a₁ * (a₂ * a₃) + b₁ * (b₂ * b₃)) +
-        ((c₁ * c₂) * c₃ + (d₁ * d₂) * d₃)
-      ≃⟨ AA.substᴿ (AA.substᴸ (ℕ.*-assoc {c₁})) ⟩
-        (a₁ * (a₂ * a₃) + b₁ * (b₂ * b₃)) +
-        (c₁ * (c₂ * c₃) + (d₁ * d₂) * d₃)
-      ≃⟨ AA.substᴿ (AA.substᴿ (ℕ.*-assoc {d₁})) ⟩
-        (a₁ * (a₂ * a₃) + b₁ * (b₂ * b₃)) +
-        (c₁ * (c₂ * c₃) + d₁ * (d₂ * d₃))
-      ∎
-
-    refactor :
-      ∀ {b₁ b₂ a₁ a₂ a₃ a₄} →
-        (a₁ * a₃ + a₂ * a₄) * b₁ + (a₁ * a₄ + a₂ * a₃) * b₂ ≃
-          a₁ * (a₃ * b₁ + a₄ * b₂) + a₂ * (a₃ * b₂ + a₄ * b₁)
-    refactor {b₁} {b₂} {a₁} {a₂} {a₃} {a₄} =
-      begin
-        (a₁ * a₃ + a₂ * a₄) * b₁ + (a₁ * a₄ + a₂ * a₃) * b₂
-      ≃⟨ AA.distrib-twoᴿ ⟩
-        ((a₁ * a₃) * b₁ + (a₂ * a₄) * b₁) +
-        ((a₁ * a₄) * b₂ + (a₂ * a₃) * b₂)
-      ≃⟨ AA.transpose ⟩
-        ((a₁ * a₃) * b₁ + (a₁ * a₄) * b₂) +
-        ((a₂ * a₄) * b₁ + (a₂ * a₃) * b₂)
-      ≃⟨ AA.substᴿ AA.comm ⟩
-        ((a₁ * a₃) * b₁ + (a₁ * a₄) * b₂) +
-        ((a₂ * a₃) * b₂ + (a₂ * a₄) * b₁)
-      ≃⟨ assoc-four {a₁ = a₁} {b₁ = a₁} {c₁ = a₂} {d₁ = a₂} ⟩
-        (a₁ * (a₃ * b₁) + a₁ * (a₄ * b₂)) +
-        (a₂ * (a₃ * b₂) + a₂ * (a₄ * b₁))
-      ≃˘⟨ AA.distrib-twoᴸ ⟩
-        a₁ * (a₃ * b₁ + a₄ * b₂) + a₂ * (a₃ * b₂ + a₄ * b₁)
-      ∎
-
-    eq′ = AA.[a≃b][c≃d]
-           (refactor {z⁺} {z⁻} {x⁺} {x⁻})
-           (sym (refactor {z⁻} {z⁺} {x⁺} {x⁻}))
-
-instance
   *-associative : AA.Associative _*_
   *-associative = record { assoc = *-assoc }
+    where
+      *-assoc : {x y z : ℤ} → (x * y) * z ≃ x * (y * z)
+      *-assoc {x⁺ — x⁻} {y⁺ — y⁻} {z⁺ — z⁻} = ≃ᶻ-intro eq′
+        where
+          assoc-four :
+            ∀ {a₁ a₂ a₃ b₁ b₂ b₃ c₁ c₂ c₃ d₁ d₂ d₃} →
+              ((a₁ * a₂) * a₃ + (b₁ * b₂) * b₃) +
+              ((c₁ * c₂) * c₃ + (d₁ * d₂) * d₃) ≃
+              (a₁ * (a₂ * a₃) + b₁ * (b₂ * b₃)) +
+              (c₁ * (c₂ * c₃) + d₁ * (d₂ * d₃))
+          assoc-four
+              {a₁} {a₂} {a₃} {b₁} {b₂} {b₃} {c₁} {c₂} {c₃} {d₁} {d₂} {d₃} =
+            begin
+              ((a₁ * a₂) * a₃ + (b₁ * b₂) * b₃) +
+              ((c₁ * c₂) * c₃ + (d₁ * d₂) * d₃)
+            ≃⟨ AA.substᴸ (AA.substᴸ (ℕ.*-assoc {a₁})) ⟩
+              (a₁ * (a₂ * a₃) + (b₁ * b₂) * b₃) +
+              ((c₁ * c₂) * c₃ + (d₁ * d₂) * d₃)
+            ≃⟨ AA.substᴸ (AA.substᴿ (ℕ.*-assoc {b₁})) ⟩
+              (a₁ * (a₂ * a₃) + b₁ * (b₂ * b₃)) +
+              ((c₁ * c₂) * c₃ + (d₁ * d₂) * d₃)
+            ≃⟨ AA.substᴿ (AA.substᴸ (ℕ.*-assoc {c₁})) ⟩
+              (a₁ * (a₂ * a₃) + b₁ * (b₂ * b₃)) +
+              (c₁ * (c₂ * c₃) + (d₁ * d₂) * d₃)
+            ≃⟨ AA.substᴿ (AA.substᴿ (ℕ.*-assoc {d₁})) ⟩
+              (a₁ * (a₂ * a₃) + b₁ * (b₂ * b₃)) +
+              (c₁ * (c₂ * c₃) + d₁ * (d₂ * d₃))
+            ∎
+
+          refactor :
+            ∀ {b₁ b₂ a₁ a₂ a₃ a₄} →
+              (a₁ * a₃ + a₂ * a₄) * b₁ + (a₁ * a₄ + a₂ * a₃) * b₂ ≃
+                a₁ * (a₃ * b₁ + a₄ * b₂) + a₂ * (a₃ * b₂ + a₄ * b₁)
+          refactor {b₁} {b₂} {a₁} {a₂} {a₃} {a₄} =
+            begin
+              (a₁ * a₃ + a₂ * a₄) * b₁ + (a₁ * a₄ + a₂ * a₃) * b₂
+            ≃⟨ AA.distrib-twoᴿ ⟩
+              ((a₁ * a₃) * b₁ + (a₂ * a₄) * b₁) +
+              ((a₁ * a₄) * b₂ + (a₂ * a₃) * b₂)
+            ≃⟨ AA.transpose ⟩
+              ((a₁ * a₃) * b₁ + (a₁ * a₄) * b₂) +
+              ((a₂ * a₄) * b₁ + (a₂ * a₃) * b₂)
+            ≃⟨ AA.substᴿ AA.comm ⟩
+              ((a₁ * a₃) * b₁ + (a₁ * a₄) * b₂) +
+              ((a₂ * a₃) * b₂ + (a₂ * a₄) * b₁)
+            ≃⟨ assoc-four {a₁ = a₁} {b₁ = a₁} {c₁ = a₂} {d₁ = a₂} ⟩
+              (a₁ * (a₃ * b₁) + a₁ * (a₄ * b₂)) +
+              (a₂ * (a₃ * b₂) + a₂ * (a₄ * b₁))
+            ≃˘⟨ AA.distrib-twoᴸ ⟩
+              a₁ * (a₃ * b₁ + a₄ * b₂) + a₂ * (a₃ * b₂ + a₄ * b₁)
+            ∎
+
+          eq′ = AA.[a≃b][c≃d]
+                 (refactor {z⁺} {z⁻} {x⁺} {x⁻})
+                 (sym (refactor {z⁻} {z⁺} {x⁺} {x⁻}))
 
   *-commutative-negᴸ : AA.Commutativeᴸ -_ _*_
   *-commutative-negᴸ = record { commᴸ = *-negᴸ }
@@ -290,7 +284,7 @@ neg-mult {a⁺ — a⁻} = ≃ᶻ-intro a⁻+[[0+0]a⁻+[1+0]a⁺]≃[0+0]a⁺+[
     c * (a - b)
   ≃⟨⟩
     c * (a + - b)
-  ≃⟨ *-distrib-+ᴸ ⟩
+  ≃⟨ AA.distribᴸ ⟩
     c * a + c * - b
   ≃⟨ AA.substᴿ AA.commᴿ ⟩
     c * a + - (c * b)
@@ -304,7 +298,7 @@ neg-mult {a⁺ — a⁻} = ≃ᶻ-intro a⁻+[[0+0]a⁻+[1+0]a⁺]≃[0+0]a⁺+[
     (a - b) * c
   ≃⟨⟩
     (a + - b) * c
-  ≃⟨ *-distrib-+ᴿ ⟩
+  ≃⟨ AA.distribᴿ ⟩
     a * c + (- b) * c
   ≃⟨ AA.substᴿ AA.commᴸ ⟩
     a * c + - (b * c)

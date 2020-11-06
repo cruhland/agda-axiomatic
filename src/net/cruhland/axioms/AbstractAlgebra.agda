@@ -255,48 +255,6 @@ swap-middle :
       ∀ {a b c d} → a ⊙ ((b ⊙ c) ⊙ d) ≃ a ⊙ ((c ⊙ b) ⊙ d)
 swap-middle = substᴿ (substᴸ comm)
 
-regroup :
-  {A : Set} {_⊙_ : A → A → A}
-    {{_ : Eq A}} {{_ : Associative _⊙_}}
-    {{_ : Commutative _⊙_}} {{_ : Substitutiveᴿ _⊙_}} →
-      ∀ a b c d → (a ⊙ b) ⊙ (c ⊙ d) ≃ a ⊙ ((b ⊙ d) ⊙ c)
-regroup {A} {_⊙_} a b c d =
-  begin
-    (a ⊙ b) ⊙ (c ⊙ d)
-  ≃⟨ substᴿ comm ⟩
-    (a ⊙ b) ⊙ (d ⊙ c)
-  ≃⟨ [ab][cd]≃a[[bc]d] ⟩
-    a ⊙ ((b ⊙ d) ⊙ c)
-  ∎
-
-perm-adcb :
-  {A : Set} {_⊙_ : A → A → A}
-    {{_ : Eq A}} {{_ : Associative _⊙_}} {{_ : Commutative _⊙_}}
-    {{_ : Substitutive₂ _⊙_}} →
-      ∀ {a b c d} → (a ⊙ d) ⊙ (c ⊙ b) ≃ (a ⊙ b) ⊙ (c ⊙ d)
-perm-adcb {A} {_⊙_} {a} {b} {c} {d} =
-  begin
-    (a ⊙ d) ⊙ (c ⊙ b)
-  ≃⟨ regroup a d c b ⟩
-    a ⊙ ((d ⊙ b) ⊙ c)
-  ≃⟨ swap-middle ⟩
-    a ⊙ ((b ⊙ d) ⊙ c)
-  ≃˘⟨ regroup a b c d ⟩
-    (a ⊙ b) ⊙ (c ⊙ d)
-  ∎
-
-[a≃b][c≃d] :
-  {A : Set} {_⊙_ : A → A → A} {{_ : Eq A}} {{_ : Substitutive₂ _⊙_}} →
-    ∀ {a b c d} → a ≃ b → c ≃ d → a ⊙ c ≃ b ⊙ d
-[a≃b][c≃d] {A} {_⊙_} {a} {b} {c} {d} a≃b c≃d =
-  begin
-    a ⊙ c
-  ≃⟨ substᴸ a≃b ⟩
-    b ⊙ c
-  ≃⟨ substᴿ c≃d ⟩
-    b ⊙ d
-  ∎
-
 transpose :
   {A : Set} {_⊙_ : A → A → A}
     {{_ : Eq A}} {{_ : Associative _⊙_}} {{_ : Commutative _⊙_}}
@@ -311,6 +269,34 @@ transpose {A} {_⊙_} {w} {x} {y} {z} =
     w ⊙ ((y ⊙ x) ⊙ z)
   ≃˘⟨ [ab][cd]≃a[[bc]d] ⟩
     (w ⊙ y) ⊙ (x ⊙ z)
+  ∎
+
+perm-adcb :
+  {A : Set} {_⊙_ : A → A → A}
+    {{_ : Eq A}} {{_ : Associative _⊙_}} {{_ : Commutative _⊙_}}
+    {{_ : Substitutive₂ _⊙_}} →
+      ∀ {a b c d} → (a ⊙ d) ⊙ (c ⊙ b) ≃ (a ⊙ b) ⊙ (c ⊙ d)
+perm-adcb {A} {_⊙_} {a} {b} {c} {d} =
+  begin
+    (a ⊙ d) ⊙ (c ⊙ b)
+  ≃⟨ substᴿ comm ⟩
+    (a ⊙ d) ⊙ (b ⊙ c)
+  ≃⟨ transpose ⟩
+    (a ⊙ b) ⊙ (d ⊙ c)
+  ≃⟨ substᴿ comm ⟩
+    (a ⊙ b) ⊙ (c ⊙ d)
+  ∎
+
+[a≃b][c≃d] :
+  {A : Set} {_⊙_ : A → A → A} {{_ : Eq A}} {{_ : Substitutive₂ _⊙_}} →
+    ∀ {a b c d} → a ≃ b → c ≃ d → a ⊙ c ≃ b ⊙ d
+[a≃b][c≃d] {A} {_⊙_} {a} {b} {c} {d} a≃b c≃d =
+  begin
+    a ⊙ c
+  ≃⟨ substᴸ a≃b ⟩
+    b ⊙ c
+  ≃⟨ substᴿ c≃d ⟩
+    b ⊙ d
   ∎
 
 distrib-twoᴸ :

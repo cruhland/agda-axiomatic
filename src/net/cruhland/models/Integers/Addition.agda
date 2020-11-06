@@ -62,6 +62,9 @@ instance
   +-substitutiveᴿ : AA.Substitutiveᴿ {A = ℤ} _+_
   +-substitutiveᴿ = AA.substitutiveᴿ
 
+  +-substitutive₂ : AA.Substitutive₂ {A = ℤ} _+_
+  +-substitutive₂ = AA.substitutive₂
+
   +-associative : AA.Associative _+_
   +-associative = record { assoc = +-assoc }
     where
