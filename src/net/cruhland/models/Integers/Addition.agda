@@ -99,7 +99,7 @@ instance
       from-ℕ-inject : {n m : ℕ} → (n as ℤ) ≃ (m as ℤ) → n ≃ m
       from-ℕ-inject (≃ᶻ-intro n+0≃m+0) = AA.cancelᴿ n+0≃m+0
 
-  +-compatible-ℕ : AA.Compatible {A = ℕ} (_as ℤ) {Constraint = Op.Plus} _+_
+  +-compatible-ℕ : AA.Compatible {A = ℕ} (_as ℤ) _+_ _+_
   +-compatible-ℕ = record { compat = ≃ᶻ-intro (AA.substᴿ AA.identᴸ) }
 
   +-identityᴸ : AA.Identityᴸ _+_ 0

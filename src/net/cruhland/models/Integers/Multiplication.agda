@@ -94,7 +94,7 @@ instance
   *-substitutive₂ : AA.Substitutive₂ {A = ℤ} _*_
   *-substitutive₂ = AA.substitutive₂
 
-  *-compatible-ℕ : AA.Compatible {A = ℕ} (_as ℤ) {Constraint = Op.Star} _*_
+  *-compatible-ℕ : AA.Compatible {A = ℕ} (_as ℤ) _*_ _*_
   *-compatible-ℕ = record { compat = *-compat-ℕ }
     where
       *-compat-ℕ : {n m : ℕ} → (n * m as ℤ) ≃ (n as ℤ) * (m as ℤ)
