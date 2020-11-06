@@ -48,7 +48,7 @@ instance
   plus = record { _+_ = _+_ }
 
   +-substitutiveᴸ : AA.Substitutiveᴸ _+_
-  +-substitutiveᴸ = record { substᴸ = λ {_ _ m} → cong (_+ m) }
+  +-substitutiveᴸ = record { substᴸ = λ {m} → cong (_+ m) }
 
   +-identityᴸ : AA.Identityᴸ _+_ zero
   +-identityᴸ = record { identᴸ = refl }
@@ -64,7 +64,7 @@ instance
   star = record { _*_ = _*_ }
 
   *-substitutiveᴸ : AA.Substitutiveᴸ _*_
-  *-substitutiveᴸ = record { substᴸ = λ {_ _ m} → cong (_* m) }
+  *-substitutiveᴸ = record { substᴸ = λ {m} → cong (_* m) }
 
   *-absorptiveᴸ : AA.Absorptiveᴸ _*_ zero
   *-absorptiveᴸ = record { absorbᴸ = refl }

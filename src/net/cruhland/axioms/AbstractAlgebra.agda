@@ -15,7 +15,7 @@ open Substitutive₁ {{...}} public using (subst)
 
 record Substitutiveᴸ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set where
   field
-    substᴸ : ∀ {a₁ a₂ b} → a₁ ≃ a₂ → a₁ ⊙ b ≃ a₂ ⊙ b
+    substᴸ : ∀ {a b₁ b₂} → b₁ ≃ b₂ → b₁ ⊙ a ≃ b₂ ⊙ a
 
 open Substitutiveᴸ {{...}} public using (substᴸ)
 
