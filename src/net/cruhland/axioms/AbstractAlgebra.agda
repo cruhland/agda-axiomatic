@@ -118,6 +118,16 @@ record Absorptiveᴿ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) (z : A) : S
 
 open Absorptiveᴿ {{...}} public using (absorbᴿ)
 
+record Compatible
+    {A B : Set} {{eqA : Eq A}} {{eqB : Eq B}} (f : A → B)
+      {Constraint : Set → Set} {{ca : Constraint A}} {{cb : Constraint B}}
+        (_⊙_ : {X : Set} {{_ : Constraint X}} → X → X → X) : Set where
+  field
+    compat :
+      ∀ {a b} → f (a ⊙ b) ≃ f a ⊙ f b
+
+open Compatible {{...}} public using (compat)
+
 with-comm :
   {A : Set} {_⊙_ : A → A → A}
     {{_ : Eq A}} {{_ : Commutative _⊙_}} →

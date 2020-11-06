@@ -17,7 +17,7 @@ module net.cruhland.models.Integers.Ordering (PA : PeanoArithmetic) where
 
 open module ℕ = PeanoArithmetic PA using (ℕ)
 import net.cruhland.models.Integers.Addition PA as Addition
-open Addition using (+-identityᴸ; +-identityᴿ; +-to-+)
+open Addition using (+-identityᴸ; +-identityᴿ)
 open import net.cruhland.models.Integers.Base PA using (ℤ)
 import net.cruhland.models.Integers.Equality PA as Equality
 import net.cruhland.models.Integers.Multiplication PA as Multiplication
@@ -50,7 +50,7 @@ _>_ = flip _<_
   let n₁+n₂≃0 =
         begin
           (n₁ + n₂ as ℤ)
-        ≃⟨ +-to-+ ⟩
+        ≃⟨ AA.compat ⟩
           (n₁ as ℤ) + (n₂ as ℤ)
         ≃˘⟨ +-identityᴸ ⟩
           0 + ((n₁ as ℤ) + (n₂ as ℤ))

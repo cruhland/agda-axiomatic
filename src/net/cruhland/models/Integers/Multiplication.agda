@@ -94,21 +94,24 @@ instance
   *-substitutive₂ : AA.Substitutive₂ {A = ℤ} _*_
   *-substitutive₂ = AA.substitutive₂
 
-*-to-* : {n m : ℕ} → (n * m as ℤ) ≃ (n as ℤ) * (m as ℤ)
-*-to-* {n} {m} = ≃ᶻ-intro nm+n0+0m≃nm+00+0
-  where
-    nm+n0+0m≃nm+00+0 =
-      begin
-        n * m + (n * 0 + 0 * m)
-      ≃⟨ AA.substᴿ (AA.substᴸ AA.absorbᴿ) ⟩
-        n * m + (0 + 0 * m)
-      ≃˘⟨ AA.substᴿ (AA.substᴸ AA.absorbᴸ) ⟩
-        n * m + (0 * 0 + 0 * m)
-      ≃⟨ AA.substᴿ (AA.substᴿ AA.absorbᴸ) ⟩
-        n * m + (0 * 0 + 0)
-      ≃˘⟨ AA.assoc ⟩
-        n * m + 0 * 0 + 0
-      ∎
+  *-compatible-ℕ : AA.Compatible {A = ℕ} (_as ℤ) {Constraint = Op.Star} _*_
+  *-compatible-ℕ = record { compat = *-compat-ℕ }
+    where
+      *-compat-ℕ : {n m : ℕ} → (n * m as ℤ) ≃ (n as ℤ) * (m as ℤ)
+      *-compat-ℕ {n} {m} = ≃ᶻ-intro nm+n0+0m≃nm+00+0
+        where
+          nm+n0+0m≃nm+00+0 =
+            begin
+              n * m + (n * 0 + 0 * m)
+            ≃⟨ AA.substᴿ (AA.substᴸ AA.absorbᴿ) ⟩
+              n * m + (0 + 0 * m)
+            ≃˘⟨ AA.substᴿ (AA.substᴸ AA.absorbᴸ) ⟩
+              n * m + (0 * 0 + 0 * m)
+            ≃⟨ AA.substᴿ (AA.substᴿ AA.absorbᴸ) ⟩
+              n * m + (0 * 0 + 0)
+            ≃˘⟨ AA.assoc ⟩
+              n * m + 0 * 0 + 0
+            ∎
 
 *-distrib-+ᴸ : {x y z : ℤ} → x * (y + z) ≃ x * y + x * z
 *-distrib-+ᴸ {x⁺ — x⁻} {y⁺ — y⁻} {z⁺ — z⁻} =
