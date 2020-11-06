@@ -190,38 +190,41 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
     *-distributive-+ᴿ : AA.Distributiveᴿ _*_ _+_
     *-distributive-+ᴿ = AA.distributiveᴿ
 
-  *-assoc : ∀ {a b c} → (a * b) * c ≃ a * (b * c)
-  *-assoc {a} {b} {c} = sym (ind P Pz Ps b)
-    where
-      P = λ x → a * (x * c) ≃ (a * x) * c
-      Pz =
-        begin
-          a * (zero * c)
-        ≃⟨ AA.substᴿ AA.absorbᴸ ⟩
-          a * zero
-        ≃⟨ AA.absorbᴿ ⟩
-          zero
-        ≃˘⟨ AA.absorbᴸ ⟩
-          zero * c
-        ≃˘⟨ AA.substᴸ AA.absorbᴿ ⟩
-          (a * zero) * c
-        ∎
+    *-associative : AA.Associative _*_
+    *-associative = record { assoc = *-assoc }
+      where
+        *-assoc : ∀ {a b c} → (a * b) * c ≃ a * (b * c)
+        *-assoc {a} {b} {c} = sym (ind P Pz Ps b)
+          where
+            P = λ x → a * (x * c) ≃ (a * x) * c
+            Pz =
+              begin
+                a * (zero * c)
+              ≃⟨ AA.substᴿ AA.absorbᴸ ⟩
+                a * zero
+              ≃⟨ AA.absorbᴿ ⟩
+                zero
+              ≃˘⟨ AA.absorbᴸ ⟩
+                zero * c
+              ≃˘⟨ AA.substᴸ AA.absorbᴿ ⟩
+                (a * zero) * c
+              ∎
 
-      Ps : step-case P
-      Ps {k} a[kc]≃[ak]c =
-        begin
-          a * (step k * c)
-        ≃⟨ AA.substᴿ *-stepᴸ ⟩
-          a * (k * c + c)
-        ≃⟨ AA.distribᴸ ⟩
-          a * (k * c) + a * c
-        ≃⟨ AA.substᴸ a[kc]≃[ak]c ⟩
-          (a * k) * c + a * c
-        ≃˘⟨ AA.distribᴿ ⟩
-          (a * k + a) * c
-        ≃˘⟨ AA.substᴸ *-stepᴿ ⟩
-          (a * step k) * c
-        ∎
+            Ps : step-case P
+            Ps {k} a[kc]≃[ak]c =
+              begin
+                a * (step k * c)
+              ≃⟨ AA.substᴿ *-stepᴸ ⟩
+                a * (k * c + c)
+              ≃⟨ AA.distribᴸ ⟩
+                a * (k * c) + a * c
+              ≃⟨ AA.substᴸ a[kc]≃[ak]c ⟩
+                (a * k) * c + a * c
+              ≃˘⟨ AA.distribᴿ ⟩
+                (a * k + a) * c
+              ≃˘⟨ AA.substᴸ *-stepᴿ ⟩
+                (a * step k) * c
+              ∎
 
   *-preserves-<ᴿ : ∀ {a b c} → a < b → c ≄ zero → a * c < b * c
   *-preserves-<ᴿ {a} {b} {c} a<b c≄z with <→<⁺ a<b

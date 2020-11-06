@@ -189,16 +189,16 @@ instance
             begin
               ((a₁ * a₂) * a₃ + (b₁ * b₂) * b₃) +
               ((c₁ * c₂) * c₃ + (d₁ * d₂) * d₃)
-            ≃⟨ AA.substᴸ (AA.substᴸ (ℕ.*-assoc {a₁})) ⟩
+            ≃⟨ AA.substᴸ (AA.substᴸ AA.assoc) ⟩
               (a₁ * (a₂ * a₃) + (b₁ * b₂) * b₃) +
               ((c₁ * c₂) * c₃ + (d₁ * d₂) * d₃)
-            ≃⟨ AA.substᴸ (AA.substᴿ (ℕ.*-assoc {b₁})) ⟩
+            ≃⟨ AA.substᴸ (AA.substᴿ AA.assoc) ⟩
               (a₁ * (a₂ * a₃) + b₁ * (b₂ * b₃)) +
               ((c₁ * c₂) * c₃ + (d₁ * d₂) * d₃)
-            ≃⟨ AA.substᴿ (AA.substᴸ (ℕ.*-assoc {c₁})) ⟩
+            ≃⟨ AA.substᴿ (AA.substᴸ AA.assoc) ⟩
               (a₁ * (a₂ * a₃) + b₁ * (b₂ * b₃)) +
               (c₁ * (c₂ * c₃) + (d₁ * d₂) * d₃)
-            ≃⟨ AA.substᴿ (AA.substᴿ (ℕ.*-assoc {d₁})) ⟩
+            ≃⟨ AA.substᴿ (AA.substᴿ AA.assoc) ⟩
               (a₁ * (a₂ * a₃) + b₁ * (b₂ * b₃)) +
               (c₁ * (c₂ * c₃) + d₁ * (d₂ * d₃))
             ∎
