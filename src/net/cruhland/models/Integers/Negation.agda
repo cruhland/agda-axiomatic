@@ -16,10 +16,9 @@ module net.cruhland.models.Integers.Negation (PA : PeanoArithmetic) where
 private module ℕ = PeanoArithmetic PA
 open ℕ using (ℕ)
 import net.cruhland.models.Integers.Addition PA as Addition
-open Addition using (+-identityᴿ)
 open import net.cruhland.models.Integers.Base PA using (_—_; ℤ)
-import net.cruhland.models.Integers.Equality PA as Equality
-open Equality using (≃ᶻ-elim; ≃ᶻ-intro)
+open import net.cruhland.models.Integers.Equality PA as Equality using
+  (≃ᶻ-intro)
 
 instance
   neg-dash : Op.Dashᴸ ℤ
@@ -32,10 +31,10 @@ instance
   neg-substitutive = record { subst = neg-subst }
     where
       neg-subst : {a₁ a₂ : ℤ} → a₁ ≃ a₂ → - a₁ ≃ - a₂
-      neg-subst {a₁⁺ — a₁⁻} {a₂⁺ — a₂⁻} a₁≃a₂ = ≃ᶻ-intro eq′
+      neg-subst {a₁⁺ — a₁⁻} {a₂⁺ — a₂⁻} (≃ᶻ-intro a₁⁺+a₂⁻≃a₂⁺+a₁⁻) =
+          ≃ᶻ-intro a₁⁻+a₂⁺≃a₂⁻+a₁⁺
         where
-          a₁⁺+a₂⁻≃a₂⁺+a₁⁻ = ≃ᶻ-elim a₁≃a₂
-          eq′ =
+          a₁⁻+a₂⁺≃a₂⁻+a₁⁺ =
             begin
               a₁⁻ + a₂⁺
             ≃⟨ AA.comm ⟩

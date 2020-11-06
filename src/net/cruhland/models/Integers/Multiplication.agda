@@ -18,10 +18,9 @@ private module ℕ = PeanoArithmetic PA
 open ℕ using (ℕ)
 import net.cruhland.models.Integers.Addition PA as Addition
 open import net.cruhland.models.Integers.Base PA using (_—_; ℤ)
-import net.cruhland.models.Integers.Equality PA as Equality
-open Equality using (≃ᶻ-elim; ≃ᶻ-intro)
-import net.cruhland.models.Integers.Negation PA as Negation
-open Negation using
+open import net.cruhland.models.Integers.Equality PA as Equality using
+  (≃ᶻ-intro)
+open import net.cruhland.models.Integers.Negation PA as Negation using
   ( +-inverseᴿ; IsNegative; IsPositive; neg-involutive
   ; neg; nil; pos; Trichotomy; trichotomy
   )
@@ -59,7 +58,8 @@ instance
   *-substitutiveᴸ = record { substᴸ = *-substᴸ }
     where
       *-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ * b ≃ a₂ * b
-      *-substᴸ {a₁⁺ — a₁⁻} {a₂⁺ — a₂⁻} {b⁺ — b⁻} a₁≃a₂ = ≃ᶻ-intro eq′
+      *-substᴸ {a₁⁺ — a₁⁻} {a₂⁺ — a₂⁻} {b⁺ — b⁻} (≃ᶻ-intro a₁⁺a₂⁻≃a₂⁺a₁⁻) =
+          ≃ᶻ-intro [a₁⁺b⁺+a₁⁻b⁻]+[a₂⁺b⁻+a₂⁻b⁺]≃[a₂⁺b⁺+a₂⁻b⁻]+[a₁⁺b⁻+a₁⁻b⁺]
         where
           rearr :
             ∀ {u v w x y z} →
@@ -74,8 +74,7 @@ instance
               (w + z) * u + (y + x) * v
             ∎
 
-          a₁⁺a₂⁻≃a₂⁺a₁⁻ = ≃ᶻ-elim a₁≃a₂
-          eq′ =
+          [a₁⁺b⁺+a₁⁻b⁻]+[a₂⁺b⁻+a₂⁻b⁺]≃[a₂⁺b⁺+a₂⁻b⁻]+[a₁⁺b⁻+a₁⁻b⁺] =
             begin
               (a₁⁺ * b⁺ + a₁⁻ * b⁻) + (a₂⁺ * b⁻ + a₂⁻ * b⁺)
             ≃⟨ rearr {w = a₁⁺} {y = a₂⁺} ⟩

@@ -17,15 +17,13 @@ open import net.cruhland.models.Integers.Base PA using (_—_; ℤ)
 record _≃ᶻ_ (a b : ℤ) : Set where
   constructor ≃ᶻ-intro
   field
-    ≃ᶻ-elim : ℤ.pos a + ℤ.neg b ≃ ℤ.pos b + ℤ.neg a
-
-open _≃ᶻ_ public using (≃ᶻ-elim)
+    elim : ℤ.pos a + ℤ.neg b ≃ ℤ.pos b + ℤ.neg a
 
 ≃ᶻ-refl : ∀ {a} → a ≃ᶻ a
 ≃ᶻ-refl = ≃ᶻ-intro refl
 
 ≃ᶻ-sym : ∀ {a b} → a ≃ᶻ b → b ≃ᶻ a
-≃ᶻ-sym = ≃ᶻ-intro ∘ sym ∘ ≃ᶻ-elim
+≃ᶻ-sym = ≃ᶻ-intro ∘ sym ∘ _≃ᶻ_.elim
 
 ≃ᶻ-trans : ∀ {a b c} → a ≃ᶻ b → b ≃ᶻ c → a ≃ᶻ c
 ≃ᶻ-trans
