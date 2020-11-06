@@ -320,11 +320,11 @@ instance
       *-zeroᴸ {x} =
         begin
           0 * x
-        ≃˘⟨ AA.substᴸ +-inverseᴿ ⟩
+        ≃˘⟨ AA.substᴸ AA.invᴿ ⟩
           (1 - 1) * x
         ≃⟨ *-distrib-subᴿ ⟩
           1 * x - 1 * x
-        ≃⟨ +-inverseᴿ ⟩
+        ≃⟨ AA.invᴿ ⟩
           0
         ∎
 

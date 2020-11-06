@@ -54,7 +54,7 @@ _>_ = flip _<_
           (n₁ as ℤ) + (n₂ as ℤ)
         ≃˘⟨ AA.identᴸ ⟩
           0 + ((n₁ as ℤ) + (n₂ as ℤ))
-        ≃˘⟨ AA.substᴸ +-inverseᴸ ⟩
+        ≃˘⟨ AA.substᴸ AA.invᴸ ⟩
           (- a) + a + ((n₁ as ℤ) + (n₂ as ℤ))
         ≃⟨ AA.assoc ⟩
           (- a) + (a + ((n₁ as ℤ) + (n₂ as ℤ)))
@@ -64,7 +64,7 @@ _>_ = flip _<_
           (- a) + (b + (n₂ as ℤ))
         ≃˘⟨ AA.substᴿ a≃b+n₂ ⟩
           (- a) + a
-        ≃⟨ +-inverseᴸ ⟩
+        ≃⟨ AA.invᴸ ⟩
           0
         ∎
       n₂≃0 = ∧-elimᴿ (ℕ.+-both-zero (AA.inject n₁+n₂≃0))
@@ -84,7 +84,7 @@ pos→< {x} {y} record { n = n ; pos = n≄0 ; x≃n = y-x≃n } =
             y - x
           ≃⟨ sub-substᴿ x≃y ⟩
             y - y
-          ≃⟨ +-inverseᴿ {y} ⟩
+          ≃⟨ AA.invᴿ ⟩
             0
           ∎
 
@@ -143,7 +143,7 @@ instance
                 a * b - a * c
               ≃⟨ sub-substᴸ ab≃ac ⟩
                 a * c - a * c
-              ≃⟨ +-inverseᴿ ⟩
+              ≃⟨ AA.invᴿ ⟩
                 0
               ∎
          in AA.zero-prod a[b-c]≃0
@@ -154,7 +154,7 @@ instance
           b
         ≃˘⟨ AA.identᴿ ⟩
           b + 0
-        ≃˘⟨ AA.substᴿ +-inverseᴸ ⟩
+        ≃˘⟨ AA.substᴿ AA.invᴸ ⟩
           b + (- c + c)
         ≃˘⟨ AA.assoc ⟩
           b - c + c

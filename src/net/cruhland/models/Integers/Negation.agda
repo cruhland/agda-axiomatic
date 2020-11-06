@@ -46,30 +46,26 @@ instance
               a₂⁻ + a₁⁺
             ∎
 
+  +-inverseᴸ : AA.Inverseᴸ _+_ -_ 0
+  +-inverseᴸ = record { invᴸ = +-invᴸ }
+    where
+      +-invᴸ : {x : ℤ} → - x + x ≃ 0
+      +-invᴸ {x⁺ — x⁻} = ≃ᶻ-intro [x⁻+x⁺]+0≃0+[x⁺+x⁻]
+        where
+          [x⁻+x⁺]+0≃0+[x⁺+x⁻] =
+            begin
+              (x⁻ + x⁺) + 0
+            ≃⟨ AA.comm ⟩
+              0 + (x⁻ + x⁺)
+            ≃⟨ AA.substᴿ AA.comm ⟩
+              0 + (x⁺ + x⁻)
+            ∎
+
+  +-inverseᴿ : AA.Inverseᴿ _+_ -_ 0
+  +-inverseᴿ = AA.inverseᴿ
+
 neg-involutive : {a : ℤ} → - (- a) ≃ a
 neg-involutive = ≃ᶻ-intro refl
-
-+-inverseᴸ : {x : ℤ} → - x + x ≃ 0
-+-inverseᴸ {x⁺ — x⁻} = ≃ᶻ-intro [x⁻+x⁺]+0≃0+[x⁺+x⁻]
-  where
-    [x⁻+x⁺]+0≃0+[x⁺+x⁻] =
-      begin
-        (x⁻ + x⁺) + 0
-      ≃⟨ AA.comm ⟩
-        0 + (x⁻ + x⁺)
-      ≃⟨ AA.substᴿ AA.comm ⟩
-        0 + (x⁺ + x⁻)
-      ∎
-
-+-inverseᴿ : {x : ℤ} → x + - x ≃ 0
-+-inverseᴿ {x} =
-  begin
-    x + - x
-  ≃⟨ AA.comm ⟩
-    - x + x
-  ≃⟨ +-inverseᴸ ⟩
-    0
-  ∎
 
 instance
   sub-dash : Op.Dash₂ ℤ
@@ -87,7 +83,7 @@ sub-substᴿ = AA.substᴿ ∘ AA.subst
     a
   ≃˘⟨ AA.identᴿ ⟩
     a + 0
-  ≃˘⟨ AA.substᴿ +-inverseᴿ ⟩
+  ≃˘⟨ AA.substᴿ AA.invᴿ ⟩
     a + (b - b)
   ≃⟨ AA.substᴿ AA.comm ⟩
     a + (- b + b)

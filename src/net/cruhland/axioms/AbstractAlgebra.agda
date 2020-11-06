@@ -128,6 +128,20 @@ record Compatible
 
 open Compatible {{...}} public using (compat)
 
+record Inverseᴸ
+    {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) (inv : A → A) (e : A) : Set where
+  field
+    invᴸ : ∀ {a} → inv a ⊙ a ≃ e
+
+open Inverseᴸ {{...}} public using (invᴸ)
+
+record Inverseᴿ
+    {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) (inv : A → A) (e : A) : Set where
+  field
+    invᴿ : ∀ {a} → a ⊙ inv a ≃ e
+
+open Inverseᴿ {{...}} public using (invᴿ)
+
 with-comm :
   {A : Set} {_⊙_ : A → A → A}
     {{_ : Eq A}} {{_ : Commutative _⊙_}} →
@@ -215,6 +229,12 @@ absorptiveᴿ :
     ∀ {z} {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Absorptiveᴸ _⊙_ z}} →
       Absorptiveᴿ _⊙_ z
 absorptiveᴿ = record { absorbᴿ = trans comm absorbᴸ }
+
+inverseᴿ :
+  {A : Set} {_⊙_ : A → A → A} {inv : A → A} →
+    ∀ {e} {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Inverseᴸ _⊙_ inv e}} →
+      Inverseᴿ _⊙_ inv e
+inverseᴿ = record { invᴿ = trans comm invᴸ }
 
 [ab][cd]≃a[[bc]d] :
   {A : Set} {_⊙_ : A → A → A}
