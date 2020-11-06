@@ -52,7 +52,7 @@ _>_ = flip _<_
           (n₁ + n₂ as ℤ)
         ≃⟨ AA.compat ⟩
           (n₁ as ℤ) + (n₂ as ℤ)
-        ≃˘⟨ +-identityᴸ ⟩
+        ≃˘⟨ AA.identᴸ ⟩
           0 + ((n₁ as ℤ) + (n₂ as ℤ))
         ≃˘⟨ AA.substᴸ +-inverseᴸ ⟩
           (- a) + a + ((n₁ as ℤ) + (n₂ as ℤ))
@@ -68,7 +68,7 @@ _>_ = flip _<_
           0
         ∎
       n₂≃0 = ∧-elimᴿ (ℕ.+-both-zero (AA.inject n₁+n₂≃0))
-   in trans (trans a≃b+n₂ (AA.substᴿ (AA.subst n₂≃0))) +-identityᴿ
+   in trans (trans a≃b+n₂ (AA.substᴿ (AA.subst n₂≃0))) AA.identᴿ
 
 pos→< : ∀ {x y} → IsPositive (y - x) → x < y
 pos→< {x} {y} record { n = n ; pos = n≄0 ; x≃n = y-x≃n } =
@@ -110,7 +110,7 @@ order-trichotomy a b = record { at-least-one = 1≤ ; at-most-one = ≤1 }
   where
     1≤ : OneOfThree (a < b) (a ≃ b) (a > b)
     1≤ with Trichotomy.at-least (trichotomy (b - a))
-    1≤ | nil b-a≃0 = 2nd (sym (trans (≃ᴸ-subᴿ-toᴸ b-a≃0) +-identityᴿ))
+    1≤ | nil b-a≃0 = 2nd (sym (trans (≃ᴸ-subᴿ-toᴸ b-a≃0) AA.identᴿ))
     1≤ | pos b-a>0 = 1st (pos→< b-a>0)
     1≤ | neg b-a<0 = 3rd (pos→< (sub-sign-swap {b} b-a<0))
 
@@ -152,7 +152,7 @@ instance
       *-cancelᴸ {a} {b} {c} ab≃ac | ∨-introᴿ b-c≃0 =
         begin
           b
-        ≃˘⟨ +-identityᴿ ⟩
+        ≃˘⟨ AA.identᴿ ⟩
           b + 0
         ≃˘⟨ AA.substᴿ +-inverseᴸ ⟩
           b + (- c + c)
@@ -160,7 +160,7 @@ instance
           b - c + c
         ≃⟨ AA.substᴸ b-c≃0 ⟩
           0 + c
-        ≃⟨ +-identityᴸ ⟩
+        ≃⟨ AA.identᴸ ⟩
           c
         ∎
 

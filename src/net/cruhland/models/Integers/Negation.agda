@@ -85,7 +85,7 @@ sub-substᴿ = AA.substᴿ ∘ AA.subst
 ≃ᴸ-subᴿ-toᴸ {a} {b} {c} a-b≃c =
   begin
     a
-  ≃˘⟨ +-identityᴿ ⟩
+  ≃˘⟨ AA.identᴿ ⟩
     a + 0
   ≃˘⟨ AA.substᴿ +-inverseᴿ ⟩
     a + (b - b)

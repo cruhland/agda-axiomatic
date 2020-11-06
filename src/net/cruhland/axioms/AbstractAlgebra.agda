@@ -174,6 +174,12 @@ commutativeᴿ {A} {f} {_⊙_} = record { commᴿ = commᴿ₀ }
         f (a ⊙ b)
       ∎
 
+identityᴿ :
+  {A : Set} {_⊙_ : A → A → A} →
+    ∀ {e} {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Identityᴸ _⊙_ e}} →
+      Identityᴿ _⊙_ e
+identityᴿ = record { identᴿ = trans comm identᴸ }
+
 cancellativeᴿ :
   {A : Set} {_⊙_ : A → A → A}
     {{eq : Eq A}} {{⊙-comm : Commutative _⊙_}}

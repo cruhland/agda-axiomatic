@@ -108,22 +108,24 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
                 m * step k
               ∎
 
-  *-oneᴸ : ∀ {n} → step zero * n ≃ n
-  *-oneᴸ {n} =
-    begin
-      step zero * n
-    ≃⟨ *-stepᴸ ⟩
-      zero * n + n
-    ≃⟨ AA.substᴸ AA.absorbᴸ ⟩
-      zero + n
-    ≃⟨ AA.identᴸ ⟩
-      n
-    ∎
+    *-identityᴸ : AA.Identityᴸ _*_ (step zero)
+    *-identityᴸ = record { identᴸ = *-oneᴸ }
+      where
+        *-oneᴸ : ∀ {n} → step zero * n ≃ n
+        *-oneᴸ {n} =
+          begin
+            step zero * n
+          ≃⟨ *-stepᴸ ⟩
+            zero * n + n
+          ≃⟨ AA.substᴸ AA.absorbᴸ ⟩
+            zero + n
+          ≃⟨ AA.identᴸ ⟩
+            n
+          ∎
 
-  *-oneᴿ : ∀ {n} → n * step zero ≃ n
-  *-oneᴿ = trans AA.comm *-oneᴸ
+    *-identityᴿ : AA.Identityᴿ _*_ (step zero)
+    *-identityᴿ = AA.identityᴿ
 
-  instance
     zero-product : AA.ZeroProduct _*_ zero
     zero-product = record { zero-prod = *-either-zero }
       where

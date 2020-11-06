@@ -26,7 +26,6 @@ instance
       _+₀_ : ℤ → ℤ → ℤ
       a⁺ — a⁻ +₀ b⁺ — b⁻ = (a⁺ + b⁺) — (a⁻ + b⁻)
 
-instance
   +-commutative : AA.Commutative _+_
   +-commutative = record { comm = +-comm }
     where
@@ -78,7 +77,6 @@ instance
               (x⁺ + (y⁺ + z⁺)) + ((x⁻ + y⁻) + z⁻)
             ∎
 
-instance
   number : Number ℤ
   number = record { Constraint = λ _ → ⊤ ; fromNat = fromNat }
     where
@@ -101,24 +99,20 @@ instance
   +-compatible-ℕ : AA.Compatible {A = ℕ} (_as ℤ) {Constraint = Op.Plus} _+_
   +-compatible-ℕ = record { compat = ≃ᶻ-intro (AA.substᴿ AA.identᴸ) }
 
-+-identityᴸ : {x : ℤ} → 0 + x ≃ x
-+-identityᴸ {x⁺ — x⁻} = ≃ᶻ-intro [0+x⁺]+x⁻≃x⁺+[0+x⁻]
-  where
-    [0+x⁺]+x⁻≃x⁺+[0+x⁻] =
-      begin
-        0 + x⁺ + x⁻
-      ≃⟨ AA.substᴸ AA.comm ⟩
-        x⁺ + 0 + x⁻
-      ≃⟨ AA.assoc ⟩
-        x⁺ + (0 + x⁻)
-      ∎
+  +-identityᴸ : AA.Identityᴸ _+_ 0
+  +-identityᴸ = record { identᴸ = +-identᴸ }
+    where
+      +-identᴸ : {x : ℤ} → 0 + x ≃ x
+      +-identᴸ {x⁺ — x⁻} = ≃ᶻ-intro [0+x⁺]+x⁻≃x⁺+[0+x⁻]
+        where
+          [0+x⁺]+x⁻≃x⁺+[0+x⁻] =
+            begin
+              0 + x⁺ + x⁻
+            ≃⟨ AA.substᴸ AA.comm ⟩
+              x⁺ + 0 + x⁻
+            ≃⟨ AA.assoc ⟩
+              x⁺ + (0 + x⁻)
+            ∎
 
-+-identityᴿ : {x : ℤ} → x + 0 ≃ x
-+-identityᴿ {x} =
-  begin
-    x + 0
-  ≃⟨ AA.comm ⟩
-    0 + x
-  ≃⟨ +-identityᴸ ⟩
-    x
-  ∎
+  +-identityᴿ : AA.Identityᴿ {A = ℤ} _+_ 0
+  +-identityᴿ = AA.identityᴿ

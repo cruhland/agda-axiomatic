@@ -113,6 +113,40 @@ instance
               n * m + 0 * 0 + 0
             ∎
 
+  *-identityᴸ : AA.Identityᴸ _*_ 1
+  *-identityᴸ = record { identᴸ = *-identᴸ }
+    where
+      *-identᴸ : {x : ℤ} → 1 * x ≃ x
+      *-identᴸ {x⁺ — x⁻} = ≃ᶻ-intro [[1+0]x⁺+[0+0]x⁻]+x⁻≃x⁺+[[1+0]x⁻+[0+0]x⁺]
+        where
+          [[1+0]x⁺+[0+0]x⁻]+x⁻≃x⁺+[[1+0]x⁻+[0+0]x⁺] =
+            begin
+              ((1 + 0) * x⁺ + (0 + 0) * x⁻) + x⁻
+            ≃⟨ AA.substᴸ (AA.substᴸ (AA.substᴸ AA.identᴿ)) ⟩
+              (1 * x⁺ + (0 + 0) * x⁻) + x⁻
+            ≃⟨ AA.substᴸ (AA.substᴿ (AA.substᴸ AA.identᴿ)) ⟩
+              (1 * x⁺ + 0 * x⁻) + x⁻
+            ≃⟨ AA.substᴸ (AA.substᴸ AA.identᴸ) ⟩
+              (x⁺ + 0 * x⁻) + x⁻
+            ≃⟨ AA.substᴸ (AA.substᴿ AA.absorbᴸ) ⟩
+              (x⁺ + 0) + x⁻
+            ≃⟨ AA.substᴸ AA.identᴿ ⟩
+              x⁺ + x⁻
+            ≃˘⟨ AA.substᴿ AA.identᴿ ⟩
+              x⁺ + (x⁻ + 0)
+            ≃˘⟨ AA.substᴿ (AA.substᴿ AA.absorbᴸ) ⟩
+              x⁺ + (x⁻ + 0 * x⁺)
+            ≃˘⟨ AA.substᴿ (AA.substᴸ AA.identᴸ) ⟩
+              x⁺ + (1 * x⁻ + 0 * x⁺)
+            ≃˘⟨ AA.substᴿ (AA.substᴿ (AA.substᴸ AA.identᴿ)) ⟩
+              x⁺ + (1 * x⁻ + (0 + 0) * x⁺)
+            ≃˘⟨ AA.substᴿ (AA.substᴸ (AA.substᴸ AA.identᴿ)) ⟩
+              x⁺ + ((1 + 0) * x⁻ + (0 + 0) * x⁺)
+            ∎
+
+  *-identityᴿ : AA.Identityᴿ {A = ℤ} _*_ 1
+  *-identityᴿ = AA.identityᴿ
+
 *-distrib-+ᴸ : {x y z : ℤ} → x * (y + z) ≃ x * y + x * z
 *-distrib-+ᴸ {x⁺ — x⁻} {y⁺ — y⁻} {z⁺ — z⁻} =
     ≃ᶻ-intro (AA.[a≃b][c≃d] (refactor {x⁺} {x⁻}) (sym (refactor {x⁺} {x⁻})))
@@ -234,9 +268,9 @@ neg-mult {a⁺ — a⁻} = ≃ᶻ-intro a⁻+[[0+0]a⁻+[1+0]a⁺]≃[0+0]a⁺+[
         a⁻ + (1 + 0) * a⁺
       ≃⟨ AA.substᴿ (AA.substᴸ AA.identᴿ) ⟩
         a⁻ + 1 * a⁺
-      ≃⟨ AA.substᴿ ℕ.*-oneᴸ ⟩
+      ≃⟨ AA.substᴿ AA.identᴸ ⟩
         a⁻ + a⁺
-      ≃˘⟨ AA.substᴸ ℕ.*-oneᴸ ⟩
+      ≃˘⟨ AA.substᴸ AA.identᴸ ⟩
         1 * a⁻ + a⁺
       ≃˘⟨ AA.substᴸ (AA.substᴸ AA.identᴿ) ⟩
         (1 + 0) * a⁻ + a⁺
