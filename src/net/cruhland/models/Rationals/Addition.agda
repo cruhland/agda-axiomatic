@@ -1,15 +1,20 @@
+-- Needed for positive integer literals (typeclass)
+import Agda.Builtin.FromNat
 import net.cruhland.axioms.AbstractAlgebra as AA
+open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq using (_≃_; _≄_; module ≃-Reasoning)
 open ≃-Reasoning
 import net.cruhland.axioms.Operators as Op
 open Op using (_+_; _*_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
+-- Needed for positive integer literals (instance for ⊤)
+import net.cruhland.models.Logic
 
 module net.cruhland.models.Rationals.Addition (PA : PeanoArithmetic) where
 
 import net.cruhland.models.Integers PA as ℤ
 open ℤ using (ℤ)
-open import net.cruhland.models.Rationals.Base PA using (ℚ)
+open import net.cruhland.models.Rationals.Base PA as Base using (ℚ)
 open import net.cruhland.models.Rationals.Equality PA as Equality using
   (≃₀-intro)
 
@@ -89,3 +94,20 @@ instance
 
   +-substitutive₂ : AA.Substitutive₂ {A = ℚ} _+_
   +-substitutive₂ = AA.substitutive₂
+
+  +-compatible-ℤ : AA.Compatible {A = ℤ} (_as ℚ) _+_ _+_
+  +-compatible-ℤ = record { compat = +-compat-ℤ }
+    where
+      +-compat-ℤ : {a b : ℤ} → (a + b as ℚ) ≃ (a as ℚ) + (b as ℚ)
+      +-compat-ℤ {a} {b} = ≃₀-intro [a+b][1*1]≃[a1+1b]1
+        where
+          [a+b][1*1]≃[a1+1b]1 =
+            begin
+              (a + b) * (1 * 1)
+            ≃⟨ AA.substᴿ AA.identᴿ ⟩
+              (a + b) * 1
+            ≃˘⟨ AA.substᴸ (AA.substᴸ AA.identᴿ) ⟩
+              (a * 1 + b) * 1
+            ≃˘⟨ AA.substᴸ (AA.substᴿ AA.identᴸ) ⟩
+              (a * 1 + 1 * b) * 1
+            ∎

@@ -17,7 +17,7 @@ module net.cruhland.models.Integers.Multiplication (PA : PeanoArithmetic) where
 private module ℕ = PeanoArithmetic PA
 open ℕ using (ℕ)
 import net.cruhland.models.Integers.Addition PA as Addition
-open import net.cruhland.models.Integers.Base PA using (_—_; ℤ)
+open import net.cruhland.models.Integers.Base PA as Base using (_—_; ℤ)
 open import net.cruhland.models.Integers.Equality PA as Equality using
   (≃ᶻ-intro)
 open import net.cruhland.models.Integers.Negation PA as Negation using
@@ -116,14 +116,10 @@ instance
   *-identityᴸ = record { identᴸ = *-identᴸ }
     where
       *-identᴸ : {x : ℤ} → 1 * x ≃ x
-      *-identᴸ {x⁺ — x⁻} = ≃ᶻ-intro [[1+0]x⁺+[0+0]x⁻]+x⁻≃x⁺+[[1+0]x⁻+[0+0]x⁺]
+      *-identᴸ {x⁺ — x⁻} = ≃ᶻ-intro [1x⁺+0x⁻]+x⁻≃x⁺+[1x⁻+0x⁺]
         where
-          [[1+0]x⁺+[0+0]x⁻]+x⁻≃x⁺+[[1+0]x⁻+[0+0]x⁺] =
+          [1x⁺+0x⁻]+x⁻≃x⁺+[1x⁻+0x⁺] =
             begin
-              ((1 + 0) * x⁺ + (0 + 0) * x⁻) + x⁻
-            ≃⟨ AA.substᴸ (AA.substᴸ (AA.substᴸ AA.identᴿ)) ⟩
-              (1 * x⁺ + (0 + 0) * x⁻) + x⁻
-            ≃⟨ AA.substᴸ (AA.substᴿ (AA.substᴸ AA.identᴿ)) ⟩
               (1 * x⁺ + 0 * x⁻) + x⁻
             ≃⟨ AA.substᴸ (AA.substᴸ AA.identᴸ) ⟩
               (x⁺ + 0 * x⁻) + x⁻
@@ -137,10 +133,6 @@ instance
               x⁺ + (x⁻ + 0 * x⁺)
             ≃˘⟨ AA.substᴿ (AA.substᴸ AA.identᴸ) ⟩
               x⁺ + (1 * x⁻ + 0 * x⁺)
-            ≃˘⟨ AA.substᴿ (AA.substᴿ (AA.substᴸ AA.identᴿ)) ⟩
-              x⁺ + (1 * x⁻ + (0 + 0) * x⁺)
-            ≃˘⟨ AA.substᴿ (AA.substᴸ (AA.substᴸ AA.identᴿ)) ⟩
-              x⁺ + ((1 + 0) * x⁻ + (0 + 0) * x⁺)
             ∎
 
   *-identityᴿ : AA.Identityᴿ {A = ℤ} _*_ 1
@@ -248,33 +240,23 @@ instance
   *-commutative-negᴿ = AA.commutativeᴿ
 
 neg-mult : {a : ℤ} → - a ≃ -1 * a
-neg-mult {a⁺ — a⁻} = ≃ᶻ-intro a⁻+[[0+0]a⁻+[1+0]a⁺]≃[0+0]a⁺+[1+0]a⁻+a⁺
+neg-mult {a⁺ — a⁻} = ≃ᶻ-intro a⁻+[0a⁻+1a⁺]≃[0a⁺+1a⁻]+a⁺
   where
-    a⁻+[[0+0]a⁻+[1+0]a⁺]≃[0+0]a⁺+[1+0]a⁻+a⁺ =
+    a⁻+[0a⁻+1a⁺]≃[0a⁺+1a⁻]+a⁺ =
       begin
-        a⁻ + ((0 + 0) * a⁻ + (1 + 0) * a⁺)
-      ≃⟨ AA.substᴿ (AA.substᴸ (AA.substᴸ AA.identᴸ)) ⟩
-        a⁻ + (0 * a⁻ + (1 + 0) * a⁺)
+        a⁻ + (0 * a⁻ + 1 * a⁺)
       ≃⟨ AA.substᴿ (AA.substᴸ AA.absorbᴸ) ⟩
-        a⁻ + (0 + (1 + 0) * a⁺)
-      ≃⟨ AA.substᴿ AA.identᴸ ⟩
-        a⁻ + (1 + 0) * a⁺
-      ≃⟨ AA.substᴿ (AA.substᴸ AA.identᴿ) ⟩
-        a⁻ + 1 * a⁺
+        a⁻ + (0 + 1 * a⁺)
+      ≃⟨ AA.substᴿ (AA.substᴿ AA.identᴸ) ⟩
+        a⁻ + (0 + a⁺)
       ≃⟨ AA.substᴿ AA.identᴸ ⟩
         a⁻ + a⁺
       ≃˘⟨ AA.substᴸ AA.identᴸ ⟩
-        1 * a⁻ + a⁺
-      ≃˘⟨ AA.substᴸ (AA.substᴸ AA.identᴿ) ⟩
-        (1 + 0) * a⁻ + a⁺
-      ≃˘⟨ AA.identᴸ ⟩
-        0 + ((1 + 0) * a⁻ + a⁺)
-      ≃˘⟨ AA.substᴸ AA.absorbᴸ ⟩
-        0 * a⁺ + ((1 + 0) * a⁻ + a⁺)
-      ≃˘⟨ AA.substᴸ (AA.substᴸ AA.identᴸ) ⟩
-        (0 + 0) * a⁺ + ((1 + 0) * a⁻ + a⁺)
-      ≃˘⟨ AA.assoc ⟩
-        (0 + 0) * a⁺ + (1 + 0) * a⁻ + a⁺
+        0 + a⁻ + a⁺
+      ≃˘⟨ AA.substᴸ (AA.substᴿ AA.identᴸ) ⟩
+        0 + 1 * a⁻ + a⁺
+      ≃˘⟨ AA.substᴸ (AA.substᴸ AA.absorbᴸ) ⟩
+        0 * a⁺ + 1 * a⁻ + a⁺
       ∎
 
 *-distrib-subᴸ : {a b c : ℤ} → c * (a - b) ≃ c * a - c * b

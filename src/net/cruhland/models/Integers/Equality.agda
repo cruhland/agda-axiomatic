@@ -1,5 +1,6 @@
 open import Function using (_∘_)
 import net.cruhland.axioms.AbstractAlgebra as AA
+open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq using
   (_≃_; Eq; refl; sym; module ≃-Reasoning)
 open ≃-Reasoning
@@ -12,7 +13,7 @@ module net.cruhland.models.Integers.Equality (PA : PeanoArithmetic) where
 
 private module ℕ = PeanoArithmetic PA
 open ℕ using (ℕ)
-open import net.cruhland.models.Integers.Base PA using (_—_; ℤ)
+open import net.cruhland.models.Integers.Base PA as Base using (_—_; ℤ)
 
 record _≃ᶻ_ (a b : ℤ) : Set where
   constructor ≃ᶻ-intro
@@ -52,3 +53,12 @@ instance
     ; sym = ≃ᶻ-sym
     ; trans = ≃ᶻ-trans
     }
+
+  from-ℕ-substitutive₁ : AA.Substitutive₁ {A = ℕ} (_as ℤ)
+  from-ℕ-substitutive₁ = record { subst = ≃ᶻ-intro ∘ AA.substᴸ }
+
+  from-ℕ-injective : AA.Injective {A = ℕ} (_as ℤ)
+  from-ℕ-injective = record { inject = from-ℕ-inject }
+    where
+      from-ℕ-inject : {n m : ℕ} → (n as ℤ) ≃ (m as ℤ) → n ≃ m
+      from-ℕ-inject (≃ᶻ-intro n+0≃m+0) = AA.cancelᴿ n+0≃m+0

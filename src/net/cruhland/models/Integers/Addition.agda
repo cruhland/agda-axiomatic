@@ -1,4 +1,4 @@
-open import Agda.Builtin.FromNat using (Number)
+open import Agda.Builtin.FromNat as FromNat using (Number)
 import Agda.Builtin.Nat as Nat
 open import Function using (_∘_)
 import net.cruhland.axioms.AbstractAlgebra as AA
@@ -14,7 +14,7 @@ module net.cruhland.models.Integers.Addition (PA : PeanoArithmetic) where
 
 private module ℕ = PeanoArithmetic PA
 open ℕ using (ℕ)
-open import net.cruhland.models.Integers.Base PA using (_—_; ℤ)
+open import net.cruhland.models.Integers.Base PA as Base using (_—_; ℤ)
 open import net.cruhland.models.Integers.Equality PA as Equality using
   (≃ᶻ-intro)
 
@@ -84,20 +84,7 @@ instance
   number = record { Constraint = λ _ → ⊤ ; fromNat = fromNat }
     where
       fromNat : Nat.Nat → {{_ : ⊤}} → ℤ
-      fromNat Nat.zero = 0 — 0
-      fromNat (Nat.suc n) = 1 — 0 + fromNat n
-
-  from-ℕ : ℕ As ℤ
-  from-ℕ = record { cast = λ n → n — 0 }
-
-  from-ℕ-substitutive₁ : AA.Substitutive₁ {A = ℕ} (_as ℤ)
-  from-ℕ-substitutive₁ = record { subst = ≃ᶻ-intro ∘ AA.substᴸ }
-
-  from-ℕ-injective : AA.Injective {A = ℕ} (_as ℤ)
-  from-ℕ-injective = record { inject = from-ℕ-inject }
-    where
-      from-ℕ-inject : {n m : ℕ} → (n as ℤ) ≃ (m as ℤ) → n ≃ m
-      from-ℕ-inject (≃ᶻ-intro n+0≃m+0) = AA.cancelᴿ n+0≃m+0
+      fromNat n = FromNat.fromNat {A = ℕ} n as ℤ
 
   +-compatible-ℕ : AA.Compatible {A = ℕ} (_as ℤ) _+_ _+_
   +-compatible-ℕ = record { compat = ≃ᶻ-intro (AA.substᴿ AA.identᴸ) }

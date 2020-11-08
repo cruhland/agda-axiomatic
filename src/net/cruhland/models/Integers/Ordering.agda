@@ -15,10 +15,11 @@ open import net.cruhland.models.Logic using
 
 module net.cruhland.models.Integers.Ordering (PA : PeanoArithmetic) where
 
-open module ℕ = PeanoArithmetic PA using (ℕ)
+private module ℕ = PeanoArithmetic PA
+open ℕ using (ℕ)
 import net.cruhland.models.Integers.Addition PA as Addition
 open Addition using (+-identityᴸ; +-identityᴿ)
-open import net.cruhland.models.Integers.Base PA using (ℤ)
+open import net.cruhland.models.Integers.Base PA as Base using (ℤ)
 import net.cruhland.models.Integers.Equality PA as Equality
 import net.cruhland.models.Integers.Multiplication PA as Multiplication
 open Multiplication using (*-distrib-subᴸ; sub-sign-swap)

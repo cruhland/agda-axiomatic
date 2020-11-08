@@ -16,7 +16,7 @@ module net.cruhland.models.Integers.Negation (PA : PeanoArithmetic) where
 private module ℕ = PeanoArithmetic PA
 open ℕ using (ℕ)
 import net.cruhland.models.Integers.Addition PA as Addition
-open import net.cruhland.models.Integers.Base PA using (_—_; ℤ)
+open import net.cruhland.models.Integers.Base PA as Base using (_—_; ℤ)
 open import net.cruhland.models.Integers.Equality PA as Equality using
   (≃ᶻ-intro)
 

@@ -9,3 +9,6 @@ open _As_ {{...}} using (cast)
 infixl 0 _as_
 _as_ : {A : Set} → A → (B : Set) {{_ : A As B}} → B
 x as B = cast x
+
+transitive : {A B C : Set} {{_ : A As B}} {{_ : B As C}} → A As C
+transitive {A} {B} {C} = record { cast = λ x → (x as B) as C }
