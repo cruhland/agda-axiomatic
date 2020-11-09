@@ -14,7 +14,7 @@ module net.cruhland.models.Rationals.Addition (PA : PeanoArithmetic) where
 
 import net.cruhland.models.Integers PA as ℤ
 open ℤ using (ℤ)
-open import net.cruhland.models.Rationals.Base PA as Base using (ℚ)
+open import net.cruhland.models.Rationals.Base PA as Base using (_//_⟨_⟩; ℚ)
 open import net.cruhland.models.Rationals.Equality PA as Equality using
   (≃₀-intro)
 
@@ -23,19 +23,14 @@ instance
   plus = record { _+_ = _+₀_ }
     where
       _+₀_ : ℚ → ℚ → ℚ
-      record { n = p↑ ; d = p↓ ; d≄0 = p↓≄0 } +₀
-        record { n = q↑ ; d = q↓ ; d≄0 = q↓≄0 } =
-          record
-            { n = p↑ * q↓ + p↓ * q↑
-            ; d = p↓ * q↓
-            ; d≄0 = AA.nonzero-prod p↓≄0 q↓≄0
-            }
+      (p↑ // p↓ ⟨ p↓≄0 ⟩) +₀ (q↑ // q↓ ⟨ q↓≄0 ⟩) =
+        (p↑ * q↓ + p↓ * q↑) // p↓ * q↓ ⟨ AA.nonzero-prod p↓≄0 q↓≄0 ⟩
 
   +-commutative : AA.Commutative _+_
   +-commutative = record { comm = +-comm }
     where
       +-comm : {a b : ℚ} → a + b ≃ b + a
-      +-comm {record { n = a↑ ; d = a↓ }} {record { n = b↑ ; d = b↓ }} =
+      +-comm {a↑ // a↓ ⟨ _ ⟩} {b↑ // b↓ ⟨ _ ⟩} =
           ≃₀-intro [a↑b↓+a↓b↑][b↓a↓]≃[b↑a↓+b↓a↑][a↓b↓]
         where
           [a↑b↓+a↓b↑][b↓a↓]≃[b↑a↓+b↓a↑][a↓b↓] =
@@ -56,9 +51,7 @@ instance
     where
       +-substᴸ : {a₁ a₂ b : ℚ} → a₁ ≃ a₂ → a₁ + b ≃ a₂ + b
       +-substᴸ
-        {record { n = a₁↑ ; d = a₁↓ }}
-        {record { n = a₂↑ ; d = a₂↓ }}
-        {record { n = b↑ ; d = b↓ }}
+        {a₁↑ // a₁↓ ⟨ _ ⟩} {a₂↑ // a₂↓ ⟨ _ ⟩} {b↑ // b↓ ⟨ _ ⟩}
         (≃₀-intro a₁↑a₂↓≃a₂↑a₁↓) =
           ≃₀-intro [a₁↑b↓+a₁↓b↑][a₂↓b↓]≃[a₂↑b↓+a₂↓b↑][a₁↓b↓]
         where

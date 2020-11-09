@@ -6,7 +6,7 @@ import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.DecEq using (_≃?_; DecEq)
 open import net.cruhland.axioms.Eq using
-  (_≃_; Eq; refl; sym; module ≃-Reasoning)
+  (_≃_; _≄_; Eq; refl; sym; module ≃-Reasoning)
 open ≃-Reasoning
 open import net.cruhland.axioms.Operators using (_*_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
@@ -16,7 +16,7 @@ module net.cruhland.models.Rationals.Equality (PA : PeanoArithmetic) where
 
 private module ℕ = PeanoArithmetic PA
 open import net.cruhland.models.Integers PA as ℤ using (ℤ)
-open import net.cruhland.models.Rationals.Base PA as Base using (ℚ)
+open import net.cruhland.models.Rationals.Base PA as Base using (_//_⟨_⟩; ℚ)
 
 infix 4 _≃₀_
 record _≃₀_ (p q : ℚ) : Set where
@@ -33,9 +33,9 @@ record _≃₀_ (p q : ℚ) : Set where
 
 ≃₀-trans : ∀ {p q r} → p ≃₀ q → q ≃₀ r → p ≃₀ r
 ≃₀-trans
-  {record { n = p↑ ; d = p↓ }}
-  {record { n = q↑ ; d = q↓ ; d≄0 = q↓≄0 }}
-  {record { n = r↑ ; d = r↓ }}
+  {p↑ // p↓ ⟨ _ ⟩}
+  {q↑ // q↓ ⟨ q↓≄0 ⟩}
+  {r↑ // r↓ ⟨ _ ⟩}
   (≃₀-intro p↑q↓≃q↑p↓) (≃₀-intro q↑r↓≃r↑q↓) with q↑ ≃? 0
 ... | yes q↑≃0 =
   let p↑q↓≃0 =
@@ -116,3 +116,29 @@ instance
       record { inject = AA.cancelᴿ {{c = fromWitnessFalse 1≄0}} ∘ _≃₀_.elim }
     where
       1≄0 = ℕ.step≄zero ∘ AA.inject
+
+q≃0 : ∀ {q} → ℚ.n q ≃ 0 → q ≃ 0
+q≃0 {q} n≃0 = ≃₀-intro n1≃0d
+  where
+    n1≃0d =
+      begin
+        (ℚ.n q) * 1
+      ≃⟨ AA.identᴿ ⟩
+        ℚ.n q
+      ≃⟨ n≃0 ⟩
+        0
+      ≃˘⟨ AA.absorbᴸ ⟩
+        0 * ℚ.d q
+      ∎
+
+q↑≃0 : ∀ {q} → q ≃ 0 → ℚ.n q ≃ 0
+q↑≃0 {q} (≃₀-intro n1≃0d) =
+  begin
+    ℚ.n q
+  ≃˘⟨ AA.identᴿ ⟩
+    (ℚ.n q) * 1
+  ≃⟨ n1≃0d ⟩
+    0 * ℚ.d q
+  ≃⟨ AA.absorbᴸ ⟩
+    0
+  ∎

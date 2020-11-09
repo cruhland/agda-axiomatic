@@ -19,16 +19,17 @@ import net.cruhland.models.Integers PA as ℤ
 open ℤ using (ℤ; ≃ᶻ-intro)
 
 record ℚ : Set where
+  constructor _//_⟨_⟩
   field
     n d : ℤ
     d≄0 : d ≄ 0
 
 infixl 8 _//_
 _//_ : (n d : ℤ) {{_ : False (d ≃? 0)}} → ℚ
-n // d = record { n = n ; d = d ; d≄0 = ≄-derive }
+n // d = n // d ⟨ ≄-derive ⟩
 
 _//1 : ℤ → ℚ
-a //1 = record { n = a ; d = 1 ; d≄0 = ℕ.step≄zero ∘ AA.inject }
+a //1 = a // 1 ⟨ ℕ.step≄zero ∘ AA.inject ⟩
 
 instance
   from-ℤ : ℤ As ℚ
