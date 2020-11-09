@@ -58,7 +58,4 @@ instance
   from-ℕ-substitutive₁ = record { subst = ≃ᶻ-intro ∘ AA.substᴸ }
 
   from-ℕ-injective : AA.Injective {A = ℕ} (_as ℤ)
-  from-ℕ-injective = record { inject = from-ℕ-inject }
-    where
-      from-ℕ-inject : {n m : ℕ} → (n as ℤ) ≃ (m as ℤ) → n ≃ m
-      from-ℕ-inject (≃ᶻ-intro n+0≃m+0) = AA.cancelᴿ n+0≃m+0
+  from-ℕ-injective = record { inject = AA.cancelᴿ ∘ _≃ᶻ_.elim }

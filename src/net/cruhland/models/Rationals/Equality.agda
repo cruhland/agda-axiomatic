@@ -3,6 +3,7 @@ import Agda.Builtin.FromNat as FromNat
 open import Function using (_∘_)
 open import Relation.Nullary.Decidable using (fromWitnessFalse)
 import net.cruhland.axioms.AbstractAlgebra as AA
+open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.DecEq using (_≃?_; DecEq)
 open import net.cruhland.axioms.Eq using
   (_≃_; Eq; refl; sym; module ≃-Reasoning)
@@ -13,8 +14,9 @@ open import net.cruhland.models.Logic using (⊤; ∨-forceᴸ; Dec; dec-map; ye
 
 module net.cruhland.models.Rationals.Equality (PA : PeanoArithmetic) where
 
-import net.cruhland.models.Integers PA as ℤ
-open import net.cruhland.models.Rationals.Base PA using (ℚ)
+private module ℕ = PeanoArithmetic PA
+open import net.cruhland.models.Integers PA as ℤ using (ℤ)
+open import net.cruhland.models.Rationals.Base PA as Base using (ℚ)
 
 infix 4 _≃₀_
 record _≃₀_ (p q : ℚ) : Set where
@@ -105,3 +107,12 @@ instance
       p ≃?₀ q = dec-map ≃₀-intro _≃₀_.elim ℤ≃?
         where
           ℤ≃? = ℚ.n p * ℚ.d q ≃? ℚ.n q * ℚ.d p
+
+  from-ℤ-substitutive₁ : AA.Substitutive₁ {A = ℤ} (_as ℚ)
+  from-ℤ-substitutive₁ = record { subst = ≃₀-intro ∘ AA.substᴸ }
+
+  from-ℤ-injective : AA.Injective {A = ℤ} (_as ℚ)
+  from-ℤ-injective =
+      record { inject = AA.cancelᴿ {{c = fromWitnessFalse 1≄0}} ∘ _≃₀_.elim }
+    where
+      1≄0 = ℕ.step≄zero ∘ AA.inject

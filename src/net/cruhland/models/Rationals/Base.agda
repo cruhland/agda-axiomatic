@@ -1,14 +1,15 @@
 -- Needed for positive integer literals (typeclass)
-import Agda.Builtin.FromNat
+open import Agda.Builtin.FromNat using (Number)
+open import Agda.Builtin.Nat using (Nat)
 open import Function using (_∘_)
 open import Relation.Nullary.Decidable using (False)
 import net.cruhland.axioms.AbstractAlgebra as AA
-open import net.cruhland.axioms.Cast as Cast using (_As_)
+open import net.cruhland.axioms.Cast as Cast using (_As_; _as_)
 open import net.cruhland.axioms.DecEq using (_≃?_; ≄-derive)
 open import net.cruhland.axioms.Eq using (_≄_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 -- Needed for positive integer literals (instance for ⊤)
-import net.cruhland.models.Logic
+open import net.cruhland.models.Logic using (⊤)
 
 module net.cruhland.models.Rationals.Base (PA : PeanoArithmetic) where
 
@@ -35,3 +36,10 @@ instance
 
   from-ℕ : ℕ As ℚ
   from-ℕ = Cast.transitive {B = ℤ}
+
+  private
+    from-Nat : Nat As ℚ
+    from-Nat = Cast.transitive {B = ℕ}
+
+  number : Number ℚ
+  number = record { Constraint = λ _ → ⊤ ; fromNat = _as ℚ }
