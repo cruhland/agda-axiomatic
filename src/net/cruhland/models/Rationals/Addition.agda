@@ -95,8 +95,8 @@ instance
   +-substitutive₂ : AA.Substitutive₂ {A = ℚ} _+_
   +-substitutive₂ = AA.substitutive₂
 
-  +-compatible-ℤ : AA.Compatible {A = ℤ} (_as ℚ) _+_ _+_
-  +-compatible-ℤ = record { compat = +-compat-ℤ }
+  +-compatible-ℤ : AA.Compatible₂ {A = ℤ} (_as ℚ) _+_ _+_
+  +-compatible-ℤ = record { compat₂ = +-compat-ℤ }
     where
       +-compat-ℤ : {a b : ℤ} → (a + b as ℚ) ≃ (a as ℚ) + (b as ℚ)
       +-compat-ℤ {a} {b} = ≃₀-intro [a+b][1*1]≃[a1+1b]1

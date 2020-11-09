@@ -118,13 +118,20 @@ record Absorptiveᴿ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) (z : A) : S
 
 open Absorptiveᴿ {{...}} public using (absorbᴿ)
 
-record Compatible
+record Compatible₁
+    {A B : Set} {{_ : Eq B}} (f : A → B) (g : A → A) (h : B → B) : Set where
+  field
+    compat₁ : ∀ {a} → f (g a) ≃ h (f a)
+
+open Compatible₁ {{...}} public using (compat₁)
+
+record Compatible₂
     {A B : Set} {{_ : Eq B}}
       (f : A → B) (_⊙_ : A → A → A) (_⊕_ : B → B → B) : Set where
   field
-    compat : ∀ {a b} → f (a ⊙ b) ≃ f a ⊕ f b
+    compat₂ : ∀ {a b} → f (a ⊙ b) ≃ f a ⊕ f b
 
-open Compatible {{...}} public using (compat)
+open Compatible₂ {{...}} public using (compat₂)
 
 record Inverseᴸ
     {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) (inv : A → A) (e : A) : Set where

@@ -86,8 +86,8 @@ instance
       fromNat : Nat.Nat → {{_ : ⊤}} → ℤ
       fromNat n = FromNat.fromNat {A = ℕ} n as ℤ
 
-  +-compatible-ℕ : AA.Compatible {A = ℕ} (_as ℤ) _+_ _+_
-  +-compatible-ℕ = record { compat = ≃ᶻ-intro (AA.substᴿ AA.identᴸ) }
+  +-compatible-ℕ : AA.Compatible₂ {A = ℕ} (_as ℤ) _+_ _+_
+  +-compatible-ℕ = record { compat₂ = ≃ᶻ-intro (AA.substᴿ AA.identᴸ) }
 
   +-identityᴸ : AA.Identityᴸ _+_ 0
   +-identityᴸ = record { identᴸ = +-identᴸ }

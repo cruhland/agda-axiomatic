@@ -51,7 +51,7 @@ _>_ = flip _<_
   let n₁+n₂≃0 =
         begin
           (n₁ + n₂ as ℤ)
-        ≃⟨ AA.compat ⟩
+        ≃⟨ AA.compat₂ ⟩
           (n₁ as ℤ) + (n₂ as ℤ)
         ≃˘⟨ AA.identᴸ ⟩
           0 + ((n₁ as ℤ) + (n₂ as ℤ))

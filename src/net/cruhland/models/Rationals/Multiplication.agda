@@ -1,4 +1,5 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
+open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq using (_≃_; module ≃-Reasoning)
 open ≃-Reasoning
 import net.cruhland.axioms.Operators as Op
@@ -7,9 +8,9 @@ open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 
 module net.cruhland.models.Rationals.Multiplication (PA : PeanoArithmetic) where
 
-import net.cruhland.models.Integers PA as ℤ
+open import net.cruhland.models.Integers PA as ℤ using (ℤ)
 import net.cruhland.models.Rationals.Addition PA as Addition
-open import net.cruhland.models.Rationals.Base PA using (ℚ)
+open import net.cruhland.models.Rationals.Base PA as Base using (ℚ)
 open import net.cruhland.models.Rationals.Equality PA as Equality using
   (≃₀-intro)
 
@@ -69,3 +70,6 @@ instance
 
   *-substitutive₂ : AA.Substitutive₂ {A = ℚ} _*_
   *-substitutive₂ = AA.substitutive₂
+
+  *-compatible-ℤ : AA.Compatible₂ {A = ℤ} (_as ℚ) _*_ _*_
+  *-compatible-ℤ = record { compat₂ = ≃₀-intro (AA.substᴿ AA.identᴿ) }
