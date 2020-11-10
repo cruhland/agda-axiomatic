@@ -16,7 +16,7 @@ module net.cruhland.models.Rationals.Equality (PA : PeanoArithmetic) where
 
 private module ℕ = PeanoArithmetic PA
 open import net.cruhland.models.Integers PA as ℤ using (ℤ)
-open import net.cruhland.models.Rationals.Base PA as Base using (_//_⟨_⟩; ℚ)
+open import net.cruhland.models.Rationals.Base PA as Base using (_//_~_; ℚ)
 
 infix 4 _≃₀_
 record _≃₀_ (p q : ℚ) : Set where
@@ -33,9 +33,9 @@ record _≃₀_ (p q : ℚ) : Set where
 
 ≃₀-trans : ∀ {p q r} → p ≃₀ q → q ≃₀ r → p ≃₀ r
 ≃₀-trans
-  {p↑ // p↓ ⟨ _ ⟩}
-  {q↑ // q↓ ⟨ q↓≄0 ⟩}
-  {r↑ // r↓ ⟨ _ ⟩}
+  {p↑ // p↓ ~ _}
+  {q↑ // q↓ ~ q↓≄0}
+  {r↑ // r↓ ~ _}
   (≃₀-intro p↑q↓≃q↑p↓) (≃₀-intro q↑r↓≃r↑q↓) with q↑ ≃? 0
 ... | yes q↑≃0 =
   let p↑q↓≃0 =

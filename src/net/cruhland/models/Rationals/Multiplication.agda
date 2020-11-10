@@ -10,7 +10,7 @@ module net.cruhland.models.Rationals.Multiplication (PA : PeanoArithmetic) where
 
 open import net.cruhland.models.Integers PA as ℤ using (ℤ)
 import net.cruhland.models.Rationals.Addition PA as Addition
-open import net.cruhland.models.Rationals.Base PA as Base using (_//_⟨_⟩; ℚ)
+open import net.cruhland.models.Rationals.Base PA as Base using (_//_~_; ℚ)
 open import net.cruhland.models.Rationals.Equality PA as Equality using
   (≃₀-intro)
 
@@ -19,14 +19,14 @@ instance
   star = record { _*_ = _*₀_ }
     where
       _*₀_ : ℚ → ℚ → ℚ
-      (p↑ // p↓ ⟨ p↓≄0 ⟩) *₀ (q↑ // q↓ ⟨ q↓≄0 ⟩) =
-        (p↑ * q↑) // p↓ * q↓ ⟨ AA.nonzero-prod p↓≄0 q↓≄0 ⟩
+      (p↑ // p↓ ~ p↓≄0) *₀ (q↑ // q↓ ~ q↓≄0) =
+        (p↑ * q↑) // p↓ * q↓ ~ AA.nonzero-prod p↓≄0 q↓≄0
 
   *-commutative : AA.Commutative _*_
   *-commutative = record { comm = *-comm }
     where
       *-comm : {a b : ℚ} → a * b ≃ b * a
-      *-comm {a↑ // a↓ ⟨ _ ⟩} {b↑ // b↓ ⟨ _ ⟩} =
+      *-comm {a↑ // a↓ ~ _} {b↑ // b↓ ~ _} =
           ≃₀-intro [a↑b↑][b↓a↓]≃[b↑a↑][a↓b↓]
         where
           [a↑b↑][b↓a↓]≃[b↑a↑][a↓b↓] =
@@ -43,7 +43,7 @@ instance
     where
       *-substᴸ : {a₁ a₂ b : ℚ} → a₁ ≃ a₂ → a₁ * b ≃ a₂ * b
       *-substᴸ
-        {a₁↑ // a₁↓ ⟨ _ ⟩} {a₂↑ // a₂↓ ⟨ _ ⟩} {b↑ // b↓ ⟨ _ ⟩}
+        {a₁↑ // a₁↓ ~ _} {a₂↑ // a₂↓ ~ _} {b↑ // b↓ ~ _}
         (≃₀-intro a₁↑a₂↓≃a₂↑a₁↓) =
           ≃₀-intro [a₁↑b↑][a₂↓b↓]≃[a₂↑b↑][a₁↓b↓]
         where

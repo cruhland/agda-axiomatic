@@ -8,7 +8,7 @@ open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 module net.cruhland.models.Rationals.Negation (PA : PeanoArithmetic) where
 
 open import net.cruhland.models.Integers PA as ℤ using (ℤ)
-open import net.cruhland.models.Rationals.Base PA as Base using (_//_⟨_⟩; ℚ)
+open import net.cruhland.models.Rationals.Base PA as Base using (_//_~_; ℚ)
 open import net.cruhland.models.Rationals.Equality PA as Equality using
   (≃₀-intro)
 
@@ -17,13 +17,13 @@ instance
   dashᴸ = record { -_ = -₀_ }
     where
       -₀_ : ℚ → ℚ
-      -₀ (p↑ // p↓ ⟨ p↓≄0 ⟩) = (- p↑) // p↓ ⟨ p↓≄0 ⟩
+      -₀ (p↑ // p↓ ~ p↓≄0) = (- p↑) // p↓ ~ p↓≄0
 
   neg-substitutive₁ : AA.Substitutive₁ -_
   neg-substitutive₁ = record { subst = neg-subst }
     where
       neg-subst : {a₁ a₂ : ℚ} → a₁ ≃ a₂ → - a₁ ≃ - a₂
-      neg-subst {a₁↑ // a₁↓ ⟨ _ ⟩} {a₂↑ // a₂↓ ⟨ _ ⟩} (≃₀-intro a₁↑a₂↓≃a₂↑a₁↓) =
+      neg-subst {a₁↑ // a₁↓ ~ _} {a₂↑ // a₂↓ ~ _} (≃₀-intro a₁↑a₂↓≃a₂↑a₁↓) =
           ≃₀-intro [-a₁↑]a₂↓≃[-a₂↑]a₁↓
         where
           [-a₁↑]a₂↓≃[-a₂↑]a₁↓ =
