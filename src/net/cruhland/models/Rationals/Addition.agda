@@ -2,7 +2,7 @@
 import Agda.Builtin.FromNat
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_)
-open import net.cruhland.axioms.Eq using (_≃_; _≄_; module ≃-Reasoning)
+open import net.cruhland.axioms.Eq using (_≃_; _≄_; sym; module ≃-Reasoning)
 open ≃-Reasoning
 import net.cruhland.axioms.Operators as Op
 open Op using (_+_; _*_)
@@ -104,3 +104,29 @@ instance
             ≃˘⟨ AA.substᴸ (AA.substᴿ AA.identᴸ) ⟩
               (a * 1 + 1 * b) * 1
             ∎
+
+  +-associative : AA.Associative _+_
+  +-associative = record { assoc = +-assoc }
+    where
+      +-assoc : {p q r : ℚ} → (p + q) + r ≃ p + (q + r)
+      +-assoc {p↑ // p↓ ~ _} {q↑ // q↓ ~ _} {r↑ // r↓ ~ _} =
+          ≃₀-intro (AA.[a≃b][c≃d] ≃-numer ≃-denom)
+        where
+          ≃-numer =
+            begin
+              (p↑ * q↓ + p↓ * q↑) * r↓ + (p↓ * q↓) * r↑
+            ≃⟨ AA.substᴸ AA.distribᴿ ⟩
+              ((p↑ * q↓) * r↓ + (p↓ * q↑) * r↓) + (p↓ * q↓) * r↑
+            ≃⟨ AA.substᴸ (AA.substᴸ AA.assoc) ⟩
+              (p↑ * (q↓ * r↓) + (p↓ * q↑) * r↓) + (p↓ * q↓) * r↑
+            ≃⟨ AA.substᴸ (AA.substᴿ AA.assoc) ⟩
+              (p↑ * (q↓ * r↓) + p↓ * (q↑ * r↓)) + (p↓ * q↓) * r↑
+            ≃⟨ AA.substᴿ AA.assoc ⟩
+              (p↑ * (q↓ * r↓) + p↓ * (q↑ * r↓)) + p↓ * (q↓ * r↑)
+            ≃⟨ AA.assoc ⟩
+              p↑ * (q↓ * r↓) + (p↓ * (q↑ * r↓) + p↓ * (q↓ * r↑))
+            ≃˘⟨ AA.substᴿ AA.distribᴸ ⟩
+              p↑ * (q↓ * r↓) + p↓ * (q↑ * r↓ + q↓ * r↑)
+            ∎
+
+          ≃-denom = sym AA.assoc
