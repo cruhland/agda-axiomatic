@@ -1,6 +1,6 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_)
-open import net.cruhland.axioms.Eq using (_≃_; module ≃-Reasoning)
+open import net.cruhland.axioms.Eq using (_≃_; sym; module ≃-Reasoning)
 open ≃-Reasoning
 import net.cruhland.axioms.Operators as Op
 open Op using (_+_; _*_)
@@ -66,3 +66,10 @@ instance
 
   *-compatible-ℤ : AA.Compatible₂ {A = ℤ} (_as ℚ) _*_ _*_
   *-compatible-ℤ = record { compat₂ = ≃₀-intro (AA.substᴿ AA.identᴿ) }
+
+  *-associative : AA.Associative _*_
+  *-associative = record { assoc = *-assoc }
+    where
+      *-assoc : {p q r : ℚ} → (p * q) * r ≃ p * (q * r)
+      *-assoc {p↑ // p↓ ~ _} {q↑ // q↓ ~ _} {r↑ // r↓ ~ _} =
+        ≃₀-intro (AA.[a≃b][c≃d] (AA.assoc {_⊙_ = _*_}) (sym AA.assoc))
