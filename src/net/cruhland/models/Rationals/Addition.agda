@@ -130,3 +130,25 @@ instance
             ∎
 
           ≃-denom = sym AA.assoc
+
+  +-identityᴸ : AA.Identityᴸ _+_ 0
+  +-identityᴸ = record { identᴸ = +-identᴸ }
+    where
+      +-identᴸ : {p : ℚ} → 0 + p ≃ p
+      +-identᴸ {p↑ // p↓ ~ _} = ≃₀-intro (AA.[a≃b][c≃d] ≃-numer ≃-denom)
+        where
+          ≃-numer =
+            begin
+              0 * p↓ + 1 * p↑
+            ≃⟨ AA.substᴸ AA.absorbᴸ ⟩
+              0 + 1 * p↑
+            ≃⟨ AA.identᴸ ⟩
+              1 * p↑
+            ≃⟨ AA.identᴸ ⟩
+              p↑
+            ∎
+
+          ≃-denom = sym AA.identᴸ
+
+  +-identityᴿ : AA.Identityᴿ {A = ℚ} _+_ 0
+  +-identityᴿ = AA.identityᴿ
