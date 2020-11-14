@@ -1,3 +1,5 @@
+-- Needed for positive integer literals (typeclass)
+import Agda.Builtin.FromNat
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq using (_≃_; sym; module ≃-Reasoning)
@@ -5,6 +7,8 @@ open ≃-Reasoning
 import net.cruhland.axioms.Operators as Op
 open Op using (_+_; _*_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
+-- Needed for positive integer literals (instance for ⊤)
+import net.cruhland.models.Logic
 
 module net.cruhland.models.Rationals.Multiplication (PA : PeanoArithmetic) where
 
@@ -73,3 +77,13 @@ instance
       *-assoc : {p q r : ℚ} → (p * q) * r ≃ p * (q * r)
       *-assoc {p↑ // p↓ ~ _} {q↑ // q↓ ~ _} {r↑ // r↓ ~ _} =
         ≃₀-intro (AA.[a≃b][c≃d] (AA.assoc {_⊙_ = _*_}) (sym AA.assoc))
+
+  *-identityᴸ : AA.Identityᴸ _*_ 1
+  *-identityᴸ = record { identᴸ = *-identᴸ }
+    where
+      *-identᴸ : {p : ℚ} → 1 * p ≃ p
+      *-identᴸ {p↑ // p↓ ~ _} =
+        ≃₀-intro (AA.[a≃b][c≃d] (AA.identᴸ {_⊙_ = _*_}) (sym AA.identᴸ))
+
+  *-identityᴿ : AA.Identityᴿ {A = ℚ} _*_ 1
+  *-identityᴿ = AA.identityᴿ
