@@ -13,6 +13,14 @@ record Substitutive₁
 
 open Substitutive₁ {{...}} public using (subst)
 
+record Substitutiveⁱ₁
+    {A B : Set} {C : A → Set} {{eqA : Eq A}} {{eqB : Eq B}}
+      (f : (a : A) {{c : C a}} → B) : Set where
+  field
+    substⁱ : ∀ {a₁ a₂} {{c₁ : C a₁}} {{c₂ : C a₂}} → a₁ ≃ a₂ → f a₁ ≃ f a₂
+
+open Substitutiveⁱ₁ {{...}} public using (substⁱ)
+
 record Substitutiveᴸ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set where
   field
     substᴸ : ∀ {a b₁ b₂} → b₁ ≃ b₂ → b₁ ⊙ a ≃ b₂ ⊙ a
@@ -147,6 +155,22 @@ record Inverseᴿ
 
 open Inverseᴿ {{...}} public using (invᴿ)
 
+record Inverseⁱᴸ
+    {A : Set} {C : A → Set} {{eq : Eq A}}
+      (_⊙_ : A → A → A) (inv : (a : A) {{c : C a}} → A) (e : A) : Set where
+  field
+    invⁱᴸ : ∀ {a} {{c : C a}} → inv a ⊙ a ≃ e
+
+open Inverseⁱᴸ {{...}} public using (invⁱᴸ)
+
+record Inverseⁱᴿ
+    {A : Set} {C : A → Set} {{eq : Eq A}}
+      (_⊙_ : A → A → A) (inv : (a : A) {{c : C a}} → A) (e : A) : Set where
+  field
+    invⁱᴿ : ∀ {a} {{c : C a}} → a ⊙ inv a ≃ e
+
+open Inverseⁱᴿ {{...}} public using (invⁱᴿ)
+
 with-comm :
   {A : Set} {_⊙_ : A → A → A}
     {{_ : Eq A}} {{_ : Commutative _⊙_}} →
@@ -240,6 +264,12 @@ inverseᴿ :
     ∀ {e} {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Inverseᴸ _⊙_ inv e}} →
       Inverseᴿ _⊙_ inv e
 inverseᴿ = record { invᴿ = trans comm invᴸ }
+
+inverseⁱᴿ :
+  {A : Set} {C : A → Set} {_⊙_ : A → A → A} {inv : (a : A) {{c : C a}} → A} →
+    ∀ {e} {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Inverseⁱᴸ _⊙_ inv e}} →
+      Inverseⁱᴿ _⊙_ inv e
+inverseⁱᴿ = record { invⁱᴿ = trans comm invⁱᴸ }
 
 [ab][cd]≃a[[bc]d] :
   {A : Set} {_⊙_ : A → A → A}

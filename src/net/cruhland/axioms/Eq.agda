@@ -1,7 +1,7 @@
 module net.cruhland.axioms.Eq where
 
 open import Level using (_⊔_; 0ℓ; Level) renaming (suc to sℓ)
-open import net.cruhland.models.Logic using (¬_)
+open import net.cruhland.models.Logic using (¬_; ¬ⁱ_)
 
 private
   variable
@@ -50,3 +50,10 @@ module _ {{eq : Eq A}} where
 
     syntax step-≃ x y≃z x≃y = x ≃⟨ x≃y ⟩ y≃z
     syntax step-≃˘ x y≃z y≃x = x ≃˘⟨ y≃x ⟩ y≃z
+
+infix 4 _≄ⁱ_
+_≄ⁱ_ : {A : Set α} {{_ : Eq A}} → A → A → Set α
+x ≄ⁱ y = ¬ⁱ (x ≃ y)
+
+≄ⁱ-elim : {x y : A} {{_ : Eq A}} → x ≄ⁱ y → x ≄ y
+≄ⁱ-elim = ¬ⁱ_.elim

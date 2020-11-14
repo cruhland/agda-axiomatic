@@ -3,10 +3,10 @@ import Agda.Builtin.FromNat as FromNat
 open import Function using (_∘_)
 open import Relation.Nullary.Decidable using (fromWitnessFalse)
 import net.cruhland.axioms.AbstractAlgebra as AA
-open import net.cruhland.axioms.Cast using (_as_)
+open import net.cruhland.axioms.Cast using (_as_; _value_)
 open import net.cruhland.axioms.DecEq using (_≃?_; DecEq)
 open import net.cruhland.axioms.Eq using
-  (_≃_; _≄_; Eq; refl; sym; module ≃-Reasoning)
+  (_≃_; _≄_; Eq; refl; sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
 open import net.cruhland.axioms.Operators using (_*_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
@@ -91,6 +91,10 @@ record _≃₀_ (p q : ℚ) : Set where
         AA.cancelᴿ {{c = fromWitnessFalse q↑q↓≄0}} p↑r↓[q↑q↓]≃r↑p↓[q↑q↓]
    in ≃₀-intro p↑r↓≃r↑p↓
 
+private
+  1≄0 : (ℤ value 1) ≄ 0
+  1≄0 = ℕ.step≄zero ∘ AA.inject
+
 instance
   eq : Eq ℚ
   eq = record
@@ -113,9 +117,7 @@ instance
 
   from-ℤ-injective : AA.Injective {A = ℤ} (_as ℚ)
   from-ℤ-injective =
-      record { inject = AA.cancelᴿ {{c = fromWitnessFalse 1≄0}} ∘ _≃₀_.elim }
-    where
-      1≄0 = ℕ.step≄zero ∘ AA.inject
+    record { inject = AA.cancelᴿ {{c = fromWitnessFalse 1≄0}} ∘ _≃₀_.elim }
 
 q≃0 : ∀ {q} → ℚ.n q ≃ 0 → q ≃ 0
 q≃0 {q} n≃0 = ≃₀-intro n1≃0d
@@ -142,3 +144,29 @@ q↑≃0 {q} (≃₀-intro n1≃0d) =
   ≃⟨ AA.absorbᴸ ⟩
     0
   ∎
+
+subst↑ :
+  ∀ {q↑₁ q↑₂ q↓} (q↓≄0 : q↓ ≄ 0) → q↑₁ ≃ q↑₂ →
+    (q↑₁ // q↓ ~ q↓≄0) ≃ (q↑₂ // q↓ ~ q↓≄0)
+subst↑ _ q↑₁≃q↑₂ = ≃₀-intro (AA.substᴸ q↑₁≃q↑₂)
+
+subst↓ :
+  ∀ {q↑ q↓₁ q↓₂} (q↓₁≄0 : q↓₁ ≄ 0) (q↓₂≄0 : q↓₂ ≄ 0) → q↓₁ ≃ q↓₂ →
+    (q↑ // q↓₁ ~ q↓₁≄0) ≃ (q↑ // q↓₂ ~ q↓₂≄0)
+subst↓ _ _ q↓₁≃q↓₂ = ≃₀-intro (AA.substᴿ (sym q↓₁≃q↓₂))
+
+q≃1 : ∀ {q} → ℚ.n q ≃ ℚ.d q → q ≃ 1
+q≃1 {q↑ // q↓ ~ _} q↑≃q↓ = ≃₀-intro q↑1≃1q↓
+  where
+    q↑1≃1q↓ =
+      begin
+        q↑ * 1
+      ≃⟨ AA.comm ⟩
+        1 * q↑
+      ≃⟨ AA.substᴿ q↑≃q↓ ⟩
+        1 * q↓
+      ∎
+
+q↑≃q↓ : ∀ {q} → q ≃ 1 → ℚ.n q ≃ ℚ.d q
+q↑≃q↓ (≃₀-intro q↑1≃1q↓) =
+  AA.cancelᴸ {{c = fromWitnessFalse 1≄0}} (trans AA.comm q↑1≃1q↓)
