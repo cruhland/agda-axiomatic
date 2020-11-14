@@ -4,8 +4,7 @@ import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq using (_≃_; sym; module ≃-Reasoning)
 open ≃-Reasoning
-import net.cruhland.axioms.Operators as Op
-open Op using (_+_; _*_)
+open import net.cruhland.axioms.Operators as Op using (_+_; _*_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 -- Needed for positive integer literals (instance for ⊤)
 import net.cruhland.models.Logic
@@ -87,3 +86,70 @@ instance
 
   *-identityᴿ : AA.Identityᴿ {A = ℚ} _*_ 1
   *-identityᴿ = AA.identityᴿ
+
+  *-distributive-+ᴸ : AA.Distributiveᴸ _*_ _+_
+  *-distributive-+ᴸ = record { distribᴸ = *-distrib-+ᴸ }
+    where
+      *-distrib-+ᴸ : {a b c : ℚ} → a * (b + c) ≃ a * b + a * c
+      *-distrib-+ᴸ {a↑ // a↓ ~ _} {b↑ // b↓ ~ _} {c↑ // c↓ ~ _} =
+          ≃₀-intro a[b+c]≃ab+ac
+        where
+          a↓b↓[a↓c↓]≃a↓[a↓[b↓c↓]] =
+            begin
+              a↓ * b↓ * (a↓ * c↓)
+            ≃⟨ AA.transpose ⟩
+              a↓ * a↓ * (b↓ * c↓)
+            ≃⟨ AA.assoc ⟩
+              a↓ * (a↓ * (b↓ * c↓))
+            ∎
+
+          [a↑[b↑c↓]]a↓≃a↑b↑[a↓c↓] =
+            begin
+              (a↑ * (b↑ * c↓)) * a↓
+            ≃˘⟨ AA.substᴸ AA.assoc ⟩
+              (a↑ * b↑ * c↓) * a↓
+            ≃⟨ AA.assoc ⟩
+              a↑ * b↑ * (c↓ * a↓)
+            ≃⟨ AA.substᴿ AA.comm ⟩
+              a↑ * b↑ * (a↓ * c↓)
+            ∎
+
+          [a↑[b↓c↑]]a↓≃ab↓[a↑c↑] =
+            begin
+              (a↑ * (b↓ * c↑)) * a↓
+            ≃⟨ AA.comm ⟩
+              a↓ * (a↑ * (b↓ * c↑))
+            ≃˘⟨ AA.substᴿ AA.assoc ⟩
+              a↓ * (a↑ * b↓ * c↑)
+            ≃⟨ AA.substᴿ (AA.substᴸ AA.comm) ⟩
+              a↓ * (b↓ * a↑ * c↑)
+            ≃⟨ AA.substᴿ AA.assoc ⟩
+              a↓ * (b↓ * (a↑ * c↑))
+            ≃˘⟨ AA.assoc ⟩
+              a↓ * b↓ * (a↑ * c↑)
+            ∎
+
+          a↑[b↑c↓+b↓c↑]a↓≃a↑b↑[a↓c↓]+a↓b↓[a↑c↑] =
+            begin
+              a↑ * (b↑ * c↓ + b↓ * c↑) * a↓
+            ≃⟨ AA.substᴸ AA.distribᴸ ⟩
+              (a↑ * (b↑ * c↓) + a↑ * (b↓ * c↑)) * a↓
+            ≃⟨ AA.distribᴿ ⟩
+              (a↑ * (b↑ * c↓)) * a↓ + (a↑ * (b↓ * c↑)) * a↓
+            ≃⟨ AA.[a≃b][c≃d] [a↑[b↑c↓]]a↓≃a↑b↑[a↓c↓] [a↑[b↓c↑]]a↓≃ab↓[a↑c↑] ⟩
+              a↑ * b↑ * (a↓ * c↓) + a↓ * b↓ * (a↑ * c↑)
+            ∎
+
+          a[b+c]≃ab+ac =
+            begin
+              a↑ * (b↑ * c↓ + b↓ * c↑) * (a↓ * b↓ * (a↓ * c↓))
+            ≃⟨ AA.substᴿ a↓b↓[a↓c↓]≃a↓[a↓[b↓c↓]] ⟩
+              a↑ * (b↑ * c↓ + b↓ * c↑) * (a↓ * (a↓ * (b↓ * c↓)))
+            ≃˘⟨ AA.assoc ⟩
+              a↑ * (b↑ * c↓ + b↓ * c↑) * a↓ * (a↓ * (b↓ * c↓))
+            ≃⟨ AA.substᴸ a↑[b↑c↓+b↓c↑]a↓≃a↑b↑[a↓c↓]+a↓b↓[a↑c↑] ⟩
+              (a↑ * b↑ * (a↓ * c↓) + a↓ * b↓ * (a↑ * c↑)) * (a↓ * (b↓ * c↓))
+            ∎
+
+  *-distributive-+ᴿ : AA.Distributiveᴿ {A = ℚ} _*_ _+_
+  *-distributive-+ᴿ = AA.distributiveᴿ
