@@ -24,6 +24,9 @@ instance
       -₀_ : ℚ → ℚ
       -₀ (p↑ // p↓ ~ p↓≄0) = (- p↑) // p↓ ~ p↓≄0
 
+  dash₂ : Op.Dash₂ ℚ
+  dash₂ = Op.subtraction
+
   neg-substitutive₁ : AA.Substitutive₁ -_
   neg-substitutive₁ = record { subst = neg-subst }
     where

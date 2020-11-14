@@ -19,6 +19,10 @@ import net.cruhland.models.Rationals.Multiplication PA as Mult
 _⁻¹ : {q : ℚ} → q ≄ 0 → ℚ
 _⁻¹ {q↑ // q↓ ~ _} q≄0 = q↓ // q↑ ~ q≄0 ∘ q≃0
 
+infixl 7 _/_
+_/_ : (p {q} : ℚ) → q ≄ 0 → ℚ
+p / q≄0 = p * q≄0 ⁻¹
+
 recip-subst :
   {q₁ q₂ : ℚ} (q₁≄0 : q₁ ≄ 0) (q₂≄0 : q₂ ≄ 0) → q₁ ≃ q₂ → q₁≄0 ⁻¹ ≃ q₂≄0 ⁻¹
 recip-subst _ _ = ≃₀-intro ∘ AA.with-comm ∘ sym ∘ _≃₀_.elim
@@ -31,6 +35,10 @@ recip-inverseᴿ {q↑ // q↓ ~ _} = Equality.q≃1 AA.comm
 
 _⁻¹′ : (q : ℚ) {{_ : q ≄ⁱ 0}} → ℚ
 _⁻¹′ (q↑ // q↓ ~ _) {{q≄ⁱ0}} = q↓ // q↑ ~ (≄ⁱ-elim q≄ⁱ0) ∘ q≃0
+
+infixl 7 _/′_
+_/′_ : (p q : ℚ) {{_ : q ≄ⁱ 0}} → ℚ
+p /′ q = p * q ⁻¹′
 
 instance
   recip-substitutiveⁱ : AA.Substitutiveⁱ₁ _⁻¹′

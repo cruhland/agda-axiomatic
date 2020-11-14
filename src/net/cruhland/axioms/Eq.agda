@@ -1,7 +1,7 @@
 module net.cruhland.axioms.Eq where
 
 open import Level using (_⊔_; 0ℓ; Level) renaming (suc to sℓ)
-open import net.cruhland.models.Logic using (¬_; ¬ⁱ_)
+open import net.cruhland.models.Logic using (¬_; ¬ⁱ_; ¬ⁱ-intro)
 
 private
   variable
@@ -54,6 +54,9 @@ module _ {{eq : Eq A}} where
 infix 4 _≄ⁱ_
 _≄ⁱ_ : {A : Set α} {{_ : Eq A}} → A → A → Set α
 x ≄ⁱ y = ¬ⁱ (x ≃ y)
+
+≄ⁱ-intro : {x y : A} {{_ : Eq A}} → x ≄ y → x ≄ⁱ y
+≄ⁱ-intro = ¬ⁱ-intro
 
 ≄ⁱ-elim : {x y : A} {{_ : Eq A}} → x ≄ⁱ y → x ≄ y
 ≄ⁱ-elim = ¬ⁱ_.elim
