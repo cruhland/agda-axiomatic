@@ -59,3 +59,18 @@ instance
 
   from-ℕ-injective : AA.Injective {A = ℕ} (_as ℤ)
   from-ℕ-injective = record { inject = AA.cancelᴿ ∘ _≃ᶻ_.elim }
+
+  ℤ-substitutiveᴸ : AA.Substitutiveᴸ _—_
+  ℤ-substitutiveᴸ = record { substᴸ = ℤ-substᴸ }
+    where
+      ℤ-substᴸ : ∀ {m n₁ n₂} → n₁ ≃ n₂ → n₁ — m ≃ n₂ — m
+      ℤ-substᴸ n₁≃n₂ = ≃ᶻ-intro (AA.substᴸ n₁≃n₂)
+
+  ℤ-substitutiveᴿ : AA.Substitutiveᴿ _—_
+  ℤ-substitutiveᴿ = record { substᴿ = ℤ-substᴿ }
+    where
+      ℤ-substᴿ : ∀ {m n₁ n₂} → n₁ ≃ n₂ → m — n₁ ≃ m — n₂
+      ℤ-substᴿ n₁≃n₂ = ≃ᶻ-intro (AA.substᴿ (sym n₁≃n₂))
+
+  ℤ-substitutive₂ : AA.Substitutive₂ _—_
+  ℤ-substitutive₂ = record {}

@@ -1,5 +1,7 @@
 -- Needed for positive integer literals (typeclass)
-import Agda.Builtin.FromNat
+open import Agda.Builtin.FromNat using (fromNat)
+import Agda.Builtin.FromNeg as FromNeg
+open import Function using (const)
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq using (_≃_; refl; module ≃-Reasoning)
@@ -7,7 +9,7 @@ open ≃-Reasoning
 open import net.cruhland.axioms.Operators as Op using (_+_; _*_; -_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 -- Needed for positive integer literals (instance for ⊤)
-import net.cruhland.models.Logic
+open import net.cruhland.models.Logic using (⊤)
 
 module net.cruhland.models.Rationals.Negation (PA : PeanoArithmetic) where
 
@@ -26,6 +28,9 @@ instance
 
   dash₂ : Op.Dash₂ ℚ
   dash₂ = Op.subtraction
+
+  negative : FromNeg.Negative ℚ
+  negative = record { Constraint = const ⊤ ; fromNeg = λ n → - fromNat n }
 
   neg-substitutive₁ : AA.Substitutive₁ -_
   neg-substitutive₁ = record { subst = neg-subst }

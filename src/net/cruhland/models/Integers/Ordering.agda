@@ -25,7 +25,7 @@ import net.cruhland.models.Integers.Multiplication PA as Multiplication
 open Multiplication using (*-distrib-subᴸ; sub-sign-swap)
 import net.cruhland.models.Integers.Negation PA as Negation
 open Negation using
-  ( +-inverseᴸ; +-inverseᴿ; IsPositive; neg; nil; pos
+  ( +-inverseᴸ; +-inverseᴿ; Positive; neg; nil; pos
   ; sub-substᴸ; sub-substᴿ; ≃ᴸ-subᴿ-toᴸ; Trichotomy; trichotomy
   )
 
@@ -69,9 +69,17 @@ _>_ = flip _<_
           0
         ∎
       n₂≃0 = ∧-elimᴿ (ℕ.+-both-zero (AA.inject n₁+n₂≃0))
-   in trans (trans a≃b+n₂ (AA.substᴿ (AA.subst n₂≃0))) AA.identᴿ
+   in begin
+        a
+      ≃⟨ a≃b+n₂ ⟩
+        b + (n₂ as ℤ)
+      ≃⟨ AA.substᴿ (AA.subst n₂≃0) ⟩
+        b + (0 as ℤ)
+      ≃⟨ AA.identᴿ ⟩
+        b
+      ∎
 
-pos→< : ∀ {x y} → IsPositive (y - x) → x < y
+pos→< : ∀ {x y} → Positive (y - x) → x < y
 pos→< {x} {y} record { n = n ; pos = n≄0 ; x≃n = y-x≃n } =
     <-intro (≤-intro n (≃ᴸ-subᴿ-toᴸ y-x≃n)) x≄y
   where

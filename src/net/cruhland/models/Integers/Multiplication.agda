@@ -21,7 +21,7 @@ open import net.cruhland.models.Integers.Base PA as Base using (_—_; ℤ)
 open import net.cruhland.models.Integers.Equality PA as Equality using
   (≃ᶻ-intro)
 open import net.cruhland.models.Integers.Negation PA as Negation using
-  ( +-inverseᴿ; IsNegative; IsPositive; neg-involutive
+  ( +-inverseᴿ; Negative; Positive; neg-involutive
   ; neg; nil; pos; Trichotomy; trichotomy
   )
 
@@ -240,23 +240,18 @@ instance
   *-commutative-negᴿ = AA.commutativeᴿ
 
 neg-mult : {a : ℤ} → - a ≃ -1 * a
-neg-mult {a⁺ — a⁻} = ≃ᶻ-intro a⁻+[0a⁻+1a⁺]≃[0a⁺+1a⁻]+a⁺
+neg-mult {a⁺ — a⁻} = AA.[a≃b][c≃d] x≃0y+1x x≃0y+1x
   where
-    a⁻+[0a⁻+1a⁺]≃[0a⁺+1a⁻]+a⁺ =
+    x≃0y+1x : {x y : ℕ} → x ≃ 0 * y + 1 * x
+    x≃0y+1x {x} {y} =
       begin
-        a⁻ + (0 * a⁻ + 1 * a⁺)
-      ≃⟨ AA.substᴿ (AA.substᴸ AA.absorbᴸ) ⟩
-        a⁻ + (0 + 1 * a⁺)
-      ≃⟨ AA.substᴿ (AA.substᴿ AA.identᴸ) ⟩
-        a⁻ + (0 + a⁺)
-      ≃⟨ AA.substᴿ AA.identᴸ ⟩
-        a⁻ + a⁺
-      ≃˘⟨ AA.substᴸ AA.identᴸ ⟩
-        0 + a⁻ + a⁺
-      ≃˘⟨ AA.substᴸ (AA.substᴿ AA.identᴸ) ⟩
-        0 + 1 * a⁻ + a⁺
-      ≃˘⟨ AA.substᴸ (AA.substᴸ AA.absorbᴸ) ⟩
-        0 * a⁺ + 1 * a⁻ + a⁺
+        x
+      ≃˘⟨ AA.identᴸ ⟩
+        0 + x
+      ≃˘⟨ AA.substᴸ AA.absorbᴸ ⟩
+        0 * y + x
+      ≃˘⟨ AA.substᴿ AA.identᴸ ⟩
+        0 * y + 1 * x
       ∎
 
 *-distrib-subᴸ : {a b c : ℤ} → c * (a - b) ≃ c * a - c * b
@@ -267,7 +262,7 @@ neg-mult {a⁺ — a⁻} = ≃ᶻ-intro a⁻+[0a⁻+1a⁺]≃[0a⁺+1a⁻]+a⁺
     c * (a + - b)
   ≃⟨ AA.distribᴸ ⟩
     c * a + c * - b
-  ≃⟨ AA.substᴿ AA.commᴿ ⟩
+  ≃⟨ AA.substᴿ {_⊙_ = _+_} AA.commᴿ ⟩
     c * a + - (c * b)
   ≃⟨⟩
     c * a - c * b
@@ -324,7 +319,7 @@ neg-sub-swap {a} {b} =
     b - a
   ∎
 
-sub-sign-swap : ∀ {a b} → IsNegative (a - b) → IsPositive (b - a)
+sub-sign-swap : ∀ {a b} → Negative (a - b) → Positive (b - a)
 sub-sign-swap {a} {b} record { n = n ; pos = n≄0 ; x≃-n = a-b≃-n } =
     record { n = n ; pos = n≄0 ; x≃n = b-a≃n }
   where

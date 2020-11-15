@@ -4,7 +4,7 @@ import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq using (_≃_; sym; module ≃-Reasoning)
 open ≃-Reasoning
-open import net.cruhland.axioms.Operators as Op using (_+_; _*_)
+open import net.cruhland.axioms.Operators as Op using (_+_; _*_; -_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 -- Needed for positive integer literals (instance for ⊤)
 import net.cruhland.models.Logic
@@ -16,6 +16,7 @@ import net.cruhland.models.Rationals.Addition PA as Addition
 open import net.cruhland.models.Rationals.Base PA as Base using (_//_~_; ℚ)
 open import net.cruhland.models.Rationals.Equality PA as Equality using
   (≃₀-intro)
+import net.cruhland.models.Rationals.Negation PA as Negation
 
 instance
   star : Op.Star ℚ
@@ -25,6 +26,10 @@ instance
       (p↑ // p↓ ~ p↓≄0) *₀ (q↑ // q↓ ~ q↓≄0) =
         (p↑ * q↑) // p↓ * q↓ ~ AA.nonzero-prod p↓≄0 q↓≄0
 
+neg-mult : {q : ℚ} → - q ≃ -1 * q
+neg-mult {q↑ // q↓ ~ _} = ≃₀-intro (AA.[a≃b][c≃d] ℤ.neg-mult AA.identᴸ)
+
+instance
   *-commutative : AA.Commutative _*_
   *-commutative = record { comm = *-comm }
     where
@@ -75,14 +80,32 @@ instance
     where
       *-assoc : {p q r : ℚ} → (p * q) * r ≃ p * (q * r)
       *-assoc {p↑ // p↓ ~ _} {q↑ // q↓ ~ _} {r↑ // r↓ ~ _} =
-        ≃₀-intro (AA.[a≃b][c≃d] (AA.assoc {_⊙_ = _*_}) (sym AA.assoc))
+        ≃₀-intro (AA.[a≃b][c≃d] {_⊙_ = _*_} AA.assoc (sym AA.assoc))
+
+  *-commutativeᴸ-neg : AA.Commutativeᴸ -_ _*_
+  *-commutativeᴸ-neg = record { commᴸ = *-commᴸ-neg }
+    where
+      *-commᴸ-neg : {p q : ℚ} → (- p) * q ≃ - (p * q)
+      *-commᴸ-neg {p} {q} =
+        begin
+          (- p) * q
+        ≃⟨ AA.substᴸ neg-mult ⟩
+          (-1 * p) * q
+        ≃⟨ AA.assoc ⟩
+          -1 * (p * q)
+        ≃˘⟨ neg-mult ⟩
+          - (p * q)
+        ∎
+
+  *-commutativeᴿ-neg : AA.Commutativeᴿ {A = ℚ} -_ _*_
+  *-commutativeᴿ-neg = AA.commutativeᴿ
 
   *-identityᴸ : AA.Identityᴸ _*_ 1
   *-identityᴸ = record { identᴸ = *-identᴸ }
     where
       *-identᴸ : {p : ℚ} → 1 * p ≃ p
       *-identᴸ {p↑ // p↓ ~ _} =
-        ≃₀-intro (AA.[a≃b][c≃d] (AA.identᴸ {_⊙_ = _*_}) (sym AA.identᴸ))
+        ≃₀-intro (AA.[a≃b][c≃d] {_⊙_ = _*_} AA.identᴸ (sym AA.identᴸ))
 
   *-identityᴿ : AA.Identityᴿ {A = ℚ} _*_ 1
   *-identityᴿ = AA.identityᴿ

@@ -1,11 +1,11 @@
 -- Needed for positive integer literals
 open import Agda.Builtin.FromNat as FromNat using (fromNat)
-open import Agda.Builtin.FromNeg using (Negative)
+import Agda.Builtin.FromNeg as FromNeg
 open import Function using (_∘_)
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq using
-  (_≃_; refl; sym; trans; module ≃-Reasoning)
+  (_≃_; _≄_; refl; sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
 open import net.cruhland.axioms.Operators as Op using (_+_; -_; _-_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
@@ -24,7 +24,7 @@ instance
   neg-dash : Op.Dashᴸ ℤ
   neg-dash = record { -_ = λ { (a — b) → b — a } }
 
-  negative : Negative ℤ
+  negative : FromNeg.Negative ℤ
   negative = record { Constraint = λ _ → ⊤ ; fromNeg = λ n → - fromNat n }
 
   neg-substitutive : AA.Substitutive₁ (λ x → - x)
@@ -94,27 +94,50 @@ sub-substᴿ = AA.substᴿ ∘ AA.subst
     b + c
   ∎
 
-record IsPositive (x : ℤ) : Set where
+record Positive (x : ℤ) : Set where
   field
     n : ℕ
     pos : ℕ.Positive n
     x≃n : x ≃ (n as ℤ)
 
-record IsNegative (x : ℤ) : Set where
+record Negative (x : ℤ) : Set where
   field
     n : ℕ
     pos : ℕ.Positive n
     x≃-n : x ≃ - (n as ℤ)
 
+1-Positive : Positive 1
+1-Positive = record { n = 1 ; pos = ℕ.step≄zero ; x≃n = refl }
+
+pos-nonzero : ∀ {a} → Positive a → a ≄ 0
+pos-nonzero (record { n = n ; pos = n≄0 ; x≃n = a≃n }) a≃0 =
+  n≄0 (AA.inject (trans (sym a≃n) a≃0))
+
+instance
+  Positive-substitutive : AA.Substitutiveᴾ₁ Positive
+  Positive-substitutive = record { substᴾ = Positive-substᴾ }
+    where
+      Positive-substᴾ : ∀ {a₁ a₂} → a₁ ≃ a₂ → Positive a₁ → Positive a₂
+      Positive-substᴾ a₁≃a₂ (record { n = n ; pos = n≄0 ; x≃n = a₁≃n }) =
+        record { n = n ; pos = n≄0 ; x≃n = trans (sym a₁≃a₂) a₁≃n }
+
+neg-Positive : ∀ {a} → Positive a → Negative (- a)
+neg-Positive record { n = n ; pos = n≄0 ; x≃n = a≃n } =
+  record { n = n ; pos = n≄0 ; x≃-n = AA.subst a≃n }
+
+neg-Negative : ∀ {a} → Negative a → Positive (- a)
+neg-Negative record { n = n ; pos = n≄0 ; x≃-n = a≃-n } =
+  record { n = n ; pos = n≄0 ; x≃n = trans (AA.subst a≃-n) neg-involutive }
+
 data AtLeastOne (x : ℤ) : Set where
   nil : x ≃ 0 → AtLeastOne x
-  pos : IsPositive x → AtLeastOne x
-  neg : IsNegative x → AtLeastOne x
+  pos : Positive x → AtLeastOne x
+  neg : Negative x → AtLeastOne x
 
 data MoreThanOne (x : ℤ) : Set where
-  nil∧pos : x ≃ 0 → IsPositive x → MoreThanOne x
-  nil∧neg : x ≃ 0 → IsNegative x → MoreThanOne x
-  pos∧neg : IsPositive x → IsNegative x → MoreThanOne x
+  nil∧pos : x ≃ 0 → Positive x → MoreThanOne x
+  nil∧neg : x ≃ 0 → Negative x → MoreThanOne x
+  pos∧neg : Positive x → Negative x → MoreThanOne x
 
 record Trichotomy (x : ℤ) : Set where
   field

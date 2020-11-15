@@ -21,19 +21,28 @@ record Substitutiveⁱ₁
 
 open Substitutiveⁱ₁ {{...}} public using (substⁱ)
 
-record Substitutiveᴸ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set where
+record Substitutiveᴾ₁ {A : Set} {{eqA : Eq A}} (P : A → Set) : Set where
+  field
+    substᴾ : ∀ {a₁ a₂} → a₁ ≃ a₂ → P a₁ → P a₂
+
+open Substitutiveᴾ₁ {{...}} public using (substᴾ)
+
+record Substitutiveᴸ
+    {A B : Set} {{eqA : Eq A}} {{eqB : Eq B}} (_⊙_ : A → A → B) : Set where
   field
     substᴸ : ∀ {a b₁ b₂} → b₁ ≃ b₂ → b₁ ⊙ a ≃ b₂ ⊙ a
 
 open Substitutiveᴸ {{...}} public using (substᴸ)
 
-record Substitutiveᴿ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set where
+record Substitutiveᴿ
+    {A B : Set} {{eqA : Eq A}} {{eqB : Eq B}} (_⊙_ : A → A → B) : Set where
   field
     substᴿ : ∀ {a b₁ b₂} → b₁ ≃ b₂ → a ⊙ b₁ ≃ a ⊙ b₂
 
 open Substitutiveᴿ {{...}} public using (substᴿ)
 
-record Substitutive₂ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set where
+record Substitutive₂
+    {A B : Set} {{eqA : Eq A}} {{eqB : Eq B}} (_⊙_ : A → A → B) : Set where
   field
     {{subst₂ᴸ}} : Substitutiveᴸ _⊙_
     {{subst₂ᴿ}} : Substitutiveᴿ _⊙_
@@ -323,9 +332,10 @@ perm-adcb {A} {_⊙_} {a} {b} {c} {d} =
   ∎
 
 [a≃b][c≃d] :
-  {A : Set} {_⊙_ : A → A → A} {{_ : Eq A}} {{_ : Substitutive₂ _⊙_}} →
-    ∀ {a b c d} → a ≃ b → c ≃ d → a ⊙ c ≃ b ⊙ d
-[a≃b][c≃d] {A} {_⊙_} {a} {b} {c} {d} a≃b c≃d =
+  {A B : Set} {_⊙_ : A → A → B}
+    {{_ : Eq A}} {{_ : Eq B}} {{_ : Substitutive₂ _⊙_}} →
+      ∀ {a b c d} → a ≃ b → c ≃ d → a ⊙ c ≃ b ⊙ d
+[a≃b][c≃d] {A} {B} {_⊙_} {a} {b} {c} {d} a≃b c≃d =
   begin
     a ⊙ c
   ≃⟨ substᴸ a≃b ⟩
@@ -369,3 +379,8 @@ nonzero-prod :
     ∀ {a b z} {{_ : Eq A}} {{_ : ZeroProduct _⊙_ z}} →
       a ≄ z → b ≄ z → a ⊙ b ≄ z
 nonzero-prod a≄z b≄z = ∨-rec a≄z b≄z ∘ zero-prod
+
+≄-subst :
+  {A B : Set} {f : A → B} {{_ : Eq A}} {{_ : Eq B}} {{_ : Injective f}} →
+    ∀ {a₁ a₂} → a₁ ≄ a₂ → f a₁ ≄ f a₂
+≄-subst a₁≄a₂ fa₁≃fa₂ = a₁≄a₂ (inject fa₁≃fa₂)
