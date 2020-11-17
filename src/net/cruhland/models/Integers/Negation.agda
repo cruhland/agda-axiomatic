@@ -148,8 +148,8 @@ trichotomy : ∀ x → Trichotomy x
 trichotomy (x⁺ — x⁻) = record { at-least = one≤ ; at-most = one≮ }
   where
     one≤ : AtLeastOne (x⁺ — x⁻)
-    one≤ with ℕ.trichotomy {x⁺} {x⁻}
-    one≤ | ℕ.tri-< x⁺<x⁻ =
+    one≤ with AA.ExactlyOneOfThree.at-least-one (ℕ.order-trichotomy {x⁺} {x⁻})
+    one≤ | AA.1st x⁺<x⁻ =
         let record { d = n ; d≄z = pos-n ; n+d≃m = x⁺+n≃x⁻ } = ℕ.<→<⁺ x⁺<x⁻
             x⁺+n≃0+x⁻ =
               begin
@@ -160,9 +160,9 @@ trichotomy (x⁺ — x⁻) = record { at-least = one≤ ; at-most = one≮ }
                 0 + x⁻
               ∎
          in neg (record { n = n ; pos = pos-n ; x≃-n = ≃ᶻ-intro x⁺+n≃0+x⁻ })
-    one≤ | ℕ.tri-≃ x⁺≃x⁻ =
+    one≤ | AA.2nd x⁺≃x⁻ =
       nil (≃ᶻ-intro (trans AA.identᴿ (trans x⁺≃x⁻ (sym AA.identᴸ))))
-    one≤ | ℕ.tri-> x⁺>x⁻ =
+    one≤ | AA.3rd x⁺>x⁻ =
       let record { d = n ; d≄z = pos-n ; n+d≃m = x⁻+n≃x⁺ } = ℕ.<→<⁺ x⁺>x⁻
           x⁺—x⁻≃n =
             begin

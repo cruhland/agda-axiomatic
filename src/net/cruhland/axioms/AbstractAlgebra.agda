@@ -4,7 +4,7 @@ open import Function using (_∘_)
 open import net.cruhland.axioms.Eq using
   (_≃_; _≄_; Eq; trans; module ≃-Reasoning)
 open ≃-Reasoning
-open import net.cruhland.models.Logic using (_∨_; ∨-rec)
+open import net.cruhland.models.Logic using (_∨_; ∨-rec; ¬_)
 
 record Substitutive₁
     {A B : Set} {{eqA : Eq A}} {{eqB : Eq B}} (f : A → B) : Set where
@@ -179,6 +179,21 @@ record Inverseⁱᴿ
     invⁱᴿ : ∀ {a} {{c : C a}} → a ⊙ inv a ≃ e
 
 open Inverseⁱᴿ {{...}} public using (invⁱᴿ)
+
+data OneOfThree (A B C : Set) : Set where
+  1st : A → OneOfThree A B C
+  2nd : B → OneOfThree A B C
+  3rd : C → OneOfThree A B C
+
+data TwoOfThree (A B C : Set) : Set where
+  1∧2 : A → B → TwoOfThree A B C
+  1∧3 : A → C → TwoOfThree A B C
+  2∧3 : B → C → TwoOfThree A B C
+
+record ExactlyOneOfThree (A B C : Set) : Set where
+  field
+    at-least-one : OneOfThree A B C
+    at-most-one : ¬ TwoOfThree A B C
 
 with-comm :
   {A : Set} {_⊙_ : A → A → A}

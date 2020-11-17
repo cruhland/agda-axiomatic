@@ -25,7 +25,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
   open Inspect using (case; case-step; case-zero; pred-intro)
   open PeanoOrdering PB PA using
     ( _<_; <→≄; <⁺→<; <→<⁺; <⁺-intro; <-substᴸ; <-substᴿ
-    ; tri-<; tri-≃; tri->; trichotomy
+    ; order-trichotomy
     )
 
   field
@@ -243,10 +243,13 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
         record { Constraint = λ a → False (a ≃? zero) ; cancelᴸ = *-cancelᴸ }
       where
         *-cancelᴸ : ∀ {a b c} {{_ : False (a ≃? zero)}} → a * b ≃ a * c → b ≃ c
-        *-cancelᴸ ab≃ac with trichotomy
-        ... | tri-< b<c = ⊥-elim (<→≄ (*-preserves-<ᴸ b<c ≄-derive) ab≃ac)
-        ... | tri-≃ b≃c = b≃c
-        ... | tri-> b>c = ⊥-elim (<→≄ (*-preserves-<ᴸ b>c ≄-derive) (sym ab≃ac))
+        *-cancelᴸ ab≃ac with AA.ExactlyOneOfThree.at-least-one order-trichotomy
+        ... | AA.1st b<c =
+          ⊥-elim (<→≄ (*-preserves-<ᴸ b<c ≄-derive) ab≃ac)
+        ... | AA.2nd b≃c =
+          b≃c
+        ... | AA.3rd b>c =
+          ⊥-elim (<→≄ (*-preserves-<ᴸ b>c ≄-derive) (sym ab≃ac))
 
     *-cancellativeᴿ : AA.Cancellativeᴿ _*_
     *-cancellativeᴿ = AA.cancellativeᴿ

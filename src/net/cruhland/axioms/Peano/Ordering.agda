@@ -223,28 +223,35 @@ module net.cruhland.axioms.Peano.Ordering
     where
       n<⁺p = <⁺-intro (d + e) (+-positive d≄z) (a+b+c-reduce n+d≃m m+e≃p)
 
-  data Trichotomy (n m : ℕ) : Set where
-    tri-< : n < m → Trichotomy n m
-    tri-≃ : n ≃ m → Trichotomy n m
-    tri-> : n > m → Trichotomy n m
-
-  trichotomy : ∀ {n m} → Trichotomy n m
-  trichotomy {n} {m} = ind P Pz Ps n
+  trichotomy-one : ∀ {n m} → AA.OneOfThree (n < m) (n ≃ m) (n > m)
+  trichotomy-one {n} {m} = ind P Pz Ps n
     where
-      P = λ x → Trichotomy x m
+      P = λ x → AA.OneOfThree (x < m) (x ≃ m) (x > m)
 
       Pz : P zero
       Pz with case m
-      ... | case-zero m≃z = tri-≃ (sym m≃z)
-      ... | case-step (pred-intro p m≃sp) = tri-< (<-intro ≤-zero z≄m)
+      ... | case-zero m≃z = AA.2nd (sym m≃z)
+      ... | case-step (pred-intro p m≃sp) = AA.1st (<-intro ≤-zero z≄m)
         where z≄m = λ z≃m → step≄zero (sym (trans z≃m m≃sp))
 
       Ps : step-case P
-      Ps (tri-< k<m) with ≤→<∨≃ (<→s≤ k<m)
-      ... | ∨-introᴸ sk<m = tri-< sk<m
-      ... | ∨-introᴿ sk≃m = tri-≃ sk≃m
-      Ps (tri-≃ k≃m) = tri-> (s≤→< (≃→≤ (AA.subst (sym k≃m))))
-      Ps (tri-> k>m) = tri-> (<-trans k>m n<sn)
+      Ps (AA.1st k<m) with ≤→<∨≃ (<→s≤ k<m)
+      ... | ∨-introᴸ sk<m = AA.1st sk<m
+      ... | ∨-introᴿ sk≃m = AA.2nd sk≃m
+      Ps (AA.2nd k≃m) = AA.3rd (s≤→< (≃→≤ (AA.subst (sym k≃m))))
+      Ps (AA.3rd k>m) = AA.3rd (<-trans k>m n<sn)
+
+  trichotomy-two : ∀ {n m} → ¬ AA.TwoOfThree (n < m) (n ≃ m) (n > m)
+  trichotomy-two (AA.1∧2 (<-intro n≤m n≄m) n≃m) =
+    n≄m n≃m
+  trichotomy-two (AA.1∧3 (<-intro n≤m n≄m) (<-intro m≤n m≄n)) =
+    n≄m (≤-antisym n≤m m≤n)
+  trichotomy-two (AA.2∧3 n≃m (<-intro m≤n m≄n)) =
+    m≄n (sym n≃m)
+
+  order-trichotomy : ∀ {n m} → AA.ExactlyOneOfThree (n < m) (n ≃ m) (n > m)
+  order-trichotomy =
+    record { at-least-one = trichotomy-one ; at-most-one = trichotomy-two }
 
   <-zero : ∀ {n} → n ≮ zero
   <-zero (<-intro (≤-intro d n+d≃z) n≄z) = n≄z (∧-elimᴸ (+-both-zero n+d≃z))
