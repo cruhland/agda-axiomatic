@@ -21,9 +21,7 @@ open import net.cruhland.models.Integers.Base PA as Base using (_—_; ℤ)
 open import net.cruhland.models.Integers.Equality PA as Equality using
   (≃ᶻ-intro)
 open import net.cruhland.models.Integers.Negation PA as Negation using
-  ( +-inverseᴿ; Negative; Positive; neg-involutive
-  ; neg; nil; pos; Trichotomy; trichotomy
-  )
+  (+-inverseᴿ; Negative; Positive; neg-involutive; trichotomy)
 
 instance
   star : Op.Star ℤ
@@ -363,11 +361,12 @@ instance
          in ≃ᶻ-intro b⁺+0≃0+b⁻
 
       *-either-zero : ∀ {a b} → a * b ≃ 0 → a ≃ 0 ∨ b ≃ 0
-      *-either-zero {a} {b} ab≃0 with Trichotomy.at-least (trichotomy a)
-      *-either-zero {a} {b} ab≃0 | nil a≃0 =
+      *-either-zero {a} {b} ab≃0 with
+        AA.ExactlyOneOfThree.at-least-one (trichotomy a)
+      *-either-zero {a} {b} ab≃0 | AA.2nd a≃0 =
         ∨-introᴸ a≃0
       *-either-zero {a} {b} ab≃0
-          | pos record { n = n ; pos = n≄0 ; x≃n = a≃n—0 } =
+          | AA.3rd record { n = n ; pos = n≄0 ; x≃n = a≃n—0 } =
         let nb≃0 =
               begin
                 (n as ℤ) * b
@@ -380,7 +379,7 @@ instance
               ∎
          in ∨-introᴿ (b≃0 n≄0 nb≃0)
       *-either-zero {a} {b} ab≃0
-          | neg record { n = n ; pos = n≄0 ; x≃-n = a≃0—n } =
+          | AA.1st record { n = n ; pos = n≄0 ; x≃-n = a≃0—n } =
         let nb≃0 =
               begin
                 (n as ℤ) * b

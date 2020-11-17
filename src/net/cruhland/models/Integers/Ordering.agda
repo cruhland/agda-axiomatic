@@ -25,8 +25,8 @@ import net.cruhland.models.Integers.Multiplication PA as Multiplication
 open Multiplication using (*-distrib-subᴸ; sub-sign-swap)
 import net.cruhland.models.Integers.Negation PA as Negation
 open Negation using
-  ( +-inverseᴸ; +-inverseᴿ; Positive; neg; nil; pos
-  ; sub-substᴸ; sub-substᴿ; ≃ᴸ-subᴿ-toᴸ; Trichotomy; trichotomy
+  ( +-inverseᴸ; +-inverseᴿ; Positive
+  ; sub-substᴸ; sub-substᴿ; ≃ᴸ-subᴿ-toᴸ; trichotomy
   )
 
 infix 4 _≤_
@@ -97,46 +97,29 @@ pos→< {x} {y} record { n = n ; pos = n≄0 ; x≃n = y-x≃n } =
             0
           ∎
 
-data OneOfThree (A B C : Set) : Set where
-  1st : A → OneOfThree A B C
-  2nd : B → OneOfThree A B C
-  3rd : C → OneOfThree A B C
-
-data TwoOfThree (A B C : Set) : Set where
-  1∧2 : A → B → TwoOfThree A B C
-  1∧3 : A → C → TwoOfThree A B C
-  2∧3 : B → C → TwoOfThree A B C
-
-record ExactlyOneOf (A B C : Set) : Set where
-  field
-    at-least-one : OneOfThree A B C
-    at-most-one : ¬ TwoOfThree A B C
-
-open ExactlyOneOf using (at-least-one)
-
-order-trichotomy : ∀ a b → ExactlyOneOf (a < b) (a ≃ b) (a > b)
+order-trichotomy : ∀ a b → AA.ExactlyOneOfThree (a < b) (a ≃ b) (a > b)
 order-trichotomy a b = record { at-least-one = 1≤ ; at-most-one = ≤1 }
   where
-    1≤ : OneOfThree (a < b) (a ≃ b) (a > b)
-    1≤ with Trichotomy.at-least (trichotomy (b - a))
-    1≤ | nil b-a≃0 = 2nd (sym (trans (≃ᴸ-subᴿ-toᴸ b-a≃0) AA.identᴿ))
-    1≤ | pos b-a>0 = 1st (pos→< b-a>0)
-    1≤ | neg b-a<0 = 3rd (pos→< (sub-sign-swap {b} b-a<0))
+    1≤ : AA.OneOfThree (a < b) (a ≃ b) (a > b)
+    1≤ with AA.ExactlyOneOfThree.at-least-one (trichotomy (b - a))
+    1≤ | AA.2nd b-a≃0 = AA.2nd (sym (trans (≃ᴸ-subᴿ-toᴸ b-a≃0) AA.identᴿ))
+    1≤ | AA.3rd b-a>0 = AA.1st (pos→< b-a>0)
+    1≤ | AA.1st b-a<0 = AA.3rd (pos→< (sub-sign-swap {b} b-a<0))
 
-    ≤1 : ¬ TwoOfThree (a < b) (a ≃ b) (a > b)
-    ≤1 (1∧2 (<-intro a≤b a≄b) a≃b) = a≄b a≃b
-    ≤1 (1∧3 (<-intro a≤b a≄b) (<-intro b≤a b≄a)) = a≄b (≤-antisym a≤b b≤a)
-    ≤1 (2∧3 a≃b (<-intro b≤a b≄a)) = b≄a (sym a≃b)
+    ≤1 : ¬ AA.TwoOfThree (a < b) (a ≃ b) (a > b)
+    ≤1 (AA.1∧2 (<-intro a≤b a≄b) a≃b) = a≄b a≃b
+    ≤1 (AA.1∧3 (<-intro a≤b a≄b) (<-intro b≤a b≄a)) = a≄b (≤-antisym a≤b b≤a)
+    ≤1 (AA.2∧3 a≃b (<-intro b≤a b≄a)) = b≄a (sym a≃b)
 
 instance
   decEq : DecEq ℤ
   decEq = record { Constraint = λ _ _ → ⊤ ; _≃?_ = _≃?₀_ }
     where
       _≃?₀_ : (a b : ℤ) {{_ : ⊤}} → Dec (a ≃ b)
-      a ≃?₀ b with at-least-one (order-trichotomy a b)
-      a ≃?₀ b | 1st (<-intro a≤b a≄b) = no a≄b
-      a ≃?₀ b | 2nd a≃b = yes a≃b
-      a ≃?₀ b | 3rd (<-intro b≤a b≄a) = no (¬sym b≄a)
+      a ≃?₀ b with AA.ExactlyOneOfThree.at-least-one (order-trichotomy a b)
+      a ≃?₀ b | AA.1st (<-intro a≤b a≄b) = no a≄b
+      a ≃?₀ b | AA.2nd a≃b = yes a≃b
+      a ≃?₀ b | AA.3rd (<-intro b≤a b≄a) = no (¬sym b≄a)
 
   *-cancellativeᴸ : AA.Cancellativeᴸ _*_
   *-cancellativeᴸ = record { Constraint = Constraint ; cancelᴸ = *-cancelᴸ }

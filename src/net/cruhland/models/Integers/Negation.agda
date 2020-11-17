@@ -129,25 +129,10 @@ neg-Negative : ∀ {a} → Negative a → Positive (- a)
 neg-Negative record { n = n ; pos = n≄0 ; x≃-n = a≃-n } =
   record { n = n ; pos = n≄0 ; x≃n = trans (AA.subst a≃-n) neg-involutive }
 
-data AtLeastOne (x : ℤ) : Set where
-  nil : x ≃ 0 → AtLeastOne x
-  pos : Positive x → AtLeastOne x
-  neg : Negative x → AtLeastOne x
-
-data MoreThanOne (x : ℤ) : Set where
-  nil∧pos : x ≃ 0 → Positive x → MoreThanOne x
-  nil∧neg : x ≃ 0 → Negative x → MoreThanOne x
-  pos∧neg : Positive x → Negative x → MoreThanOne x
-
-record Trichotomy (x : ℤ) : Set where
-  field
-    at-least : AtLeastOne x
-    at-most : ¬ MoreThanOne x
-
-trichotomy : ∀ x → Trichotomy x
-trichotomy (x⁺ — x⁻) = record { at-least = one≤ ; at-most = one≮ }
+trichotomy : ∀ x → AA.ExactlyOneOfThree (Negative x) (x ≃ 0) (Positive x)
+trichotomy x@(x⁺ — x⁻) = record { at-least-one = one≤ ; at-most-one = one≮ }
   where
-    one≤ : AtLeastOne (x⁺ — x⁻)
+    one≤ : AA.OneOfThree (Negative x) (x ≃ 0) (Positive x)
     one≤ with AA.ExactlyOneOfThree.at-least-one (ℕ.order-trichotomy {x⁺} {x⁻})
     one≤ | AA.1st x⁺<x⁻ =
         let record { d = n ; d≄z = pos-n ; n+d≃m = x⁺+n≃x⁻ } = ℕ.<→<⁺ x⁺<x⁻
@@ -159,9 +144,9 @@ trichotomy (x⁺ — x⁻) = record { at-least = one≤ ; at-most = one≮ }
               ≃˘⟨ AA.identᴸ ⟩
                 0 + x⁻
               ∎
-         in neg (record { n = n ; pos = pos-n ; x≃-n = ≃ᶻ-intro x⁺+n≃0+x⁻ })
+         in AA.1st (record { n = n ; pos = pos-n ; x≃-n = ≃ᶻ-intro x⁺+n≃0+x⁻ })
     one≤ | AA.2nd x⁺≃x⁻ =
-      nil (≃ᶻ-intro (trans AA.identᴿ (trans x⁺≃x⁻ (sym AA.identᴸ))))
+      AA.2nd (≃ᶻ-intro (trans AA.identᴿ (trans x⁺≃x⁻ (sym AA.identᴸ))))
     one≤ | AA.3rd x⁺>x⁻ =
       let record { d = n ; d≄z = pos-n ; n+d≃m = x⁻+n≃x⁺ } = ℕ.<→<⁺ x⁺>x⁻
           x⁺—x⁻≃n =
@@ -174,10 +159,10 @@ trichotomy (x⁺ — x⁻) = record { at-least = one≤ ; at-most = one≮ }
             ≃⟨ AA.comm ⟩
               n + x⁻
             ∎
-       in pos (record { n = n ; pos = pos-n ; x≃n = ≃ᶻ-intro x⁺—x⁻≃n })
+       in AA.3rd (record { n = n ; pos = pos-n ; x≃n = ≃ᶻ-intro x⁺—x⁻≃n })
 
-    one≮ : ¬ MoreThanOne (x⁺ — x⁻)
-    one≮ (nil∧pos
+    one≮ : ¬ AA.TwoOfThree (Negative x) (x ≃ 0) (Positive x)
+    one≮ (AA.2∧3
             (≃ᶻ-intro x⁺+0≃0+x⁻)
             record { n = n ; pos = n≄0 ; x≃n = ≃ᶻ-intro x⁺+0≃n+x⁻ }) =
       let x⁻+n≃x⁻+0 =
@@ -193,13 +178,13 @@ trichotomy (x⁺ — x⁻) = record { at-least = one≤ ; at-most = one≮ }
               x⁻ + 0
             ∎
        in n≄0 (AA.cancelᴸ x⁻+n≃x⁻+0)
-    one≮ (nil∧neg
-            (≃ᶻ-intro x⁺+0≃x⁻)
-            record { n = n ; pos = n≄0 ; x≃-n = ≃ᶻ-intro x⁺+n≃x⁻ }) =
+    one≮ (AA.1∧2
+            record { n = n ; pos = n≄0 ; x≃-n = ≃ᶻ-intro x⁺+n≃x⁻ }
+            (≃ᶻ-intro x⁺+0≃x⁻)) =
       n≄0 (AA.cancelᴸ (trans x⁺+n≃x⁻ (sym x⁺+0≃x⁻)))
-    one≮ (pos∧neg
-            record { n = n₁ ; pos = n₁≄0 ; x≃n = ≃ᶻ-intro x⁺+0≃n₁+x⁻ }
-            record { n = n₂ ; pos = n₂≄0 ; x≃-n = ≃ᶻ-intro x⁺+n₂≃0+x⁻ }) =
+    one≮ (AA.1∧3
+            record { n = n₂ ; pos = n₂≄0 ; x≃-n = ≃ᶻ-intro x⁺+n₂≃0+x⁻ }
+            record { n = n₁ ; pos = n₁≄0 ; x≃n = ≃ᶻ-intro x⁺+0≃n₁+x⁻ }) =
       let x⁺+[n₂+n₁]≃x⁺+0 =
             begin
               x⁺ + (n₂ + n₁)
