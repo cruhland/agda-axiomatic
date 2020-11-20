@@ -1,22 +1,19 @@
--- Needed for positive integer literals (typeclass)
-import Agda.Builtin.FromNat
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq using (_≃_; sym; module ≃-Reasoning)
 open ≃-Reasoning
 open import net.cruhland.axioms.Operators as Op using (_+_; _*_; -_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
--- Needed for positive integer literals (instance for ⊤)
-import net.cruhland.models.Logic
+import net.cruhland.models.Literals
 
 module net.cruhland.models.Rationals.Multiplication (PA : PeanoArithmetic) where
 
 open import net.cruhland.models.Integers PA as ℤ using (ℤ)
-import net.cruhland.models.Rationals.Addition PA as Addition
-open import net.cruhland.models.Rationals.Base PA as Base using (_//_~_; ℚ)
-open import net.cruhland.models.Rationals.Equality PA as Equality using
-  (≃₀-intro)
-import net.cruhland.models.Rationals.Negation PA as Negation
+import net.cruhland.models.Rationals.Addition PA as ℚ+
+open import net.cruhland.models.Rationals.Base PA as ℚ using (_//_~_; ℚ)
+open import net.cruhland.models.Rationals.Equality PA as ℚ≃ using (≃₀-intro)
+import net.cruhland.models.Rationals.Literals PA as ℚLit
+import net.cruhland.models.Rationals.Negation PA as ℚ-
 
 instance
   star : Op.Star ℚ

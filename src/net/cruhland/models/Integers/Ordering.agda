@@ -1,5 +1,3 @@
--- Needed for positive integer literals
-import Agda.Builtin.FromNat as FromNat
 open import Function using (flip)
 open import Relation.Nullary.Decidable using (False)
 import net.cruhland.axioms.AbstractAlgebra as AA
@@ -10,6 +8,7 @@ open import net.cruhland.axioms.Eq using
 open ≃-Reasoning
 open import net.cruhland.axioms.Operators using (_+_; _*_; -_; _-_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
+import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using
   (⊤; ∧-elimᴿ; ∨-introᴸ; ∨-introᴿ; ⊥-elim; ¬_; Dec; no; yes)
 
@@ -17,17 +16,12 @@ module net.cruhland.models.Integers.Ordering (PA : PeanoArithmetic) where
 
 private module ℕ = PeanoArithmetic PA
 open ℕ using (ℕ)
-import net.cruhland.models.Integers.Addition PA as Addition
-open Addition using (+-identityᴸ; +-identityᴿ)
-open import net.cruhland.models.Integers.Base PA as Base using (ℤ)
-import net.cruhland.models.Integers.Equality PA as Equality
-import net.cruhland.models.Integers.Multiplication PA as Multiplication
-open Multiplication using (*-distrib-subᴸ; sub-sign-swap)
-import net.cruhland.models.Integers.Negation PA as Negation
-open Negation using
-  ( +-inverseᴸ; +-inverseᴿ; Positive
-  ; sub-substᴸ; sub-substᴿ; ≃ᴸ-subᴿ-toᴸ; trichotomy
-  )
+import net.cruhland.models.Integers.Addition PA as ℤ+
+open import net.cruhland.models.Integers.Base PA as ℤ using (ℤ)
+import net.cruhland.models.Integers.Equality PA as ℤ≃
+import net.cruhland.models.Integers.Literals PA as ℤLit
+import net.cruhland.models.Integers.Multiplication PA as ℤ*
+import net.cruhland.models.Integers.Negation PA as ℤ-
 
 infix 4 _≤_
 record _≤_ (n m : ℤ) : Set where
@@ -79,9 +73,9 @@ _>_ = flip _<_
         b
       ∎
 
-pos→< : ∀ {x y} → Positive (y - x) → x < y
+pos→< : ∀ {x y} → ℤ-.Positive (y - x) → x < y
 pos→< {x} {y} record { n = n ; pos = n≄0 ; x≃n = y-x≃n } =
-    <-intro (≤-intro n (≃ᴸ-subᴿ-toᴸ y-x≃n)) x≄y
+    <-intro (≤-intro n (ℤ-.≃ᴸ-subᴿ-toᴸ y-x≃n)) x≄y
   where
     x≄y : x ≄ y
     x≄y x≃y = n≄0 (AA.inject n≃0)
@@ -91,7 +85,7 @@ pos→< {x} {y} record { n = n ; pos = n≄0 ; x≃n = y-x≃n } =
             (n as ℤ)
           ≃˘⟨ y-x≃n ⟩
             y - x
-          ≃⟨ sub-substᴿ x≃y ⟩
+          ≃⟨ ℤ-.sub-substᴿ x≃y ⟩
             y - y
           ≃⟨ AA.invᴿ ⟩
             0
@@ -101,10 +95,10 @@ order-trichotomy : ∀ a b → AA.ExactlyOneOfThree (a < b) (a ≃ b) (a > b)
 order-trichotomy a b = record { at-least-one = 1≤ ; at-most-one = ≤1 }
   where
     1≤ : AA.OneOfThree (a < b) (a ≃ b) (a > b)
-    1≤ with AA.ExactlyOneOfThree.at-least-one (trichotomy (b - a))
-    1≤ | AA.2nd b-a≃0 = AA.2nd (sym (trans (≃ᴸ-subᴿ-toᴸ b-a≃0) AA.identᴿ))
+    1≤ with AA.ExactlyOneOfThree.at-least-one (ℤ-.trichotomy (b - a))
+    1≤ | AA.2nd b-a≃0 = AA.2nd (sym (trans (ℤ-.≃ᴸ-subᴿ-toᴸ b-a≃0) AA.identᴿ))
     1≤ | AA.3rd b-a>0 = AA.1st (pos→< b-a>0)
-    1≤ | AA.1st b-a<0 = AA.3rd (pos→< (sub-sign-swap {b} b-a<0))
+    1≤ | AA.1st b-a<0 = AA.3rd (pos→< (ℤ*.sub-sign-swap {b} b-a<0))
 
     ≤1 : ¬ AA.TwoOfThree (a < b) (a ≃ b) (a > b)
     ≤1 (AA.1∧2 (<-intro a≤b a≄b) a≃b) = a≄b a≃b
@@ -131,9 +125,9 @@ instance
         let a[b-c]≃0 =
               begin
                 a * (b - c)
-              ≃⟨ *-distrib-subᴸ ⟩
+              ≃⟨ ℤ*.*-distrib-subᴸ ⟩
                 a * b - a * c
-              ≃⟨ sub-substᴸ ab≃ac ⟩
+              ≃⟨ ℤ-.sub-substᴸ ab≃ac ⟩
                 a * c - a * c
               ≃⟨ AA.invᴿ ⟩
                 0

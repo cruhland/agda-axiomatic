@@ -1,5 +1,3 @@
--- Needed for positive integer literals
-open import Agda.Builtin.FromNat as FromNat using (fromNat)
 import Agda.Builtin.FromNeg as FromNeg
 open import Function using (_∘_)
 import net.cruhland.axioms.AbstractAlgebra as AA
@@ -9,23 +7,25 @@ open import net.cruhland.axioms.Eq using
 open ≃-Reasoning
 open import net.cruhland.axioms.Operators as Op using (_+_; -_; _-_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
+import net.cruhland.models.Literals as Literals
 open import net.cruhland.models.Logic using (⊤; ¬_)
 
 module net.cruhland.models.Integers.Negation (PA : PeanoArithmetic) where
 
 private module ℕ = PeanoArithmetic PA
 open ℕ using (ℕ)
-import net.cruhland.models.Integers.Addition PA as Addition
-open import net.cruhland.models.Integers.Base PA as Base using (_—_; ℤ)
-open import net.cruhland.models.Integers.Equality PA as Equality using
-  (≃ᶻ-intro)
+import net.cruhland.models.Integers.Addition PA as ℤ+
+open import net.cruhland.models.Integers.Base PA as ℤ using (_—_; ℤ)
+open import net.cruhland.models.Integers.Equality PA as ℤ≃ using (≃ᶻ-intro)
+import net.cruhland.models.Integers.Literals PA as ℤLit
 
 instance
   neg-dash : Op.Dashᴸ ℤ
   neg-dash = record { -_ = λ { (a — b) → b — a } }
 
   negative : FromNeg.Negative ℤ
-  negative = record { Constraint = λ _ → ⊤ ; fromNeg = λ n → - fromNat n }
+  negative =
+    record { Constraint = λ _ → ⊤ ; fromNeg = λ n → - Literals.fromNat n }
 
   neg-substitutive : AA.Substitutive₁ (λ x → - x)
   neg-substitutive = record { subst = neg-subst }

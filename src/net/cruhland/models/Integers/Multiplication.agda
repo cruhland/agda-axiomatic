@@ -1,5 +1,3 @@
--- Needed for positive integer literals
-import Agda.Builtin.FromNat as FromNat
 open import Relation.Nullary.Decidable using (fromWitnessFalse)
 open import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_)
@@ -9,19 +7,18 @@ open ≃-Reasoning
 import net.cruhland.axioms.Operators as Op
 open Op using (_+_; _*_; -_; _-_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
--- Needed for instance of ⊤
+import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using (_∨_; ∨-introᴸ; ∨-introᴿ)
 
 module net.cruhland.models.Integers.Multiplication (PA : PeanoArithmetic) where
 
 private module ℕ = PeanoArithmetic PA
 open ℕ using (ℕ)
-import net.cruhland.models.Integers.Addition PA as Addition
-open import net.cruhland.models.Integers.Base PA as Base using (_—_; ℤ)
-open import net.cruhland.models.Integers.Equality PA as Equality using
-  (≃ᶻ-intro)
-open import net.cruhland.models.Integers.Negation PA as Negation using
-  (+-inverseᴿ; Negative; Positive; neg-involutive; trichotomy)
+import net.cruhland.models.Integers.Addition PA as ℤ+
+open import net.cruhland.models.Integers.Base PA as ℤ using (_—_; ℤ)
+open import net.cruhland.models.Integers.Equality PA as ℤ≃ using (≃ᶻ-intro)
+import net.cruhland.models.Integers.Literals PA as ℤLit
+open import net.cruhland.models.Integers.Negation PA as ℤ-
 
 instance
   star : Op.Star ℤ

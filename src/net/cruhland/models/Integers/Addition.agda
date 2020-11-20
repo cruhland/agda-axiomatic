@@ -1,22 +1,20 @@
-open import Agda.Builtin.FromNat as FromNat using (Number)
-import Agda.Builtin.Nat as Nat
 open import Function using (_∘_)
 import net.cruhland.axioms.AbstractAlgebra as AA
-open import net.cruhland.axioms.Cast using (_As_; _as_)
+open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq using (_≃_; sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
 import net.cruhland.axioms.Operators as Op
 open Op using (_+_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
-open import net.cruhland.models.Logic using (⊤)
+import net.cruhland.models.Literals
 
 module net.cruhland.models.Integers.Addition (PA : PeanoArithmetic) where
 
 private module ℕ = PeanoArithmetic PA
 open ℕ using (ℕ)
-open import net.cruhland.models.Integers.Base PA as Base using (_—_; ℤ)
-open import net.cruhland.models.Integers.Equality PA as Equality using
-  (≃ᶻ-intro)
+open import net.cruhland.models.Integers.Base PA as ℤ using (_—_; ℤ)
+open import net.cruhland.models.Integers.Equality PA as ℤ≃ using (≃ᶻ-intro)
+import net.cruhland.models.Integers.Literals PA as ℤLit
 
 instance
   plus : Op.Plus ℤ
@@ -79,12 +77,6 @@ instance
             ≃˘⟨ AA.substᴿ AA.assoc ⟩
               (x⁺ + (y⁺ + z⁺)) + ((x⁻ + y⁻) + z⁻)
             ∎
-
-  number : Number ℤ
-  number = record { Constraint = λ _ → ⊤ ; fromNat = fromNat }
-    where
-      fromNat : Nat.Nat → {{_ : ⊤}} → ℤ
-      fromNat n = FromNat.fromNat {A = ℕ} n as ℤ
 
   +-compatible-ℕ : AA.Compatible₂ {A = ℕ} (_as ℤ) _+_ _+_
   +-compatible-ℕ = record { compat₂ = ≃ᶻ-intro (AA.substᴿ AA.identᴸ) }

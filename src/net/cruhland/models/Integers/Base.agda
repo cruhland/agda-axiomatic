@@ -1,9 +1,6 @@
--- Needed for natural number literals
-import Agda.Builtin.FromNat
 open import net.cruhland.axioms.Cast using (_As_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
--- Needed for ⊤ instance for natural number literals
-import net.cruhland.models.Logic
+import net.cruhland.models.Literals
 
 module net.cruhland.models.Integers.Base (PA : PeanoArithmetic) where
 
