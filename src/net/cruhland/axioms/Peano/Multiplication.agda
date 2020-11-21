@@ -15,7 +15,7 @@ open import net.cruhland.axioms.Peano.Base
 import net.cruhland.axioms.Peano.Inspect as PeanoInspect
 import net.cruhland.axioms.Peano.Ordering as PeanoOrdering
 open import net.cruhland.models.Logic using
-  (_∧_; ∧-elimᴿ; ∧-intro; _∨_; ∨-introᴸ; ∨-introᴿ; ⊥-elim)
+  (_∧_; ∧-elimᴿ; ∧-intro; _∨_; ∨-introᴸ; ∨-introᴿ; contra)
 
 record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
   private module Add = PeanoAddition PA
@@ -24,9 +24,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
   private module Inspect = PeanoInspect PB
   open Inspect using (case; case-step; case-zero; pred-intro)
   open PeanoOrdering PB PA using
-    ( _<_; <→≄; <⁺→<; <→<⁺; <⁺-intro; <-substᴸ; <-substᴿ
-    ; order-trichotomy
-    )
+    (_<_; <⁺→<; <→<⁺; <-intro; <⁺-intro; <-substᴸ; <-substᴿ; order-trichotomy)
 
   field
     {{star}} : Op.Star ℕ
@@ -245,11 +243,13 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
         *-cancelᴸ : ∀ {a b c} {{_ : False (a ≃? zero)}} → a * b ≃ a * c → b ≃ c
         *-cancelᴸ ab≃ac with AA.ExactlyOneOfThree.at-least-one order-trichotomy
         ... | AA.1st b<c =
-          ⊥-elim (<→≄ (*-preserves-<ᴸ b<c ≄-derive) ab≃ac)
+          let <-intro _ ab≄ac = *-preserves-<ᴸ b<c ≄-derive
+           in contra ab≃ac ab≄ac
         ... | AA.2nd b≃c =
           b≃c
         ... | AA.3rd b>c =
-          ⊥-elim (<→≄ (*-preserves-<ᴸ b>c ≄-derive) (sym ab≃ac))
+          let <-intro _ ac≄ab = *-preserves-<ᴸ b>c ≄-derive
+           in contra (sym ab≃ac) ac≄ab
 
     *-cancellativeᴿ : AA.Cancellativeᴿ _*_
     *-cancellativeᴿ = AA.cancellativeᴿ

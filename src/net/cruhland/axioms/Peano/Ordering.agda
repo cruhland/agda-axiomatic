@@ -39,10 +39,8 @@ module net.cruhland.axioms.Peano.Ordering
   record _<_ (n m : ℕ) : Set where
     constructor <-intro
     field
-      <→≤ : n ≤ m
-      <→≄ : n ≄ m
-
-  open _<_ public using (<→≤; <→≄)
+      n≤m : n ≤ m
+      n≄m : n ≄ m
 
   _≰_ : ℕ → ℕ → Set
   n ≰ m = ¬ (n ≤ m)
