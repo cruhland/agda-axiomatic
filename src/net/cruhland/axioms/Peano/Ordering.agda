@@ -22,19 +22,15 @@ module net.cruhland.axioms.Peano.Ordering
   private module Add = PeanoAddition PA
   open Add using
     ( n≄sn; +-stepᴸ⃗ᴿ; +-stepᴿ⃗ᴸ
-    ; step≃+; with-+-assoc; Positive; +-both-zero; +-positive
+    ; with-+-assoc; Positive; +-both-zero; +-positive
     )
   open PeanoBase PB using (ℕ; ind; step; step-case; step≄zero; zero)
   open PeanoInspect PB using
     (Case; case; case-step; case-zero; decEq; pred-intro; pred)
 
-  infix 4 _≤_ _<_ _≰_ _≮_ _≥_ _>_ _≱_ _≯_
+  open import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual PB PA public
 
-  record _≤_ (n m : ℕ) : Set where
-    constructor ≤-intro
-    field
-      d : ℕ
-      n+d≃m : n + d ≃ m
+  infix 4 _<_ _≮_ _>_ _≯_
 
   record _<_ (n m : ℕ) : Set where
     constructor <-intro
@@ -42,22 +38,11 @@ module net.cruhland.axioms.Peano.Ordering
       n≤m : n ≤ m
       n≄m : n ≄ m
 
-  _≰_ : ℕ → ℕ → Set
-  n ≰ m = ¬ (n ≤ m)
-
   _≮_ : ℕ → ℕ → Set
   n ≮ m = ¬ (n < m)
 
-  _≥_ = flip _≤_
   _>_ = flip _<_
-  _≱_ = flip _≰_
   _≯_ = flip _≮_
-
-  ≤-refl : ∀ {n} → n ≤ n
-  ≤-refl = ≤-intro zero AA.identᴿ
-
-  n≤sn : ∀ {n} → n ≤ step n
-  n≤sn = ≤-intro (step zero) (sym step≃+)
 
   a+b+c-reduce : {a b c d e : ℕ} → a + b ≃ d → d + c ≃ e → a + (b + c) ≃ e
   a+b+c-reduce {a} {b} {c} {d} {e} a+b≃d d+c≃e =

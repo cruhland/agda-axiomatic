@@ -11,12 +11,15 @@ open Op using (_+_)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
 import net.cruhland.axioms.Peano.Inspect as PeanoInspect
+import net.cruhland.axioms.Peano.Literals as PeanoLiterals
+import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using
   (⊤; _∧_; _∨_; ∨-introᴸ; ∨-introᴿ; ¬_; ¬[¬a∨¬b]→a∧b)
 
 record Addition (PB : PeanoBase) : Set where
   open PeanoBase PB using (ℕ; ind; step; step-case; step≄zero; zero)
   open PeanoInspect PB using (case; case-zero; case-step; decEq; pred-intro)
+  module ℕLit = PeanoLiterals PB
 
   field
     {{plus}} : Op.Plus ℕ
@@ -79,14 +82,16 @@ record Addition (PB : PeanoBase) : Set where
   +-stepᴿ⃗ᴸ : ∀ {n m} → n + step m ≃ step n + m
   +-stepᴿ⃗ᴸ = sym +-stepᴸ⃗ᴿ
 
-  step≃+ : ∀ {n} → step n ≃ n + step zero
-  step≃+ {n} =
+  sn≃n+1 : ∀ {n} → step n ≃ n + 1
+  sn≃n+1 {n} =
     begin
       step n
     ≃˘⟨ AA.subst AA.identᴿ ⟩
-      step (n + zero)
+      step (n + 0)
     ≃˘⟨ AA.commᴿ ⟩
-      n + step zero
+      n + step 0
+    ≃⟨⟩
+      n + 1
     ∎
 
   instance
