@@ -14,7 +14,7 @@ import net.cruhland.axioms.Peano.Inspect as PeanoInspect
 import net.cruhland.axioms.Peano.Literals as PeanoLiterals
 import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using
-  (⊤; _∧_; _∨_; ∨-introᴸ; ∨-introᴿ; ¬_; ¬[¬a∨¬b]→a∧b)
+  (⊤; _∧_; _∨_; ∨-introᴸ; ∨-introᴿ; ¬_; contra; ¬[¬a∨¬b]→a∧b)
 
 record Addition (PB : PeanoBase) : Set where
   open PeanoBase PB using (ℕ; ind; step; step-case; step≄zero; zero)
@@ -23,26 +23,26 @@ record Addition (PB : PeanoBase) : Set where
 
   field
     {{plus}} : Op.Plus ℕ
-    {{+-substitutiveᴸ}} : AA.Substitutiveᴸ _+_
-    {{+-identityᴸ}} : AA.Identityᴸ _+_ zero
+    {{+-substitutiveᴸ}} : AA.Substitutiveᴸ _≃_ _≃_ _+_
+    {{+-identityᴸ}} : AA.Identityᴸ _+_ 0
     {{+-commutative-stepᴸ}} : AA.Commutativeᴸ step _+_
 
   instance
-    +-identityᴿ : AA.Identityᴿ _+_ zero
+    +-identityᴿ : AA.Identityᴿ _+_ 0
     +-identityᴿ = record { identᴿ = +-zeroᴿ }
       where
-        +-zeroᴿ : ∀ {n} → n + zero ≃ n
+        +-zeroᴿ : ∀ {n} → n + 0 ≃ n
         +-zeroᴿ {n} = ind P Pz Ps n
           where
-            P = λ x → x + zero ≃ x
+            P = λ x → x + 0 ≃ x
             Pz = AA.identᴸ
 
             Ps : step-case P
             Ps {k} k+z≃k =
               begin
-                step k + zero
+                step k + 0
               ≃⟨ AA.commᴸ ⟩
-                step (k + zero)
+                step (k + 0)
               ≃⟨ AA.subst k+z≃k ⟩
                 step k
               ∎
@@ -57,11 +57,11 @@ record Addition (PB : PeanoBase) : Set where
 
             Pz =
               begin
-                zero + step m
+                0 + step m
               ≃⟨ AA.identᴸ ⟩
                 step m
               ≃˘⟨ AA.subst AA.identᴸ ⟩
-                step (zero + m)
+                step (0 + m)
               ∎
 
             Ps : step-case P
@@ -76,25 +76,6 @@ record Addition (PB : PeanoBase) : Set where
                 step (step k + m)
               ∎
 
-  +-stepᴸ⃗ᴿ : ∀ {n m} → step n + m ≃ n + step m
-  +-stepᴸ⃗ᴿ = trans AA.commᴸ (sym AA.commᴿ)
-
-  +-stepᴿ⃗ᴸ : ∀ {n m} → n + step m ≃ step n + m
-  +-stepᴿ⃗ᴸ = sym +-stepᴸ⃗ᴿ
-
-  sn≃n+1 : ∀ {n} → step n ≃ n + 1
-  sn≃n+1 {n} =
-    begin
-      step n
-    ≃˘⟨ AA.subst AA.identᴿ ⟩
-      step (n + 0)
-    ≃˘⟨ AA.commᴿ ⟩
-      n + step 0
-    ≃⟨⟩
-      n + 1
-    ∎
-
-  instance
     +-commutative : AA.Commutative _+_
     +-commutative = record { comm = +-comm }
       where
@@ -104,11 +85,11 @@ record Addition (PB : PeanoBase) : Set where
             P = λ x → x + m ≃ m + x
             Pz =
               begin
-                zero + m
+                0 + m
               ≃⟨ AA.identᴸ ⟩
                 m
               ≃˘⟨ AA.identᴿ ⟩
-                m + zero
+                m + 0
               ∎
 
             Ps : step-case P
@@ -139,11 +120,11 @@ record Addition (PB : PeanoBase) : Set where
 
             Pz =
               begin
-                (zero + m) + p
+                (0 + m) + p
               ≃⟨ AA.substᴸ AA.identᴸ ⟩
                 m + p
               ≃˘⟨ AA.identᴸ ⟩
-                zero + (m + p)
+                0 + (m + p)
               ∎
 
             Ps : step-case P
@@ -168,14 +149,14 @@ record Addition (PB : PeanoBase) : Set where
           where
             P = λ x → x + m ≃ x + p → m ≃ p
 
-            Pz : P zero
+            Pz : P 0
             Pz z+m≃z+p =
               begin
                 m
               ≃˘⟨ AA.identᴸ ⟩
-                zero + m
+                0 + m
               ≃⟨ z+m≃z+p ⟩
-                zero + p
+                0 + p
               ≃⟨ AA.identᴸ ⟩
                 p
               ∎
@@ -194,35 +175,37 @@ record Addition (PB : PeanoBase) : Set where
                     step (k + p)
                   ∎
 
-    +-cancellativeᴿ : AA.Cancellativeᴿ _+_
+    +-cancellativeᴿ : AA.Cancellativeᴿ _≃_ _+_
     +-cancellativeᴿ = AA.cancellativeᴿ
 
-  with-+-assoc : {a b c d e : ℕ} → b + c ≃ d + e → a + b + c ≃ a + d + e
-  with-+-assoc {a} {b} {c} {d} {e} b+c≃d+e =
+  sn≃n+1 : ∀ {n} → step n ≃ n + 1
+  sn≃n+1 {n} =
     begin
-      a + b + c
-    ≃⟨ AA.assoc ⟩
-      a + (b + c)
-    ≃⟨ AA.substᴿ b+c≃d+e ⟩
-      a + (d + e)
-    ≃˘⟨ AA.assoc ⟩
-      a + d + e
+      step n
+    ≃˘⟨ AA.subst AA.identᴿ ⟩
+      step (n + 0)
+    ≃˘⟨ AA.commᴿ ⟩
+      n + step 0
+    ≃⟨⟩
+      n + 1
     ∎
 
   n≄sn : ∀ {n} → n ≄ step n
-  n≄sn {n} n≃sn = step≄zero (AA.cancelᴸ n+sz≃n+z)
+  n≄sn {n} n≃sn = contra (AA.cancelᴸ n+1≃n+0) step≄zero
     where
-      n+sz≃n+z =
+      n+1≃n+0 =
         begin
-          n + step zero
-        ≃⟨ +-stepᴿ⃗ᴸ ⟩
-          step n + zero
-        ≃˘⟨ AA.substᴸ n≃sn ⟩
-          n + zero
+          n + 1
+        ≃˘⟨ sn≃n+1 ⟩
+          step n
+        ≃˘⟨ n≃sn ⟩
+          n
+        ≃˘⟨ AA.identᴿ ⟩
+          n + 0
         ∎
 
   Positive : ℕ → Set
-  Positive n = n ≄ zero
+  Positive n = n ≄ 0
 
   Positive-subst : ∀ {n₁ n₂} → n₁ ≃ n₂ → Positive n₁ → Positive n₂
   Positive-subst n₁≃n₂ n₁≄z n₂≃z = n₁≄z (trans n₁≃n₂ n₂≃z)
@@ -232,16 +215,16 @@ record Addition (PB : PeanoBase) : Set where
     where
       P = λ x → Positive (a + x)
 
-      Pz : P zero
+      Pz : P 0
       Pz = Positive-subst (sym AA.identᴿ) pos-a
 
       Ps : step-case P
       Ps {k} _ = λ a+sk≃z → step≄zero (trans (sym AA.commᴿ) a+sk≃z)
 
-  +-both-zero : ∀ {a b} → a + b ≃ zero → a ≃ zero ∧ b ≃ zero
+  +-both-zero : {a b : ℕ} → a + b ≃ 0 → a ≃ 0 ∧ b ≃ 0
   +-both-zero {a} {b} a+b≃z =
-    ¬[¬a∨¬b]→a∧b (a ≃? zero) (b ≃? zero) neither-positive
+    ¬[¬a∨¬b]→a∧b (a ≃? 0) (b ≃? 0) neither-positive
       where
-        neither-positive : ¬ (a ≄ zero ∨ b ≄ zero)
+        neither-positive : ¬ (a ≄ 0 ∨ b ≄ 0)
         neither-positive (∨-introᴸ a≄z) = +-positive a≄z a+b≃z
         neither-positive (∨-introᴿ b≄z) = +-positive b≄z (trans AA.comm a+b≃z)

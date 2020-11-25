@@ -1,15 +1,14 @@
 module net.cruhland.axioms.AbstractAlgebra where
 
 open import Function using (_∘_)
-open import net.cruhland.axioms.Eq using
-  (_≃_; _≄_; Eq; trans; module ≃-Reasoning)
-open ≃-Reasoning
+open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_; Eq)
+open Eq.≃-Reasoning
 open import net.cruhland.models.Logic using (_∨_; ∨-rec; ¬_)
 
 record Substitutive₁
-    {A B : Set} {{eqA : Eq A}} {{eqB : Eq B}} (f : A → B) : Set where
+    {A B : Set} (_~_ : A → A → Set) (_≈_ : B → B → Set) (f : A → B) : Set where
   field
-    subst : ∀ {a₁ a₂} → a₁ ≃ a₂ → f a₁ ≃ f a₂
+    subst : ∀ {a₁ a₂} → a₁ ~ a₂ → f a₁ ≈ f a₂
 
 open Substitutive₁ {{...}} public using (subst)
 
@@ -28,9 +27,10 @@ record Substitutiveᴾ₁ {A : Set} {{eqA : Eq A}} (P : A → Set) : Set where
 open Substitutiveᴾ₁ {{...}} public using (substᴾ)
 
 record Substitutiveᴸ
-    {A B : Set} {{eqA : Eq A}} {{eqB : Eq B}} (_⊙_ : A → A → B) : Set where
+    {A B : Set} (_~_ : A → A → Set) (_≈_ : B → B → Set) (_⊙_ : A → A → B)
+      : Set where
   field
-    substᴸ : ∀ {a b₁ b₂} → b₁ ≃ b₂ → b₁ ⊙ a ≃ b₂ ⊙ a
+    substᴸ : ∀ {a b₁ b₂} → b₁ ~ b₂ → (b₁ ⊙ a) ≈ (b₂ ⊙ a)
 
 open Substitutiveᴸ {{...}} public using (substᴸ)
 
@@ -44,7 +44,7 @@ open Substitutiveᴿ {{...}} public using (substᴿ)
 record Substitutive₂
     {A B : Set} {{eqA : Eq A}} {{eqB : Eq B}} (_⊙_ : A → A → B) : Set where
   field
-    {{subst₂ᴸ}} : Substitutiveᴸ _⊙_
+    {{subst₂ᴸ}} : Substitutiveᴸ _≃_ _≃_ _⊙_
     {{subst₂ᴿ}} : Substitutiveᴿ _⊙_
 
 record Associative {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set where
@@ -85,9 +85,10 @@ record Identityᴿ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) (e : A) : Set
 
 open Identityᴿ {{...}} public using (identᴿ)
 
-record Injective {A B : Set} {{eq : Eq A}} {{eq : Eq B}} (f : A → B) : Set where
+record Injective
+    {A B : Set} (_~_ : A → A → Set) (_≈_ : B → B → Set) (f : A → B) : Set where
   field
-    inject : ∀ {a₁ a₂} → f a₁ ≃ f a₂ → a₁ ≃ a₂
+    inject : ∀ {a₁ a₂} → f a₁ ≈ f a₂ → a₁ ~ a₂
 
 open Injective {{...}} public using (inject)
 
@@ -98,10 +99,11 @@ record Cancellativeᴸ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set₁ 
 
 open Cancellativeᴸ {{...}} public using (cancelᴸ)
 
-record Cancellativeᴿ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set₁ where
+record Cancellativeᴿ
+    {A : Set} (_~_ : A → A → Set) (_⊙_ : A → A → A) : Set₁ where
   field
     Constraint : A → Set
-    cancelᴿ : ∀ {a₁ a₂ b} {{c : Constraint b}} → a₁ ⊙ b ≃ a₂ ⊙ b → a₁ ≃ a₂
+    cancelᴿ : ∀ {a₁ a₂ b} {{c : Constraint b}} → (a₁ ⊙ b) ~ (a₂ ⊙ b) → a₁ ~ a₂
 
 open Cancellativeᴿ {{...}} public using (cancelᴿ)
 
@@ -180,6 +182,12 @@ record Inverseⁱᴿ
 
 open Inverseⁱᴿ {{...}} public using (invⁱᴿ)
 
+record Antisymmetric {A : Set} {{eq : Eq A}} (_~_ : A → A → Set) : Set where
+  field
+    antisym : ∀ {a b} → a ~ b → b ~ a → a ≃ b
+
+open Antisymmetric {{...}} public using (antisym)
+
 data OneOfThree (A B C : Set) : Set where
   1st : A → OneOfThree A B C
   2nd : B → OneOfThree A B C
@@ -212,19 +220,19 @@ with-comm {A} {_⊙_} {a} {b} {c} {d} b⊙a≃d⊙c =
 
 substitutiveᴿ :
   {A : Set} {_⊙_ : A → A → A}
-    {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Substitutiveᴸ _⊙_}} →
+    {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Substitutiveᴸ _≃_ _≃_ _⊙_}} →
       Substitutiveᴿ _⊙_
 substitutiveᴿ = record { substᴿ = with-comm ∘ substᴸ }
 
 substitutive₂ :
   {A : Set} {_⊙_ : A → A → A}
-    {{_ : Eq A}} {{_ : Substitutiveᴸ _⊙_}} {{_ : Substitutiveᴿ _⊙_}} →
+    {{_ : Eq A}} {{_ : Substitutiveᴸ _≃_ _≃_ _⊙_}} {{_ : Substitutiveᴿ _⊙_}} →
       Substitutive₂ _⊙_
 substitutive₂ = record {}
 
 commutativeᴿ :
   {A : Set} {f : A → A} {_⊙_ : A → A → A}
-    {{_ : Eq A}} {{_ : Substitutive₁ f}}
+    {{_ : Eq A}} {{_ : Substitutive₁ _≃_ _≃_ f}}
     {{_ : Commutative _⊙_}} {{_ : Commutativeᴸ f _⊙_}} →
       Commutativeᴿ f _⊙_
 commutativeᴿ {A} {f} {_⊙_} = record { commᴿ = commᴿ₀ }
@@ -245,13 +253,13 @@ identityᴿ :
   {A : Set} {_⊙_ : A → A → A} →
     ∀ {e} {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Identityᴸ _⊙_ e}} →
       Identityᴿ _⊙_ e
-identityᴿ = record { identᴿ = trans comm identᴸ }
+identityᴿ = record { identᴿ = Eq.trans comm identᴸ }
 
 cancellativeᴿ :
   {A : Set} {_⊙_ : A → A → A}
     {{eq : Eq A}} {{⊙-comm : Commutative _⊙_}}
     {{⊙-cancelᴸ : Cancellativeᴸ _⊙_}} →
-      Cancellativeᴿ _⊙_
+      Cancellativeᴿ _≃_ _⊙_
 cancellativeᴿ
   {{⊙-cancelᴸ = record { Constraint = Constraint ; cancelᴸ = cancelᴸ₀}}} =
     record { Constraint = Constraint ; cancelᴿ = cancelᴸ₀ ∘ with-comm }
@@ -281,19 +289,19 @@ absorptiveᴿ :
   {A : Set} {_⊙_ : A → A → A} →
     ∀ {z} {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Absorptiveᴸ _⊙_ z}} →
       Absorptiveᴿ _⊙_ z
-absorptiveᴿ = record { absorbᴿ = trans comm absorbᴸ }
+absorptiveᴿ = record { absorbᴿ = Eq.trans comm absorbᴸ }
 
 inverseᴿ :
   {A : Set} {_⊙_ : A → A → A} {inv : A → A} →
     ∀ {e} {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Inverseᴸ _⊙_ inv e}} →
       Inverseᴿ _⊙_ inv e
-inverseᴿ = record { invᴿ = trans comm invᴸ }
+inverseᴿ = record { invᴿ = Eq.trans comm invᴸ }
 
 inverseⁱᴿ :
   {A : Set} {C : A → Set} {_⊙_ : A → A → A} {inv : (a : A) {{c : C a}} → A} →
     ∀ {e} {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Inverseⁱᴸ _⊙_ inv e}} →
       Inverseⁱᴿ _⊙_ inv e
-inverseⁱᴿ = record { invⁱᴿ = trans comm invⁱᴸ }
+inverseⁱᴿ = record { invⁱᴿ = Eq.trans comm invⁱᴸ }
 
 [ab][cd]≃a[[bc]d] :
   {A : Set} {_⊙_ : A → A → A}
@@ -396,6 +404,76 @@ nonzero-prod :
 nonzero-prod a≄z b≄z = ∨-rec a≄z b≄z ∘ zero-prod
 
 ≄-subst :
-  {A B : Set} {f : A → B} {{_ : Eq A}} {{_ : Eq B}} {{_ : Injective f}} →
-    ∀ {a₁ a₂} → a₁ ≄ a₂ → f a₁ ≄ f a₂
+  {A B : Set} {f : A → B}
+    {{_ : Eq A}} {{_ : Eq B}} {{_ : Injective _≃_ _≃_ f}} →
+      ∀ {a₁ a₂} → a₁ ≄ a₂ → f a₁ ≄ f a₂
 ≄-subst a₁≄a₂ fa₁≃fa₂ = a₁≄a₂ (inject fa₁≃fa₂)
+
+substᴿ-with-assoc :
+  {A : Set} {_⊙_ : A → A → A}
+    {{_ : Eq A}} {{_ : Associative _⊙_}} {{_ : Substitutiveᴿ _⊙_}} →
+      ∀ {a b c d e} → b ⊙ c ≃ d ⊙ e → (a ⊙ b) ⊙ c ≃ (a ⊙ d) ⊙ e
+substᴿ-with-assoc {A} {_⊙_} {a} {b} {c} {d} {e} bc≃de =
+  begin
+    (a ⊙ b) ⊙ c
+  ≃⟨ assoc ⟩
+    a ⊙ (b ⊙ c)
+  ≃⟨ substᴿ bc≃de ⟩
+    a ⊙ (d ⊙ e)
+  ≃˘⟨ assoc ⟩
+    (a ⊙ d) ⊙ e
+  ∎
+
+a[bc]-chain :
+  {A : Set} {_⊙_ : A → A → A}
+    {{_ : Eq A}} {{_ : Associative _⊙_}} {{_ : Substitutiveᴸ _≃_ _≃_ _⊙_}} →
+      ∀ {a b c d e} → a ⊙ b ≃ d → d ⊙ c ≃ e → a ⊙ (b ⊙ c) ≃ e
+a[bc]-chain {A} {_⊙_} {a} {b} {c} {d} {e} ab≃d dc≃e =
+  begin
+    a ⊙ (b ⊙ c)
+  ≃˘⟨ assoc ⟩
+    (a ⊙ b) ⊙ c
+  ≃⟨ substᴸ ab≃d ⟩
+    d ⊙ c
+  ≃⟨ dc≃e ⟩
+    e
+  ∎
+
+comm-swap :
+  {A : Set} {f : A → A} {_⊙_ : A → A → A}
+    {{_ : Eq A}} {{_ : Commutativeᴸ f _⊙_}} {{_ : Commutativeᴿ f _⊙_}} →
+      ∀ {a b} → f a ⊙ b ≃ a ⊙ f b
+comm-swap = Eq.trans commᴸ (Eq.sym commᴿ)
+
+eq→idᴿ :
+  {A : Set} {_⊙_ : A → A → A} {a b d e : A}
+    {{_ : Eq A}} {{_ : Identityᴿ _⊙_ e}}
+    {{cancel : Cancellativeᴸ _⊙_}} {{_ : Cancellativeᴸ.Constraint cancel a}} →
+      a ⊙ d ≃ b → a ≃ b → d ≃ e
+eq→idᴿ {A} {_⊙_} {a} {b} {d} {e} ad≃b a≃b = cancelᴸ ad≃ae
+  where
+    ad≃ae =
+      begin
+        a ⊙ d
+      ≃⟨ ad≃b ⟩
+        b
+      ≃˘⟨ a≃b ⟩
+        a
+      ≃˘⟨ identᴿ ⟩
+        a ⊙ e
+      ∎
+
+idᴿ→eq :
+  {A : Set} {_⊙_ : A → A → A} {a b d e : A}
+    {{_ : Eq A}} {{_ : Identityᴿ _⊙_ e}} {{_ : Substitutiveᴿ _⊙_}} →
+      a ⊙ d ≃ b → d ≃ e → a ≃ b
+idᴿ→eq {A} {_⊙_} {a} {b} {d} {e} ad≃b d≃e =
+  begin
+    a
+  ≃˘⟨ identᴿ ⟩
+    a ⊙ e
+  ≃˘⟨ substᴿ d≃e ⟩
+    a ⊙ d
+  ≃⟨ ad≃b ⟩
+    b
+  ∎

@@ -150,5 +150,5 @@ instance
           c
         ∎
 
-  *-cancellativeᴿ : AA.Cancellativeᴿ {A = ℤ} _*_
+  *-cancellativeᴿ : AA.Cancellativeᴿ {A = ℤ} _≃_ _*_
   *-cancellativeᴿ = AA.cancellativeᴿ

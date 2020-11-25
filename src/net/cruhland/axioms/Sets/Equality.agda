@@ -1,6 +1,6 @@
 open import Level using (_⊔_; Level; 0ℓ) renaming (suc to sℓ)
 open import Relation.Binary using (IsEquivalence)
-open import net.cruhland.axioms.Eq using (_≃_; _≄_; Eq; sym)
+open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_; Eq; sym)
 open import net.cruhland.axioms.Sets.Base using (SetAxioms)
 open import net.cruhland.models.Logic using
   (¬_; _↔_; ↔-elimᴸ; ↔-elimᴿ; ↔-refl; ↔-sym; ↔-trans)
@@ -44,6 +44,19 @@ module net.cruhland.axioms.Sets.Equality (SA : SetAxioms) where
     ≃₀-trans (≃-intro x∈A↔x∈B) (≃-intro x∈B↔x∈C) =
       ≃-intro (↔-trans x∈A↔x∈B x∈B↔x∈C)
 
+    instance
+      ≃₀-reflexive : Eq.Reflexive _≃₀_
+      ≃₀-reflexive = record { refl = ≃₀-refl }
+
+      ≃₀-symmetric : Eq.Symmetric _≃₀_
+      ≃₀-symmetric = record { sym = ≃₀-sym }
+
+      ≃₀-transitive : Eq.Transitive _≃₀_
+      ≃₀-transitive = record { trans = ≃₀-trans }
+
+      eq : Eq (PSet S)
+      eq = record { _≃_ = _≃₀_ }
+
     ≃₀-IsEquivalence : IsEquivalence (_≃₀_)
     ≃₀-IsEquivalence = record { refl = ≃₀-refl ; sym = ≃₀-sym ; trans = ≃₀-trans }
 
@@ -54,15 +67,6 @@ module net.cruhland.axioms.Sets.Equality (SA : SetAxioms) where
   PSet-Setoid : Setoid σ₁ σ₂ → Setoid (sℓ (σ₁ ⊔ σ₂)) (sℓ (σ₁ ⊔ σ₂))
   PSet-Setoid S =
     record { Carrier = PSet S ; _≈_ = _≃₀_ ; isEquivalence = ≃₀-IsEquivalence }
-
-  instance
-    eq : {S : Setoid σ₁ σ₂} → Eq (PSet S)
-    eq {σ₁} {σ₂} {S} = record
-      { _≃_ = _≃₀_
-      ; refl = ≃₀-refl
-      ; sym = ≃₀-sym
-      ; trans = ≃₀-trans
-      }
 
   private
     variable

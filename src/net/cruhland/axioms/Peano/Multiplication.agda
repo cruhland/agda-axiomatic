@@ -1,6 +1,7 @@
 module net.cruhland.axioms.Peano.Multiplication where
 
 open import Relation.Nullary.Decidable using (False)
+open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.DecEq using (_≃?_; ≄-derive)
 open import net.cruhland.axioms.Eq using
   (_≃_; _≄_; sym; trans; module ≃-Reasoning)
@@ -14,21 +15,22 @@ open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
 import net.cruhland.axioms.Peano.Inspect as PeanoInspect
 import net.cruhland.axioms.Peano.Ordering as PeanoOrdering
+import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using
   (_∧_; ∧-elimᴿ; ∧-intro; _∨_; ∨-introᴸ; ∨-introᴿ; contra)
 
 record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
   private module Add = PeanoAddition PA
-  open Add using (+-both-zero; Positive; +-stepᴸ⃗ᴿ; with-+-assoc)
+  open Add using (+-both-zero; Positive)
   open PeanoBase PB using (ℕ; ind; step; step-case; zero)
   private module Inspect = PeanoInspect PB
   open Inspect using (case; case-step; case-zero; pred-intro)
-  open PeanoOrdering PB PA using
-    (_<_; <⁺→<; <→<⁺; <-intro; <⁺-intro; <-substᴸ; <-substᴿ; order-trichotomy)
+  private module ℕ≤ = PeanoOrdering PB PA
+  open ℕ≤ using (_<_; _<⁺_; ≤-intro; <-intro; <⁺-intro)
 
   field
     {{star}} : Op.Star ℕ
-    {{*-substitutiveᴸ}} : AA.Substitutiveᴸ _*_
+    {{*-substitutiveᴸ}} : AA.Substitutiveᴸ _≃_ _≃_ _*_
     {{*-absorptiveᴸ}} : AA.Absorptiveᴸ _*_ zero
     *-stepᴸ : ∀ {n m} → step n * m ≃ n * m + m
 
@@ -78,7 +80,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
           k * step m + step m
         ≃⟨ AA.substᴸ Pk ⟩
           k * m + k + step m
-        ≃⟨ with-+-assoc (trans AA.comm +-stepᴸ⃗ᴿ) ⟩
+        ≃⟨ AA.substᴿ-with-assoc (trans AA.comm AA.comm-swap) ⟩
           k * m + m + step k
         ≃˘⟨ AA.substᴸ *-stepᴸ ⟩
           step k * m + step k
@@ -224,16 +226,16 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
                 (a * step k) * c
               ∎
 
-  *-preserves-<ᴿ : ∀ {a b c} → a < b → c ≄ zero → a * c < b * c
-  *-preserves-<ᴿ {a} {b} {c} a<b c≄z with <→<⁺ a<b
-  ... | <⁺-intro d d≄z a+d≃b = <⁺→< (<⁺-intro (d * c) dc≄z ac+dc≃bc)
-    where
-      dc≄z = AA.nonzero-prod d≄z c≄z
-      ac+dc≃bc = trans (sym AA.distribᴿ) (AA.substᴸ a+d≃b)
+  *-preserves-<ᴿ : ∀ {a b c} → a < b → c ≄ 0 → a * c < b * c
+  *-preserves-<ᴿ {a} {b} {c} a<b c≄0 =
+    let <⁺-intro a≤b@(≤-intro d a+d≃b) d≄0 = a<b as a <⁺ b
+        ac+dc≃bc = trans (sym AA.distribᴿ) (AA.substᴸ a+d≃b)
+        dc≄0 = AA.nonzero-prod d≄0 c≄0
+     in <⁺-intro (≤-intro (d * c) ac+dc≃bc) dc≄0 as a * c < b * c
 
   *-preserves-<ᴸ : ∀ {a b c} → b < c → a ≄ zero → a * b < a * c
-  *-preserves-<ᴸ b<c a≄z =
-    <-substᴸ AA.comm (<-substᴿ AA.comm (*-preserves-<ᴿ b<c a≄z))
+  *-preserves-<ᴸ {a} {b} {c} b<c a≄z =
+    AA.substᴾ {P = _< a * c} AA.comm (AA.substᴾ AA.comm (*-preserves-<ᴿ b<c a≄z))
 
   instance
     *-cancellativeᴸ : AA.Cancellativeᴸ _*_
@@ -241,7 +243,8 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
         record { Constraint = λ a → False (a ≃? zero) ; cancelᴸ = *-cancelᴸ }
       where
         *-cancelᴸ : ∀ {a b c} {{_ : False (a ≃? zero)}} → a * b ≃ a * c → b ≃ c
-        *-cancelᴸ ab≃ac with AA.ExactlyOneOfThree.at-least-one order-trichotomy
+        *-cancelᴸ ab≃ac with
+          AA.ExactlyOneOfThree.at-least-one ℕ≤.order-trichotomy
         ... | AA.1st b<c =
           let <-intro _ ab≄ac = *-preserves-<ᴸ b<c ≄-derive
            in contra ab≃ac ab≄ac
@@ -251,5 +254,5 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
           let <-intro _ ac≄ab = *-preserves-<ᴸ b>c ≄-derive
            in contra (sym ab≃ac) ac≄ab
 
-    *-cancellativeᴿ : AA.Cancellativeᴿ _*_
+    *-cancellativeᴿ : AA.Cancellativeᴿ _≃_ _*_
     *-cancellativeᴿ = AA.cancellativeᴿ

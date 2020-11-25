@@ -8,13 +8,31 @@ private
     α : Level
     A : Set α
 
+record Reflexive {A : Set α} (_~_ : A → A → Set α) : Set α where
+  field
+    refl : ∀ {a} → a ~ a
+
+open Reflexive {{...}} public using (refl)
+
+record Symmetric {A : Set α} (_~_ : A → A → Set α) : Set α where
+  field
+    sym : ∀ {a b} → a ~ b → b ~ a
+
+open Symmetric {{...}} public using (sym)
+
+record Transitive {A : Set α} (_~_ : A → A → Set α) : Set α where
+  field
+    trans : ∀ {a b c} → a ~ b → b ~ c → a ~ c
+
+open Transitive {{...}} public using (trans)
+
 record Eq (A : Set α) : Set (sℓ α) where
   infix 4 _≃_
   field
     _≃_ : A → A → Set α
-    {{refl}} : ∀ {x} → x ≃ x
-    sym : ∀ {x y} → x ≃ y → y ≃ x
-    trans : ∀ {x y z} → x ≃ y → y ≃ z → x ≃ z
+    {{reflexive}} : Reflexive _≃_
+    {{symmetric}} : Symmetric _≃_
+    {{transitive}} : Transitive _≃_
 
   infix 4 _≄_
   _≄_ : A → A → Set α

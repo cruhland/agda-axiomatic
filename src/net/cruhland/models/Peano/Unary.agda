@@ -7,7 +7,7 @@ open import Function using (_∘_)
 open import Relation.Binary.PropositionalEquality using
   (_≡_; _≢_; cong; refl; sym; ≢-sym; trans)
 import net.cruhland.axioms.AbstractAlgebra as AA
-open import net.cruhland.axioms.Eq using (Eq)
+import net.cruhland.axioms.Eq as Eq
 import net.cruhland.axioms.Operators as Op
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
@@ -20,18 +20,22 @@ ind P Pz Ps zero = Pz
 ind P Pz Ps (step n) = ind (P ∘ step) (Ps Pz) Ps n
 
 instance
-  eq : Eq ℕ
-  eq = record
-    { _≃_ = _≡_
-    ; refl = refl
-    ; sym = sym
-    ; trans = trans
-    }
+  ≡-reflexive : Eq.Reflexive {A = ℕ} _≡_
+  ≡-reflexive = record { refl = refl }
 
-  step-substitutive : AA.Substitutive₁ step
+  ≡-symmetric : Eq.Symmetric {A = ℕ} _≡_
+  ≡-symmetric = record { sym = sym }
+
+  ≡-transitive : Eq.Transitive {A = ℕ} _≡_
+  ≡-transitive = record { trans = trans }
+
+  eq : Eq.Eq ℕ
+  eq = record { _≃_ = _≡_ }
+
+  step-substitutive : AA.Substitutive₁ _≡_ _≡_ step
   step-substitutive = record { subst = cong step }
 
-  step-injective : AA.Injective step
+  step-injective : AA.Injective _≡_ _≡_ step
   step-injective = record { inject = step-inj }
 
 base : Peano
@@ -47,7 +51,7 @@ instance
   plus : Op.Plus ℕ
   plus = record { _+_ = _+_ }
 
-  +-substitutiveᴸ : AA.Substitutiveᴸ _+_
+  +-substitutiveᴸ : AA.Substitutiveᴸ _≡_ _≡_ _+_
   +-substitutiveᴸ = record { substᴸ = λ {m} → cong (_+ m) }
 
   +-identityᴸ : AA.Identityᴸ _+_ zero
@@ -63,7 +67,7 @@ instance
   star : Op.Star ℕ
   star = record { _*_ = _*_ }
 
-  *-substitutiveᴸ : AA.Substitutiveᴸ _*_
+  *-substitutiveᴸ : AA.Substitutiveᴸ _≡_ _≡_ _*_
   *-substitutiveᴸ = record { substᴸ = λ {m} → cong (_* m) }
 
   *-absorptiveᴸ : AA.Absorptiveᴸ _*_ zero

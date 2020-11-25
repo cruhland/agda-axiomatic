@@ -1,7 +1,7 @@
 open import Function using (_∘_)
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_)
-open import net.cruhland.axioms.Eq using
+open import net.cruhland.axioms.Eq as Eq using
   (_≃_; Eq; refl; sym; module ≃-Reasoning)
 open ≃-Reasoning
 open import net.cruhland.axioms.Operators using (_+_)
@@ -26,41 +26,45 @@ record _≃ᶻ_ (a b : ℤ) : Set where
 ≃ᶻ-sym : ∀ {a b} → a ≃ᶻ b → b ≃ᶻ a
 ≃ᶻ-sym = ≃ᶻ-intro ∘ sym ∘ _≃ᶻ_.elim
 
-≃ᶻ-trans : ∀ {a b c} → a ≃ᶻ b → b ≃ᶻ c → a ≃ᶻ c
-≃ᶻ-trans
-  {a⁺ — a⁻} {b⁺ — b⁻} {c⁺ — c⁻}
-  (≃ᶻ-intro a⁺+b⁻≃b⁺+a⁻) (≃ᶻ-intro b⁺+c⁻≃c⁺+b⁻) =
-    ≃ᶻ-intro (AA.cancelᴿ [a⁺+c⁻]+[b⁺+b⁻]≃[c⁺+a⁻]+[b⁺+b⁻])
-  where
-    [a⁺+c⁻]+[b⁺+b⁻]≃[c⁺+a⁻]+[b⁺+b⁻] =
-      begin
-        (a⁺ + c⁻) + (b⁺ + b⁻)
-      ≃˘⟨ AA.perm-adcb ⟩
-        (a⁺ + b⁻) + (b⁺ + c⁻)
-      ≃⟨ AA.[a≃b][c≃d] a⁺+b⁻≃b⁺+a⁻ b⁺+c⁻≃c⁺+b⁻ ⟩
-        (b⁺ + a⁻) + (c⁺ + b⁻)
-      ≃⟨ AA.perm-adcb ⟩
-        (b⁺ + b⁻) + (c⁺ + a⁻)
-      ≃⟨ AA.comm ⟩
-        (c⁺ + a⁻) + (b⁺ + b⁻)
-      ∎
-
 instance
-  eq : Eq ℤ
-  eq = record
-    { _≃_ = _≃ᶻ_
-    ; refl = ≃ᶻ-refl
-    ; sym = ≃ᶻ-sym
-    ; trans = ≃ᶻ-trans
-    }
+  ≃ᶻ-reflexive : Eq.Reflexive _≃ᶻ_
+  ≃ᶻ-reflexive = record { refl = ≃ᶻ-intro refl }
 
-  from-ℕ-substitutive₁ : AA.Substitutive₁ {A = ℕ} (_as ℤ)
+  ≃ᶻ-symmetric : Eq.Symmetric _≃ᶻ_
+  ≃ᶻ-symmetric = record { sym = ≃ᶻ-intro ∘ sym ∘ _≃ᶻ_.elim }
+
+  ≃ᶻ-transitive : Eq.Transitive _≃ᶻ_
+  ≃ᶻ-transitive = record { trans = ≃ᶻ-trans }
+    where
+      ≃ᶻ-trans : ∀ {a b c} → a ≃ᶻ b → b ≃ᶻ c → a ≃ᶻ c
+      ≃ᶻ-trans
+          {a⁺ — a⁻} {b⁺ — b⁻} {c⁺ — c⁻}
+          (≃ᶻ-intro a⁺+b⁻≃b⁺+a⁻) (≃ᶻ-intro b⁺+c⁻≃c⁺+b⁻) =
+            ≃ᶻ-intro (AA.cancelᴿ [a⁺+c⁻]+[b⁺+b⁻]≃[c⁺+a⁻]+[b⁺+b⁻])
+        where
+          [a⁺+c⁻]+[b⁺+b⁻]≃[c⁺+a⁻]+[b⁺+b⁻] =
+            begin
+              (a⁺ + c⁻) + (b⁺ + b⁻)
+            ≃˘⟨ AA.perm-adcb ⟩
+              (a⁺ + b⁻) + (b⁺ + c⁻)
+            ≃⟨ AA.[a≃b][c≃d] a⁺+b⁻≃b⁺+a⁻ b⁺+c⁻≃c⁺+b⁻ ⟩
+              (b⁺ + a⁻) + (c⁺ + b⁻)
+            ≃⟨ AA.perm-adcb ⟩
+              (b⁺ + b⁻) + (c⁺ + a⁻)
+            ≃⟨ AA.comm ⟩
+              (c⁺ + a⁻) + (b⁺ + b⁻)
+            ∎
+
+  eq : Eq ℤ
+  eq = record { _≃_ = _≃ᶻ_ }
+
+  from-ℕ-substitutive₁ : AA.Substitutive₁ {A = ℕ} _≃_ _≃_ (_as ℤ)
   from-ℕ-substitutive₁ = record { subst = ≃ᶻ-intro ∘ AA.substᴸ }
 
-  from-ℕ-injective : AA.Injective {A = ℕ} (_as ℤ)
+  from-ℕ-injective : AA.Injective {A = ℕ} _≃_ _≃_ (_as ℤ)
   from-ℕ-injective = record { inject = AA.cancelᴿ ∘ _≃ᶻ_.elim }
 
-  ℤ-substitutiveᴸ : AA.Substitutiveᴸ _—_
+  ℤ-substitutiveᴸ : AA.Substitutiveᴸ _≃_ _≃_ _—_
   ℤ-substitutiveᴸ = record { substᴸ = ℤ-substᴸ }
     where
       ℤ-substᴸ : ∀ {m n₁ n₂} → n₁ ≃ n₂ → n₁ — m ≃ n₂ — m

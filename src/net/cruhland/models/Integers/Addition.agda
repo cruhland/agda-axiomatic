@@ -39,7 +39,7 @@ instance
               (b⁺ + a⁺) + (a⁻ + b⁻)
             ∎
 
-  +-substitutiveᴸ : AA.Substitutiveᴸ _+_
+  +-substitutiveᴸ : AA.Substitutiveᴸ _≃_ _≃_ _+_
   +-substitutiveᴸ = record { substᴸ = +-substᴸ }
     where
       +-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ + b ≃ a₂ + b
