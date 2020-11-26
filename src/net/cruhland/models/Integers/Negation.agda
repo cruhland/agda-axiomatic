@@ -1,5 +1,5 @@
 import Agda.Builtin.FromNeg as FromNeg
-open import Function using (_∘_)
+open import Function using (_∘_) renaming (Morphism to _⟨→⟩_)
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq using
@@ -27,7 +27,7 @@ instance
   negative =
     record { Constraint = λ _ → ⊤ ; fromNeg = λ n → - Literals.fromNat n }
 
-  neg-substitutive : AA.Substitutive₁ _≃_ _≃_ (λ x → - x)
+  neg-substitutive : AA.Substitutive₁ -_ _≃_ _≃_
   neg-substitutive = record { subst = neg-subst }
     where
       neg-subst : {a₁ a₂ : ℤ} → a₁ ≃ a₂ → - a₁ ≃ - a₂
@@ -114,11 +114,11 @@ pos-nonzero (record { n = n ; pos = n≄0 ; x≃n = a≃n }) a≃0 =
   n≄0 (AA.inject (trans (sym a≃n) a≃0))
 
 instance
-  Positive-substitutive : AA.Substitutiveᴾ₁ Positive
-  Positive-substitutive = record { substᴾ = Positive-substᴾ }
+  Positive-substitutive : AA.Substitutive₁ Positive _≃_ _⟨→⟩_
+  Positive-substitutive = record { subst = Positive-subst }
     where
-      Positive-substᴾ : ∀ {a₁ a₂} → a₁ ≃ a₂ → Positive a₁ → Positive a₂
-      Positive-substᴾ a₁≃a₂ (record { n = n ; pos = n≄0 ; x≃n = a₁≃n }) =
+      Positive-subst : ∀ {a₁ a₂} → a₁ ≃ a₂ → Positive a₁ → Positive a₂
+      Positive-subst a₁≃a₂ (record { n = n ; pos = n≄0 ; x≃n = a₁≃n }) =
         record { n = n ; pos = n≄0 ; x≃n = trans (sym a₁≃a₂) a₁≃n }
 
 neg-Positive : ∀ {a} → Positive a → Negative (- a)

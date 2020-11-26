@@ -1,4 +1,4 @@
-open import Function using (_∘_; flip)
+open import Function using (_∘_; flip) renaming (Morphism to _⟨→⟩_)
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast as Cast using (_As_; _as_)
 open import net.cruhland.axioms.DecEq using (_≃?_)
@@ -143,19 +143,19 @@ instance
   <-transitive : Eq.Transitive _<_
   <-transitive = record { trans = Cast.delegate₂ (Eq.trans {_~_ = _<⁺_}) }
 
-  <-substitutiveᴸ : ∀ {n} → AA.Substitutiveᴾ₁ (_< n)
-  <-substitutiveᴸ {n} = record { substᴾ = <-substᴸ }
+  <-substitutiveᴸ : ∀ {n} → AA.Substitutive₁ (_< n) _≃_ _⟨→⟩_
+  <-substitutiveᴸ {n} = record { subst = <-substᴸ }
     where
       <-substᴸ : ∀ {m₁ m₂} → m₁ ≃ m₂ → m₁ < n → m₂ < n
-      <-substᴸ m₁≃m₂ (<-intro m₁≤n m₁≄n) = <-intro (AA.substᴾ m₁≃m₂ m₁≤n) m₂≄n
+      <-substᴸ m₁≃m₂ (<-intro m₁≤n m₁≄n) = <-intro (AA.subst m₁≃m₂ m₁≤n) m₂≄n
         where
           m₂≄n = λ m₂≃n → contra (Eq.trans m₁≃m₂ m₂≃n) m₁≄n
 
-  <-substitutiveᴿ : ∀ {n} → AA.Substitutiveᴾ₁ (n <_)
-  <-substitutiveᴿ {n} = record { substᴾ = <-substᴿ }
+  <-substitutiveᴿ : ∀ {n} → AA.Substitutive₁ (n <_) _≃_ _⟨→⟩_
+  <-substitutiveᴿ {n} = record { subst = <-substᴿ }
     where
       <-substᴿ : ∀ {m₁ m₂} → m₁ ≃ m₂ → n < m₁ → n < m₂
-      <-substᴿ m₁≃m₂ (<-intro n≤m₁ n≄m₁) = <-intro (AA.substᴾ m₁≃m₂ n≤m₁) n≄m₂
+      <-substᴿ m₁≃m₂ (<-intro n≤m₁ n≄m₁) = <-intro (AA.subst m₁≃m₂ n≤m₁) n≄m₂
         where
           n≄m₂ = λ n≃m₂ → contra (Eq.trans n≃m₂ (Eq.sym m₁≃m₂)) n≄m₁
 
@@ -178,7 +178,8 @@ order-trichotomy = record { at-least-one = 1≤ ; at-most-one = ≤1 }
         ... | ∨-introᴸ sk<m = AA.1st sk<m
         ... | ∨-introᴿ sk≃m = AA.2nd sk≃m
         Ps {k} (AA.2nd k≃m) =
-          AA.3rd (AA.subst (Eq.sym k≃m) as step m ≤ step k as m < step k)
+          let sm≃sk = AA.subst {f = step} (Eq.sym k≃m)
+           in AA.3rd (sm≃sk as step m ≤ step k as m < step k)
         Ps (AA.3rd k>m) =
           AA.3rd (Eq.trans k>m n<sn)
 
@@ -207,7 +208,7 @@ strong-ind P b Pm n b≤n = Pm n b≤n (ℕ.ind Q Q0 Qs n)
     Q0 = λ j b≤j j<0 → contra j<0 n≮0
 
     Q-subst : ∀ {x₁ x₂} → x₁ ≃ x₂ → Q x₁ → Q x₂
-    Q-subst x₁≃x₂ Qx₁ j b≤j j<x₂ = Qx₁ j b≤j (AA.substᴾ (Eq.sym x₁≃x₂) j<x₂)
+    Q-subst x₁≃x₂ Qx₁ j b≤j j<x₂ = Qx₁ j b≤j (AA.subst (Eq.sym x₁≃x₂) j<x₂)
 
     Qs : ℕ.step-case Q
     Qs Qk j b≤j j<sk with <s-split j<sk

@@ -58,7 +58,7 @@ instance
   eq : Eq ℤ
   eq = record { _≃_ = _≃ᶻ_ }
 
-  from-ℕ-substitutive₁ : AA.Substitutive₁ {A = ℕ} _≃_ _≃_ (_as ℤ)
+  from-ℕ-substitutive₁ : AA.Substitutive₁ {A = ℕ} (_as ℤ) _≃_ _≃_
   from-ℕ-substitutive₁ = record { subst = ≃ᶻ-intro ∘ AA.substᴸ }
 
   from-ℕ-injective : AA.Injective {A = ℕ} _≃_ _≃_ (_as ℤ)

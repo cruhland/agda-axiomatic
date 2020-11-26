@@ -32,7 +32,7 @@ instance
   eq : Eq.Eq ℕ
   eq = record { _≃_ = _≡_ }
 
-  step-substitutive : AA.Substitutive₁ _≡_ _≡_ step
+  step-substitutive : AA.Substitutive₁ step _≡_ _≡_
   step-substitutive = record { subst = cong step }
 
   step-injective : AA.Injective _≡_ _≡_ step

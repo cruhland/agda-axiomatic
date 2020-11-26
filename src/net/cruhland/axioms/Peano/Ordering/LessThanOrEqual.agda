@@ -1,4 +1,4 @@
-open import Function using (_∘_; const; flip)
+open import Function using (_∘_; const; flip) renaming (Morphism to _⟨→⟩_)
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_As_)
 open import net.cruhland.axioms.Eq as Eq using (_≃_)
@@ -73,8 +73,8 @@ instance
               m
             ∎
 
-  ≤-substitutiveᴸ : ∀ {n} → AA.Substitutiveᴾ₁ (_≤ n)
-  ≤-substitutiveᴸ {n} = record { substᴾ = ≤-substᴸ }
+  ≤-substitutiveᴸ : ∀ {n} → AA.Substitutive₁ (_≤ n) _≃_ _⟨→⟩_
+  ≤-substitutiveᴸ {n} = record { subst = ≤-substᴸ }
     where
       ≤-substᴸ : ∀ {m₁ m₂} → m₁ ≃ m₂ → m₁ ≤ n → m₂ ≤ n
       ≤-substᴸ {m₁} {m₂} m₁≃m₂ (≤-intro d m₁+d≃n) = ≤-intro d m₂+d≃n
@@ -88,13 +88,13 @@ instance
               n
             ∎
 
-  ≤-substitutiveᴿ : ∀ {n} → AA.Substitutiveᴾ₁ (n ≤_)
-  ≤-substitutiveᴿ {n} = record { substᴾ = ≤-substᴿ }
+  ≤-substitutiveᴿ : ∀ {n} → AA.Substitutive₁ (n ≤_) _≃_ _⟨→⟩_
+  ≤-substitutiveᴿ {n} = record { subst = ≤-substᴿ }
     where
       ≤-substᴿ : ∀ {m₁ m₂} → m₁ ≃ m₂ → n ≤ m₁ → n ≤ m₂
       ≤-substᴿ m₁≃m₂ (≤-intro d n+d≃m₁) = ≤-intro d (Eq.trans n+d≃m₁ m₁≃m₂)
 
-  ≤-substitutive-step : AA.Substitutive₁ _≤_ _≤_ step
+  ≤-substitutive-step : AA.Substitutive₁ step _≤_ _≤_
   ≤-substitutive-step = record { subst = s≤s }
     where
       s≤s : ∀ {n m} → n ≤ m → step n ≤ step m
@@ -191,6 +191,6 @@ n ≤? m = ind P P0 Ps n m
                 ∎
            in contra s[k+d]≃0 ℕ.step≄zero
     ... | ℕI.case-step (ℕI.pred-intro j y≃sj) =
-      let k≤j→sk≤y = AA.substᴾ (Eq.sym y≃sj) ∘ AA.subst
-          sk≤y→k≤j = AA.inject ∘ AA.substᴾ y≃sj
+      let k≤j→sk≤y = AA.subst (Eq.sym y≃sj) ∘ AA.subst
+          sk≤y→k≤j = AA.inject ∘ AA.subst y≃sj
        in dec-map k≤j→sk≤y sk≤y→k≤j (k≤?y j)

@@ -235,7 +235,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
 
   *-preserves-<ᴸ : ∀ {a b c} → b < c → a ≄ zero → a * b < a * c
   *-preserves-<ᴸ {a} {b} {c} b<c a≄z =
-    AA.substᴾ {P = _< a * c} AA.comm (AA.substᴾ AA.comm (*-preserves-<ᴿ b<c a≄z))
+    AA.subst {f = _< a * c} AA.comm (AA.subst AA.comm (*-preserves-<ᴿ b<c a≄z))
 
   instance
     *-cancellativeᴸ : AA.Cancellativeᴸ _*_

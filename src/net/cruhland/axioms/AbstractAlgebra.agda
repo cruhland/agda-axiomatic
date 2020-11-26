@@ -6,7 +6,9 @@ open Eq.≃-Reasoning
 open import net.cruhland.models.Logic using (_∨_; ∨-rec; ¬_)
 
 record Substitutive₁
-    {A B : Set} (_~_ : A → A → Set) (_≈_ : B → B → Set) (f : A → B) : Set where
+    {β} {A : Set} {B : A → Set β} (f : (a : A) → B a)
+      (_~_ : A → A → Set) (_≈_ : ∀ {a₁ a₂} → B a₁ → B a₂ → Set)
+        : Set β where
   field
     subst : ∀ {a₁ a₂} → a₁ ~ a₂ → f a₁ ≈ f a₂
 
@@ -19,12 +21,6 @@ record Substitutiveⁱ₁
     substⁱ : ∀ {a₁ a₂} {{c₁ : C a₁}} {{c₂ : C a₂}} → a₁ ≃ a₂ → f a₁ ≃ f a₂
 
 open Substitutiveⁱ₁ {{...}} public using (substⁱ)
-
-record Substitutiveᴾ₁ {A : Set} {{eqA : Eq A}} (P : A → Set) : Set where
-  field
-    substᴾ : ∀ {a₁ a₂} → a₁ ≃ a₂ → P a₁ → P a₂
-
-open Substitutiveᴾ₁ {{...}} public using (substᴾ)
 
 record Substitutiveᴸ
     {A B : Set} (_~_ : A → A → Set) (_≈_ : B → B → Set) (_⊙_ : A → A → B)
@@ -232,7 +228,7 @@ substitutive₂ = record {}
 
 commutativeᴿ :
   {A : Set} {f : A → A} {_⊙_ : A → A → A}
-    {{_ : Eq A}} {{_ : Substitutive₁ _≃_ _≃_ f}}
+    {{_ : Eq A}} {{_ : Substitutive₁ f _≃_ _≃_}}
     {{_ : Commutative _⊙_}} {{_ : Commutativeᴸ f _⊙_}} →
       Commutativeᴿ f _⊙_
 commutativeᴿ {A} {f} {_⊙_} = record { commᴿ = commᴿ₀ }
