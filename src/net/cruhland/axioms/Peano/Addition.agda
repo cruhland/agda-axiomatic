@@ -23,7 +23,7 @@ record Addition (PB : PeanoBase) : Set where
 
   field
     {{plus}} : Op.Plus ℕ
-    {{+-substitutiveᴸ}} : AA.Substitutiveᴸ _≃_ _≃_ _+_
+    {{+-substitutiveᴸ}} : ∀ {m} → AA.Substitutive₁ (_+ m) _≃_ _≃_
     {{+-identityᴸ}} : AA.Identityᴸ _+_ 0
     {{+-commutative-stepᴸ}} : AA.Commutativeᴸ step _+_
 
@@ -121,7 +121,7 @@ record Addition (PB : PeanoBase) : Set where
             Pz =
               begin
                 (0 + m) + p
-              ≃⟨ AA.substᴸ AA.identᴸ ⟩
+              ≃⟨ AA.subst AA.identᴸ ⟩
                 m + p
               ≃˘⟨ AA.identᴸ ⟩
                 0 + (m + p)
@@ -131,7 +131,7 @@ record Addition (PB : PeanoBase) : Set where
             Ps {k} [k+m]+p≃k+[m+p] =
               begin
                 (step k + m) + p
-              ≃⟨ AA.substᴸ AA.commᴸ ⟩
+              ≃⟨ AA.subst AA.commᴸ ⟩
                 step (k + m) + p
               ≃⟨ AA.commᴸ ⟩
                 step ((k + m) + p)

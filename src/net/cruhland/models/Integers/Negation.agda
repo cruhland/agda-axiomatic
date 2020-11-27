@@ -71,10 +71,10 @@ instance
   sub-dash = Op.subtraction
 
 sub-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ - b ≃ a₂ - b
-sub-substᴸ = AA.substᴸ
+sub-substᴸ = AA.subst
 
 sub-substᴿ : {a b₁ b₂ : ℤ} → b₁ ≃ b₂ → a - b₁ ≃ a - b₂
-sub-substᴿ = AA.substᴿ ∘ AA.subst
+sub-substᴿ = AA.substᴿ ∘ AA.subst {f = -_}
 
 ≃ᴸ-subᴿ-toᴸ : {a b c : ℤ} → a - b ≃ c → a ≃ b + c
 ≃ᴸ-subᴿ-toᴸ {a} {b} {c} a-b≃c =
@@ -88,7 +88,7 @@ sub-substᴿ = AA.substᴿ ∘ AA.subst
     a + (- b + b)
   ≃˘⟨ AA.assoc ⟩
     a - b + b
-  ≃⟨ AA.substᴸ a-b≃c ⟩
+  ≃⟨ AA.subst a-b≃c ⟩
     c + b
   ≃⟨ AA.comm ⟩
     b + c
@@ -190,9 +190,9 @@ trichotomy x@(x⁺ — x⁻) = record { at-least-one = one≤ ; at-most-one = on
               x⁺ + (n₂ + n₁)
             ≃˘⟨ AA.assoc ⟩
               (x⁺ + n₂) + n₁
-            ≃⟨ AA.substᴸ x⁺+n₂≃0+x⁻ ⟩
+            ≃⟨ AA.subst x⁺+n₂≃0+x⁻ ⟩
               (0 + x⁻) + n₁
-            ≃⟨ AA.substᴸ AA.identᴸ ⟩
+            ≃⟨ AA.subst AA.identᴸ ⟩
               x⁻ + n₁
             ≃⟨ AA.comm ⟩
               n₁ + x⁻

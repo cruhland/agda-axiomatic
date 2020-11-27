@@ -59,16 +59,16 @@ instance
   eq = record { _≃_ = _≃ᶻ_ }
 
   from-ℕ-substitutive₁ : AA.Substitutive₁ {A = ℕ} (_as ℤ) _≃_ _≃_
-  from-ℕ-substitutive₁ = record { subst = ≃ᶻ-intro ∘ AA.substᴸ }
+  from-ℕ-substitutive₁ = record { subst = ≃ᶻ-intro ∘ AA.subst }
 
   from-ℕ-injective : AA.Injective {A = ℕ} _≃_ _≃_ (_as ℤ)
   from-ℕ-injective = record { inject = AA.cancelᴿ ∘ _≃ᶻ_.elim }
 
-  ℤ-substitutiveᴸ : AA.Substitutiveᴸ _≃_ _≃_ _—_
-  ℤ-substitutiveᴸ = record { substᴸ = ℤ-substᴸ }
+  ℤ-substitutiveᴸ : ∀ {m} → AA.Substitutive₁ (_— m) _≃_ _≃_
+  ℤ-substitutiveᴸ {m} = record { subst = ℤ-substᴸ }
     where
-      ℤ-substᴸ : ∀ {m n₁ n₂} → n₁ ≃ n₂ → n₁ — m ≃ n₂ — m
-      ℤ-substᴸ n₁≃n₂ = ≃ᶻ-intro (AA.substᴸ n₁≃n₂)
+      ℤ-substᴸ : ∀ {n₁ n₂} → n₁ ≃ n₂ → n₁ — m ≃ n₂ — m
+      ℤ-substᴸ n₁≃n₂ = ≃ᶻ-intro (AA.subst n₁≃n₂)
 
   ℤ-substitutiveᴿ : AA.Substitutiveᴿ _—_
   ℤ-substitutiveᴿ = record { substᴿ = ℤ-substᴿ }

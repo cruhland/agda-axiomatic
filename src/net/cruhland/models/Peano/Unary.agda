@@ -51,8 +51,8 @@ instance
   plus : Op.Plus ℕ
   plus = record { _+_ = _+_ }
 
-  +-substitutiveᴸ : AA.Substitutiveᴸ _≡_ _≡_ _+_
-  +-substitutiveᴸ = record { substᴸ = λ {m} → cong (_+ m) }
+  +-substitutiveᴸ : ∀ {m} → AA.Substitutive₁ (_+ m) _≡_ _≡_
+  +-substitutiveᴸ {m} = record { subst = cong (_+ m) }
 
   +-identityᴸ : AA.Identityᴸ _+_ zero
   +-identityᴸ = record { identᴸ = refl }
@@ -67,8 +67,8 @@ instance
   star : Op.Star ℕ
   star = record { _*_ = _*_ }
 
-  *-substitutiveᴸ : AA.Substitutiveᴸ _≡_ _≡_ _*_
-  *-substitutiveᴸ = record { substᴸ = λ {m} → cong (_* m) }
+  *-substitutiveᴸ : ∀ {m} → AA.Substitutive₁ (_* m) _≡_ _≡_
+  *-substitutiveᴸ {m} = record { subst = cong (_* m) }
 
   *-absorptiveᴸ : AA.Absorptiveᴸ _*_ zero
   *-absorptiveᴸ = record { absorbᴸ = refl }

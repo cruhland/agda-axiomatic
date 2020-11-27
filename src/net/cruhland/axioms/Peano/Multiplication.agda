@@ -30,7 +30,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
 
   field
     {{star}} : Op.Star ℕ
-    {{*-substitutiveᴸ}} : AA.Substitutiveᴸ _≃_ _≃_ _*_
+    {{*-substitutiveᴸ}} : ∀ {m} → AA.Substitutive₁ (_* m) _≃_ _≃_
     {{*-absorptiveᴸ}} : AA.Absorptiveᴸ _*_ zero
     *-stepᴸ : ∀ {n m} → step n * m ≃ n * m + m
 
@@ -78,11 +78,11 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
           step k * step m
         ≃⟨ *-stepᴸ ⟩
           k * step m + step m
-        ≃⟨ AA.substᴸ Pk ⟩
+        ≃⟨ AA.subst Pk ⟩
           k * m + k + step m
         ≃⟨ AA.substᴿ-with-assoc (trans AA.comm AA.comm-swap) ⟩
           k * m + m + step k
-        ≃˘⟨ AA.substᴸ *-stepᴸ ⟩
+        ≃˘⟨ AA.subst *-stepᴸ ⟩
           step k * m + step k
         ∎
 
@@ -102,7 +102,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
                 step k * m
               ≃⟨ *-stepᴸ ⟩
                 k * m + m
-              ≃⟨ AA.substᴸ Pk ⟩
+              ≃⟨ AA.subst Pk ⟩
                 m * k + m
               ≃˘⟨ *-stepᴿ ⟩
                 m * step k
@@ -117,7 +117,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
             step zero * n
           ≃⟨ *-stepᴸ ⟩
             zero * n + n
-          ≃⟨ AA.substᴸ AA.absorbᴸ ⟩
+          ≃⟨ AA.subst AA.absorbᴸ ⟩
             zero + n
           ≃⟨ AA.identᴸ ⟩
             n
@@ -139,7 +139,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
                 p * m + m
               ≃˘⟨ *-stepᴸ ⟩
                 step p * m
-              ≃˘⟨ AA.substᴸ n≃sp ⟩
+              ≃˘⟨ AA.subst n≃sp ⟩
                 n * m
               ≃⟨ n*m≃z ⟩
                 zero
@@ -179,7 +179,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
                 a * step (b + k)
               ≃⟨ *-stepᴿ ⟩
                 a * (b + k) + a
-              ≃⟨ AA.substᴸ a[b+k]≃ab+ak ⟩
+              ≃⟨ AA.subst a[b+k]≃ab+ak ⟩
                 a * b + a * k + a
               ≃⟨ AA.assoc ⟩
                 a * b + (a * k + a)
@@ -206,7 +206,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
                 zero
               ≃˘⟨ AA.absorbᴸ ⟩
                 zero * c
-              ≃˘⟨ AA.substᴸ AA.absorbᴿ ⟩
+              ≃˘⟨ AA.subst AA.absorbᴿ ⟩
                 (a * zero) * c
               ∎
 
@@ -218,18 +218,18 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
                 a * (k * c + c)
               ≃⟨ AA.distribᴸ ⟩
                 a * (k * c) + a * c
-              ≃⟨ AA.substᴸ a[kc]≃[ak]c ⟩
+              ≃⟨ AA.subst a[kc]≃[ak]c ⟩
                 (a * k) * c + a * c
               ≃˘⟨ AA.distribᴿ ⟩
                 (a * k + a) * c
-              ≃˘⟨ AA.substᴸ *-stepᴿ ⟩
+              ≃˘⟨ AA.subst *-stepᴿ ⟩
                 (a * step k) * c
               ∎
 
   *-preserves-<ᴿ : ∀ {a b c} → a < b → c ≄ 0 → a * c < b * c
   *-preserves-<ᴿ {a} {b} {c} a<b c≄0 =
     let <⁺-intro a≤b@(≤-intro d a+d≃b) d≄0 = a<b as a <⁺ b
-        ac+dc≃bc = trans (sym AA.distribᴿ) (AA.substᴸ a+d≃b)
+        ac+dc≃bc = trans (sym AA.distribᴿ) (AA.subst a+d≃b)
         dc≄0 = AA.nonzero-prod d≄0 c≄0
      in <⁺-intro (≤-intro (d * c) ac+dc≃bc) dc≄0 as a * c < b * c
 

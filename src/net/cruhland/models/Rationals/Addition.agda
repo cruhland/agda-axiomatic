@@ -33,23 +33,22 @@ instance
           [a↑b↓+a↓b↑][b↓a↓]≃[b↑a↓+b↓a↑][a↓b↓] =
             begin
               (a↑ * b↓ + a↓ * b↑) * (b↓ * a↓)
-            ≃⟨ AA.substᴸ (AA.substᴸ AA.comm) ⟩
+            ≃⟨ AA.subst (AA.subst {f = _+ a↓ * b↑} AA.comm) ⟩
               (b↓ * a↑ + a↓ * b↑) * (b↓ * a↓)
-            ≃⟨ AA.substᴸ (AA.substᴿ AA.comm) ⟩
+            ≃⟨ AA.subst {f = _* (b↓ * a↓)} (AA.substᴿ AA.comm) ⟩
               (b↓ * a↑ + b↑ * a↓) * (b↓ * a↓)
-            ≃⟨ AA.substᴸ AA.comm ⟩
+            ≃⟨ AA.subst {f = _* (b↓ * a↓)} AA.comm ⟩
               (b↑ * a↓ + b↓ * a↑) * (b↓ * a↓)
             ≃⟨ AA.substᴿ AA.comm ⟩
               (b↑ * a↓ + b↓ * a↑) * (a↓ * b↓)
             ∎
 
-  +-substitutiveᴸ : AA.Substitutiveᴸ _≃_ _≃_ _+_
-  +-substitutiveᴸ = record { substᴸ = +-substᴸ }
+  +-substitutiveᴸ : {b : ℚ} → AA.Substitutive₁ (_+ b) _≃_ _≃_
+  +-substitutiveᴸ {b@(b↑ // b↓ ~ _)} = record { subst = +-substᴸ }
     where
-      +-substᴸ : {a₁ a₂ b : ℚ} → a₁ ≃ a₂ → a₁ + b ≃ a₂ + b
+      +-substᴸ : {a₁ a₂ : ℚ} → a₁ ≃ a₂ → a₁ + b ≃ a₂ + b
       +-substᴸ
-        {a₁↑ // a₁↓ ~ _} {a₂↑ // a₂↓ ~ _} {b↑ // b↓ ~ _}
-        (≃₀-intro a₁↑a₂↓≃a₂↑a₁↓) =
+        {a₁↑ // a₁↓ ~ _} {a₂↑ // a₂↓ ~ _} (≃₀-intro a₁↑a₂↓≃a₂↑a₁↓) =
           ≃₀-intro [a₁↑b↓+a₁↓b↑][a₂↓b↓]≃[a₂↑b↓+a₂↓b↑][a₁↓b↓]
         where
           prepare :
@@ -60,9 +59,9 @@ instance
               (w * x + u * v) * (y * z)
             ≃⟨ AA.distribᴿ ⟩
               w * x * (y * z) + u * v * (y * z)
-            ≃⟨ AA.substᴸ AA.transpose ⟩
+            ≃⟨ AA.subst {f = _+ u * v * (y * z)} AA.transpose ⟩
               w * y * (x * z) + u * v * (y * z)
-            ≃⟨ AA.substᴿ (AA.substᴸ AA.comm) ⟩
+            ≃⟨ AA.substᴿ (AA.subst {f = _* (y * z)} AA.comm) ⟩
               w * y * (x * z) + v * u * (y * z)
             ∎
 
@@ -71,7 +70,7 @@ instance
               (a₁↑ * b↓ + a₁↓ * b↑) * (a₂↓ * b↓)
             ≃⟨ prepare ⟩
               a₁↑ * a₂↓ * (b↓ * b↓) + b↑ * a₁↓ * (a₂↓ * b↓)
-            ≃⟨ AA.substᴸ (AA.substᴸ a₁↑a₂↓≃a₂↑a₁↓) ⟩
+            ≃⟨ AA.subst (AA.subst {f = _* (b↓ * b↓)} a₁↑a₂↓≃a₂↑a₁↓) ⟩
               a₂↑ * a₁↓ * (b↓ * b↓) + b↑ * a₁↓ * (a₂↓ * b↓)
             ≃⟨ AA.substᴿ AA.transpose ⟩
                a₂↑ * a₁↓ * (b↓ * b↓) + b↑ * a₂↓ * (a₁↓ * b↓)
@@ -96,9 +95,9 @@ instance
               (a + b) * (1 * 1)
             ≃⟨ AA.substᴿ AA.identᴿ ⟩
               (a + b) * 1
-            ≃˘⟨ AA.substᴸ (AA.substᴸ AA.identᴿ) ⟩
+            ≃˘⟨ AA.subst (AA.subst {f = _+ b} AA.identᴿ) ⟩
               (a * 1 + b) * 1
-            ≃˘⟨ AA.substᴸ (AA.substᴿ AA.identᴸ) ⟩
+            ≃˘⟨ AA.subst {A = ℤ} {f = _* 1} (AA.substᴿ {_⊙_ = _+_} AA.identᴸ) ⟩
               (a * 1 + 1 * b) * 1
             ∎
 
@@ -112,11 +111,12 @@ instance
           ≃-numer =
             begin
               (p↑ * q↓ + p↓ * q↑) * r↓ + (p↓ * q↓) * r↑
-            ≃⟨ AA.substᴸ AA.distribᴿ ⟩
+            ≃⟨ AA.subst AA.distribᴿ ⟩
               ((p↑ * q↓) * r↓ + (p↓ * q↑) * r↓) + (p↓ * q↓) * r↑
-            ≃⟨ AA.substᴸ (AA.substᴸ AA.assoc) ⟩
+            ≃⟨ AA.subst (AA.subst {f = _+ (p↓ * q↑) * r↓} AA.assoc) ⟩
               (p↑ * (q↓ * r↓) + (p↓ * q↑) * r↓) + (p↓ * q↓) * r↑
-            ≃⟨ AA.substᴸ (AA.substᴿ AA.assoc) ⟩
+            ≃⟨ AA.subst {f = _+ (p↓ * q↓) * r↑}
+                        (AA.substᴿ {_⊙_ = _+_} AA.assoc) ⟩
               (p↑ * (q↓ * r↓) + p↓ * (q↑ * r↓)) + (p↓ * q↓) * r↑
             ≃⟨ AA.substᴿ AA.assoc ⟩
               (p↑ * (q↓ * r↓) + p↓ * (q↑ * r↓)) + p↓ * (q↓ * r↑)
@@ -137,7 +137,7 @@ instance
           ≃-numer =
             begin
               0 * p↓ + 1 * p↑
-            ≃⟨ AA.substᴸ AA.absorbᴸ ⟩
+            ≃⟨ AA.subst {f = _+ 1 * p↑} AA.absorbᴸ ⟩
               0 + 1 * p↑
             ≃⟨ AA.identᴸ ⟩
               1 * p↑

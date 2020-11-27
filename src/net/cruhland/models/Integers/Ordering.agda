@@ -49,13 +49,13 @@ _>_ = flip _<_
           (n₁ as ℤ) + (n₂ as ℤ)
         ≃˘⟨ AA.identᴸ ⟩
           0 + ((n₁ as ℤ) + (n₂ as ℤ))
-        ≃˘⟨ AA.substᴸ AA.invᴸ ⟩
+        ≃˘⟨ AA.subst AA.invᴸ ⟩
           (- a) + a + ((n₁ as ℤ) + (n₂ as ℤ))
         ≃⟨ AA.assoc ⟩
           (- a) + (a + ((n₁ as ℤ) + (n₂ as ℤ)))
         ≃˘⟨ AA.substᴿ AA.assoc ⟩
           (- a) + (a + (n₁ as ℤ) + (n₂ as ℤ))
-        ≃˘⟨ AA.substᴿ (AA.substᴸ b≃a+n₁) ⟩
+        ≃˘⟨ AA.substᴿ (AA.subst b≃a+n₁) ⟩
           (- a) + (b + (n₂ as ℤ))
         ≃˘⟨ AA.substᴿ a≃b+n₂ ⟩
           (- a) + a
@@ -144,7 +144,7 @@ instance
           b + (- c + c)
         ≃˘⟨ AA.assoc ⟩
           b - c + c
-        ≃⟨ AA.substᴸ b-c≃0 ⟩
+        ≃⟨ AA.subst b-c≃0 ⟩
           0 + c
         ≃⟨ AA.identᴸ ⟩
           c

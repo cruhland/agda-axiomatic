@@ -50,7 +50,7 @@ instance
                 p↑ * q↓
               ≃⟨ p↑q↓≃q↑p↓ ⟩
                 q↑ * p↓
-              ≃⟨ AA.substᴸ q↑≃0 ⟩
+              ≃⟨ AA.subst q↑≃0 ⟩
                 0 * p↓
               ≃⟨ AA.absorbᴸ ⟩
                 0
@@ -60,7 +60,7 @@ instance
                 r↑ * q↓
               ≃˘⟨ q↑r↓≃r↑q↓ ⟩
                 q↑ * r↓
-              ≃⟨ AA.substᴸ q↑≃0 ⟩
+              ≃⟨ AA.subst q↑≃0 ⟩
                 0 * r↓
               ≃⟨ AA.absorbᴸ ⟩
                 0
@@ -70,13 +70,13 @@ instance
             p↑r↓≃r↑p↓ =
               begin
                 p↑ * r↓
-              ≃⟨ AA.substᴸ p↑≃0 ⟩
+              ≃⟨ AA.subst p↑≃0 ⟩
                 0 * r↓
               ≃⟨ AA.absorbᴸ ⟩
                 0
               ≃˘⟨ AA.absorbᴸ ⟩
                 0 * p↓
-              ≃˘⟨ AA.substᴸ r↑≃0 ⟩
+              ≃˘⟨ AA.subst r↑≃0 ⟩
                 r↑ * p↓
               ∎
          in ≃₀-intro p↑r↓≃r↑p↓
@@ -110,7 +110,7 @@ instance
           ℤ≃? = ℚ.n p * ℚ.d q ≃? ℚ.n q * ℚ.d p
 
   from-ℤ-substitutive₁ : AA.Substitutive₁ {A = ℤ} (_as ℚ) _≃_ _≃_
-  from-ℤ-substitutive₁ = record { subst = ≃₀-intro ∘ AA.substᴸ }
+  from-ℤ-substitutive₁ = record { subst = ≃₀-intro ∘ AA.subst }
 
   from-ℤ-injective : AA.Injective {A = ℤ} _≃_ _≃_ (_as ℚ)
   from-ℤ-injective =
@@ -145,7 +145,7 @@ q↑≃0 {q} (≃₀-intro n1≃0d) =
 subst↑ :
   ∀ {q↑₁ q↑₂ q↓} (q↓≄0 : q↓ ≄ 0) → q↑₁ ≃ q↑₂ →
     (q↑₁ // q↓ ~ q↓≄0) ≃ (q↑₂ // q↓ ~ q↓≄0)
-subst↑ _ q↑₁≃q↑₂ = ≃₀-intro (AA.substᴸ q↑₁≃q↑₂)
+subst↑ _ q↑₁≃q↑₂ = ≃₀-intro (AA.subst q↑₁≃q↑₂)
 
 subst↓ :
   ∀ {q↑ q↓₁ q↓₂} (q↓₁≄0 : q↓₁ ≄ 0) (q↓₂≄0 : q↓₂ ≄ 0) → q↓₁ ≃ q↓₂ →

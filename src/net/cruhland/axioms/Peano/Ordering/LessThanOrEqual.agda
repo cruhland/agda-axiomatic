@@ -82,7 +82,7 @@ instance
           m₂+d≃n =
             begin
               m₂ + d
-            ≃˘⟨ AA.substᴸ m₁≃m₂ ⟩
+            ≃˘⟨ AA.subst m₁≃m₂ ⟩
               m₁ + d
             ≃⟨ m₁+d≃n ⟩
               n
@@ -124,18 +124,18 @@ instance
               step m
             ∎
 
-  ≤-substitutive-+ᴸ : AA.Substitutiveᴸ _≤_ _≤_ _+_
-  ≤-substitutive-+ᴸ = record { substᴸ = ≤-subst-+ᴸ }
+  ≤-substitutive-+ᴸ : ∀ {c} → AA.Substitutive₁ (_+ c) _≤_ _≤_
+  ≤-substitutive-+ᴸ {c} = record { subst = ≤-subst-+ᴸ }
     where
-      ≤-subst-+ᴸ : ∀ {a b c} → a ≤ b → a + c ≤ b + c
-      ≤-subst-+ᴸ {a} {b} {c} (≤-intro d a+d≃b) = ≤-intro d a+c+d≃b+c
+      ≤-subst-+ᴸ : ∀ {a b} → a ≤ b → a + c ≤ b + c
+      ≤-subst-+ᴸ {a} {b} (≤-intro d a+d≃b) = ≤-intro d a+c+d≃b+c
         where
           a+c+d≃b+c =
             begin
               a + c + d
             ≃⟨ AA.substᴿ-with-assoc AA.comm ⟩
               a + d + c
-            ≃⟨ AA.substᴸ a+d≃b ⟩
+            ≃⟨ AA.subst a+d≃b ⟩
               b + c
             ∎
 
@@ -191,6 +191,6 @@ n ≤? m = ind P P0 Ps n m
                 ∎
            in contra s[k+d]≃0 ℕ.step≄zero
     ... | ℕI.case-step (ℕI.pred-intro j y≃sj) =
-      let k≤j→sk≤y = AA.subst (Eq.sym y≃sj) ∘ AA.subst
+      let k≤j→sk≤y = AA.subst (Eq.sym y≃sj) ∘ AA.subst {f = step}
           sk≤y→k≤j = AA.inject ∘ AA.subst y≃sj
        in dec-map k≤j→sk≤y sk≤y→k≤j (k≤?y j)

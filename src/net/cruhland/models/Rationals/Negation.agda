@@ -65,7 +65,7 @@ instance
               - p↑ * p↓ + p↑ * p↓
             ≃˘⟨ AA.distribᴿ ⟩
               (- p↑ + p↑) * p↓
-            ≃⟨ AA.substᴸ AA.invᴸ ⟩
+            ≃⟨ AA.subst {f = _* p↓} AA.invᴸ ⟩
               0 * p↓
             ≃⟨ AA.absorbᴸ ⟩
               0

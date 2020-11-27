@@ -33,17 +33,17 @@ instance
           eq′ =
             begin
               (a⁺ + b⁺) + (b⁻ + a⁻)
-            ≃⟨ AA.substᴸ AA.comm ⟩
+            ≃⟨ AA.subst AA.comm ⟩
               (b⁺ + a⁺) + (b⁻ + a⁻)
             ≃⟨ AA.substᴿ AA.comm ⟩
               (b⁺ + a⁺) + (a⁻ + b⁻)
             ∎
 
-  +-substitutiveᴸ : AA.Substitutiveᴸ _≃_ _≃_ _+_
-  +-substitutiveᴸ = record { substᴸ = +-substᴸ }
+  +-substitutiveᴸ : {b : ℤ} → AA.Substitutive₁ (_+ b) _≃_ _≃_
+  +-substitutiveᴸ {b@(b⁺ — b⁻)} = record { subst = +-substᴸ }
     where
-      +-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ + b ≃ a₂ + b
-      +-substᴸ {a₁⁺ — a₁⁻} {a₂⁺ — a₂⁻} {b⁺ — b⁻} (≃ᶻ-intro a₁⁺+a₂⁻≃a₂⁺+a₁⁻) =
+      +-substᴸ : {a₁ a₂ : ℤ} → a₁ ≃ a₂ → a₁ + b ≃ a₂ + b
+      +-substᴸ {a₁⁺ — a₁⁻} {a₂⁺ — a₂⁻} (≃ᶻ-intro a₁⁺+a₂⁻≃a₂⁺+a₁⁻) =
           ≃ᶻ-intro [a₁⁺+b⁺]+[a₂⁻+b⁻]≃[a₂⁺+b⁺]+[a₁⁻+b⁻]
         where
           [a₁⁺+b⁺]+[a₂⁻+b⁻]≃[a₂⁺+b⁺]+[a₁⁻+b⁻] =
@@ -51,7 +51,7 @@ instance
               (a₁⁺ + b⁺) + (a₂⁻ + b⁻)
             ≃⟨ AA.transpose ⟩
               (a₁⁺ + a₂⁻) + (b⁺ + b⁻)
-            ≃⟨ AA.substᴸ a₁⁺+a₂⁻≃a₂⁺+a₁⁻ ⟩
+            ≃⟨ AA.subst a₁⁺+a₂⁻≃a₂⁺+a₁⁻ ⟩
               (a₂⁺ + a₁⁻) + (b⁺ + b⁻)
             ≃⟨ AA.transpose ⟩
               (a₂⁺ + b⁺) + (a₁⁻ + b⁻)
@@ -72,7 +72,7 @@ instance
           eq′ =
             begin
               ((x⁺ + y⁺) + z⁺) + (x⁻ + (y⁻ + z⁻))
-            ≃⟨ AA.substᴸ AA.assoc ⟩
+            ≃⟨ AA.subst AA.assoc ⟩
               (x⁺ + (y⁺ + z⁺)) + (x⁻ + (y⁻ + z⁻))
             ≃˘⟨ AA.substᴿ AA.assoc ⟩
               (x⁺ + (y⁺ + z⁺)) + ((x⁻ + y⁻) + z⁻)
@@ -90,7 +90,7 @@ instance
           [0+x⁺]+x⁻≃x⁺+[0+x⁻] =
             begin
               0 + x⁺ + x⁻
-            ≃⟨ AA.substᴸ AA.comm ⟩
+            ≃⟨ AA.subst AA.comm ⟩
               x⁺ + 0 + x⁻
             ≃⟨ AA.assoc ⟩
               x⁺ + (0 + x⁻)
