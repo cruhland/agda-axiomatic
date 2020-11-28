@@ -1,11 +1,10 @@
 open import Relation.Nullary.Decidable using (fromWitnessFalse)
-open import net.cruhland.axioms.AbstractAlgebra as AA
+import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq using
   (_≃_; _≄_; sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
-import net.cruhland.axioms.Operators as Op
-open Op using (_+_; _*_; -_; _-_)
+open import net.cruhland.axioms.Operators as Op using (_+_; _*_; -_; _-_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using (_∨_; ∨-introᴸ; ∨-introᴿ)
@@ -20,35 +19,11 @@ open import net.cruhland.models.Integers.Equality PA as ℤ≃ using (≃ᶻ-int
 import net.cruhland.models.Integers.Literals PA as ℤLit
 open import net.cruhland.models.Integers.Negation PA as ℤ-
 
+open import net.cruhland.models.Integers.Multiplication.Base PA as ℤ* public
+open import net.cruhland.models.Integers.Multiplication.Commutativity PA
+  as ℤcomm public
+
 instance
-  star : Op.Star ℤ
-  star = record { _*_ = _*₀_ }
-    where
-      infixl 7 _*₀_
-      _*₀_ : ℤ → ℤ → ℤ
-      a⁺ — a⁻ *₀ b⁺ — b⁻ = (a⁺ * b⁺ + a⁻ * b⁻) — (a⁺ * b⁻ + a⁻ * b⁺)
-
-  *-commutative : AA.Commutative _*_
-  *-commutative = record { comm = *-comm }
-    where
-      *-comm : {a b : ℤ} → a * b ≃ b * a
-      *-comm {a⁺ — a⁻} {b⁺ — b⁻} = ≃ᶻ-intro eq′
-        where
-          eq′ =
-            begin
-              (a⁺ * b⁺ + a⁻ * b⁻) + (b⁺ * a⁻ + b⁻ * a⁺)
-            ≃⟨ AA.subst (AA.subst AA.comm) ⟩
-              (b⁺ * a⁺ + a⁻ * b⁻) + (b⁺ * a⁻ + b⁻ * a⁺)
-            ≃⟨ AA.subst (AA.substᴿ AA.comm) ⟩
-              (b⁺ * a⁺ + b⁻ * a⁻) + (b⁺ * a⁻ + b⁻ * a⁺)
-            ≃⟨ AA.substᴿ AA.comm ⟩
-              (b⁺ * a⁺ + b⁻ * a⁻) + (b⁻ * a⁺ + b⁺ * a⁻)
-            ≃⟨ AA.substᴿ (AA.subst AA.comm) ⟩
-              (b⁺ * a⁺ + b⁻ * a⁻) + (a⁺ * b⁻ + b⁺ * a⁻)
-            ≃⟨ AA.substᴿ (AA.substᴿ AA.comm) ⟩
-              (b⁺ * a⁺ + b⁻ * a⁻) + (a⁺ * b⁻ + a⁻ * b⁺)
-            ∎
-
   *-substitutiveᴸ : {b : ℤ} → AA.Substitutive₁ (_* b) _≃_ _≃_
   *-substitutiveᴸ {b@(b⁺ — b⁻)} = record { subst = *-substᴸ }
     where
@@ -162,59 +137,9 @@ instance
   *-associative = record { assoc = *-assoc }
     where
       *-assoc : {x y z : ℤ} → (x * y) * z ≃ x * (y * z)
-      *-assoc {x⁺ — x⁻} {y⁺ — y⁻} {z⁺ — z⁻} = ≃ᶻ-intro eq′
+      *-assoc {x⁺ — x⁻} {y⁺ — y⁻} {z⁺ — z⁻} = ≃ᶻ-intro ≃-assoc
         where
-          assoc-four :
-            ∀ {a₁ a₂ a₃ b₁ b₂ b₃ c₁ c₂ c₃ d₁ d₂ d₃} →
-              ((a₁ * a₂) * a₃ + (b₁ * b₂) * b₃) +
-              ((c₁ * c₂) * c₃ + (d₁ * d₂) * d₃) ≃
-              (a₁ * (a₂ * a₃) + b₁ * (b₂ * b₃)) +
-              (c₁ * (c₂ * c₃) + d₁ * (d₂ * d₃))
-          assoc-four
-              {a₁} {a₂} {a₃} {b₁} {b₂} {b₃} {c₁} {c₂} {c₃} {d₁} {d₂} {d₃} =
-            begin
-              ((a₁ * a₂) * a₃ + (b₁ * b₂) * b₃) +
-              ((c₁ * c₂) * c₃ + (d₁ * d₂) * d₃)
-            ≃⟨ AA.subst (AA.subst AA.assoc) ⟩
-              (a₁ * (a₂ * a₃) + (b₁ * b₂) * b₃) +
-              ((c₁ * c₂) * c₃ + (d₁ * d₂) * d₃)
-            ≃⟨ AA.subst (AA.substᴿ AA.assoc) ⟩
-              (a₁ * (a₂ * a₃) + b₁ * (b₂ * b₃)) +
-              ((c₁ * c₂) * c₃ + (d₁ * d₂) * d₃)
-            ≃⟨ AA.substᴿ (AA.subst AA.assoc) ⟩
-              (a₁ * (a₂ * a₃) + b₁ * (b₂ * b₃)) +
-              (c₁ * (c₂ * c₃) + (d₁ * d₂) * d₃)
-            ≃⟨ AA.substᴿ (AA.substᴿ AA.assoc) ⟩
-              (a₁ * (a₂ * a₃) + b₁ * (b₂ * b₃)) +
-              (c₁ * (c₂ * c₃) + d₁ * (d₂ * d₃))
-            ∎
-
-          refactor :
-            ∀ {b₁ b₂ a₁ a₂ a₃ a₄} →
-              (a₁ * a₃ + a₂ * a₄) * b₁ + (a₁ * a₄ + a₂ * a₃) * b₂ ≃
-                a₁ * (a₃ * b₁ + a₄ * b₂) + a₂ * (a₃ * b₂ + a₄ * b₁)
-          refactor {b₁} {b₂} {a₁} {a₂} {a₃} {a₄} =
-            begin
-              (a₁ * a₃ + a₂ * a₄) * b₁ + (a₁ * a₄ + a₂ * a₃) * b₂
-            ≃⟨ AA.distrib-twoᴿ ⟩
-              ((a₁ * a₃) * b₁ + (a₂ * a₄) * b₁) +
-              ((a₁ * a₄) * b₂ + (a₂ * a₃) * b₂)
-            ≃⟨ AA.transpose ⟩
-              ((a₁ * a₃) * b₁ + (a₁ * a₄) * b₂) +
-              ((a₂ * a₄) * b₁ + (a₂ * a₃) * b₂)
-            ≃⟨ AA.substᴿ AA.comm ⟩
-              ((a₁ * a₃) * b₁ + (a₁ * a₄) * b₂) +
-              ((a₂ * a₃) * b₂ + (a₂ * a₄) * b₁)
-            ≃⟨ assoc-four {a₁ = a₁} {b₁ = a₁} {c₁ = a₂} {d₁ = a₂} ⟩
-              (a₁ * (a₃ * b₁) + a₁ * (a₄ * b₂)) +
-              (a₂ * (a₃ * b₂) + a₂ * (a₄ * b₁))
-            ≃˘⟨ AA.distrib-twoᴸ ⟩
-              a₁ * (a₃ * b₁ + a₄ * b₂) + a₂ * (a₃ * b₂ + a₄ * b₁)
-            ∎
-
-          eq′ = AA.[a≃b][c≃d]
-                 (refactor {z⁺} {z⁻} {x⁺} {x⁻})
-                 (sym (refactor {z⁻} {z⁺} {x⁺} {x⁻}))
+          ≃-assoc = AA.[a≃b][c≃d] AA.refactor (sym AA.refactor)
 
   *-commutative-negᴸ : AA.Commutativeᴸ -_ _*_
   *-commutative-negᴸ = record { commᴸ = *-negᴸ }

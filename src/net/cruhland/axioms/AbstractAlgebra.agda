@@ -467,3 +467,59 @@ idᴿ→eq {A} {_⊙_} {a} {b} {d} {e} ad≃b d≃e =
   ≃⟨ ad≃b ⟩
     b
   ∎
+
+assoc-four :
+  {A : Set} {_⊙_ _⊕_ : A → A → A}
+    {{_ : Eq A}} {{_ : Associative _⊙_}}
+    {{_ : ∀ {y} → Substitutive₁ (_⊕ y) _≃_ _≃_}} {{_ : Substitutiveᴿ _⊕_}} →
+      ∀ {a₁ a₂ a₃ b₁ b₂ b₃ c₁ c₂ c₃ d₁ d₂ d₃} →
+        (((a₁ ⊙ a₂) ⊙ a₃) ⊕ ((b₁ ⊙ b₂) ⊙ b₃)) ⊕
+          (((c₁ ⊙ c₂) ⊙ c₃) ⊕ ((d₁ ⊙ d₂) ⊙ d₃))
+        ≃ ((a₁ ⊙ (a₂ ⊙ a₃)) ⊕ (b₁ ⊙ (b₂ ⊙ b₃))) ⊕
+            ((c₁ ⊙ (c₂ ⊙ c₃)) ⊕ (d₁ ⊙ (d₂ ⊙ d₃)))
+assoc-four
+    {A} {_⊙_} {_⊕_}
+      {a₁} {a₂} {a₃} {b₁} {b₂} {b₃} {c₁} {c₂} {c₃} {d₁} {d₂} {d₃} =
+  begin
+    (((a₁ ⊙ a₂) ⊙ a₃) ⊕ ((b₁ ⊙ b₂) ⊙ b₃)) ⊕
+      (((c₁ ⊙ c₂) ⊙ c₃) ⊕ ((d₁ ⊙ d₂) ⊙ d₃))
+  ≃⟨ subst (subst assoc) ⟩
+    ((a₁ ⊙ (a₂ ⊙ a₃)) ⊕ ((b₁ ⊙ b₂) ⊙ b₃)) ⊕
+      (((c₁ ⊙ c₂) ⊙ c₃) ⊕ ((d₁ ⊙ d₂) ⊙ d₃))
+  ≃⟨ subst (substᴿ assoc) ⟩
+    ((a₁ ⊙ (a₂ ⊙ a₃)) ⊕ (b₁ ⊙ (b₂ ⊙ b₃))) ⊕
+      (((c₁ ⊙ c₂) ⊙ c₃) ⊕ ((d₁ ⊙ d₂) ⊙ d₃))
+  ≃⟨ substᴿ (subst assoc) ⟩
+    ((a₁ ⊙ (a₂ ⊙ a₃)) ⊕ (b₁ ⊙ (b₂ ⊙ b₃))) ⊕
+      ((c₁ ⊙ (c₂ ⊙ c₃)) ⊕ ((d₁ ⊙ d₂) ⊙ d₃))
+  ≃⟨ substᴿ (substᴿ assoc) ⟩
+    ((a₁ ⊙ (a₂ ⊙ a₃)) ⊕ (b₁ ⊙ (b₂ ⊙ b₃))) ⊕
+      ((c₁ ⊙ (c₂ ⊙ c₃)) ⊕ (d₁ ⊙ (d₂ ⊙ d₃)))
+  ∎
+
+refactor :
+  {A : Set} {_⊙_ _⊕_ : A → A → A}
+    {{_ : Eq A}} {{_ : Associative _⊙_}} {{_ : Associative _⊕_}}
+    {{_ : Commutative _⊕_}} {{_ : Substitutive₂ _⊕_}}
+    {{_ : Distributiveᴸ _⊙_ _⊕_}} {{_ : Distributiveᴿ _⊙_ _⊕_}} →
+      ∀ {b₁ b₂ a₁ a₂ a₃ a₄} →
+        (((a₁ ⊙ a₃) ⊕ (a₂ ⊙ a₄)) ⊙ b₁) ⊕ (((a₁ ⊙ a₄) ⊕ (a₂ ⊙ a₃)) ⊙ b₂) ≃
+          (a₁ ⊙ ((a₃ ⊙ b₁) ⊕ (a₄ ⊙ b₂))) ⊕ (a₂ ⊙ ((a₃ ⊙ b₂) ⊕ (a₄ ⊙ b₁)))
+refactor {A} {_⊙_} {_⊕_} {b₁} {b₂} {a₁} {a₂} {a₃} {a₄} =
+  begin
+    (((a₁ ⊙ a₃) ⊕ (a₂ ⊙ a₄)) ⊙ b₁) ⊕ (((a₁ ⊙ a₄) ⊕ (a₂ ⊙ a₃)) ⊙ b₂)
+  ≃⟨ distrib-twoᴿ ⟩
+    (((a₁ ⊙ a₃) ⊙ b₁) ⊕ ((a₂ ⊙ a₄) ⊙ b₁)) ⊕
+      (((a₁ ⊙ a₄) ⊙ b₂) ⊕ ((a₂ ⊙ a₃) ⊙ b₂))
+  ≃⟨ transpose ⟩
+    (((a₁ ⊙ a₃) ⊙ b₁) ⊕ ((a₁ ⊙ a₄) ⊙ b₂)) ⊕
+      (((a₂ ⊙ a₄) ⊙ b₁) ⊕ ((a₂ ⊙ a₃) ⊙ b₂))
+  ≃⟨ substᴿ comm ⟩
+    (((a₁ ⊙ a₃) ⊙ b₁) ⊕ ((a₁ ⊙ a₄) ⊙ b₂)) ⊕
+      (((a₂ ⊙ a₃) ⊙ b₂) ⊕ ((a₂ ⊙ a₄) ⊙ b₁))
+  ≃⟨ assoc-four ⟩
+    ((a₁ ⊙ (a₃ ⊙ b₁)) ⊕ (a₁ ⊙ (a₄ ⊙ b₂))) ⊕
+      ((a₂ ⊙ (a₃ ⊙ b₂)) ⊕ (a₂ ⊙ (a₄ ⊙ b₁)))
+  ≃˘⟨ distrib-twoᴸ ⟩
+    (a₁ ⊙ ((a₃ ⊙ b₁) ⊕ (a₄ ⊙ b₂))) ⊕ (a₂ ⊙ ((a₃ ⊙ b₂) ⊕ (a₄ ⊙ b₁)))
+  ∎
