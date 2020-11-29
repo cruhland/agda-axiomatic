@@ -5,7 +5,7 @@ open import net.cruhland.axioms.Cast as Cast using (_As_)
 open import net.cruhland.axioms.DecEq using (_≃?_; ≄-derive)
 open import net.cruhland.axioms.Eq using (_≄_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
-import net.cruhland.models.Literals
+open import net.cruhland.models.Literals
 
 module net.cruhland.models.Rationals.Base (PA : PeanoArithmetic) where
 

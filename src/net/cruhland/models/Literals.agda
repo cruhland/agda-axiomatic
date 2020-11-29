@@ -1,4 +1,4 @@
--- To use this module, just `import` it, optionally using `as`
+-- To use this module, just `open import` it
 module net.cruhland.models.Literals where
 
 -- Export definitions necessary to support custom literals

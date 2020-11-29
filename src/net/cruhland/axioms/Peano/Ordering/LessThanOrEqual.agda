@@ -8,7 +8,7 @@ open import net.cruhland.axioms.Peano.Addition
   using () renaming (Addition to PeanoAddition)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
-import net.cruhland.models.Literals
+open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using
   (⊤; ∧-intro; ¬_; contra; Dec; dec-map; no; yes)
 

@@ -15,7 +15,7 @@ open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
 import net.cruhland.axioms.Peano.Inspect as PeanoInspect
 import net.cruhland.axioms.Peano.Ordering as PeanoOrdering
-import net.cruhland.models.Literals
+open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using
   (_∧_; ∧-elimᴿ; ∧-intro; _∨_; ∨-introᴸ; ∨-introᴿ; contra)
 

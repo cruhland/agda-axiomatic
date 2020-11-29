@@ -8,7 +8,7 @@ open import net.cruhland.axioms.Eq using
 open ≃-Reasoning
 open import net.cruhland.axioms.Operators using (_+_; _*_; -_; _-_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
-import net.cruhland.models.Literals
+open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using
   (⊤; ∧-elimᴿ; ∨-introᴸ; ∨-introᴿ; ⊥-elim; ¬_; Dec; no; yes)
 
@@ -67,7 +67,7 @@ _>_ = flip _<_
         a
       ≃⟨ a≃b+n₂ ⟩
         b + (n₂ as ℤ)
-      ≃⟨ AA.substᴿ (AA.subst n₂≃0) ⟩
+      ≃⟨ AA.substᴿ (AA.subst {_~_ = _≃_} {_≈_ = _≃_} n₂≃0) ⟩
         b + (0 as ℤ)
       ≃⟨ AA.identᴿ ⟩
         b

@@ -6,7 +6,7 @@ open import net.cruhland.axioms.Eq using
 open ≃-Reasoning
 open import net.cruhland.axioms.Operators as Op using (_+_; _*_; -_; _-_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
-import net.cruhland.models.Literals
+open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using (_∨_; ∨-introᴸ; ∨-introᴿ)
 
 module net.cruhland.models.Integers.Multiplication (PA : PeanoArithmetic) where

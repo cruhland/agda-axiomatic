@@ -5,7 +5,7 @@ open import net.cruhland.axioms.Eq using
 open ≃-Reasoning
 open import net.cruhland.axioms.Operators using (_*_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
-import net.cruhland.models.Literals
+open import net.cruhland.models.Literals
 
 module net.cruhland.models.Rationals.Reciprocal (PA : PeanoArithmetic) where
 

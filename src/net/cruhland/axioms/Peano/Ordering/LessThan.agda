@@ -10,7 +10,7 @@ open import net.cruhland.axioms.Peano.Addition
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
 import net.cruhland.axioms.Peano.Inspect as PeanoInspect
-import net.cruhland.models.Literals
+open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using
   (∧-intro; _∨_; ∨-introᴸ; ∨-introᴿ; ∨-mapᴸ; ¬_; contra; Dec; dec-map; no; yes)
 
