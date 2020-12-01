@@ -45,7 +45,7 @@ instance
         {r↑ // r↓ ~ _}
         (≃₀-intro p↑q↓≃q↑p↓) (≃₀-intro q↑r↓≃r↑q↓) =
         let
-          p↑r↓q↓=r↑p↓q↓ =
+          p↑r↓q↓≃r↑p↓q↓ =
             begin
               p↑ * r↓ * q↓
             ≃⟨ AA.assoc {A = ℤ} {{eq = ℤ.eq}} {_⊙_ = _*_}⟩
@@ -67,13 +67,13 @@ instance
             ≃⟨ AA.subst {f = _* q↓} AA.comm  ⟩
               r↑ * p↓ * q↓
             ∎
-          p↑r↓=r↑p↓ =
+          p↑r↓≃r↑p↓ =
             begin
               p↑ * r↓
-            ≃⟨ AA.cancelᴿ {{c = fromWitnessFalse q↓≄0}}  p↑r↓q↓=r↑p↓q↓ ⟩
+            ≃⟨ AA.cancelᴿ {{c = fromWitnessFalse q↓≄0}}  p↑r↓q↓≃r↑p↓q↓ ⟩
               r↑ * p↓
             ∎
-        in ≃₀-intro p↑r↓=r↑p↓
+        in ≃₀-intro p↑r↓≃r↑p↓
  
   eq : Eq ℚ
   eq = record { _≃_ = _≃₀_ }
