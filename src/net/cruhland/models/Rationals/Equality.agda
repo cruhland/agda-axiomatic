@@ -43,61 +43,38 @@ instance
         {p↑ // p↓ ~ _}
         {q↑ // q↓ ~ q↓≄0}
         {r↑ // r↓ ~ _}
-        (≃₀-intro p↑q↓≃q↑p↓) (≃₀-intro q↑r↓≃r↑q↓) with q↑ ≃? 0
-      ... | yes q↑≃0 =
-        let p↑q↓≃0 =
-              begin
-                p↑ * q↓
-              ≃⟨ p↑q↓≃q↑p↓ ⟩
-                q↑ * p↓
-              ≃⟨ AA.subst q↑≃0 ⟩
-                0 * p↓
-              ≃⟨ AA.absorbᴸ ⟩
-                0
-              ∎
-            r↑q↓≃0 =
-              begin
-                r↑ * q↓
-              ≃˘⟨ q↑r↓≃r↑q↓ ⟩
-                q↑ * r↓
-              ≃⟨ AA.subst q↑≃0 ⟩
-                0 * r↓
-              ≃⟨ AA.absorbᴸ ⟩
-                0
-              ∎
-            p↑≃0 = ∨-forceᴸ q↓≄0 (AA.zero-prod p↑q↓≃0)
-            r↑≃0 = ∨-forceᴸ q↓≄0 (AA.zero-prod r↑q↓≃0)
-            p↑r↓≃r↑p↓ =
-              begin
-                p↑ * r↓
-              ≃⟨ AA.subst p↑≃0 ⟩
-                0 * r↓
-              ≃⟨ AA.absorbᴸ ⟩
-                0
-              ≃˘⟨ AA.absorbᴸ ⟩
-                0 * p↓
-              ≃˘⟨ AA.subst r↑≃0 ⟩
-                r↑ * p↓
-              ∎
-         in ≃₀-intro p↑r↓≃r↑p↓
-      ... | no q↑≄0 =
-        let p↑r↓[q↑q↓]≃r↑p↓[q↑q↓] =
-              begin
-                (p↑ * r↓) * (q↑ * q↓)
-              ≃⟨ AA.perm-adcb {a = p↑} {c = q↑} ⟩
-                (p↑ * q↓) * (q↑ * r↓)
-              ≃⟨ AA.[a≃b][c≃d] p↑q↓≃q↑p↓ q↑r↓≃r↑q↓ ⟩
-                (q↑ * p↓) * (r↑ * q↓)
-              ≃⟨ AA.perm-adcb {a = q↑} {c = r↑} ⟩
-                (q↑ * q↓) * (r↑ * p↓)
-              ≃⟨ AA.comm {a = q↑ * q↓} ⟩
-                (r↑ * p↓) * (q↑ * q↓)
-              ∎
-            q↑q↓≄0 = AA.nonzero-prod q↑≄0 q↓≄0
-            p↑r↓≃r↑p↓ =
-              AA.cancelᴿ {{c = fromWitnessFalse q↑q↓≄0}} p↑r↓[q↑q↓]≃r↑p↓[q↑q↓]
-         in ≃₀-intro p↑r↓≃r↑p↓
-
+        (≃₀-intro p↑q↓≃q↑p↓) (≃₀-intro q↑r↓≃r↑q↓) =
+        let
+          p↑r↓q↓=r↑p↓q↓ =
+            begin
+              p↑ * r↓ * q↓
+            ≃⟨ AA.assoc {A = ℤ} {{eq = ℤ.eq}} {_⊙_ = _*_}⟩
+              p↑ * (r↓ * q↓)
+            ≃⟨ AA.substᴿ AA.comm ⟩
+              p↑ * (q↓ * r↓)
+            ≃˘⟨ AA.assoc ⟩
+              (p↑ * q↓) * r↓
+            ≃⟨ AA.subst p↑q↓≃q↑p↓ ⟩
+              (q↑ * p↓) * r↓
+            ≃⟨ AA.subst {f = _* r↓} AA.comm ⟩
+              (p↓ * q↑) * r↓
+            ≃⟨ AA.assoc ⟩
+              p↓ * (q↑ * r↓)
+            ≃⟨ AA.substᴿ q↑r↓≃r↑q↓ ⟩
+              p↓ * (r↑ * q↓)
+            ≃˘⟨ AA.assoc ⟩
+              (p↓ * r↑) * q↓
+            ≃⟨ AA.subst {f = _* q↓} AA.comm  ⟩
+              r↑ * p↓ * q↓
+            ∎
+          p↑r↓=r↑p↓ =
+            begin
+              p↑ * r↓
+            ≃⟨ AA.cancelᴿ {{c = fromWitnessFalse q↓≄0}}  p↑r↓q↓=r↑p↓q↓ ⟩
+              r↑ * p↓
+            ∎
+        in ≃₀-intro p↑r↓=r↑p↓
+ 
   eq : Eq ℚ
   eq = record { _≃_ = _≃₀_ }
 
