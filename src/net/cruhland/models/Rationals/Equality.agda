@@ -67,12 +67,7 @@ instance
             ≃⟨ AA.subst {f = _* q↓} AA.comm  ⟩
               r↑ * p↓ * q↓
             ∎
-          p↑r↓≃r↑p↓ =
-            begin
-              p↑ * r↓
-            ≃⟨ AA.cancelᴿ {{c = fromWitnessFalse q↓≄0}}  p↑r↓q↓≃r↑p↓q↓ ⟩
-              r↑ * p↓
-            ∎
+          p↑r↓≃r↑p↓ = AA.cancelᴿ {{c = fromWitnessFalse q↓≄0}} p↑r↓q↓≃r↑p↓q↓
         in ≃₀-intro p↑r↓≃r↑p↓
  
   eq : Eq ℚ
