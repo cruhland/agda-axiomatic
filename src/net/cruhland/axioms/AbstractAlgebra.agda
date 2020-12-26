@@ -14,15 +14,14 @@ record Substitutiveⁱ
 
 open Substitutiveⁱ {{...}} public using (substⁱ)
 
-no-constraint :
-  ∀ {β} {A : Set} {B : A → Set β} → ((a : A) → B a) → (a : A) → {{_ : ⊤}} → B a
-no-constraint f a = f a
-
 Substitutive₁ :
   ∀ {β} {A : Set} {B : A → Set β} (f : (a : A) → B a)
     (_~_ : A → A → Set) (_≈_ : ∀ {a₁ a₂} → B a₁ → B a₂ → Set) →
       Set β
-Substitutive₁ = Substitutiveⁱ ∘ no-constraint
+Substitutive₁ {A = A} {B} f = Substitutiveⁱ f-with-trivial-constraint
+  where
+    f-with-trivial-constraint : (a : A) {{_ : ⊤}} → B a
+    f-with-trivial-constraint a = f a
 
 substitutive₁ :
   ∀ {β} {A : Set} {B : A → Set β} {f : (a : A) → B a}
