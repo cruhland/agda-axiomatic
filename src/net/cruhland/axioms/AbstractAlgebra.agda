@@ -3,88 +3,17 @@ module net.cruhland.axioms.AbstractAlgebra where
 open import Function using (_∘_)
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_; Eq)
 open Eq.≃-Reasoning
-open import net.cruhland.models.Logic using (⊤; _∨_; ∨-rec; ¬_)
+open import net.cruhland.models.Logic using (_∨_; ∨-rec; ¬_)
 
-record Substitutiveⁱ
-    {β} {A : Set} {B : A → Set β} {C : A → Set} (f : (a : A) {{c : C a}} → B a)
-      (_~_ : A → A → Set) (_≈_ : ∀ {a₁ a₂} → B a₁ → B a₂ → Set)
-        : Set β where
-  field
-    substⁱ : ∀ {a₁ a₂} {{c₁ : C a₁}} {{c₂ : C a₂}} → a₁ ~ a₂ → f a₁ ≈ f a₂
-
-open Substitutiveⁱ {{...}} public using (substⁱ)
-
-Substitutive₁ :
-  ∀ {β} {A : Set} {B : A → Set β} (f : (a : A) → B a)
-    (_~_ : A → A → Set) (_≈_ : ∀ {a₁ a₂} → B a₁ → B a₂ → Set) →
-      Set β
-Substitutive₁ {A = A} {B} f = Substitutiveⁱ f-with-trivial-constraint
-  where
-    f-with-trivial-constraint : (a : A) {{_ : ⊤}} → B a
-    f-with-trivial-constraint a = f a
-
-substitutive₁ :
-  ∀ {β} {A : Set} {B : A → Set β} {f : (a : A) → B a}
-    {_~_ : A → A → Set} {_≈_ : ∀ {a₁ a₂} → B a₁ → B a₂ → Set} →
-      (∀ {a₁ a₂} → a₁ ~ a₂ → f a₁ ≈ f a₂) → Substitutive₁ f _~_ _≈_
-substitutive₁ substFn = record { substⁱ = substFn }
-
-subst :
-  ∀ {β} {A : Set} {B : A → Set β} {f : (a : A) → B a}
-    {_~_ : A → A → Set} {_≈_ : ∀ {a₁ a₂} → B a₁ → B a₂ → Set}
-      {{r : Substitutive₁ f _~_ _≈_}} →
-        ∀ {a₁ a₂} → a₁ ~ a₂ → f a₁ ≈ f a₂
-subst = substⁱ
-
-Substitutiveᴸ : {A B : Set} {{_ : Eq A}} {{_ : Eq B}} → (A → A → B) → Set
-Substitutiveᴸ _⊙_ = ∀ {y} → Substitutive₁ (_⊙ y) _≃_ _≃_
-
-Substitutiveᴿ : {A B : Set} {{_ : Eq A}} {{_ : Eq B}} → (A → A → B) → Set
-Substitutiveᴿ _⊙_ = ∀ {x} → Substitutive₁ (x ⊙_) _≃_ _≃_
-
-record Substitutive₂
-    {A B : Set} {{eqA : Eq A}} {{eqB : Eq B}} (_⊙_ : A → A → B) : Set where
-  field
-    {{subst₂ᴸ}} : Substitutiveᴸ _⊙_
-    {{subst₂ᴿ}} : Substitutiveᴿ _⊙_
+open import net.cruhland.axioms.AbstractAlgebra.Commutative public
+open import net.cruhland.axioms.AbstractAlgebra.Reductive public
+open import net.cruhland.axioms.AbstractAlgebra.Substitutive public
 
 record Associative {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set where
   field
     assoc : ∀ {a b c} → (a ⊙ b) ⊙ c ≃ a ⊙ (b ⊙ c)
 
 open Associative {{...}} public using (assoc)
-
-record Commutative {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set where
-  field
-    comm : ∀ {a b} → a ⊙ b ≃ b ⊙ a
-
-open Commutative {{...}} public using (comm)
-
-record Commutativeᴸ
-    {A : Set} {{eq : Eq A}} (f : A → A) (_⊙_ : A → A → A) : Set where
-  field
-    commᴸ : ∀ {a b} → f a ⊙ b ≃ f (a ⊙ b)
-
-open Commutativeᴸ {{...}} public using (commᴸ)
-
-record Commutativeᴿ
-    {A : Set} {{eq : Eq A}} (f : A → A) (_⊙_ : A → A → A) : Set where
-  field
-    commᴿ : ∀ {a b} → a ⊙ f b ≃ f (a ⊙ b)
-
-open Commutativeᴿ {{...}} public using (commᴿ)
-
-record Identityᴸ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) (e : A) : Set where
-  field
-    identᴸ : ∀ {a} → e ⊙ a ≃ a
-
-open Identityᴸ {{...}} public using (identᴸ)
-
-record Identityᴿ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) (e : A) : Set where
-  field
-    identᴿ : ∀ {a} → a ⊙ e ≃ a
-
-open Identityᴿ {{...}} public using (identᴿ)
 
 record Injective
     {A B : Set} (_~_ : A → A → Set) (_≈_ : B → B → Set) (f : A → B) : Set where
@@ -125,18 +54,6 @@ record ZeroProduct {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) (z : A) : Set
     zero-prod : ∀ {a b} → a ⊙ b ≃ z → a ≃ z ∨ b ≃ z
 
 open ZeroProduct {{...}} public using (zero-prod)
-
-record Absorptiveᴸ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) (z : A) : Set where
-  field
-    absorbᴸ : ∀ {a} → z ⊙ a ≃ z
-
-open Absorptiveᴸ {{...}} public using (absorbᴸ)
-
-record Absorptiveᴿ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) (z : A) : Set where
-  field
-    absorbᴿ : ∀ {a} → a ⊙ z ≃ z
-
-open Absorptiveᴿ {{...}} public using (absorbᴿ)
 
 record Compatible₁
     {A B : Set} {{_ : Eq B}} (f : A → B) (g : A → A) (h : B → B) : Set where
@@ -204,58 +121,6 @@ record ExactlyOneOfThree (A B C : Set) : Set where
     at-least-one : OneOfThree A B C
     at-most-one : ¬ TwoOfThree A B C
 
-with-comm :
-  {A : Set} {_⊙_ : A → A → A}
-    {{_ : Eq A}} {{_ : Commutative _⊙_}} →
-      ∀ {a b c d} → b ⊙ a ≃ d ⊙ c → a ⊙ b ≃ c ⊙ d
-with-comm {A} {_⊙_} {a} {b} {c} {d} b⊙a≃d⊙c =
-  begin
-    a ⊙ b
-  ≃⟨ comm ⟩
-    b ⊙ a
-  ≃⟨ b⊙a≃d⊙c ⟩
-    d ⊙ c
-  ≃⟨ comm ⟩
-    c ⊙ d
-  ∎
-
-substitutiveᴿ :
-  {A : Set} {_⊙_ : A → A → A}
-    {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Substitutiveᴸ _⊙_}} →
-      Substitutiveᴿ _⊙_
-substitutiveᴿ = substitutive₁ (with-comm ∘ subst)
-
-substitutive₂ :
-  {A : Set} {_⊙_ : A → A → A}
-    {{_ : Eq A}} {{_ : Substitutiveᴸ _⊙_}} {{_ : Substitutiveᴿ _⊙_}} →
-      Substitutive₂ _⊙_
-substitutive₂ = record {}
-
-commutativeᴿ :
-  {A : Set} {f : A → A} {_⊙_ : A → A → A}
-    {{_ : Eq A}} {{_ : Substitutive₁ f _≃_ _≃_}}
-    {{_ : Commutative _⊙_}} {{_ : Commutativeᴸ f _⊙_}} →
-      Commutativeᴿ f _⊙_
-commutativeᴿ {A} {f} {_⊙_} = record { commᴿ = commᴿ₀ }
-  where
-    commᴿ₀ : ∀ {a b} → a ⊙ f b ≃ f (a ⊙ b)
-    commᴿ₀ {a} {b} =
-      begin
-        a ⊙ f b
-      ≃⟨ comm ⟩
-        f b ⊙ a
-      ≃⟨ commᴸ ⟩
-        f (b ⊙ a)
-      ≃⟨ subst comm ⟩
-        f (a ⊙ b)
-      ∎
-
-identityᴿ :
-  {A : Set} {_⊙_ : A → A → A} →
-    ∀ {e} {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Identityᴸ _⊙_ e}} →
-      Identityᴿ _⊙_ e
-identityᴿ = record { identᴿ = Eq.trans comm identᴸ }
-
 cancellativeᴿ :
   {A : Set} {_⊙_ : A → A → A}
     {{eq : Eq A}} {{⊙-comm : Commutative _⊙_}}
@@ -285,12 +150,6 @@ distributiveᴿ {A} {_⊙_} {_⊕_} = record { distribᴿ = distribᴿ₀ }
       ≃⟨ subst comm ⟩
         (a ⊙ c) ⊕ (b ⊙ c)
       ∎
-
-absorptiveᴿ :
-  {A : Set} {_⊙_ : A → A → A} →
-    ∀ {z} {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Absorptiveᴸ _⊙_ z}} →
-      Absorptiveᴿ _⊙_ z
-absorptiveᴿ = record { absorbᴿ = Eq.trans comm absorbᴸ }
 
 inverseᴿ :
   {A : Set} {_⊙_ : A → A → A} {inv : A → A} →
@@ -353,19 +212,6 @@ perm-adcb {A} {_⊙_} {a} {b} {c} {d} =
     (a ⊙ b) ⊙ (d ⊙ c)
   ≃⟨ subst comm ⟩
     (a ⊙ b) ⊙ (c ⊙ d)
-  ∎
-
-[a≃b][c≃d] :
-  {A B : Set} {_⊙_ : A → A → B}
-    {{_ : Eq A}} {{_ : Eq B}} {{_ : Substitutive₂ _⊙_}} →
-      ∀ {a b c d} → a ≃ b → c ≃ d → a ⊙ c ≃ b ⊙ d
-[a≃b][c≃d] {A} {B} {_⊙_} {a} {b} {c} {d} a≃b c≃d =
-  begin
-    a ⊙ c
-  ≃⟨ subst a≃b ⟩
-    b ⊙ c
-  ≃⟨ subst c≃d ⟩
-    b ⊙ d
   ∎
 
 distrib-twoᴸ :
@@ -439,12 +285,6 @@ a[bc]-chain {A} {_⊙_} {a} {b} {c} {d} {e} ab≃d dc≃e =
   ≃⟨ dc≃e ⟩
     e
   ∎
-
-comm-swap :
-  {A : Set} {f : A → A} {_⊙_ : A → A → A}
-    {{_ : Eq A}} {{_ : Commutativeᴸ f _⊙_}} {{_ : Commutativeᴿ f _⊙_}} →
-      ∀ {a b} → f a ⊙ b ≃ a ⊙ f b
-comm-swap = Eq.trans commᴸ (Eq.sym commᴿ)
 
 eq→idᴿ :
   {A : Set} {_⊙_ : A → A → A} {a b d e : A}
