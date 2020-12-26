@@ -40,7 +40,7 @@ _/′_ : (p q : ℚ) {{_ : q ≄ⁱ 0}} → ℚ
 p /′ q = p * q ⁻¹′
 
 instance
-  recip-substitutiveⁱ : AA.Substitutiveⁱ₁ _⁻¹′
+  recip-substitutiveⁱ : AA.Substitutiveⁱ _⁻¹′ _≃_ _≃_
   recip-substitutiveⁱ = record { substⁱ = recip-substⁱ }
     where
       recip-substⁱ :

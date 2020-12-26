@@ -28,7 +28,7 @@ instance
     record { Constraint = λ _ → ⊤ ; fromNeg = λ n → - Literals.fromNat n }
 
   neg-substitutive : AA.Substitutive₁ -_ _≃_ _≃_
-  neg-substitutive = record { subst = neg-subst }
+  neg-substitutive = AA.substitutive₁ neg-subst
     where
       neg-subst : {a₁ a₂ : ℤ} → a₁ ≃ a₂ → - a₁ ≃ - a₂
       neg-subst {a₁⁺ — a₁⁻} {a₂⁺ — a₂⁻} (≃ᶻ-intro a₁⁺+a₂⁻≃a₂⁺+a₁⁻) =
@@ -115,7 +115,7 @@ pos-nonzero (record { n = n ; pos = n≄0 ; x≃n = a≃n }) a≃0 =
 
 instance
   Positive-substitutive : AA.Substitutive₁ Positive _≃_ _⟨→⟩_
-  Positive-substitutive = record { subst = Positive-subst }
+  Positive-substitutive = AA.substitutive₁ Positive-subst
     where
       Positive-subst : ∀ {a₁ a₂} → a₁ ≃ a₂ → Positive a₁ → Positive a₂
       Positive-subst a₁≃a₂ (record { n = n ; pos = n≄0 ; x≃n = a₁≃n }) =

@@ -144,7 +144,7 @@ instance
   <-transitive = record { trans = Cast.delegate₂ (Eq.trans {_~_ = _<⁺_}) }
 
   <-substitutiveᴸ : ∀ {n} → AA.Substitutive₁ (_< n) _≃_ _⟨→⟩_
-  <-substitutiveᴸ {n} = record { subst = <-substᴸ }
+  <-substitutiveᴸ {n} = AA.substitutive₁ <-substᴸ
     where
       <-substᴸ : ∀ {m₁ m₂} → m₁ ≃ m₂ → m₁ < n → m₂ < n
       <-substᴸ m₁≃m₂ (<-intro m₁≤n m₁≄n) = <-intro (AA.subst m₁≃m₂ m₁≤n) m₂≄n
@@ -152,7 +152,7 @@ instance
           m₂≄n = λ m₂≃n → contra (Eq.trans m₁≃m₂ m₂≃n) m₁≄n
 
   <-substitutiveᴿ : ∀ {n} → AA.Substitutive₁ (n <_) _≃_ _⟨→⟩_
-  <-substitutiveᴿ {n} = record { subst = <-substᴿ }
+  <-substitutiveᴿ {n} = AA.substitutive₁ <-substᴿ
     where
       <-substᴿ : ∀ {m₁ m₂} → m₁ ≃ m₂ → n < m₁ → n < m₂
       <-substᴿ m₁≃m₂ (<-intro n≤m₁ n≄m₁) = <-intro (AA.subst m₁≃m₂ n≤m₁) n≄m₂

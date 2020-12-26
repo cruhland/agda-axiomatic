@@ -82,7 +82,7 @@ instance
           ℤ≃? = ℚ.n p * ℚ.d q ≃? ℚ.n q * ℚ.d p
 
   from-ℤ-substitutive₁ : AA.Substitutive₁ {A = ℤ} (_as ℚ) _≃_ _≃_
-  from-ℤ-substitutive₁ = record { subst = ≃₀-intro ∘ AA.subst }
+  from-ℤ-substitutive₁ = AA.substitutive₁ (≃₀-intro ∘ AA.subst)
 
   from-ℤ-injective : AA.Injective {A = ℤ} _≃_ _≃_ (_as ℚ)
   from-ℤ-injective =

@@ -44,7 +44,7 @@ instance
             ∎
 
   +-substitutiveᴸ : AA.Substitutiveᴸ _+_
-  +-substitutiveᴸ {b@(b↑ // b↓ ~ _)} = record { subst = +-substᴸ }
+  +-substitutiveᴸ {b@(b↑ // b↓ ~ _)} = AA.substitutive₁ +-substᴸ
     where
       +-substᴸ : {a₁ a₂ : ℚ} → a₁ ≃ a₂ → a₁ + b ≃ a₂ + b
       +-substᴸ

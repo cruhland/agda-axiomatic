@@ -25,7 +25,7 @@ open import net.cruhland.models.Integers.Multiplication.Commutativity PA
 
 instance
   *-substitutiveᴸ : AA.Substitutiveᴸ _*_
-  *-substitutiveᴸ {b@(b⁺ — b⁻)} = record { subst = *-substᴸ }
+  *-substitutiveᴸ {b@(b⁺ — b⁻)} = AA.substitutive₁ *-substᴸ
     where
       *-substᴸ : {a₁ a₂ : ℤ} → a₁ ≃ a₂ → a₁ * b ≃ a₂ * b
       *-substᴸ {a₁⁺ — a₁⁻} {a₂⁺ — a₂⁻} (≃ᶻ-intro a₁⁺a₂⁻≃a₂⁺a₁⁻) =

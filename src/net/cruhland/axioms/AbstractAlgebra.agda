@@ -3,24 +3,39 @@ module net.cruhland.axioms.AbstractAlgebra where
 open import Function using (_∘_)
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_; Eq)
 open Eq.≃-Reasoning
-open import net.cruhland.models.Logic using (_∨_; ∨-rec; ¬_)
+open import net.cruhland.models.Logic using (⊤; _∨_; ∨-rec; ¬_)
 
-record Substitutive₁
-    {β} {A : Set} {B : A → Set β} (f : (a : A) → B a)
+record Substitutiveⁱ
+    {β} {A : Set} {B : A → Set β} {C : A → Set} (f : (a : A) {{c : C a}} → B a)
       (_~_ : A → A → Set) (_≈_ : ∀ {a₁ a₂} → B a₁ → B a₂ → Set)
         : Set β where
   field
-    subst : ∀ {a₁ a₂} → a₁ ~ a₂ → f a₁ ≈ f a₂
+    substⁱ : ∀ {a₁ a₂} {{c₁ : C a₁}} {{c₂ : C a₂}} → a₁ ~ a₂ → f a₁ ≈ f a₂
 
-open Substitutive₁ {{...}} public using (subst)
+open Substitutiveⁱ {{...}} public using (substⁱ)
 
-record Substitutiveⁱ₁
-    {A B : Set} {C : A → Set} {{eqA : Eq A}} {{eqB : Eq B}}
-      (f : (a : A) {{c : C a}} → B) : Set where
-  field
-    substⁱ : ∀ {a₁ a₂} {{c₁ : C a₁}} {{c₂ : C a₂}} → a₁ ≃ a₂ → f a₁ ≃ f a₂
+no-constraint :
+  ∀ {β} {A : Set} {B : A → Set β} → ((a : A) → B a) → (a : A) → {{_ : ⊤}} → B a
+no-constraint f a = f a
 
-open Substitutiveⁱ₁ {{...}} public using (substⁱ)
+Substitutive₁ :
+  ∀ {β} {A : Set} {B : A → Set β} (f : (a : A) → B a)
+    (_~_ : A → A → Set) (_≈_ : ∀ {a₁ a₂} → B a₁ → B a₂ → Set) →
+      Set β
+Substitutive₁ = Substitutiveⁱ ∘ no-constraint
+
+substitutive₁ :
+  ∀ {β} {A : Set} {B : A → Set β} {f : (a : A) → B a}
+    {_~_ : A → A → Set} {_≈_ : ∀ {a₁ a₂} → B a₁ → B a₂ → Set} →
+      (∀ {a₁ a₂} → a₁ ~ a₂ → f a₁ ≈ f a₂) → Substitutive₁ f _~_ _≈_
+substitutive₁ substFn = record { substⁱ = substFn }
+
+subst :
+  ∀ {β} {A : Set} {B : A → Set β} {f : (a : A) → B a}
+    {_~_ : A → A → Set} {_≈_ : ∀ {a₁ a₂} → B a₁ → B a₂ → Set}
+      {{r : Substitutive₁ f _~_ _≈_}} →
+        ∀ {a₁ a₂} → a₁ ~ a₂ → f a₁ ≈ f a₂
+subst = substⁱ
 
 Substitutiveᴸ : {A B : Set} {{_ : Eq A}} {{_ : Eq B}} → (A → A → B) → Set
 Substitutiveᴸ _⊙_ = ∀ {y} → Substitutive₁ (_⊙ y) _≃_ _≃_
@@ -209,7 +224,7 @@ substitutiveᴿ :
   {A : Set} {_⊙_ : A → A → A}
     {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Substitutiveᴸ _⊙_}} →
       Substitutiveᴿ _⊙_
-substitutiveᴿ = record { subst = with-comm ∘ subst }
+substitutiveᴿ = substitutive₁ (with-comm ∘ subst)
 
 substitutive₂ :
   {A : Set} {_⊙_ : A → A → A}

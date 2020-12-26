@@ -74,7 +74,7 @@ instance
             ∎
 
   ≤-substitutiveᴸ : ∀ {n} → AA.Substitutive₁ (_≤ n) _≃_ _⟨→⟩_
-  ≤-substitutiveᴸ {n} = record { subst = ≤-substᴸ }
+  ≤-substitutiveᴸ {n} = AA.substitutive₁ ≤-substᴸ
     where
       ≤-substᴸ : ∀ {m₁ m₂} → m₁ ≃ m₂ → m₁ ≤ n → m₂ ≤ n
       ≤-substᴸ {m₁} {m₂} m₁≃m₂ (≤-intro d m₁+d≃n) = ≤-intro d m₂+d≃n
@@ -89,13 +89,13 @@ instance
             ∎
 
   ≤-substitutiveᴿ : ∀ {n} → AA.Substitutive₁ (n ≤_) _≃_ _⟨→⟩_
-  ≤-substitutiveᴿ {n} = record { subst = ≤-substᴿ }
+  ≤-substitutiveᴿ {n} = AA.substitutive₁ ≤-substᴿ
     where
       ≤-substᴿ : ∀ {m₁ m₂} → m₁ ≃ m₂ → n ≤ m₁ → n ≤ m₂
       ≤-substᴿ m₁≃m₂ (≤-intro d n+d≃m₁) = ≤-intro d (Eq.trans n+d≃m₁ m₁≃m₂)
 
   ≤-substitutive-step : AA.Substitutive₁ step _≤_ _≤_
-  ≤-substitutive-step = record { subst = s≤s }
+  ≤-substitutive-step = AA.substitutive₁ s≤s
     where
       s≤s : ∀ {n m} → n ≤ m → step n ≤ step m
       s≤s {n} {m} (≤-intro d n+d≃m) = ≤-intro d sn+d≃sm
@@ -125,7 +125,7 @@ instance
             ∎
 
   ≤-substitutive-+ᴸ : ∀ {c} → AA.Substitutive₁ (_+ c) _≤_ _≤_
-  ≤-substitutive-+ᴸ {c} = record { subst = ≤-subst-+ᴸ }
+  ≤-substitutive-+ᴸ {c} = AA.substitutive₁ ≤-subst-+ᴸ
     where
       ≤-subst-+ᴸ : ∀ {a b} → a ≤ b → a + c ≤ b + c
       ≤-subst-+ᴸ {a} {b} (≤-intro d a+d≃b) = ≤-intro d a+c+d≃b+c

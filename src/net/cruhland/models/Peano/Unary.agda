@@ -33,7 +33,7 @@ instance
   eq = record { _≃_ = _≡_ }
 
   step-substitutive : AA.Substitutive₁ step _≡_ _≡_
-  step-substitutive = record { subst = cong step }
+  step-substitutive = AA.substitutive₁ (cong step)
 
   step-injective : AA.Injective _≡_ _≡_ step
   step-injective = record { inject = step-inj }
@@ -52,7 +52,7 @@ instance
   plus = record { _+_ = _+_ }
 
   +-substitutiveᴸ : ∀ {m} → AA.Substitutive₁ (_+ m) _≡_ _≡_
-  +-substitutiveᴸ {m} = record { subst = cong (_+ m) }
+  +-substitutiveᴸ {m} = AA.substitutive₁ (cong (_+ m))
 
   +-identityᴸ : AA.Identityᴸ _+_ zero
   +-identityᴸ = record { identᴸ = refl }
@@ -68,7 +68,7 @@ instance
   star = record { _*_ = _*_ }
 
   *-substitutiveᴸ : ∀ {m} → AA.Substitutive₁ (_* m) _≡_ _≡_
-  *-substitutiveᴸ {m} = record { subst = cong (_* m) }
+  *-substitutiveᴸ {m} = AA.substitutive₁ (cong (_* m))
 
   *-absorptiveᴸ : AA.Absorptiveᴸ _*_ zero
   *-absorptiveᴸ = record { absorbᴸ = refl }

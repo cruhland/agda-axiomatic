@@ -32,7 +32,7 @@ instance
     record { Constraint = const ⊤ ; fromNeg = λ n → - Literals.fromNat n }
 
   neg-substitutive₁ : AA.Substitutive₁ -_ _≃_ _≃_
-  neg-substitutive₁ = record { subst = neg-subst }
+  neg-substitutive₁ = AA.substitutive₁ neg-subst
     where
       neg-subst : {a₁ a₂ : ℚ} → a₁ ≃ a₂ → - a₁ ≃ - a₂
       neg-subst {a₁↑ // a₁↓ ~ _} {a₂↑ // a₂↓ ~ _} (≃₀-intro a₁↑a₂↓≃a₂↑a₁↓) =
