@@ -67,7 +67,7 @@ instance
               n
             ≃˘⟨ AA.identᴿ ⟩
               n + 0
-            ≃˘⟨ AA.substᴿ a≃0 ⟩
+            ≃˘⟨ AA.subst a≃0 ⟩
               n + a
             ≃⟨ n+a≃m ⟩
               m

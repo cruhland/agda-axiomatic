@@ -22,17 +22,16 @@ record Substitutiveⁱ₁
 
 open Substitutiveⁱ₁ {{...}} public using (substⁱ)
 
-record Substitutiveᴿ
-    {A B : Set} {{eqA : Eq A}} {{eqB : Eq B}} (_⊙_ : A → A → B) : Set where
-  field
-    substᴿ : ∀ {a b₁ b₂} → b₁ ≃ b₂ → a ⊙ b₁ ≃ a ⊙ b₂
+Substitutiveᴸ : {A B : Set} {{_ : Eq A}} {{_ : Eq B}} → (A → A → B) → Set
+Substitutiveᴸ _⊙_ = ∀ {y} → Substitutive₁ (_⊙ y) _≃_ _≃_
 
-open Substitutiveᴿ {{...}} public using (substᴿ)
+Substitutiveᴿ : {A B : Set} {{_ : Eq A}} {{_ : Eq B}} → (A → A → B) → Set
+Substitutiveᴿ _⊙_ = ∀ {x} → Substitutive₁ (x ⊙_) _≃_ _≃_
 
 record Substitutive₂
     {A B : Set} {{eqA : Eq A}} {{eqB : Eq B}} (_⊙_ : A → A → B) : Set where
   field
-    {{subst₂ᴸ}} : ∀ {y} → Substitutive₁ (_⊙ y) _≃_ _≃_
+    {{subst₂ᴸ}} : Substitutiveᴸ _⊙_
     {{subst₂ᴿ}} : Substitutiveᴿ _⊙_
 
 record Associative {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set where
@@ -207,15 +206,14 @@ with-comm {A} {_⊙_} {a} {b} {c} {d} b⊙a≃d⊙c =
   ∎
 
 substitutiveᴿ :
-  {A : Set} {_⊙_ : A → A → A} {{_ : Eq A}} {{_ : Commutative _⊙_}}
-    {{_ : ∀ {y} → Substitutive₁ (_⊙ y) _≃_ _≃_}} →
+  {A : Set} {_⊙_ : A → A → A}
+    {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Substitutiveᴸ _⊙_}} →
       Substitutiveᴿ _⊙_
-substitutiveᴿ = record { substᴿ = with-comm ∘ subst }
+substitutiveᴿ = record { subst = with-comm ∘ subst }
 
 substitutive₂ :
   {A : Set} {_⊙_ : A → A → A}
-    {{_ : Eq A}} {{_ : ∀ {y} → Substitutive₁ (_⊙ y) _≃_ _≃_}}
-    {{_ : Substitutiveᴿ _⊙_}} →
+    {{_ : Eq A}} {{_ : Substitutiveᴸ _⊙_}} {{_ : Substitutiveᴿ _⊙_}} →
       Substitutive₂ _⊙_
 substitutive₂ = record {}
 
@@ -270,7 +268,7 @@ distributiveᴿ {A} {_⊙_} {_⊕_} = record { distribᴿ = distribᴿ₀ }
         (c ⊙ a) ⊕ (c ⊙ b)
       ≃⟨ subst comm ⟩
         (a ⊙ c) ⊕ (c ⊙ b)
-      ≃⟨ substᴿ comm ⟩
+      ≃⟨ subst comm ⟩
         (a ⊙ c) ⊕ (b ⊙ c)
       ∎
 
@@ -301,7 +299,7 @@ inverseⁱᴿ = record { invⁱᴿ = Eq.trans comm invⁱᴸ }
     (a ⊙ b) ⊙ (c ⊙ d)
   ≃⟨ assoc ⟩
     a ⊙ (b ⊙ (c ⊙ d))
-  ≃˘⟨ substᴿ assoc ⟩
+  ≃˘⟨ subst assoc ⟩
     a ⊙ ((b ⊙ c) ⊙ d)
   ∎
 
@@ -309,7 +307,7 @@ swap-middle :
   {A : Set} {_⊙_ : A → A → A}
     {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Substitutive₂ _⊙_}} →
       ∀ {a b c d} → a ⊙ ((b ⊙ c) ⊙ d) ≃ a ⊙ ((c ⊙ b) ⊙ d)
-swap-middle = substᴿ (subst comm)
+swap-middle = subst (subst comm)
 
 transpose :
   {A : Set} {_⊙_ : A → A → A}
@@ -335,11 +333,11 @@ perm-adcb :
 perm-adcb {A} {_⊙_} {a} {b} {c} {d} =
   begin
     (a ⊙ d) ⊙ (c ⊙ b)
-  ≃⟨ substᴿ comm ⟩
+  ≃⟨ subst comm ⟩
     (a ⊙ d) ⊙ (b ⊙ c)
   ≃⟨ transpose ⟩
     (a ⊙ b) ⊙ (d ⊙ c)
-  ≃⟨ substᴿ comm ⟩
+  ≃⟨ subst comm ⟩
     (a ⊙ b) ⊙ (c ⊙ d)
   ∎
 
@@ -352,7 +350,7 @@ perm-adcb {A} {_⊙_} {a} {b} {c} {d} =
     a ⊙ c
   ≃⟨ subst a≃b ⟩
     b ⊙ c
-  ≃⟨ substᴿ c≃d ⟩
+  ≃⟨ subst c≃d ⟩
     b ⊙ d
   ∎
 
@@ -367,7 +365,7 @@ distrib-twoᴸ {A} {_⊙_} {_⊕_} {a} {b} {c} {d} {e} {f} =
     (a ⊙ (b ⊕ c)) ⊕ (d ⊙ (e ⊕ f))
   ≃⟨ subst distribᴸ ⟩
     ((a ⊙ b) ⊕ (a ⊙ c)) ⊕ (d ⊙ (e ⊕ f))
-  ≃⟨ substᴿ distribᴸ ⟩
+  ≃⟨ subst distribᴸ ⟩
     ((a ⊙ b) ⊕ (a ⊙ c)) ⊕ ((d ⊙ e) ⊕ (d ⊙ f))
   ∎
 
@@ -382,7 +380,7 @@ distrib-twoᴿ {A} {_⊙_} {_⊕_} {a} {b} {c} {d} {e} {f} =
     ((a ⊕ b) ⊙ c) ⊕ ((d ⊕ e) ⊙ f)
   ≃⟨ subst distribᴿ ⟩
     ((a ⊙ c) ⊕ (b ⊙ c)) ⊕ ((d ⊕ e) ⊙ f)
-  ≃⟨ substᴿ distribᴿ ⟩
+  ≃⟨ subst distribᴿ ⟩
     ((a ⊙ c) ⊕ (b ⊙ c)) ⊕ ((d ⊙ f) ⊕ (e ⊙ f))
   ∎
 
@@ -407,7 +405,7 @@ substᴿ-with-assoc {A} {_⊙_} {a} {b} {c} {d} {e} bc≃de =
     (a ⊙ b) ⊙ c
   ≃⟨ assoc ⟩
     a ⊙ (b ⊙ c)
-  ≃⟨ substᴿ bc≃de ⟩
+  ≃⟨ subst bc≃de ⟩
     a ⊙ (d ⊙ e)
   ≃˘⟨ assoc ⟩
     (a ⊙ d) ⊙ e
@@ -415,8 +413,7 @@ substᴿ-with-assoc {A} {_⊙_} {a} {b} {c} {d} {e} bc≃de =
 
 a[bc]-chain :
   {A : Set} {_⊙_ : A → A → A}
-    {{_ : Eq A}} {{_ : Associative _⊙_}}
-    {{_ : ∀ {y} → Substitutive₁ (_⊙ y) _≃_ _≃_}} →
+    {{_ : Eq A}} {{_ : Associative _⊙_}} {{_ : Substitutiveᴸ _⊙_}} →
       ∀ {a b c d e} → a ⊙ b ≃ d → d ⊙ c ≃ e → a ⊙ (b ⊙ c) ≃ e
 a[bc]-chain {A} {_⊙_} {a} {b} {c} {d} {e} ab≃d dc≃e =
   begin
@@ -462,7 +459,7 @@ idᴿ→eq {A} {_⊙_} {a} {b} {d} {e} ad≃b d≃e =
     a
   ≃˘⟨ identᴿ ⟩
     a ⊙ e
-  ≃˘⟨ substᴿ d≃e ⟩
+  ≃˘⟨ subst d≃e ⟩
     a ⊙ d
   ≃⟨ ad≃b ⟩
     b
@@ -470,8 +467,7 @@ idᴿ→eq {A} {_⊙_} {a} {b} {d} {e} ad≃b d≃e =
 
 assoc-four :
   {A : Set} {_⊙_ _⊕_ : A → A → A}
-    {{_ : Eq A}} {{_ : Associative _⊙_}}
-    {{_ : ∀ {y} → Substitutive₁ (_⊕ y) _≃_ _≃_}} {{_ : Substitutiveᴿ _⊕_}} →
+    {{_ : Eq A}} {{_ : Associative _⊙_}} {{_ : Substitutive₂ _⊕_}} →
       ∀ {a₁ a₂ a₃ b₁ b₂ b₃ c₁ c₂ c₃ d₁ d₂ d₃} →
         (((a₁ ⊙ a₂) ⊙ a₃) ⊕ ((b₁ ⊙ b₂) ⊙ b₃)) ⊕
           (((c₁ ⊙ c₂) ⊙ c₃) ⊕ ((d₁ ⊙ d₂) ⊙ d₃))
@@ -486,20 +482,20 @@ assoc-four
   ≃⟨ subst (subst assoc) ⟩
     ((a₁ ⊙ (a₂ ⊙ a₃)) ⊕ ((b₁ ⊙ b₂) ⊙ b₃)) ⊕
       (((c₁ ⊙ c₂) ⊙ c₃) ⊕ ((d₁ ⊙ d₂) ⊙ d₃))
-  ≃⟨ subst (substᴿ assoc) ⟩
+  ≃⟨ subst (subst assoc) ⟩
     ((a₁ ⊙ (a₂ ⊙ a₃)) ⊕ (b₁ ⊙ (b₂ ⊙ b₃))) ⊕
       (((c₁ ⊙ c₂) ⊙ c₃) ⊕ ((d₁ ⊙ d₂) ⊙ d₃))
-  ≃⟨ substᴿ (subst assoc) ⟩
+  ≃⟨ subst (subst assoc) ⟩
     ((a₁ ⊙ (a₂ ⊙ a₃)) ⊕ (b₁ ⊙ (b₂ ⊙ b₃))) ⊕
       ((c₁ ⊙ (c₂ ⊙ c₃)) ⊕ ((d₁ ⊙ d₂) ⊙ d₃))
-  ≃⟨ substᴿ (substᴿ assoc) ⟩
+  ≃⟨ subst (subst assoc) ⟩
     ((a₁ ⊙ (a₂ ⊙ a₃)) ⊕ (b₁ ⊙ (b₂ ⊙ b₃))) ⊕
       ((c₁ ⊙ (c₂ ⊙ c₃)) ⊕ (d₁ ⊙ (d₂ ⊙ d₃)))
   ∎
 
 refactor :
   {A : Set} {_⊙_ _⊕_ : A → A → A}
-    {{_ : Eq A}} {{_ : Associative _⊙_}} {{_ : Associative _⊕_}}
+    {{eq : Eq A}} {{_ : Associative _⊙_}} {{_ : Associative _⊕_}}
     {{_ : Commutative _⊕_}} {{_ : Substitutive₂ _⊕_}}
     {{_ : Distributiveᴸ _⊙_ _⊕_}} {{_ : Distributiveᴿ _⊙_ _⊕_}} →
       ∀ {b₁ b₂ a₁ a₂ a₃ a₄} →
@@ -514,7 +510,7 @@ refactor {A} {_⊙_} {_⊕_} {b₁} {b₂} {a₁} {a₂} {a₃} {a₄} =
   ≃⟨ transpose ⟩
     (((a₁ ⊙ a₃) ⊙ b₁) ⊕ ((a₁ ⊙ a₄) ⊙ b₂)) ⊕
       (((a₂ ⊙ a₄) ⊙ b₁) ⊕ ((a₂ ⊙ a₃) ⊙ b₂))
-  ≃⟨ substᴿ comm ⟩
+  ≃⟨ subst comm ⟩
     (((a₁ ⊙ a₃) ⊙ b₁) ⊕ ((a₁ ⊙ a₄) ⊙ b₂)) ⊕
       (((a₂ ⊙ a₃) ⊙ b₂) ⊕ ((a₂ ⊙ a₄) ⊙ b₁))
   ≃⟨ assoc-four ⟩

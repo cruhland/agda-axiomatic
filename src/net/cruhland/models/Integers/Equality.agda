@@ -70,11 +70,11 @@ instance
       ℤ-substᴸ : ∀ {n₁ n₂} → n₁ ≃ n₂ → n₁ — m ≃ n₂ — m
       ℤ-substᴸ n₁≃n₂ = ≃ᶻ-intro (AA.subst n₁≃n₂)
 
-  ℤ-substitutiveᴿ : AA.Substitutiveᴿ _—_
-  ℤ-substitutiveᴿ = record { substᴿ = ℤ-substᴿ }
+  ℤ-substitutiveᴿ : ∀ {m} → AA.Substitutive₁ (m —_) _≃_ _≃_
+  ℤ-substitutiveᴿ {m} = record { subst = ℤ-substᴿ }
     where
-      ℤ-substᴿ : ∀ {m n₁ n₂} → n₁ ≃ n₂ → m — n₁ ≃ m — n₂
-      ℤ-substᴿ n₁≃n₂ = ≃ᶻ-intro (AA.substᴿ (sym n₁≃n₂))
+      ℤ-substᴿ : ∀ {n₁ n₂} → n₁ ≃ n₂ → m — n₁ ≃ m — n₂
+      ℤ-substᴿ n₁≃n₂ = ≃ᶻ-intro (AA.subst (sym n₁≃n₂))
 
   ℤ-substitutive₂ : AA.Substitutive₂ _—_
   ℤ-substitutive₂ = record {}

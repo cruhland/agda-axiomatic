@@ -53,11 +53,11 @@ _>_ = flip _<_
           (- a) + a + ((n₁ as ℤ) + (n₂ as ℤ))
         ≃⟨ AA.assoc ⟩
           (- a) + (a + ((n₁ as ℤ) + (n₂ as ℤ)))
-        ≃˘⟨ AA.substᴿ AA.assoc ⟩
+        ≃˘⟨ AA.subst {f = - a +_} AA.assoc ⟩
           (- a) + (a + (n₁ as ℤ) + (n₂ as ℤ))
-        ≃˘⟨ AA.substᴿ (AA.subst b≃a+n₁) ⟩
+        ≃˘⟨ AA.subst {f = - a +_} (AA.subst b≃a+n₁) ⟩
           (- a) + (b + (n₂ as ℤ))
-        ≃˘⟨ AA.substᴿ a≃b+n₂ ⟩
+        ≃˘⟨ AA.subst a≃b+n₂ ⟩
           (- a) + a
         ≃⟨ AA.invᴸ ⟩
           0
@@ -67,7 +67,7 @@ _>_ = flip _<_
         a
       ≃⟨ a≃b+n₂ ⟩
         b + (n₂ as ℤ)
-      ≃⟨ AA.substᴿ (AA.subst {_~_ = _≃_} {_≈_ = _≃_} n₂≃0) ⟩
+      ≃⟨ AA.subst {f = b +_} (AA.subst {_~_ = _≃_} {_≈_ = _≃_} n₂≃0) ⟩
         b + (0 as ℤ)
       ≃⟨ AA.identᴿ ⟩
         b
@@ -140,7 +140,7 @@ instance
           b
         ≃˘⟨ AA.identᴿ ⟩
           b + 0
-        ≃˘⟨ AA.substᴿ AA.invᴸ ⟩
+        ≃˘⟨ AA.subst AA.invᴸ ⟩
           b + (- c + c)
         ≃˘⟨ AA.assoc ⟩
           b - c + c

@@ -24,7 +24,7 @@ open import net.cruhland.models.Integers.Multiplication.Commutativity PA
   as ℤcomm public
 
 instance
-  *-substitutiveᴸ : {b : ℤ} → AA.Substitutive₁ (_* b) _≃_ _≃_
+  *-substitutiveᴸ : AA.Substitutiveᴸ _*_
   *-substitutiveᴸ {b@(b⁺ — b⁻)} = record { subst = *-substᴸ }
     where
       *-substᴸ : {a₁ a₂ : ℤ} → a₁ ≃ a₂ → a₁ * b ≃ a₂ * b
@@ -51,17 +51,17 @@ instance
               (a₁⁺ + a₂⁻) * b⁺ + (a₂⁺ + a₁⁻) * b⁻
             ≃⟨ AA.subst (AA.subst a₁⁺a₂⁻≃a₂⁺a₁⁻) ⟩
               (a₂⁺ + a₁⁻) * b⁺ + (a₂⁺ + a₁⁻) * b⁻
-            ≃˘⟨ AA.substᴿ (AA.subst a₁⁺a₂⁻≃a₂⁺a₁⁻) ⟩
+            ≃˘⟨ AA.subst (AA.subst a₁⁺a₂⁻≃a₂⁺a₁⁻) ⟩
               (a₂⁺ + a₁⁻) * b⁺ + (a₁⁺ + a₂⁻) * b⁻
             ≃˘⟨ rearr {w = a₂⁺} {y = a₁⁺} ⟩
               (a₂⁺ * b⁺ + a₂⁻ * b⁻) + (a₁⁺ * b⁻ + a₁⁻ * b⁺)
             ∎
 
-  *-substitutiveᴿ : AA.Substitutiveᴿ {A = ℤ} _*_
-  *-substitutiveᴿ = AA.substitutiveᴿ
+  *-substitutiveᴿ : AA.Substitutiveᴿ _*_
+  *-substitutiveᴿ = AA.substitutiveᴿ {A = ℤ}
 
-  *-substitutive₂ : AA.Substitutive₂ {A = ℤ} _*_
-  *-substitutive₂ = AA.substitutive₂
+  *-substitutive₂ : AA.Substitutive₂ _*_
+  *-substitutive₂ = AA.substitutive₂ {A = ℤ}
 
   *-compatible-ℕ : AA.Compatible₂ {A = ℕ} (_as ℤ) _*_ _*_
   *-compatible-ℕ = record { compat₂ = *-compat-ℕ }
@@ -72,11 +72,11 @@ instance
           nm+n0+0m≃nm+00+0 =
             begin
               n * m + (n * 0 + 0 * m)
-            ≃⟨ AA.substᴿ (AA.subst AA.absorbᴿ) ⟩
+            ≃⟨ AA.subst (AA.subst AA.absorbᴿ) ⟩
               n * m + (0 + 0 * m)
-            ≃˘⟨ AA.substᴿ (AA.subst AA.absorbᴸ) ⟩
+            ≃˘⟨ AA.subst (AA.subst AA.absorbᴸ) ⟩
               n * m + (0 * 0 + 0 * m)
-            ≃⟨ AA.substᴿ (AA.substᴿ AA.absorbᴸ) ⟩
+            ≃⟨ AA.subst (AA.subst AA.absorbᴸ) ⟩
               n * m + (0 * 0 + 0)
             ≃˘⟨ AA.assoc ⟩
               n * m + 0 * 0 + 0
@@ -93,15 +93,15 @@ instance
               (1 * x⁺ + 0 * x⁻) + x⁻
             ≃⟨ AA.subst (AA.subst AA.identᴸ) ⟩
               (x⁺ + 0 * x⁻) + x⁻
-            ≃⟨ AA.subst (AA.substᴿ AA.absorbᴸ) ⟩
+            ≃⟨ AA.subst (AA.subst AA.absorbᴸ) ⟩
               (x⁺ + 0) + x⁻
             ≃⟨ AA.subst AA.identᴿ ⟩
               x⁺ + x⁻
-            ≃˘⟨ AA.substᴿ AA.identᴿ ⟩
+            ≃˘⟨ AA.subst AA.identᴿ ⟩
               x⁺ + (x⁻ + 0)
-            ≃˘⟨ AA.substᴿ (AA.substᴿ AA.absorbᴸ) ⟩
+            ≃˘⟨ AA.subst (AA.subst AA.absorbᴸ) ⟩
               x⁺ + (x⁻ + 0 * x⁺)
-            ≃˘⟨ AA.substᴿ (AA.subst AA.identᴸ) ⟩
+            ≃˘⟨ AA.subst (AA.subst AA.identᴸ) ⟩
               x⁺ + (1 * x⁻ + 0 * x⁺)
             ∎
 
@@ -152,7 +152,7 @@ instance
               (a⁻ * b⁺ + a⁺ * b⁻) + (a⁺ * b⁺ + a⁻ * b⁻)
             ≃⟨ AA.subst AA.comm ⟩
               (a⁺ * b⁻ + a⁻ * b⁺) + (a⁺ * b⁺ + a⁻ * b⁻)
-            ≃⟨ AA.substᴿ AA.comm ⟩
+            ≃⟨ AA.subst AA.comm ⟩
               (a⁺ * b⁻ + a⁻ * b⁺) + (a⁻ * b⁻ + a⁺ * b⁺)
             ∎
 
@@ -170,7 +170,7 @@ neg-mult {a⁺ — a⁻} = AA.[a≃b][c≃d] x≃0y+1x x≃0y+1x
         0 + x
       ≃˘⟨ AA.subst AA.absorbᴸ ⟩
         0 * y + x
-      ≃˘⟨ AA.substᴿ AA.identᴸ ⟩
+      ≃˘⟨ AA.subst AA.identᴸ ⟩
         0 * y + 1 * x
       ∎
 
@@ -182,7 +182,7 @@ neg-mult {a⁺ — a⁻} = AA.[a≃b][c≃d] x≃0y+1x x≃0y+1x
     c * (a + - b)
   ≃⟨ AA.distribᴸ ⟩
     c * a + c * - b
-  ≃⟨ AA.substᴿ {_⊙_ = _+_} AA.commᴿ ⟩
+  ≃⟨ AA.subst {f = c * a +_} AA.commᴿ ⟩
     c * a + - (c * b)
   ≃⟨⟩
     c * a - c * b
@@ -196,7 +196,7 @@ neg-mult {a⁺ — a⁻} = AA.[a≃b][c≃d] x≃0y+1x x≃0y+1x
     (a + - b) * c
   ≃⟨ AA.distribᴿ ⟩
     a * c + (- b) * c
-  ≃⟨ AA.substᴿ AA.commᴸ ⟩
+  ≃⟨ AA.subst {f = a * c +_} AA.commᴸ ⟩
     a * c + - (b * c)
   ≃⟨⟩
     a * c - b * c
@@ -231,9 +231,9 @@ neg-sub-swap {a} {b} =
     -1 * a - -1 * b
   ≃˘⟨ AA.subst neg-mult ⟩
     - a - -1 * b
-  ≃˘⟨ AA.substᴿ (AA.subst neg-mult) ⟩
+  ≃˘⟨ AA.subst (AA.subst {f = -_} neg-mult) ⟩
     - a - (- b)
-  ≃⟨ AA.substᴿ neg-involutive ⟩
+  ≃⟨ AA.subst {f = - a +_} neg-involutive ⟩
     - a + b
   ≃˘⟨ AA.comm ⟩
     b - a
@@ -265,7 +265,7 @@ instance
                 n * b⁺
               ≃˘⟨ AA.identᴿ ⟩
                 n * b⁺ + 0
-              ≃˘⟨ AA.substᴿ AA.absorbᴸ ⟩
+              ≃˘⟨ AA.subst AA.absorbᴸ ⟩
                 n * b⁺ + 0 * b⁻
               ≃˘⟨ AA.identᴿ ⟩
                 n * b⁺ + 0 * b⁻ + 0
@@ -273,7 +273,7 @@ instance
                 0 + (n * b⁻ + 0 * b⁺)
               ≃⟨ AA.identᴸ ⟩
                 n * b⁻ + 0 * b⁺
-              ≃⟨ AA.substᴿ AA.absorbᴸ ⟩
+              ≃⟨ AA.subst AA.absorbᴸ ⟩
                 n * b⁻ + 0
               ≃⟨ AA.identᴿ ⟩
                 n * b⁻

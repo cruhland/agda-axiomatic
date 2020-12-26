@@ -76,7 +76,7 @@ instance
                       a
                     ≃˘⟨ AA.identᴿ ⟩
                       a + 0
-                    ≃˘⟨ AA.substᴿ d≃0 ⟩
+                    ≃˘⟨ AA.subst d≃0 ⟩
                       a + d
                     ≃⟨ a+d≃b ⟩
                       b
@@ -88,7 +88,7 @@ instance
                 step a + pd
               ≃⟨ AA.comm-swap ⟩
                 a + step pd
-              ≃˘⟨ AA.substᴿ d≃spd ⟩
+              ≃˘⟨ AA.subst d≃spd ⟩
                 a + d
               ≃⟨ a+d≃b ⟩
                 b

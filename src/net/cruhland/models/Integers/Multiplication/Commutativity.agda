@@ -13,7 +13,7 @@ open import net.cruhland.models.Integers.Equality PA as ℤ≃ using (≃ᶻ-int
 import net.cruhland.models.Integers.Multiplication.Base PA as ℤ*
 
 instance
-  *-commutative : AA.Commutative {A = ℤ} _*_
+  *-commutative : AA.Commutative _*_
   *-commutative = record { comm = *-comm }
     where
       *-comm : {a b : ℤ} → a * b ≃ b * a
@@ -24,12 +24,12 @@ instance
               (a⁺ * b⁺ + a⁻ * b⁻) + (b⁺ * a⁻ + b⁻ * a⁺)
             ≃⟨ AA.subst (AA.subst AA.comm) ⟩
               (b⁺ * a⁺ + a⁻ * b⁻) + (b⁺ * a⁻ + b⁻ * a⁺)
-            ≃⟨ AA.subst (AA.substᴿ AA.comm) ⟩
+            ≃⟨ AA.subst (AA.subst AA.comm) ⟩
               (b⁺ * a⁺ + b⁻ * a⁻) + (b⁺ * a⁻ + b⁻ * a⁺)
-            ≃⟨ AA.substᴿ AA.comm ⟩
+            ≃⟨ AA.subst AA.comm ⟩
               (b⁺ * a⁺ + b⁻ * a⁻) + (b⁻ * a⁺ + b⁺ * a⁻)
-            ≃⟨ AA.substᴿ (AA.subst AA.comm) ⟩
+            ≃⟨ AA.subst (AA.subst AA.comm) ⟩
               (b⁺ * a⁺ + b⁻ * a⁻) + (a⁺ * b⁻ + b⁺ * a⁻)
-            ≃⟨ AA.substᴿ (AA.substᴿ AA.comm) ⟩
+            ≃⟨ AA.subst (AA.subst AA.comm) ⟩
               (b⁺ * a⁺ + b⁻ * a⁻) + (a⁺ * b⁻ + a⁻ * b⁺)
             ∎

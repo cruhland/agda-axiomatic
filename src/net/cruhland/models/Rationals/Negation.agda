@@ -61,7 +61,7 @@ instance
           -p↑p↓+p↓p↑ =
             begin
               - p↑ * p↓ + p↓ * p↑
-            ≃⟨ AA.substᴿ AA.comm ⟩
+            ≃⟨ AA.subst {a₁ = p↓ * p↑} AA.comm ⟩
               - p↑ * p↓ + p↑ * p↓
             ≃˘⟨ AA.distribᴿ ⟩
               (- p↑ + p↑) * p↓

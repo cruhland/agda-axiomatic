@@ -23,7 +23,7 @@ record Addition (PB : PeanoBase) : Set where
 
   field
     {{plus}} : Op.Plus ℕ
-    {{+-substitutiveᴸ}} : ∀ {m} → AA.Substitutive₁ (_+ m) _≃_ _≃_
+    {{+-substitutiveᴸ}} : AA.Substitutiveᴸ _+_
     {{+-identityᴸ}} : AA.Identityᴸ _+_ 0
     {{+-commutative-stepᴸ}} : AA.Commutativeᴸ step _+_
 

@@ -56,7 +56,7 @@ instance
               (x⁻ + x⁺) + 0
             ≃⟨ AA.comm ⟩
               0 + (x⁻ + x⁺)
-            ≃⟨ AA.substᴿ AA.comm ⟩
+            ≃⟨ AA.subst AA.comm ⟩
               0 + (x⁺ + x⁻)
             ∎
 
@@ -74,7 +74,7 @@ sub-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ - b ≃ a₂ - b
 sub-substᴸ = AA.subst
 
 sub-substᴿ : {a b₁ b₂ : ℤ} → b₁ ≃ b₂ → a - b₁ ≃ a - b₂
-sub-substᴿ = AA.substᴿ ∘ AA.subst {f = -_}
+sub-substᴿ = AA.subst ∘ AA.subst {f = -_}
 
 ≃ᴸ-subᴿ-toᴸ : {a b c : ℤ} → a - b ≃ c → a ≃ b + c
 ≃ᴸ-subᴿ-toᴸ {a} {b} {c} a-b≃c =
@@ -82,9 +82,9 @@ sub-substᴿ = AA.substᴿ ∘ AA.subst {f = -_}
     a
   ≃˘⟨ AA.identᴿ ⟩
     a + 0
-  ≃˘⟨ AA.substᴿ AA.invᴿ ⟩
+  ≃˘⟨ AA.subst AA.invᴿ ⟩
     a + (b - b)
-  ≃⟨ AA.substᴿ AA.comm ⟩
+  ≃⟨ AA.subst {f = a +_} AA.comm ⟩
     a + (- b + b)
   ≃˘⟨ AA.assoc ⟩
     a - b + b

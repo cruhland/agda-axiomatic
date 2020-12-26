@@ -35,11 +35,11 @@ instance
               (a⁺ + b⁺) + (b⁻ + a⁻)
             ≃⟨ AA.subst AA.comm ⟩
               (b⁺ + a⁺) + (b⁻ + a⁻)
-            ≃⟨ AA.substᴿ AA.comm ⟩
+            ≃⟨ AA.subst AA.comm ⟩
               (b⁺ + a⁺) + (a⁻ + b⁻)
             ∎
 
-  +-substitutiveᴸ : {b : ℤ} → AA.Substitutive₁ (_+ b) _≃_ _≃_
+  +-substitutiveᴸ : AA.Substitutiveᴸ _+_
   +-substitutiveᴸ {b@(b⁺ — b⁻)} = record { subst = +-substᴸ }
     where
       +-substᴸ : {a₁ a₂ : ℤ} → a₁ ≃ a₂ → a₁ + b ≃ a₂ + b
@@ -57,11 +57,11 @@ instance
               (a₂⁺ + b⁺) + (a₁⁻ + b⁻)
             ∎
 
-  +-substitutiveᴿ : AA.Substitutiveᴿ {A = ℤ} _+_
-  +-substitutiveᴿ = AA.substitutiveᴿ
+  +-substitutiveᴿ : AA.Substitutiveᴿ _+_
+  +-substitutiveᴿ = AA.substitutiveᴿ {A = ℤ}
 
-  +-substitutive₂ : AA.Substitutive₂ {A = ℤ} _+_
-  +-substitutive₂ = AA.substitutive₂
+  +-substitutive₂ : AA.Substitutive₂ _+_
+  +-substitutive₂ = AA.substitutive₂ {A = ℤ}
 
   +-associative : AA.Associative _+_
   +-associative = record { assoc = +-assoc }
@@ -74,12 +74,12 @@ instance
               ((x⁺ + y⁺) + z⁺) + (x⁻ + (y⁻ + z⁻))
             ≃⟨ AA.subst AA.assoc ⟩
               (x⁺ + (y⁺ + z⁺)) + (x⁻ + (y⁻ + z⁻))
-            ≃˘⟨ AA.substᴿ AA.assoc ⟩
+            ≃˘⟨ AA.subst AA.assoc ⟩
               (x⁺ + (y⁺ + z⁺)) + ((x⁻ + y⁻) + z⁻)
             ∎
 
   +-compatible-ℕ : AA.Compatible₂ {A = ℕ} (_as ℤ) _+_ _+_
-  +-compatible-ℕ = record { compat₂ = ≃ᶻ-intro (AA.substᴿ AA.identᴸ) }
+  +-compatible-ℕ = record { compat₂ = ≃ᶻ-intro (AA.subst AA.identᴸ) }
 
   +-identityᴸ : AA.Identityᴸ _+_ 0
   +-identityᴸ = record { identᴸ = +-identᴸ }

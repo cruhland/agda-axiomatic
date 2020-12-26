@@ -50,7 +50,7 @@ instance
               p↑ * r↓ * q↓
             ≃⟨ AA.assoc {A = ℤ} {{eq = ℤ.eq}} {_⊙_ = _*_}⟩
               p↑ * (r↓ * q↓)
-            ≃⟨ AA.substᴿ AA.comm ⟩
+            ≃⟨ AA.subst {f = p↑ *_} AA.comm ⟩
               p↑ * (q↓ * r↓)
             ≃˘⟨ AA.assoc ⟩
               (p↑ * q↓) * r↓
@@ -60,7 +60,7 @@ instance
               (p↓ * q↑) * r↓
             ≃⟨ AA.assoc ⟩
               p↓ * (q↑ * r↓)
-            ≃⟨ AA.substᴿ q↑r↓≃r↑q↓ ⟩
+            ≃⟨ AA.subst q↑r↓≃r↑q↓ ⟩
               p↓ * (r↑ * q↓)
             ≃˘⟨ AA.assoc ⟩
               (p↓ * r↑) * q↓
@@ -69,7 +69,7 @@ instance
             ∎
           p↑r↓≃r↑p↓ = AA.cancelᴿ {{c = fromWitnessFalse q↓≄0}} p↑r↓q↓≃r↑p↓q↓
         in ≃₀-intro p↑r↓≃r↑p↓
- 
+
   eq : Eq ℚ
   eq = record { _≃_ = _≃₀_ }
 
@@ -122,7 +122,7 @@ subst↑ _ q↑₁≃q↑₂ = ≃₀-intro (AA.subst q↑₁≃q↑₂)
 subst↓ :
   ∀ {q↑ q↓₁ q↓₂} (q↓₁≄0 : q↓₁ ≄ 0) (q↓₂≄0 : q↓₂ ≄ 0) → q↓₁ ≃ q↓₂ →
     (q↑ // q↓₁ ~ q↓₁≄0) ≃ (q↑ // q↓₂ ~ q↓₂≄0)
-subst↓ _ _ q↓₁≃q↓₂ = ≃₀-intro (AA.substᴿ (Eq.sym q↓₁≃q↓₂))
+subst↓ _ _ q↓₁≃q↓₂ = ≃₀-intro (AA.subst (Eq.sym q↓₁≃q↓₂))
 
 q≃1 : ∀ {q} → ℚ.n q ≃ ℚ.d q → q ≃ 1
 q≃1 {q↑ // q↓ ~ _} q↑≃q↓ = ≃₀-intro q↑1≃1q↓
@@ -132,7 +132,7 @@ q≃1 {q↑ // q↓ ~ _} q↑≃q↓ = ≃₀-intro q↑1≃1q↓
         q↑ * 1
       ≃⟨ AA.comm ⟩
         1 * q↑
-      ≃⟨ AA.substᴿ q↑≃q↓ ⟩
+      ≃⟨ AA.subst q↑≃q↓ ⟩
         1 * q↓
       ∎
 

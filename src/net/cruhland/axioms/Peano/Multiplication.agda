@@ -30,7 +30,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
 
   field
     {{star}} : Op.Star ℕ
-    {{*-substitutiveᴸ}} : ∀ {m} → AA.Substitutive₁ (_* m) _≃_ _≃_
+    {{*-substitutiveᴸ}} : AA.Substitutiveᴸ _*_
     {{*-absorptiveᴸ}} : AA.Absorptiveᴸ _*_ zero
     *-stepᴸ : ∀ {n m} → step n * m ≃ n * m + m
 
@@ -163,11 +163,11 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
             Pz =
               begin
                 a * (b + zero)
-              ≃⟨ AA.substᴿ AA.identᴿ ⟩
+              ≃⟨ AA.subst AA.identᴿ ⟩
                 a * b
               ≃˘⟨ AA.identᴿ ⟩
                 a * b + zero
-              ≃˘⟨ AA.substᴿ AA.absorbᴿ ⟩
+              ≃˘⟨ AA.subst AA.absorbᴿ ⟩
                 a * b + a * zero
               ∎
 
@@ -175,7 +175,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
             Ps {k} a[b+k]≃ab+ak =
               begin
                 a * (b + step k)
-              ≃⟨ AA.substᴿ AA.commᴿ ⟩
+              ≃⟨ AA.subst AA.commᴿ ⟩
                 a * step (b + k)
               ≃⟨ *-stepᴿ ⟩
                 a * (b + k) + a
@@ -183,7 +183,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
                 a * b + a * k + a
               ≃⟨ AA.assoc ⟩
                 a * b + (a * k + a)
-              ≃˘⟨ AA.substᴿ *-stepᴿ ⟩
+              ≃˘⟨ AA.subst *-stepᴿ ⟩
                 a * b + a * step k
               ∎
 
@@ -200,7 +200,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
             Pz =
               begin
                 a * (zero * c)
-              ≃⟨ AA.substᴿ AA.absorbᴸ ⟩
+              ≃⟨ AA.subst AA.absorbᴸ ⟩
                 a * zero
               ≃⟨ AA.absorbᴿ ⟩
                 zero
@@ -214,7 +214,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
             Ps {k} a[kc]≃[ak]c =
               begin
                 a * (step k * c)
-              ≃⟨ AA.substᴿ *-stepᴸ ⟩
+              ≃⟨ AA.subst *-stepᴸ ⟩
                 a * (k * c + c)
               ≃⟨ AA.distribᴸ ⟩
                 a * (k * c) + a * c
