@@ -33,7 +33,7 @@ instance
           [a↑b↓+a↓b↑][b↓a↓]≃[b↑a↓+b↓a↑][a↓b↓] =
             begin
               (a↑ * b↓ + a↓ * b↑) * (b↓ * a↓)
-            ≃⟨ AA.subst (AA.subst {f = _+ a↓ * b↑} AA.comm) ⟩
+            ≃⟨ AA.subst {f = _* (b↓ * a↓)} (AA.subst {f = _+ a↓ * b↑} AA.comm) ⟩
               (b↓ * a↑ + a↓ * b↑) * (b↓ * a↓)
             ≃⟨ AA.subst {f = _* (b↓ * a↓)} (AA.subst {a₁ = a↓ * b↑} AA.comm) ⟩
               (b↓ * a↑ + b↑ * a↓) * (b↓ * a↓)
@@ -61,7 +61,8 @@ instance
               w * x * (y * z) + u * v * (y * z)
             ≃⟨ AA.subst {f = _+ u * v * (y * z)} AA.transpose ⟩
               w * y * (x * z) + u * v * (y * z)
-            ≃⟨ AA.subst (AA.subst {f = _* (y * z)} AA.comm) ⟩
+            ≃⟨ AA.subst {f = w * y * (x * z) +_}
+                 (AA.subst {f = _* (y * z)} AA.comm) ⟩
               w * y * (x * z) + v * u * (y * z)
             ∎
 
@@ -95,10 +96,10 @@ instance
               (a + b) * (1 * 1)
             ≃⟨ AA.subst {f = (a + b) *_} AA.identᴿ ⟩
               (a + b) * 1
-            ≃˘⟨ AA.subst (AA.subst {f = _+ b} AA.identᴿ) ⟩
+            ≃˘⟨ AA.subst {A = ℤ} {f = _* 1} (AA.subst {f = _+ b} AA.identᴿ) ⟩
               (a * 1 + b) * 1
-            ≃˘⟨ AA.subst
-                  {A = ℤ} {f = _* 1} (AA.subst {f = a * 1 +_} AA.identᴸ) ⟩
+            ≃˘⟨ AA.subst {A = ℤ} {f = _* 1}
+                  (AA.subst {f = a * 1 +_} AA.identᴸ) ⟩
               (a * 1 + 1 * b) * 1
             ∎
 
@@ -114,10 +115,11 @@ instance
               (p↑ * q↓ + p↓ * q↑) * r↓ + (p↓ * q↓) * r↑
             ≃⟨ AA.subst AA.distribᴿ ⟩
               ((p↑ * q↓) * r↓ + (p↓ * q↑) * r↓) + (p↓ * q↓) * r↑
-            ≃⟨ AA.subst (AA.subst {f = _+ (p↓ * q↑) * r↓} AA.assoc) ⟩
+            ≃⟨ AA.subst {f = _+ (p↓ * q↓) * r↑}
+                 (AA.subst {f = _+ (p↓ * q↑) * r↓} AA.assoc) ⟩
               (p↑ * (q↓ * r↓) + (p↓ * q↑) * r↓) + (p↓ * q↓) * r↑
             ≃⟨ AA.subst {f = _+ (p↓ * q↓) * r↑}
-                        (AA.subst {f = p↑ * (q↓ * r↓) +_} AA.assoc) ⟩
+                 (AA.subst {f = p↑ * (q↓ * r↓) +_} AA.assoc) ⟩
               (p↑ * (q↓ * r↓) + p↓ * (q↑ * r↓)) + (p↓ * q↓) * r↑
             ≃⟨ AA.subst {a₁ = (p↓ * q↓) * r↑} AA.assoc ⟩
               (p↑ * (q↓ * r↓) + p↓ * (q↑ * r↓)) + p↓ * (q↓ * r↑)

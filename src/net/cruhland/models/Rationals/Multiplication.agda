@@ -141,7 +141,7 @@ instance
               a↓ * (a↑ * (b↓ * c↑))
             ≃˘⟨ AA.subst {f = a↓ *_} AA.assoc ⟩
               a↓ * (a↑ * b↓ * c↑)
-            ≃⟨ AA.subst (AA.subst {f = _* c↑} AA.comm) ⟩
+            ≃⟨ AA.subst {f = a↓ *_} (AA.subst {f = _* c↑} AA.comm) ⟩
               a↓ * (b↓ * a↑ * c↑)
             ≃⟨ AA.subst {f = a↓ *_} AA.assoc ⟩
               a↓ * (b↓ * (a↑ * c↑))

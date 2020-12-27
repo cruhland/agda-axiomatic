@@ -61,7 +61,7 @@ instance
   from-ℕ-substitutive₁ : AA.Substitutive₁ {A = ℕ} (_as ℤ) _≃_ _≃_
   from-ℕ-substitutive₁ = AA.substitutive₁ (≃ᶻ-intro ∘ AA.subst)
 
-  from-ℕ-injective : AA.Injective {A = ℕ} _≃_ _≃_ (_as ℤ)
+  from-ℕ-injective : AA.Injective {A = ℕ} (_as ℤ) _≃_ _≃_
   from-ℕ-injective = record { inject = AA.cancelᴿ ∘ _≃ᶻ_.elim }
 
   ℤ-substitutiveᴸ : ∀ {m} → AA.Substitutive₁ (_— m) _≃_ _≃_

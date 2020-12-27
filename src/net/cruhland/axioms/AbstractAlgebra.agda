@@ -6,6 +6,7 @@ open Eq.≃-Reasoning
 open import net.cruhland.models.Logic using (_∨_; ∨-rec; ¬_)
 
 open import net.cruhland.axioms.AbstractAlgebra.Commutative public
+open import net.cruhland.axioms.AbstractAlgebra.Injective public
 open import net.cruhland.axioms.AbstractAlgebra.Reductive public
 open import net.cruhland.axioms.AbstractAlgebra.Substitutive public
 
@@ -14,28 +15,6 @@ record Associative {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set where
     assoc : ∀ {a b c} → (a ⊙ b) ⊙ c ≃ a ⊙ (b ⊙ c)
 
 open Associative {{...}} public using (assoc)
-
-record Injective
-    {A B : Set} (_~_ : A → A → Set) (_≈_ : B → B → Set) (f : A → B) : Set where
-  field
-    inject : ∀ {a₁ a₂} → f a₁ ≈ f a₂ → a₁ ~ a₂
-
-open Injective {{...}} public using (inject)
-
-record Cancellativeᴸ {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set₁ where
-  field
-    Constraint : A → Set
-    cancelᴸ : ∀ {a b₁ b₂} {{c : Constraint a}} → a ⊙ b₁ ≃ a ⊙ b₂ → b₁ ≃ b₂
-
-open Cancellativeᴸ {{...}} public using (cancelᴸ)
-
-record Cancellativeᴿ
-    {A : Set} (_~_ : A → A → Set) (_⊙_ : A → A → A) : Set₁ where
-  field
-    Constraint : A → Set
-    cancelᴿ : ∀ {a₁ a₂ b} {{c : Constraint b}} → (a₁ ⊙ b) ~ (a₂ ⊙ b) → a₁ ~ a₂
-
-open Cancellativeᴿ {{...}} public using (cancelᴿ)
 
 record Distributiveᴸ {A : Set} {{eq : Eq A}} (_⊙_ _⊕_ : A → A → A) : Set where
   field
@@ -120,15 +99,6 @@ record ExactlyOneOfThree (A B C : Set) : Set where
   field
     at-least-one : OneOfThree A B C
     at-most-one : ¬ TwoOfThree A B C
-
-cancellativeᴿ :
-  {A : Set} {_⊙_ : A → A → A}
-    {{eq : Eq A}} {{⊙-comm : Commutative _⊙_}}
-    {{⊙-cancelᴸ : Cancellativeᴸ _⊙_}} →
-      Cancellativeᴿ _≃_ _⊙_
-cancellativeᴿ
-  {{⊙-cancelᴸ = record { Constraint = Constraint ; cancelᴸ = cancelᴸ₀}}} =
-    record { Constraint = Constraint ; cancelᴿ = cancelᴸ₀ ∘ with-comm }
 
 distributiveᴿ :
   {A : Set} {_⊙_ _⊕_ : A → A → A}
@@ -250,12 +220,6 @@ nonzero-prod :
       a ≄ z → b ≄ z → a ⊙ b ≄ z
 nonzero-prod a≄z b≄z = ∨-rec a≄z b≄z ∘ zero-prod
 
-≄-subst :
-  {A B : Set} {f : A → B}
-    {{_ : Eq A}} {{_ : Eq B}} {{_ : Injective _≃_ _≃_ f}} →
-      ∀ {a₁ a₂} → a₁ ≄ a₂ → f a₁ ≄ f a₂
-≄-subst a₁≄a₂ fa₁≃fa₂ = a₁≄a₂ (inject fa₁≃fa₂)
-
 substᴿ-with-assoc :
   {A : Set} {_⊙_ : A → A → A}
     {{_ : Eq A}} {{_ : Associative _⊙_}} {{_ : Substitutiveᴿ _⊙_}} →
@@ -289,7 +253,7 @@ a[bc]-chain {A} {_⊙_} {a} {b} {c} {d} {e} ab≃d dc≃e =
 eq→idᴿ :
   {A : Set} {_⊙_ : A → A → A} {a b d e : A}
     {{_ : Eq A}} {{_ : Identityᴿ _⊙_ e}}
-    {{cancel : Cancellativeᴸ _⊙_}} {{_ : Cancellativeᴸ.Constraint cancel a}} →
+    {{cancel : Cancellativeᴸ _⊙_ _≃_}} {{_ : Cancellativeᴸ.C cancel a}} →
       a ⊙ d ≃ b → a ≃ b → d ≃ e
 eq→idᴿ {A} {_⊙_} {a} {b} {d} {e} ad≃b a≃b = cancelᴸ ad≃ae
   where

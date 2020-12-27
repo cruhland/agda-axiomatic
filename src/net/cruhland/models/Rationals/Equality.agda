@@ -1,5 +1,5 @@
 open import Function using (_∘_)
-open import Relation.Nullary.Decidable using (fromWitnessFalse)
+open import Relation.Nullary.Decidable using (False; fromWitnessFalse)
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_; _value_)
 open import net.cruhland.axioms.DecEq using (_≃?_; DecEq)
@@ -26,6 +26,10 @@ record _≃₀_ (p q : ℚ) : Set where
 private
   1≄0 : (ℤ value 1) ≄ 0
   1≄0 = ℕ.step≄zero ∘ AA.inject
+
+  instance
+    1≄ⁱ0 : False (1 ≃? 0)
+    1≄ⁱ0 = fromWitnessFalse 1≄0
 
 instance
   -- Exercise 4.2.1
@@ -67,7 +71,8 @@ instance
             ≃⟨ AA.subst {f = _* q↓} AA.comm  ⟩
               r↑ * p↓ * q↓
             ∎
-          p↑r↓≃r↑p↓ = AA.cancelᴿ {{c = fromWitnessFalse q↓≄0}} p↑r↓q↓≃r↑p↓q↓
+          instance q↓≄ⁱ0 = fromWitnessFalse q↓≄0
+          p↑r↓≃r↑p↓ = AA.cancelᴿ p↑r↓q↓≃r↑p↓q↓
         in ≃₀-intro p↑r↓≃r↑p↓
 
   eq : Eq ℚ
@@ -84,9 +89,8 @@ instance
   from-ℤ-substitutive₁ : AA.Substitutive₁ {A = ℤ} (_as ℚ) _≃_ _≃_
   from-ℤ-substitutive₁ = AA.substitutive₁ (≃₀-intro ∘ AA.subst)
 
-  from-ℤ-injective : AA.Injective {A = ℤ} _≃_ _≃_ (_as ℚ)
-  from-ℤ-injective =
-    record { inject = AA.cancelᴿ {{c = fromWitnessFalse 1≄0}} ∘ _≃₀_.elim }
+  from-ℤ-injective : AA.Injective {A = ℤ} (_as ℚ) _≃_ _≃_
+  from-ℤ-injective = record { inject = AA.cancelᴿ ∘ _≃₀_.elim }
 
 q≃0 : ∀ {q} → ℚ.n q ≃ 0 → q ≃ 0
 q≃0 {q} n≃0 = ≃₀-intro n1≃0d
@@ -137,5 +141,4 @@ q≃1 {q↑ // q↓ ~ _} q↑≃q↓ = ≃₀-intro q↑1≃1q↓
       ∎
 
 q↑≃q↓ : ∀ {q} → q ≃ 1 → ℚ.n q ≃ ℚ.d q
-q↑≃q↓ (≃₀-intro q↑1≃1q↓) =
-  AA.cancelᴸ {{c = fromWitnessFalse 1≄0}} (Eq.trans AA.comm q↑1≃1q↓)
+q↑≃q↓ (≃₀-intro q↑1≃1q↓) = AA.cancelᴸ (Eq.trans AA.comm q↑1≃1q↓)

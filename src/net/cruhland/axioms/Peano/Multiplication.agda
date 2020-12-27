@@ -238,11 +238,12 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
     AA.subst {f = _< a * c} AA.comm (AA.subst AA.comm (*-preserves-<ᴿ b<c a≄z))
 
   instance
-    *-cancellativeᴸ : AA.Cancellativeᴸ _*_
-    *-cancellativeᴸ =
-        record { Constraint = λ a → False (a ≃? zero) ; cancelᴸ = *-cancelᴸ }
+    *-cancellativeᴸ : AA.Cancellativeᴸ _*_ _≃_
+    *-cancellativeᴸ = AA.cancellativeⁱᴸ Constraint *-cancelᴸ
       where
-        *-cancelᴸ : ∀ {a b c} {{_ : False (a ≃? zero)}} → a * b ≃ a * c → b ≃ c
+        Constraint = λ a → False (a ≃? 0)
+
+        *-cancelᴸ : ∀ {a b c} {{_ : Constraint a}} → a * b ≃ a * c → b ≃ c
         *-cancelᴸ ab≃ac with
           AA.ExactlyOneOfThree.at-least-one ℕ≤.order-trichotomy
         ... | AA.1st b<c =
@@ -254,5 +255,5 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
           let <-intro _ ac≄ab = *-preserves-<ᴸ b>c ≄-derive
            in contra (sym ab≃ac) ac≄ab
 
-    *-cancellativeᴿ : AA.Cancellativeᴿ _≃_ _*_
-    *-cancellativeᴿ = AA.cancellativeᴿ
+    *-cancellativeᴿ : AA.Cancellativeᴿ _*_ _≃_
+    *-cancellativeᴿ = AA.cancellativeᴿ-from-cancellativeᴸ

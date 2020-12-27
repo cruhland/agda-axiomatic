@@ -141,8 +141,8 @@ record Addition (PB : PeanoBase) : Set where
                 step k + (m + p)
               ∎
 
-    +-cancellativeᴸ : AA.Cancellativeᴸ _+_
-    +-cancellativeᴸ = record { Constraint = λ _ → ⊤ ; cancelᴸ = +-cancelᴸ }
+    +-cancellativeᴸ : AA.Cancellativeᴸ _+_ _≃_
+    +-cancellativeᴸ = AA.cancellativeᴸ +-cancelᴸ
       where
         +-cancelᴸ : ∀ {n m p} → n + m ≃ n + p → m ≃ p
         +-cancelᴸ {n} {m} {p} = ind P Pz Ps n
@@ -175,8 +175,8 @@ record Addition (PB : PeanoBase) : Set where
                     step (k + p)
                   ∎
 
-    +-cancellativeᴿ : AA.Cancellativeᴿ _≃_ _+_
-    +-cancellativeᴿ = AA.cancellativeᴿ
+    +-cancellativeᴿ : AA.Cancellativeᴿ _+_ _≃_
+    +-cancellativeᴿ = AA.cancellativeᴿ-from-cancellativeᴸ
 
   sn≃n+1 : ∀ {n} → step n ≃ n + 1
   sn≃n+1 {n} =

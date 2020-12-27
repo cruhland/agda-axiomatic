@@ -278,7 +278,8 @@ instance
               ≃⟨ AA.identᴿ ⟩
                 n * b⁻
               ∎
-            b⁺≃b⁻ = AA.cancelᴸ {{c = fromWitnessFalse n≄0}} nb⁺≃nb⁻
+            instance n≄ⁱ0 = fromWitnessFalse n≄0
+            b⁺≃b⁻ = AA.cancelᴸ nb⁺≃nb⁻
             b⁺+0≃0+b⁻ = trans AA.identᴿ (trans b⁺≃b⁻ (sym AA.identᴸ))
          in ≃ᶻ-intro b⁺+0≃0+b⁻
 

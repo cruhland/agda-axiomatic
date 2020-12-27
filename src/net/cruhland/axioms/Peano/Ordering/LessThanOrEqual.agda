@@ -109,7 +109,7 @@ instance
               step m
             ∎
 
-  ≤-injective-step : AA.Injective _≤_ _≤_ step
+  ≤-injective-step : AA.Injective step _≤_ _≤_
   ≤-injective-step = record { inject = s≤s→≤ }
     where
       s≤s→≤ : ∀ {n m} → step n ≤ step m → n ≤ m
@@ -139,8 +139,8 @@ instance
               b + c
             ∎
 
-  ≤-cancellative-+ᴿ : AA.Cancellativeᴿ _≤_ _+_
-  ≤-cancellative-+ᴿ = record { Constraint = const ⊤ ; cancelᴿ = ≤-cancel-+ᴿ }
+  ≤-cancellative-+ᴿ : AA.Cancellativeᴿ _+_ _≤_
+  ≤-cancellative-+ᴿ = AA.cancellativeᴿ ≤-cancel-+ᴿ
     where
       ≤-cancel-+ᴿ : ∀ {a b c} → a + c ≤ b + c → a ≤ b
       ≤-cancel-+ᴿ {a} {b} {c} (≤-intro d a+c+d≃b+c) = ≤-intro d a+d≃b
