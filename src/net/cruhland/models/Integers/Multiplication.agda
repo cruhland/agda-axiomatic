@@ -19,11 +19,35 @@ open import net.cruhland.models.Integers.Equality PA as ℤ≃ using (≃ᶻ-int
 import net.cruhland.models.Integers.Literals PA as ℤLit
 open import net.cruhland.models.Integers.Negation PA as ℤ-
 
-open import net.cruhland.models.Integers.Multiplication.Base PA as ℤ* public
-open import net.cruhland.models.Integers.Multiplication.Commutativity PA
-  as ℤcomm public
-
 instance
+  star : Op.Star ℤ
+  star = record { _*_ = _*₀_ }
+    where
+      infixl 7 _*₀_
+      _*₀_ : ℤ → ℤ → ℤ
+      a⁺ — a⁻ *₀ b⁺ — b⁻ = (a⁺ * b⁺ + a⁻ * b⁻) — (a⁺ * b⁻ + a⁻ * b⁺)
+
+  *-commutative : AA.Commutative _*_
+  *-commutative = record { comm = *-comm }
+    where
+      *-comm : {a b : ℤ} → a * b ≃ b * a
+      *-comm {a⁺ — a⁻} {b⁺ — b⁻} = ≃ᶻ-intro eq′
+        where
+          eq′ =
+            begin
+              (a⁺ * b⁺ + a⁻ * b⁻) + (b⁺ * a⁻ + b⁻ * a⁺)
+            ≃⟨ AA.subst (AA.subst AA.comm) ⟩
+              (b⁺ * a⁺ + a⁻ * b⁻) + (b⁺ * a⁻ + b⁻ * a⁺)
+            ≃⟨ AA.subst (AA.subst AA.comm) ⟩
+              (b⁺ * a⁺ + b⁻ * a⁻) + (b⁺ * a⁻ + b⁻ * a⁺)
+            ≃⟨ AA.subst AA.comm ⟩
+              (b⁺ * a⁺ + b⁻ * a⁻) + (b⁻ * a⁺ + b⁺ * a⁻)
+            ≃⟨ AA.subst (AA.subst AA.comm) ⟩
+              (b⁺ * a⁺ + b⁻ * a⁻) + (a⁺ * b⁻ + b⁺ * a⁻)
+            ≃⟨ AA.subst (AA.subst AA.comm) ⟩
+              (b⁺ * a⁺ + b⁻ * a⁻) + (a⁺ * b⁻ + a⁻ * b⁺)
+            ∎
+
   *-substitutiveᴸ : AA.Substitutiveᴸ _*_
   *-substitutiveᴸ {b@(b⁺ — b⁻)} = AA.substitutive₁ *-substᴸ
     where
