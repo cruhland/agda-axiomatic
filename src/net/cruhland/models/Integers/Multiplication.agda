@@ -87,8 +87,8 @@ instance
   *-substitutive₂ : AA.Substitutive₂ _*_
   *-substitutive₂ = AA.substitutive₂ {A = ℤ}
 
-  *-compatible-ℕ : AA.Compatible₂ {A = ℕ} (_as ℤ) _*_ _*_
-  *-compatible-ℕ = record { compat₂ = *-compat-ℕ }
+  *-compatible-ℕ : AA.Compatible₂ (_as ℤ) _*_
+  *-compatible-ℕ = AA.compatible₂ {A = ℕ} _*_ *-compat-ℕ
     where
       *-compat-ℕ : {n m : ℕ} → (n * m as ℤ) ≃ (n as ℤ) * (m as ℤ)
       *-compat-ℕ {n} {m} = ≃ᶻ-intro nm+n0+0m≃nm+00+0

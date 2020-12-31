@@ -49,8 +49,8 @@ instance
               - a₂↑ * a₁↓
             ∎
 
-  neg-compatible-ℤ : AA.Compatible₁ {A = ℤ} (_as ℚ) -_ -_
-  neg-compatible-ℤ = record { compat₁ = ≃₀-intro refl }
+  neg-compatible-ℤ : AA.Compatible₁ (_as ℚ) -_
+  neg-compatible-ℤ = AA.compatible₁ {A = ℤ} -_ (≃₀-intro refl)
 
   +-inverseᴸ : AA.Inverseᴸ _+_ -_ 0
   +-inverseᴸ = record { invᴸ = +-invᴸ }

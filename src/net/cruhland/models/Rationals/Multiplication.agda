@@ -68,9 +68,11 @@ instance
   *-substitutive₂ : AA.Substitutive₂ _*_
   *-substitutive₂ = AA.substitutive₂ {A = ℚ}
 
-  *-compatible-ℤ : AA.Compatible₂ {A = ℤ} (_as ℚ) _*_ _*_
-  *-compatible-ℤ = record
-    { compat₂ = λ {a} {b} → ≃₀-intro (AA.subst {f = a * b *_} AA.identᴿ) }
+  *-compatible-ℤ : AA.Compatible₂ (_as ℚ) _*_
+  *-compatible-ℤ = AA.compatible₂ {A = ℤ} _*_ *-compat-ℤ
+    where
+      *-compat-ℤ : {a b : ℤ} → (a * b as ℚ) ≃ (a as ℚ) * (b as ℚ)
+      *-compat-ℤ {a} {b} = ≃₀-intro (AA.subst {f = a * b *_} AA.identᴿ)
 
   *-associative : AA.Associative _*_
   *-associative = record { assoc = *-assoc }
