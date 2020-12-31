@@ -28,7 +28,7 @@ private
   1≄0 = ℕ.step≄zero ∘ AA.inject
 
   instance
-    1≄ⁱ0 : False (1 ≃? 0)
+    1≄ⁱ0 : False ((ℤ value 1) ≃? 0)
     1≄ⁱ0 = fromWitnessFalse 1≄0
 
 instance
