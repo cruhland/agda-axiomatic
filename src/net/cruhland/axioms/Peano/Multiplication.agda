@@ -154,7 +154,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
     *-substitutive₂ = AA.substitutive₂
 
     *-distributive-+ᴸ : AA.Distributiveᴸ _*_ _+_
-    *-distributive-+ᴸ = record { distribᴸ = *-distrib-+ᴸ }
+    *-distributive-+ᴸ = AA.distributiveᴸ *-distrib-+ᴸ
       where
         *-distrib-+ᴸ : ∀ {a b c} → a * (b + c) ≃ a * b + a * c
         *-distrib-+ᴸ {a} {b} {c} = ind P Pz Ps c

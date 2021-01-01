@@ -110,7 +110,7 @@ instance
   *-identityᴿ = AA.identityᴿ
 
   *-distributive-+ᴸ : AA.Distributiveᴸ _*_ _+_
-  *-distributive-+ᴸ = record { distribᴸ = *-distrib-+ᴸ }
+  *-distributive-+ᴸ = AA.distributiveᴸ *-distrib-+ᴸ
     where
       *-distrib-+ᴸ : {a b c : ℚ} → a * (b + c) ≃ a * b + a * c
       *-distrib-+ᴸ {a↑ // a↓ ~ _} {b↑ // b↓ ~ _} {c↑ // c↓ ~ _} =

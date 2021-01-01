@@ -17,12 +17,6 @@ record Associative {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set where
 
 open Associative {{...}} public using (assoc)
 
-record Distributiveᴸ {A : Set} {{eq : Eq A}} (_⊙_ _⊕_ : A → A → A) : Set where
-  field
-    distribᴸ : ∀ {a b c} → a ⊙ (b ⊕ c) ≃ (a ⊙ b) ⊕ (a ⊙ c)
-
-open Distributiveᴸ {{...}} public using (distribᴸ)
-
 record Distributiveᴿ {A : Set} {{eq : Eq A}} (_⊙_ _⊕_ : A → A → A) : Set where
   field
     distribᴿ : ∀ {a b c} → (b ⊕ c) ⊙ a ≃ (b ⊙ a) ⊕ (c ⊙ a)
