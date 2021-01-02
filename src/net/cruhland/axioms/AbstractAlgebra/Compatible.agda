@@ -61,26 +61,25 @@ record Distributiveᴸ {A : Set} {{_ : Eq A}} (_⊙_ _⊕_ : A → A → A) : Se
 
 open Distributiveᴸ {{...}} public using (distribᴸ)
 
-{- Equivalences -}
-compatible₂→isCompatible₂ :
-  {A B : Set} {f : A → B} {_⊙_ : A → A → A}
-    {{_ : Eq B}} {{r : Compatible₂ f _⊙_}} →
+{--- Equivalences ---}
+
+module _ {A B : Set} {f : A → B} {_⊙_ : A → A → A} {{_ : Eq B}} where
+
+  isCompatible₂-from-compatible₂ :
+    {{r : Compatible₂ f _⊙_}} →
       let open Compatible₂ r using (_⊕_) in IsCompatible₂ f _⊙_ _⊕_
-compatible₂→isCompatible₂ = isCompatible₂ compat₂
+  isCompatible₂-from-compatible₂ = isCompatible₂ compat₂
 
-isCompatible₂→compatible₂ :
-  {A B : Set} {f : A → B} {_⊙_ : A → A → A} {_⊕_ : B → B → B}
-    {{_ : Eq B}} {{_ : IsCompatible₂ f _⊙_ _⊕_}} →
-      Compatible₂ f _⊙_
-isCompatible₂→compatible₂ {_⊕_ = _⊕_} = compatible₂ _⊕_ private-compat₂
+  compatible₂-from-isCompatible₂ :
+    {_⊕_ : B → B → B} {{_ : IsCompatible₂ f _⊙_ _⊕_}} → Compatible₂ f _⊙_
+  compatible₂-from-isCompatible₂ {_⊕_ = _⊕_} = compatible₂ _⊕_ private-compat₂
 
-distributiveᴸ→isCompatible₂ :
-  {A : Set} {_⊙_ _⊕_ : A → A → A} {{_ : Eq A}} {{_ : Distributiveᴸ _⊙_ _⊕_}} →
-    ∀ {a} → IsCompatible₂ (a ⊙_) _⊕_ _⊕_
-distributiveᴸ→isCompatible₂ {a} = isCompatible₂ distribᴸ
+module _ {A : Set} {_⊙_ _⊕_ : A → A → A} {{_ : Eq A}} where
 
-isCompatible₂→distributiveᴸ :
-  {A : Set} {_⊙_ _⊕_ : A → A → A}
-    {{_ : Eq A}} {{_ : ∀ {a} → IsCompatible₂ (a ⊙_) _⊕_ _⊕_}} →
-      Distributiveᴸ _⊙_ _⊕_
-isCompatible₂→distributiveᴸ = distributiveᴸ private-compat₂
+  isCompatible₂-from-distributiveᴸ :
+    {{_ : Distributiveᴸ _⊙_ _⊕_}} → ∀ {a} → IsCompatible₂ (a ⊙_) _⊕_ _⊕_
+  isCompatible₂-from-distributiveᴸ {a} = isCompatible₂ distribᴸ
+
+  distributiveᴸ-from-isCompatible₂ :
+    {{_ : ∀ {a} → IsCompatible₂ (a ⊙_) _⊕_ _⊕_}} → Distributiveᴸ _⊙_ _⊕_
+  distributiveᴸ-from-isCompatible₂ = distributiveᴸ private-compat₂
