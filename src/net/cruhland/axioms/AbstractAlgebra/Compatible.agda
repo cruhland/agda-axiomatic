@@ -47,32 +47,40 @@ private
 
 record Compatible₂
     {A B : Set} {{_ : Eq B}} (f : A → B) (_⊙_ : A → A → A) : Set where
+  constructor compatible₂
   field
     _⊕_ : B → B → B
-    {{isCompat₂}} : IsCompatible₂ f _⊙_ _⊕_
+    compat₂ : ∀ {a b} → f (a ⊙ b) ≃ f a ⊕ f b
 
-compatible₂ :
-  {A B : Set} {{_ : Eq B}} {f : A → B} {_⊙_ : A → A → A}
-    (_⊕_ : B → B → B) → (∀ {a b} → f (a ⊙ b) ≃ f a ⊕ f b) → Compatible₂ f _⊙_
-compatible₂ _⊕_ prf =
-  record { _⊕_ = _⊕_ ; isCompat₂ = isCompatible₂ prf }
-
-compat₂ :
-  {A B : Set} {f : A → B} {_⊙_ : A → A → A}
-    {{_ : Eq B}} {{r : Compatible₂ f _⊙_}} →
-      let open Compatible₂ r using (_⊕_) in ∀ {a b} → f (a ⊙ b) ≃ f a ⊕ f b
-compat₂ = private-compat₁
+open Compatible₂ {{...}} public using (compat₂)
 
 record Distributiveᴸ {A : Set} {{_ : Eq A}} (_⊙_ _⊕_ : A → A → A) : Set where
+  constructor distributiveᴸ
   field
-    {{isCompat₂}} : ∀ {a} → IsCompatible₂ (a ⊙_) _⊕_ _⊕_
+    distribᴸ : ∀ {a b c} → a ⊙ (b ⊕ c) ≃ (a ⊙ b) ⊕ (a ⊙ c)
 
-distributiveᴸ :
-  {A : Set} {{_ : Eq A}} {_⊙_ _⊕_ : A → A → A} →
-    (∀ {a b c} → a ⊙ (b ⊕ c) ≃ (a ⊙ b) ⊕ (a ⊙ c)) → Distributiveᴸ _⊙_ _⊕_
-distributiveᴸ prf = record { isCompat₂ = isCompatible₂ prf }
+open Distributiveᴸ {{...}} public using (distribᴸ)
 
-distribᴸ :
-  {A : Set} {_⊙_ _⊕_ : A → A → A} {{_ : Eq A}} {{r : Distributiveᴸ _⊙_ _⊕_}} →
-    ∀ {a b c} → a ⊙ (b ⊕ c) ≃ (a ⊙ b) ⊕ (a ⊙ c)
-distribᴸ = private-compat₂
+{- Equivalences -}
+compatible₂→isCompatible₂ :
+  {A B : Set} {f : A → B} {_⊙_ : A → A → A}
+    {{_ : Eq B}} {{r : Compatible₂ f _⊙_}} →
+      let open Compatible₂ r using (_⊕_) in IsCompatible₂ f _⊙_ _⊕_
+compatible₂→isCompatible₂ = isCompatible₂ compat₂
+
+isCompatible₂→compatible₂ :
+  {A B : Set} {f : A → B} {_⊙_ : A → A → A} {_⊕_ : B → B → B}
+    {{_ : Eq B}} {{_ : IsCompatible₂ f _⊙_ _⊕_}} →
+      Compatible₂ f _⊙_
+isCompatible₂→compatible₂ {_⊕_ = _⊕_} = compatible₂ _⊕_ private-compat₂
+
+distributiveᴸ→isCompatible₂ :
+  {A : Set} {_⊙_ _⊕_ : A → A → A} {{_ : Eq A}} {{_ : Distributiveᴸ _⊙_ _⊕_}} →
+    ∀ {a} → IsCompatible₂ (a ⊙_) _⊕_ _⊕_
+distributiveᴸ→isCompatible₂ {a} = isCompatible₂ distribᴸ
+
+isCompatible₂→distributiveᴸ :
+  {A : Set} {_⊙_ _⊕_ : A → A → A}
+    {{_ : Eq A}} {{_ : ∀ {a} → IsCompatible₂ (a ⊙_) _⊕_ _⊕_}} →
+      Distributiveᴸ _⊙_ _⊕_
+isCompatible₂→distributiveᴸ = distributiveᴸ private-compat₂
