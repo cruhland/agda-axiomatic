@@ -7,43 +7,26 @@ private
       {A B : Set} {{_ : Eq B}} (f : A → B) (g : A → A) (h : B → B) : Set where
     constructor isCompatible₁
     field
-      compat₁ : ∀ {a} → f (g a) ≃ h (f a)
+      isCompat₁ : ∀ {a} → f (g a) ≃ h (f a)
 
-open IsCompatible₁ {{...}} using () renaming (compat₁ to private-compat₁)
+  open IsCompatible₁ {{...}} using (isCompat₁)
 
-record Compatible₁
-    {A B : Set} {{_ : Eq B}} (f : A → B) (g : A → A) : Set where
-  field
-    h : B → B
-    isCompat₁ : IsCompatible₁ f g h
-
-  open IsCompatible₁ isCompat₁ public
-
-open Compatible₁ {{...}} public using (compat₁)
-
-compatible₁ :
-  {A B : Set} {{_ : Eq B}} {f : A → B} {g : A → A}
-    (h : B → B) → (∀ {a} → f (g a) ≃ h (f a)) → Compatible₁ f g
-compatible₁ h prf =
-  record { h = h ; isCompat₁ = isCompatible₁ prf }
-
-private
   record IsCompatible₂
       {A B : Set} {{_ : Eq B}}
         (f : A → B) (_⊙_ : A → A → A) (_⊕_ : B → B → B) : Set where
+    constructor isCompatible₂
     field
-      {{isCompat₁}} : ∀ {b} → IsCompatible₁ f (_⊙ b) (_⊕ f b)
+      isCompat₂ : ∀ {a b} → f (a ⊙ b) ≃ f a ⊕ f b
 
-  isCompatible₂ :
-    {A B : Set} {{_ : Eq B}} {f : A → B} {_⊙_ : A → A → A} {_⊕_ : B → B → B} →
-      (∀ {a b} → f (a ⊙ b) ≃ f a ⊕ f b) → IsCompatible₂ f _⊙_ _⊕_
-  isCompatible₂ prf = record { isCompat₁ = isCompatible₁ prf }
+  open IsCompatible₂ {{...}} using (isCompat₂)
 
-  private-compat₂ :
-    {A B : Set} {f : A → B} {_⊙_ : A → A → A} {_⊕_ : B → B → B}
-      {{_ : Eq B}} {{r : IsCompatible₂ f _⊙_ _⊕_}} →
-        ∀ {a b} → f (a ⊙ b) ≃ f a ⊕ f b
-  private-compat₂ = private-compat₁
+record Compatible₁ {A B : Set} {{_ : Eq B}} (f : A → B) (g : A → A) : Set where
+  constructor compatible₁
+  field
+    h : B → B
+    compat₁ : ∀ {a} → f (g a) ≃ h (f a)
+
+open Compatible₁ {{...}} public using (compat₁)
 
 record Compatible₂
     {A B : Set} {{_ : Eq B}} (f : A → B) (_⊙_ : A → A → A) : Set where
@@ -63,6 +46,29 @@ open Distributiveᴸ {{...}} public using (distribᴸ)
 
 {--- Equivalences ---}
 
+module _ {A B : Set} {f : A → B} {g : A → A} {{_ : Eq B}} where
+
+  isCompatible₁-from-compatible₁ :
+    {{r : Compatible₁ f g}} →
+      let open Compatible₁ r using (h) in IsCompatible₁ f g h
+  isCompatible₁-from-compatible₁ = isCompatible₁ compat₁
+
+  compatible₁-from-isCompatible₁ :
+    {h : B → B} {{_ : IsCompatible₁ f g h}} → Compatible₁ f g
+  compatible₁-from-isCompatible₁ {h} = compatible₁ h isCompat₁
+
+module _
+    {A B : Set} {f : A → B} {_⊙_ : A → A → A} {_⊕_ : B → B → B}
+      {{_ : Eq B}} where
+
+  isCompatible₁-from-isCompatible₂ :
+    {{_ : IsCompatible₂ f _⊙_ _⊕_}} → ∀ {b} → IsCompatible₁ f (_⊙ b) (_⊕ f b)
+  isCompatible₁-from-isCompatible₂ = isCompatible₁ isCompat₂
+
+  isCompatible₂-from-isCompatible₁ :
+    {{_ : ∀ {b} → IsCompatible₁ f (_⊙ b) (_⊕ f b)}} → IsCompatible₂ f _⊙_ _⊕_
+  isCompatible₂-from-isCompatible₁ = isCompatible₂ isCompat₁
+
 module _ {A B : Set} {f : A → B} {_⊙_ : A → A → A} {{_ : Eq B}} where
 
   isCompatible₂-from-compatible₂ :
@@ -72,7 +78,7 @@ module _ {A B : Set} {f : A → B} {_⊙_ : A → A → A} {{_ : Eq B}} where
 
   compatible₂-from-isCompatible₂ :
     {_⊕_ : B → B → B} {{_ : IsCompatible₂ f _⊙_ _⊕_}} → Compatible₂ f _⊙_
-  compatible₂-from-isCompatible₂ {_⊕_ = _⊕_} = compatible₂ _⊕_ private-compat₂
+  compatible₂-from-isCompatible₂ {_⊕_} = compatible₂ _⊕_ isCompat₂
 
 module _ {A : Set} {_⊙_ _⊕_ : A → A → A} {{_ : Eq A}} where
 
@@ -82,4 +88,4 @@ module _ {A : Set} {_⊙_ _⊕_ : A → A → A} {{_ : Eq A}} where
 
   distributiveᴸ-from-isCompatible₂ :
     {{_ : ∀ {a} → IsCompatible₂ (a ⊙_) _⊕_ _⊕_}} → Distributiveᴸ _⊙_ _⊕_
-  distributiveᴸ-from-isCompatible₂ = distributiveᴸ private-compat₂
+  distributiveᴸ-from-isCompatible₂ = distributiveᴸ isCompat₂
