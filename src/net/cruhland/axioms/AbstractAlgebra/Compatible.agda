@@ -44,6 +44,13 @@ record Distributiveᴸ {A : Set} {{_ : Eq A}} (_⊙_ _⊕_ : A → A → A) : Se
 
 open Distributiveᴸ {{...}} public using (distribᴸ)
 
+record Distributiveᴿ {A : Set} {{_ : Eq A}} (_⊙_ _⊕_ : A → A → A) : Set where
+  constructor distributiveᴿ
+  field
+    distribᴿ : ∀ {a b c} → (b ⊕ c) ⊙ a ≃ (b ⊙ a) ⊕ (c ⊙ a)
+
+open Distributiveᴿ {{...}} public using (distribᴿ)
+
 {--- Equivalences ---}
 
 module _ {A B : Set} {f : A → B} {g : A → A} {{_ : Eq B}} where
@@ -89,3 +96,11 @@ module _ {A : Set} {_⊙_ _⊕_ : A → A → A} {{_ : Eq A}} where
   distributiveᴸ-from-isCompatible₂ :
     {{_ : ∀ {a} → IsCompatible₂ (a ⊙_) _⊕_ _⊕_}} → Distributiveᴸ _⊙_ _⊕_
   distributiveᴸ-from-isCompatible₂ = distributiveᴸ isCompat₂
+
+  isCompatible₂-from-distributiveᴿ :
+    {{_ : Distributiveᴿ _⊙_ _⊕_}} → ∀ {a} → IsCompatible₂ (_⊙ a) _⊕_ _⊕_
+  isCompatible₂-from-distributiveᴿ {a} = isCompatible₂ distribᴿ
+
+  distributiveᴿ-from-isCompatible₂ :
+    {{_ : ∀ {a} → IsCompatible₂ (_⊙ a) _⊕_ _⊕_}} → Distributiveᴿ _⊙_ _⊕_
+  distributiveᴿ-from-isCompatible₂ = distributiveᴿ isCompat₂

@@ -17,12 +17,6 @@ record Associative {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set where
 
 open Associative {{...}} public using (assoc)
 
-record Distributiveᴿ {A : Set} {{eq : Eq A}} (_⊙_ _⊕_ : A → A → A) : Set where
-  field
-    distribᴿ : ∀ {a b c} → (b ⊕ c) ⊙ a ≃ (b ⊙ a) ⊕ (c ⊙ a)
-
-open Distributiveᴿ {{...}} public using (distribᴿ)
-
 record ZeroProduct {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) (z : A) : Set where
   field
     zero-prod : ∀ {a b} → a ⊙ b ≃ z → a ≃ z ∨ b ≃ z
@@ -80,12 +74,11 @@ record ExactlyOneOfThree (A B C : Set) : Set where
     at-least-one : OneOfThree A B C
     at-most-one : ¬ TwoOfThree A B C
 
-distributiveᴿ :
+distributiveᴿ-from-distributiveᴸ :
   {A : Set} {_⊙_ _⊕_ : A → A → A}
-    {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Distributiveᴸ _⊙_ _⊕_}}
-    {{_ : Substitutive₂ _⊕_}} →
-      Distributiveᴿ _⊙_ _⊕_
-distributiveᴿ {A} {_⊙_} {_⊕_} = record { distribᴿ = distribᴿ₀ }
+    {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Substitutive₂ _⊕_}}
+      {{_ : Distributiveᴸ _⊙_ _⊕_}} → Distributiveᴿ _⊙_ _⊕_
+distributiveᴿ-from-distributiveᴸ {A} {_⊙_} {_⊕_} = distributiveᴿ distribᴿ₀
   where
     distribᴿ₀ : ∀ {a b c} → (a ⊕ b) ⊙ c ≃ (a ⊙ c) ⊕ (b ⊙ c)
     distribᴿ₀ {a} {b} {c} =

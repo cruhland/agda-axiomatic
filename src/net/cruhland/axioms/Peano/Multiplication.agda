@@ -188,7 +188,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
               ∎
 
     *-distributive-+ᴿ : AA.Distributiveᴿ _*_ _+_
-    *-distributive-+ᴿ = AA.distributiveᴿ
+    *-distributive-+ᴿ = AA.distributiveᴿ-from-distributiveᴸ
 
     *-associative : AA.Associative _*_
     *-associative = record { assoc = *-assoc }

@@ -154,8 +154,8 @@ instance
               (b₁ * a₁ + b₂ * a₂) + (b₁ * a₃ + b₂ * a₄)
             ∎
 
-  *-distributive-+ᴿ : AA.Distributiveᴿ {A = ℤ} _*_ _+_
-  *-distributive-+ᴿ = AA.distributiveᴿ
+  *-distributive-+ᴿ : AA.Distributiveᴿ _*_ _+_
+  *-distributive-+ᴿ = AA.distributiveᴿ-from-distributiveᴸ {A = ℤ}
 
   *-associative : AA.Associative _*_
   *-associative = record { assoc = *-assoc }

@@ -173,5 +173,5 @@ instance
               (a↑ * b↑ * (a↓ * c↓) + a↓ * b↓ * (a↑ * c↑)) * (a↓ * (b↓ * c↓))
             ∎
 
-  *-distributive-+ᴿ : AA.Distributiveᴿ {A = ℚ} _*_ _+_
-  *-distributive-+ᴿ = AA.distributiveᴿ
+  *-distributive-+ᴿ : AA.Distributiveᴿ _*_ _+_
+  *-distributive-+ᴿ = AA.distributiveᴿ-from-distributiveᴸ {A = ℚ}
