@@ -45,8 +45,8 @@ instance
               a₂⁻ + a₁⁺
             ∎
 
-  +-inverseᴸ : AA.Inverseᴸ _+_ -_ 0
-  +-inverseᴸ = record { invᴸ = +-invᴸ }
+  +-inverseᴸ : AA.Inverseᴸ λ x → - x
+  +-inverseᴸ = AA.inverseᴸ +-invᴸ
     where
       +-invᴸ : {x : ℤ} → - x + x ≃ 0
       +-invᴸ {x⁺ — x⁻} = ≃ᶻ-intro [x⁻+x⁺]+0≃0+[x⁺+x⁻]

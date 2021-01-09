@@ -8,6 +8,7 @@ open import net.cruhland.models.Logic using (_∨_; ∨-rec; ¬_)
 open import net.cruhland.axioms.AbstractAlgebra.Commutative public
 open import net.cruhland.axioms.AbstractAlgebra.Compatible public
 open import net.cruhland.axioms.AbstractAlgebra.Injective public
+open import net.cruhland.axioms.AbstractAlgebra.Inverse public
 open import net.cruhland.axioms.AbstractAlgebra.Reductive public
 open import net.cruhland.axioms.AbstractAlgebra.Substitutive public
 
@@ -16,13 +17,6 @@ record Associative {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set where
     assoc : ∀ {a b c} → (a ⊙ b) ⊙ c ≃ a ⊙ (b ⊙ c)
 
 open Associative {{...}} public using (assoc)
-
-record Inverseᴸ
-    {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) (inv : A → A) (e : A) : Set where
-  field
-    invᴸ : ∀ {a} → inv a ⊙ a ≃ e
-
-open Inverseᴸ {{...}} public using (invᴸ)
 
 record Inverseᴿ
     {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) (inv : A → A) (e : A) : Set where
@@ -89,9 +83,9 @@ distributiveᴿ-from-distributiveᴸ {A} {_⊙_} {_⊕_} = distributiveᴿ distr
       ∎
 
 inverseᴿ :
-  {A : Set} {_⊙_ : A → A → A} {inv : A → A} →
-    ∀ {e} {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Inverseᴸ _⊙_ inv e}} →
-      Inverseᴿ _⊙_ inv e
+  {A : Set} {inv : A → A} {{_ : Eq A}} {{i : Inverseᴸ inv}} →
+    let open Inverseᴸ i using (_⊙_; e)
+     in {{_ : Commutative _⊙_}} → Inverseᴿ _⊙_ inv e
 inverseᴿ = record { invᴿ = Eq.trans comm invᴸ }
 
 inverseⁱᴿ :
