@@ -279,8 +279,8 @@ sub-sign-swap {a} {b} record { n = n ; pos = n≄0 ; x≃-n = a-b≃-n } =
       ∎
 
 instance
-  zero-product : AA.ZeroProduct _*_ 0
-  zero-product = record { zero-prod = *-either-zero }
+  zero-product : AA.ZeroProduct _*_
+  zero-product = AA.zeroProduct 0 *-either-zero
     where
       b≃0 : ∀ {b} {n : ℕ} → n ≄ 0 → (n as ℤ) * b ≃ 0 → b ≃ 0
       b≃0 {b⁺ — b⁻} {n} n≄0 (≃ᶻ-intro nb⁺+0b⁻+0≃0+[nb⁻+0b⁺]) =

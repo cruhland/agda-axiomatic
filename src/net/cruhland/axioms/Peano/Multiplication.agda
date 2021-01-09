@@ -6,7 +6,7 @@ open import net.cruhland.axioms.DecEq using (_≃?_; ≄-derive)
 open import net.cruhland.axioms.Eq using
   (_≃_; _≄_; sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
-open import net.cruhland.axioms.AbstractAlgebra as AA
+import net.cruhland.axioms.AbstractAlgebra as AA
 import net.cruhland.axioms.Operators as Op
 open Op using (_+_; _*_)
 open import net.cruhland.axioms.Peano.Addition
@@ -126,26 +126,26 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
     *-identityᴿ : AA.Identityᴿ _*_ (step zero)
     *-identityᴿ = AA.identityᴿ
 
-    zero-product : AA.ZeroProduct _*_ zero
-    zero-product = record { zero-prod = *-either-zero }
+    zero-product : AA.ZeroProduct _*_
+    zero-product = AA.zeroProduct 0 *-either-zero
       where
-        *-either-zero : ∀ {n m} → n * m ≃ zero → n ≃ zero ∨ m ≃ zero
-        *-either-zero {n} {m} n*m≃z with case n
-        ... | case-zero n≃z = ∨-introᴸ n≃z
-        ... | case-step (pred-intro p n≃sp) = ∨-introᴿ m≃z
+        *-either-zero : ∀ {n m} → n * m ≃ 0 → n ≃ 0 ∨ m ≃ 0
+        *-either-zero {n} {m} n*m≃0 with case n
+        ... | case-zero n≃0 = ∨-introᴸ n≃0
+        ... | case-step (pred-intro p n≃sp) = ∨-introᴿ m≃0
           where
-            p*m+m≃z =
+            p*m+m≃0 =
               begin
                 p * m + m
               ≃˘⟨ *-stepᴸ ⟩
                 step p * m
               ≃˘⟨ AA.subst n≃sp ⟩
                 n * m
-              ≃⟨ n*m≃z ⟩
-                zero
+              ≃⟨ n*m≃0 ⟩
+                0
               ∎
 
-            m≃z = ∧-elimᴿ (+-both-zero p*m+m≃z)
+            m≃0 = ∧-elimᴿ (+-both-zero p*m+m≃0)
 
     *-substitutiveᴿ : AA.Substitutiveᴿ _*_
     *-substitutiveᴿ = AA.substitutiveᴿ

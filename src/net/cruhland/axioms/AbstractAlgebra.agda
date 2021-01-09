@@ -17,12 +17,6 @@ record Associative {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set where
 
 open Associative {{...}} public using (assoc)
 
-record ZeroProduct {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) (z : A) : Set where
-  field
-    zero-prod : ∀ {a b} → a ⊙ b ≃ z → a ≃ z ∨ b ≃ z
-
-open ZeroProduct {{...}} public using (zero-prod)
-
 record Inverseᴸ
     {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) (inv : A → A) (e : A) : Set where
   field
@@ -186,12 +180,6 @@ distrib-twoᴿ {A} {_⊙_} {_⊕_} {a} {b} {c} {d} {e} {f} =
   ≃⟨ subst distribᴿ ⟩
     ((a ⊙ c) ⊕ (b ⊙ c)) ⊕ ((d ⊙ f) ⊕ (e ⊙ f))
   ∎
-
-nonzero-prod :
-  {A : Set} {_⊙_ : A → A → A} →
-    ∀ {a b z} {{_ : Eq A}} {{_ : ZeroProduct _⊙_ z}} →
-      a ≄ z → b ≄ z → a ⊙ b ≄ z
-nonzero-prod a≄z b≄z = ∨-rec a≄z b≄z ∘ zero-prod
 
 substᴿ-with-assoc :
   {A : Set} {_⊙_ : A → A → A}
