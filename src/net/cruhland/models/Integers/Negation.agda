@@ -60,8 +60,8 @@ instance
               0 + (x⁺ + x⁻)
             ∎
 
-  +-inverseᴿ : AA.Inverseᴿ _+_ -_ 0
-  +-inverseᴿ = AA.inverseᴿ
+  +-inverseᴿ : AA.Inverseᴿ λ x → - x
+  +-inverseᴿ = AA.inverseᴿ-from-inverseᴸ
 
 neg-involutive : {a : ℤ} → - (- a) ≃ a
 neg-involutive = ≃ᶻ-intro refl

@@ -18,13 +18,6 @@ record Associative {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set where
 
 open Associative {{...}} public using (assoc)
 
-record Inverseᴿ
-    {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) (inv : A → A) (e : A) : Set where
-  field
-    invᴿ : ∀ {a} → a ⊙ inv a ≃ e
-
-open Inverseᴿ {{...}} public using (invᴿ)
-
 record Inverseⁱᴸ
     {A : Set} {C : A → Set} {{eq : Eq A}}
       (_⊙_ : A → A → A) (inv : (a : A) {{c : C a}} → A) (e : A) : Set where
@@ -82,11 +75,10 @@ distributiveᴿ-from-distributiveᴸ {A} {_⊙_} {_⊕_} = distributiveᴿ distr
         (a ⊙ c) ⊕ (b ⊙ c)
       ∎
 
-inverseᴿ :
+inverseᴿ-from-inverseᴸ :
   {A : Set} {inv : A → A} {{_ : Eq A}} {{i : Inverseᴸ inv}} →
-    let open Inverseᴸ i using (_⊙_; e)
-     in {{_ : Commutative _⊙_}} → Inverseᴿ _⊙_ inv e
-inverseᴿ = record { invᴿ = Eq.trans comm invᴸ }
+    let open Inverseᴸ i using (_⊙_) in {{_ : Commutative _⊙_}} → Inverseᴿ inv
+inverseᴿ-from-inverseᴸ = inverseᴿ (Eq.trans comm invᴸ)
 
 inverseⁱᴿ :
   {A : Set} {C : A → Set} {_⊙_ : A → A → A} {inv : (a : A) {{c : C a}} → A} →

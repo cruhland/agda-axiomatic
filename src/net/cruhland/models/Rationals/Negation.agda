@@ -71,5 +71,5 @@ instance
               0
             ∎
 
-  +-inverseᴿ : AA.Inverseᴿ {A = ℚ} _+_ -_ 0
-  +-inverseᴿ = AA.inverseᴿ
+  +-inverseᴿ : AA.Inverseᴿ -_
+  +-inverseᴿ = AA.inverseᴿ-from-inverseᴸ {A = ℚ}
