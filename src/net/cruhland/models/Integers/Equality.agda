@@ -1,4 +1,3 @@
-open import Function using (_∘_)
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq as Eq using
@@ -6,6 +5,7 @@ open import net.cruhland.axioms.Eq as Eq using
 open ≃-Reasoning
 open import net.cruhland.axioms.Operators using (_+_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
+open import net.cruhland.models.Function using (_∘_)
 -- Needed for instance of ⊤
 open import net.cruhland.models.Logic using ()
 

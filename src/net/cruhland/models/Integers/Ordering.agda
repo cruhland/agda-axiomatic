@@ -1,4 +1,3 @@
-open import Function using (flip)
 open import Relation.Nullary.Decidable using (False)
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_)
@@ -8,6 +7,7 @@ open import net.cruhland.axioms.Eq using
 open ≃-Reasoning
 open import net.cruhland.axioms.Operators using (_+_; _*_; -_; _-_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
+open import net.cruhland.models.Function using (flip)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using
   (⊤; ∧-elimᴿ; ∨-introᴸ; ∨-introᴿ; ⊥-elim; ¬_; Dec; no; yes)

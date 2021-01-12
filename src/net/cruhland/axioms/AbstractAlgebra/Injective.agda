@@ -1,7 +1,7 @@
 module net.cruhland.axioms.AbstractAlgebra.Injective where
 
-open import Function using (_∘_)
 open import net.cruhland.axioms.Eq using (_≃_; _≄_; Eq)
+open import net.cruhland.models.Function using (_∘_)
 open import net.cruhland.models.Logic using (⊤)
 
 open import net.cruhland.axioms.AbstractAlgebra.Commutative

@@ -1,5 +1,4 @@
 import Agda.Builtin.FromNeg as FromNeg
-open import Function using (_∘_) renaming (Morphism to _⟨→⟩_)
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq using
@@ -7,6 +6,7 @@ open import net.cruhland.axioms.Eq using
 open ≃-Reasoning
 open import net.cruhland.axioms.Operators as Op using (_+_; -_; _-_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
+open import net.cruhland.models.Function using (_∘_; _⟨→⟩_)
 open import net.cruhland.models.Literals as Literals
 open import net.cruhland.models.Logic using (⊤; ¬_)
 

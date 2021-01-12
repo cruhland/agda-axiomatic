@@ -1,6 +1,5 @@
 module net.cruhland.axioms.Peano.Addition where
 
-open import Function using (const)
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.DecEq using (_≃?_)
 open import net.cruhland.axioms.Eq using
@@ -12,6 +11,7 @@ open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
 import net.cruhland.axioms.Peano.Inspect as PeanoInspect
 import net.cruhland.axioms.Peano.Literals as PeanoLiterals
+open import net.cruhland.models.Function using (const)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using
   (⊤; _∧_; _∨_; ∨-introᴸ; ∨-introᴿ; ¬_; contra; ¬[¬a∨¬b]→a∧b)

@@ -1,8 +1,8 @@
-open import Function using (_∘_; id)
 open import Level using (_⊔_)
 open import net.cruhland.axioms.Eq using (_≃_; sym)
 open import net.cruhland.axioms.Sets.Base using (SetAxioms)
 import net.cruhland.axioms.Sets.Equality as Equality
+open import net.cruhland.models.Function using (_∘_; id)
 open import net.cruhland.models.Logic using (_↔_; ↔-intro; ¬_)
 open import net.cruhland.models.Setoid using (El; Setoid; Setoid₀)
 

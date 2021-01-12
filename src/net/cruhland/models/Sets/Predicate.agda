@@ -1,13 +1,13 @@
 module net.cruhland.models.Sets.Predicate where
 
-open import Function using (_∘_; const; flip; id)
-open import Function.Equivalence using (Equivalence)
 open import Level using (_⊔_; Level; Setω) renaming (suc to sℓ)
 open import net.cruhland.axioms.Sets using
   ( Complement; Comprehension; Difference; EmptySet; PairSet
   ; PairwiseIntersection; PairwiseUnion; Replacement; module ReplacementDefs
   ; SetAxioms; SetTheory; SingletonSet
   )
+open import net.cruhland.models.Function
+  using (_∘_; const; flip; Equivalence; id)
 open import net.cruhland.models.Logic using
   (_∧_; ∧-map; _∨_; ∨-map; _↔_; ↔-elimᴿ; ↔-intro; ↔-refl; ⊥ᴸᴾ; ⊥ᴸᴾ-elim)
 open import net.cruhland.models.Setoid

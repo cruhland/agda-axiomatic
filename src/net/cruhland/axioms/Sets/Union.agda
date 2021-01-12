@@ -1,6 +1,5 @@
 module net.cruhland.axioms.Sets.Union where
 
-open import Function using (_∘_)
 open import Level using (Setω)
 open import net.cruhland.axioms.Eq using (_≃_; sym; trans)
 open import net.cruhland.axioms.Sets.Base using (SetAxioms)
@@ -8,6 +7,7 @@ open import net.cruhland.axioms.Sets.Empty using (EmptySet)
 import net.cruhland.axioms.Sets.Decidable as Decidable
 import net.cruhland.axioms.Sets.Equality as Equality
 import net.cruhland.axioms.Sets.Subset as Subset
+open import net.cruhland.models.Function using (_∘_)
 open import net.cruhland.models.Logic using
   ( _∨_; _∨?_; ∨-comm; ∨-forceᴿ; ∨-introᴸ; ∨-introᴿ
   ; _↔_; ↔-elimᴸ; ↔-elimᴿ

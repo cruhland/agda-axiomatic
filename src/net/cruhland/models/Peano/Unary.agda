@@ -3,7 +3,6 @@ module net.cruhland.models.Peano.Unary where
 open import Data.Nat using (ℕ; _+_; _*_; _^_; zero) renaming (suc to step)
 open import Data.Nat.Properties
   using (+-comm; *-comm) renaming (suc-injective to step-inj)
-open import Function using (_∘_)
 open import Relation.Binary.PropositionalEquality using
   (_≡_; _≢_; cong; refl; sym; ≢-sym; trans)
 import net.cruhland.axioms.AbstractAlgebra as AA
@@ -14,6 +13,7 @@ open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base using (Peano)
 open import net.cruhland.axioms.Peano.Exponentiation using (Exponentiation)
 open import net.cruhland.axioms.Peano.Multiplication using (Multiplication)
+open import net.cruhland.models.Function using (_∘_)
 
 ind : (P : ℕ → Set) → P zero → (∀ {k} → P k → P (step k)) → ∀ n → P n
 ind P Pz Ps zero = Pz

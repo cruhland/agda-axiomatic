@@ -1,4 +1,3 @@
-open import Function using (_∘_; flip) renaming (Morphism to _⟨→⟩_)
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast as Cast using (_As_; _as_)
 open import net.cruhland.axioms.DecEq using (_≃?_)
@@ -10,6 +9,7 @@ open import net.cruhland.axioms.Peano.Addition
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
 import net.cruhland.axioms.Peano.Inspect as PeanoInspect
+open import net.cruhland.models.Function using (_∘_; _⟨→⟩_; flip)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using
   (∧-intro; _∨_; ∨-introᴸ; ∨-introᴿ; ∨-mapᴸ; ¬_; contra; Dec; dec-map; no; yes)

@@ -1,10 +1,10 @@
-open import Function using (_∘_)
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq using
   (_≃_; _≄_; _≄ⁱ_; ≄ⁱ-elim; sym; module ≃-Reasoning)
 open ≃-Reasoning
 open import net.cruhland.axioms.Operators using (_*_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
+open import net.cruhland.models.Function using (_∘_)
 open import net.cruhland.models.Literals
 
 module net.cruhland.models.Rationals.Reciprocal (PA : PeanoArithmetic) where

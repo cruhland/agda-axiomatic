@@ -1,9 +1,9 @@
 import Agda.Builtin.Nat as Nat
-open import Function using (const)
 open import net.cruhland.axioms.Cast using (_As_)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
 import net.cruhland.models.Literals as Literals
+open import net.cruhland.models.Function using (const)
 open import net.cruhland.models.Logic using (⊤)
 
 module net.cruhland.axioms.Peano.Literals (PB : PeanoBase) where

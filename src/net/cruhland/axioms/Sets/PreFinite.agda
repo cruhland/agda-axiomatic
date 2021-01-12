@@ -3,7 +3,6 @@ open import Data.List.Relation.Unary.All
   using (All) renaming ([] to []ᴬ; _∷_ to _∷ᴬ_)
 open import Data.List.Relation.Unary.Any using (Any; here; there)
 import Data.List.Membership.DecSetoid as DecSetoidᴸ
-open import Function using (_∘_)
 open import Level using (_⊔_)
 open import net.cruhland.axioms.Eq using (_≃_)
 open import net.cruhland.axioms.Sets.Base using (SetAxioms)
@@ -12,6 +11,7 @@ import net.cruhland.axioms.Sets.Equality as Equality
 open import net.cruhland.axioms.Sets.Singleton using (SingletonSet)
 import net.cruhland.axioms.Sets.Subset as Subset
 open import net.cruhland.axioms.Sets.Union using (PairwiseUnion)
+open import net.cruhland.models.Function using (_∘_)
 open import net.cruhland.models.Logic using (∨-introᴸ; ∨-introᴿ; ⊥-elim)
 open import net.cruhland.models.Setoid using
   (El; module DecSetoid; DecSetoid₀; Setoid; Setoid₀)

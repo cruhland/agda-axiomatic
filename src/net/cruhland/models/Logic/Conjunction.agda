@@ -1,6 +1,6 @@
 module net.cruhland.models.Logic.Conjunction where
 
-open import Function using (id)
+open import net.cruhland.models.Function using (id)
 
 -- Export standard library definitions
 open import Data.Product public using (curry; uncurry) renaming

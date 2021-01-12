@@ -1,4 +1,3 @@
-open import Function using (_∘_; flip)
 open import Level using (0ℓ)
 open import net.cruhland.axioms.Eq using (_≃_; trans; module ≃-Reasoning)
 open ≃-Reasoning
@@ -12,6 +11,7 @@ open import net.cruhland.axioms.Sets.Pair using (PairSet)
 open import net.cruhland.axioms.Sets.Singleton using (SingletonSet)
 import net.cruhland.axioms.Sets.Subset as Subset
 open import net.cruhland.axioms.Sets.Union using (PairwiseUnion)
+open import net.cruhland.models.Function using (_∘_; flip)
 open import net.cruhland.models.Logic using
   (_∧_; ∧-intro; _∨_; ∨-introᴸ; ∨-introᴿ; ∨-map; ∨-rec; ⊥-elim)
 open import net.cruhland.models.Setoid using (El; Setoid; Setoid₀)

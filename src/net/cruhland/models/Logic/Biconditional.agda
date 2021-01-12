@@ -1,7 +1,7 @@
 module net.cruhland.models.Logic.Biconditional where
 
-open import Function using (id; _∘_)
 open import Level using (_⊔_)
+open import net.cruhland.models.Function using (_∘_; id)
 
 infixl 0 _↔_
 

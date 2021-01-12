@@ -1,6 +1,6 @@
 module net.cruhland.models.Logic.Decidable where
 
-open import Function using (id)
+open import net.cruhland.models.Function using (id)
 open import net.cruhland.models.Logic.Conjunction using (_∧_; ∧-intro)
 open import net.cruhland.models.Logic.Disjunction
   using (_∨_; ∨-rec; ∨-introᴸ; ∨-introᴿ)

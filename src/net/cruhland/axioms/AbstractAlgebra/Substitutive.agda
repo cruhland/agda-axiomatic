@@ -1,8 +1,8 @@
 module net.cruhland.axioms.AbstractAlgebra.Substitutive where
 
-open import Function using (_∘_)
 open import net.cruhland.axioms.Eq as Eq using (_≃_; Eq)
 open Eq.≃-Reasoning
+open import net.cruhland.models.Function using (_∘_)
 open import net.cruhland.models.Logic using (⊤)
 
 open import net.cruhland.axioms.AbstractAlgebra.Commutative

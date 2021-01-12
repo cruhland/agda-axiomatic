@@ -1,7 +1,7 @@
 module net.cruhland.axioms.AbstractAlgebra.Compatible where
 
-open import Function using (_∘_) renaming (Morphism to _⟨→⟩_)
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_; Eq)
+open import net.cruhland.models.Function using (_∘_; _⟨→⟩_)
 open import net.cruhland.models.Logic using (_∨_; ∨-rec)
 
 private

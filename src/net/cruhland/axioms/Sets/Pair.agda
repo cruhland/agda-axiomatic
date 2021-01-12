@@ -1,12 +1,12 @@
 module net.cruhland.axioms.Sets.Pair where
 
-open import Function using (_∘_)
 open import Level using (_⊔_; Level; Setω)
 open import Relation.Binary using (DecSetoid)
 open import net.cruhland.axioms.Eq using (_≃_)
 open import net.cruhland.axioms.Sets.Base using (SetAxioms)
 import net.cruhland.axioms.Sets.Decidable as Decidable
 import net.cruhland.axioms.Sets.Equality as Equality
+open import net.cruhland.models.Function using (_∘_)
 open import net.cruhland.models.Logic using
   ( _∨_; _∨?_; ∨-introᴸ; ∨-introᴿ; ∨-map
   ; _↔_; ↔-elimᴸ; ↔-elimᴿ; ↔-sym; ↔-trans

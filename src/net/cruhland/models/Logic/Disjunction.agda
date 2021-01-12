@@ -1,6 +1,6 @@
 module net.cruhland.models.Logic.Disjunction where
 
-open import Function using (id; _∘_)
+open import net.cruhland.models.Function using (_∘_; id)
 import Level
 open import net.cruhland.models.Logic.Falsity using
   (⊥-elim; ⊥ᴸᴾ; ⊥ᴸᴾ-elim; ¬_)

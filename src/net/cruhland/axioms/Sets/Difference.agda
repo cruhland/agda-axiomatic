@@ -1,9 +1,9 @@
 module net.cruhland.axioms.Sets.Difference where
 
-open import Function using (_∘_)
 open import Level using (Setω)
 open import net.cruhland.axioms.Sets.Base using (SetAxioms)
 import net.cruhland.axioms.Sets.Decidable as Decidable
+open import net.cruhland.models.Function using (_∘_)
 open import net.cruhland.models.Logic using
   (_∧_; _∧?_; ∧-elimᴸ; ∧-elimᴿ; _↔_; ↔-elimᴸ; ↔-elimᴿ; ¬?; curry; Dec; dec-map)
 open import net.cruhland.models.Setoid using (Setoid₀)

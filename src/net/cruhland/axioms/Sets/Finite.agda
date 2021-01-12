@@ -3,7 +3,6 @@ import Data.List.Membership.DecSetoid as DecSetoidᴸ
 open import Data.List.Relation.Unary.All
   using (All; all?; lookupAny) renaming ([] to []ᴬ; _∷_ to _∷ᴬ_)
 open import Data.List.Relation.Unary.Any using (here; there)
-open import Function using (_∘_)
 open import Level using (_⊔_)
 open import Relation.Binary using (DecSetoid)
 open import net.cruhland.axioms.DecEq using (DecEq)
@@ -23,6 +22,7 @@ import net.cruhland.axioms.Sets.Properties as Properties
 open import net.cruhland.axioms.Sets.Singleton using (SingletonSet)
 import net.cruhland.axioms.Sets.Subset as Subset
 open import net.cruhland.axioms.Sets.Union using (PairwiseUnion)
+open import net.cruhland.models.Function using (_∘_)
 open import net.cruhland.models.Logic using
   ( _∧_; _∧?_; ∧-intro; uncurry
   ; _∨_; ∨-introᴸ; ∨-introᴿ

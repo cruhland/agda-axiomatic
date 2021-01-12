@@ -1,12 +1,12 @@
 module net.cruhland.axioms.Sets.Intersection where
 
-open import Function using (_∘_)
 open import Level using (Setω)
 open import net.cruhland.axioms.Eq using (_≃_; sym; trans)
 open import net.cruhland.axioms.Sets.Base using (SetAxioms)
 import net.cruhland.axioms.Sets.Decidable as Decidable
 import net.cruhland.axioms.Sets.Equality as Equality
 import net.cruhland.axioms.Sets.Subset as Subset
+open import net.cruhland.models.Function using (_∘_)
 open import net.cruhland.models.Logic using
   ( _∧_; _∧?_; ∧-comm; ∧-dup; ∧-elimᴸ; ∧-elimᴿ; ∧-intro
   ; _↔_; ↔-elimᴸ; ↔-elimᴿ

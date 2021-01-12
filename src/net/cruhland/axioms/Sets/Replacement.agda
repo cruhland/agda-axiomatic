@@ -6,7 +6,6 @@ open import Data.List.Relation.Unary.All
   using (All) renaming ([] to []ᴬ; _∷_ to _∷ᴬ_)
 open import Data.List.Relation.Unary.Any
   using (Any; any?) renaming (map to map-any)
-open import Function using (_∘_; const)
 open import Level using (Setω)
 open import Relation.Binary using (DecSetoid)
 open import net.cruhland.axioms.Eq using (_≃_; sym; trans; module ≃-Reasoning)
@@ -19,6 +18,7 @@ import net.cruhland.axioms.Sets.PreFinite as PreFinite
 open import net.cruhland.axioms.Sets.Singleton using (SingletonSet)
 import net.cruhland.axioms.Sets.Subset as Subset
 open import net.cruhland.axioms.Sets.Union using (PairwiseUnion)
+open import net.cruhland.models.Function using (_∘_; const)
 open import net.cruhland.models.Logic using
   ( ⊤; _∧?_; ∧-intro; uncurry; ∨-introᴸ; ∨-introᴿ
   ; _↔_; ↔-elimᴸ; ↔-elimᴿ; ⊥-elim; Dec; dec-map
