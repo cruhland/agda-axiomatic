@@ -18,14 +18,6 @@ record Associative {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set where
 
 open Associative {{...}} public using (assoc)
 
-record Inverseⁱᴸ
-    {A : Set} {C : A → Set} {{eq : Eq A}}
-      (_⊙_ : A → A → A) (inv : (a : A) {{c : C a}} → A) (e : A) : Set where
-  field
-    invⁱᴸ : ∀ {a} {{c : C a}} → inv a ⊙ a ≃ e
-
-open Inverseⁱᴸ {{...}} public using (invⁱᴸ)
-
 record Inverseⁱᴿ
     {A : Set} {C : A → Set} {{eq : Eq A}}
       (_⊙_ : A → A → A) (inv : (a : A) {{c : C a}} → A) (e : A) : Set where
@@ -81,10 +73,11 @@ inverseᴿ-from-inverseᴸ :
 inverseᴿ-from-inverseᴸ = inverseᴿ (Eq.trans comm invᴸ)
 
 inverseⁱᴿ :
-  {A : Set} {C : A → Set} {_⊙_ : A → A → A} {inv : (a : A) {{c : C a}} → A} →
-    ∀ {e} {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Inverseⁱᴸ _⊙_ inv e}} →
-      Inverseⁱᴿ _⊙_ inv e
-inverseⁱᴿ = record { invⁱᴿ = Eq.trans comm invⁱᴸ }
+  {A : Set} {C : A → Set} {inv : (a : A) {{c : C a}} → A} →
+    {{_ : Eq A}} {{i : Inverseᴸ inv}} →
+      let open Inverseᴸ i using (_⊙_; e)
+       in {{_ : Commutative _⊙_}} → Inverseⁱᴿ _⊙_ inv e
+inverseⁱᴿ = record { invⁱᴿ = Eq.trans comm invᴸ }
 
 [ab][cd]≃a[[bc]d] :
   {A : Set} {_⊙_ : A → A → A}
