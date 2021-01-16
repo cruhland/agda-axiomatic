@@ -53,5 +53,5 @@ instance
       recip-invᴸ : ∀ {q} {{_ : q ≄ⁱ 0}} → q ⁻¹′ * q ≃ 1
       recip-invᴸ {q↑ // q↓ ~ _} = ℚ≃.q≃1 AA.comm
 
-  recip-inverseⁱᴿ : AA.Inverseⁱᴿ _*_ _⁻¹′ 1
-  recip-inverseⁱᴿ = AA.inverseⁱᴿ
+  recip′-inverseᴿ : AA.Inverseᴿ _⁻¹′
+  recip′-inverseᴿ = AA.inverseᴿ-from-inverseᴸ

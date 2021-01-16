@@ -2,7 +2,7 @@ module net.cruhland.axioms.AbstractAlgebra where
 
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_; Eq)
 open Eq.≃-Reasoning
-open import net.cruhland.models.Function using (_∘_)
+open import net.cruhland.models.Function using (_∘_; ConstrainableFn)
 open import net.cruhland.models.Logic using (_∨_; ∨-rec; ¬_)
 
 open import net.cruhland.axioms.AbstractAlgebra.Commutative public
@@ -17,14 +17,6 @@ record Associative {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set where
     assoc : ∀ {a b c} → (a ⊙ b) ⊙ c ≃ a ⊙ (b ⊙ c)
 
 open Associative {{...}} public using (assoc)
-
-record Inverseⁱᴿ
-    {A : Set} {C : A → Set} {{eq : Eq A}}
-      (_⊙_ : A → A → A) (inv : (a : A) {{c : C a}} → A) (e : A) : Set where
-  field
-    invⁱᴿ : ∀ {a} {{c : C a}} → a ⊙ inv a ≃ e
-
-open Inverseⁱᴿ {{...}} public using (invⁱᴿ)
 
 record Antisymmetric {A : Set} {{eq : Eq A}} (_~_ : A → A → Set) : Set where
   field
@@ -68,16 +60,10 @@ distributiveᴿ-from-distributiveᴸ {A} {_⊙_} {_⊕_} = distributiveᴿ distr
       ∎
 
 inverseᴿ-from-inverseᴸ :
-  {A : Set} {inv : A → A} {{_ : Eq A}} {{i : Inverseᴸ inv}} →
-    let open Inverseᴸ i using (_⊙_) in {{_ : Commutative _⊙_}} → Inverseᴿ inv
+  {A F : Set} {f : F}
+    {{_ : Eq A}} {{i : Inverseᴸ f}} {{_ : Commutative (Inverseᴸ._⊙_ i)}} →
+      Inverseᴿ f
 inverseᴿ-from-inverseᴸ = inverseᴿ (Eq.trans comm invᴸ)
-
-inverseⁱᴿ :
-  {A : Set} {C : A → Set} {inv : (a : A) {{c : C a}} → A} →
-    {{_ : Eq A}} {{i : Inverseᴸ inv}} →
-      let open Inverseᴸ i using (_⊙_; e)
-       in {{_ : Commutative _⊙_}} → Inverseⁱᴿ _⊙_ inv e
-inverseⁱᴿ = record { invⁱᴿ = Eq.trans comm invᴸ }
 
 [ab][cd]≃a[[bc]d] :
   {A : Set} {_⊙_ : A → A → A}
