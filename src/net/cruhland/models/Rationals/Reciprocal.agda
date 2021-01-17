@@ -47,11 +47,11 @@ instance
         ∀ {q₁ q₂} {{c₁ : q₁ ≄ⁱ 0}} {{c₂ : q₂ ≄ⁱ 0}} → q₁ ≃ q₂ → q₁ ⁻¹′ ≃ q₂ ⁻¹′
       recip-substⁱ = ≃₀-intro ∘ AA.with-comm ∘ sym ∘ ℚ≃._≃₀_.elim
 
-  recip′-inverseᴸ : AA.Inverseᴸ _⁻¹′
-  recip′-inverseᴸ = AA.inverseᴸ recip-invᴸ
+  recip′-inverseᴸ : AA.Inverse AA.handᴸ _⁻¹′
+  recip′-inverseᴸ = AA.inverse recip-invᴸ
     where
       recip-invᴸ : ∀ {q} {{_ : q ≄ⁱ 0}} → q ⁻¹′ * q ≃ 1
       recip-invᴸ {q↑ // q↓ ~ _} = ℚ≃.q≃1 AA.comm
 
-  recip′-inverseᴿ : AA.Inverseᴿ _⁻¹′
+  recip′-inverseᴿ : AA.Inverse AA.handᴿ _⁻¹′
   recip′-inverseᴿ = AA.inverseᴿ-from-inverseᴸ

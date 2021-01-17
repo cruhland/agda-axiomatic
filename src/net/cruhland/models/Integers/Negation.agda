@@ -45,8 +45,8 @@ instance
               a₂⁻ + a₁⁺
             ∎
 
-  +-inverseᴸ : AA.Inverseᴸ λ x → - x
-  +-inverseᴸ = AA.inverseᴸ +-invᴸ
+  +-inverseᴸ : AA.Inverse AA.handᴸ λ x → - x
+  +-inverseᴸ = AA.inverse +-invᴸ
     where
       +-invᴸ : {x : ℤ} → - x + x ≃ 0
       +-invᴸ {x⁺ — x⁻} = ≃ᶻ-intro [x⁻+x⁺]+0≃0+[x⁺+x⁻]
@@ -60,7 +60,7 @@ instance
               0 + (x⁺ + x⁻)
             ∎
 
-  +-inverseᴿ : AA.Inverseᴿ λ x → - x
+  +-inverseᴿ : AA.Inverse AA.handᴿ λ x → - x
   +-inverseᴿ = AA.inverseᴿ-from-inverseᴸ
 
 neg-involutive : {a : ℤ} → - (- a) ≃ a

@@ -5,6 +5,7 @@ open Eq.≃-Reasoning
 open import net.cruhland.models.Function using (_∘_; ConstrainableFn)
 open import net.cruhland.models.Logic using (_∨_; ∨-rec; ¬_)
 
+open import net.cruhland.axioms.AbstractAlgebra.Base public
 open import net.cruhland.axioms.AbstractAlgebra.Commutative public
 open import net.cruhland.axioms.AbstractAlgebra.Compatible public
 open import net.cruhland.axioms.AbstractAlgebra.Injective public
@@ -61,9 +62,9 @@ distributiveᴿ-from-distributiveᴸ {A} {_⊙_} {_⊕_} = distributiveᴿ distr
 
 inverseᴿ-from-inverseᴸ :
   {A F : Set} {f : F}
-    {{_ : Eq A}} {{i : Inverseᴸ f}} {{_ : Commutative (Inverseᴸ._⊙_ i)}} →
-      Inverseᴿ f
-inverseᴿ-from-inverseᴸ = inverseᴿ (Eq.trans comm invᴸ)
+    {{_ : Eq A}} {{i : Inverse handᴸ f}} {{_ : Commutative (Inverse._⊙_ i)}} →
+      Inverse handᴿ f
+inverseᴿ-from-inverseᴸ = inverse (Eq.trans comm inv)
 
 [ab][cd]≃a[[bc]d] :
   {A : Set} {_⊙_ : A → A → A}
