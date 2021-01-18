@@ -13,7 +13,7 @@ open import net.cruhland.models.Rationals.Base PA as Base using (ℚ)
 instance
   private
     from-Nat : Nat As ℚ
-    from-Nat = Cast.transitive {B = ℕ}
+    from-Nat = Cast.via ℕ
 
   number : Literals.Number ℚ
   number = record { Constraint = λ _ → ⊤ ; fromNat = _as ℚ }

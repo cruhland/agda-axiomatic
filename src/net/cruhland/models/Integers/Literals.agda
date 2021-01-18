@@ -13,7 +13,7 @@ open import net.cruhland.models.Logic using (⊤)
 instance
   private
     from-Nat : Nat As ℤ
-    from-Nat = Cast.transitive {B = ℕ}
+    from-Nat = Cast.via ℕ
 
   number : Literals.Number ℤ
   number = record { Constraint = λ _ → ⊤ ; fromNat = _as ℤ }

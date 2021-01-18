@@ -13,8 +13,8 @@ x as B = cast x
 _value_ : (A : Set) → A → A
 A value x = x
 
-transitive : {A B C : Set} {{_ : A As B}} {{_ : B As C}} → A As C
-transitive {A} {B} {C} = record { cast = λ x → (x as B) as C }
+via : ({A} B {C} : Set) {{_ : A As B}} {{_ : B As C}} → A As C
+via B {C} = record { cast = λ x → (x as B) as C }
 
 delegate₂ :
   {A₁ B₁ C₁ A₂ B₂ C₂ : Set} (f : A₂ → B₂ → C₂)

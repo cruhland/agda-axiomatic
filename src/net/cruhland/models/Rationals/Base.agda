@@ -33,4 +33,4 @@ instance
   from-ℤ = record { cast = _//1 }
 
   from-ℕ : ℕ As ℚ
-  from-ℕ = Cast.transitive {B = ℤ}
+  from-ℕ = Cast.via ℤ
