@@ -24,21 +24,18 @@ record Addition (PB : PeanoBase) : Set where
   field
     {{plus}} : Op.Plus ℕ
     {{+-substitutiveᴸ}} : AA.Substitutiveᴸ _+_
-    +-isIdentityᴸ : AA.IsIdentity AA.handᴸ _+_ 0
+    {{+-identityᴸ}} : AA.Identity AA.handᴸ _+_ 0
     {{+-commutative-stepᴸ}} : AA.Commutativeᴸ step _+_
 
   instance
-    +-identityᴸ : AA.Identity AA.handᴸ _+_
-    +-identityᴸ = AA.identity +-isIdentityᴸ
-
-    +-identityᴿ : AA.Identity AA.handᴿ _+_
+    +-identityᴿ : AA.Identity AA.handᴿ _+_ 0
     +-identityᴿ = AA.identity +-zeroᴿ
       where
         +-zeroᴿ : ∀ {n} → n + 0 ≃ n
-        +-zeroᴿ {n} = ind P Pz Ps n
+        +-zeroᴿ {n} = ind P P0 Ps n
           where
             P = λ x → x + 0 ≃ x
-            Pz = AA.ident
+            P0 = AA.identᴸ
 
             Ps : step-case P
             Ps {k} k+z≃k =

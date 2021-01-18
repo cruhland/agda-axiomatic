@@ -84,7 +84,7 @@ instance
       +-compat-ℕ : {n m : ℕ} → (n + m as ℤ) ≃ (n as ℤ) + (m as ℤ)
       +-compat-ℕ = ≃ᶻ-intro (AA.subst AA.identᴸ)
 
-  +-identityᴸ : AA.Identity AA.handᴸ _+_
+  +-identityᴸ : AA.Identity AA.handᴸ _+_ 0
   +-identityᴸ = AA.identity +-identᴸ
     where
       +-identᴸ : {x : ℤ} → 0 + x ≃ x
@@ -99,7 +99,7 @@ instance
               x⁺ + (0 + x⁻)
             ∎
 
-  +-identityᴿ : AA.Identity AA.handᴿ _+_
+  +-identityᴿ : AA.Identity AA.handᴿ _+_ 0
   +-identityᴿ = AA.identityᴿ-from-identityᴸ {A = ℤ}
 
   +-identity₂ : AA.Identity₂ _+_

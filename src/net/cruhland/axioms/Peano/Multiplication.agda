@@ -111,7 +111,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
                 m * step k
               ∎
 
-    *-identityᴸ : AA.Identity AA.handᴸ _*_
+    *-identityᴸ : AA.Identity AA.handᴸ _*_ 1
     *-identityᴸ = AA.identity *-oneᴸ
       where
         *-oneᴸ : {n : ℕ} → 1 * n ≃ n
@@ -126,7 +126,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
             n
           ∎
 
-    *-identityᴿ : AA.Identity AA.handᴿ _*_
+    *-identityᴿ : AA.Identity AA.handᴿ _*_ 1
     *-identityᴿ = AA.identityᴿ-from-identityᴸ
 
     zero-product : AA.ZeroProduct _*_

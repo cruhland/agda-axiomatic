@@ -7,35 +7,30 @@ open import net.cruhland.axioms.AbstractAlgebra.Commutative using
 open import net.cruhland.axioms.Eq as Eq using (_≃_; Eq)
 open import net.cruhland.models.Function using (flip)
 
-IsIdentity :
-  (hand : Hand) {A : Set} {{_ : Eq A}} (_⊙_ : A → A → A) (e : A) → Set
-IsIdentity hand _⊙_ e = let _<⊙>_ = forHand hand _⊙_ in ∀ {a} → e <⊙> a ≃ a
-
 record Identity
-    (hand : Hand) {A : Set} {{_ : Eq A}} (_⊙_ : A → A → A) : Set where
+    (hand : Hand) {A : Set} {{_ : Eq A}} (_⊙_ : A → A → A) (e : A) : Set where
   constructor identity
+  _<⊙>_ = forHand hand _⊙_
   field
-    {id-elem} : A
-    ident : IsIdentity hand _⊙_ id-elem
+    ident : ∀ {a} → e <⊙> a ≃ a
 
-open Identity {{...}} public using (ident; id-elem)
+open Identity {{...}} public using (ident)
 
 identᴸ = ident {handᴸ}
 identᴿ = ident {handᴿ}
 
 identityᴿ-from-identityᴸ :
-  {A : Set} {_⊙_ : A → A → A} →
-    ∀ {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Identity handᴸ _⊙_}} →
-      Identity handᴿ _⊙_
+  {A : Set} {_⊙_ : A → A → A} {e : A} →
+    ∀ {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Identity handᴸ _⊙_ e}} →
+      Identity handᴿ _⊙_ e
 identityᴿ-from-identityᴸ = identity (Eq.trans comm ident)
 
 record Identity₂ {A : Set} {{_ : Eq A}} (_⊙_ : A → A → A) : Set where
   constructor identity₂
   field
-    {{identityᴸ}} : Identity handᴸ _⊙_
-    {{identityᴿ}} : Identity handᴿ _⊙_
-
-  id₂-elem = id-elem {{r = identityᴸ}}
+    {id₂-elem} : A
+    {{identityᴸ}} : Identity handᴸ _⊙_ id₂-elem
+    {{identityᴿ}} : Identity handᴿ _⊙_ id₂-elem
 
 open Identity₂ {{...}} public using (id₂-elem)
 
@@ -65,10 +60,12 @@ absorptiveᴿ-from-absorptiveᴸ = absorptive (Eq.trans comm absorb)
 
 module _ {A : Set} {_⊙_ : A → A → A} {{_ : Eq A}} where
 
-  identityᴸ-flip : {{_ : Identity handᴿ _⊙_}} → Identity handᴸ (flip _⊙_)
+  identityᴸ-flip :
+    ∀ {e} {{_ : Identity handᴿ _⊙_ e}} → Identity handᴸ (flip _⊙_) e
   identityᴸ-flip = identity ident
 
-  identityᴿ-flip : {{_ : Identity handᴸ _⊙_}} → Identity handᴿ (flip _⊙_)
+  identityᴿ-flip :
+    ∀ {e} {{_ : Identity handᴸ _⊙_ e}} → Identity handᴿ (flip _⊙_) e
   identityᴿ-flip = identity ident
 
   identity₂-flip : {{_ : Identity₂ _⊙_}} → Identity₂ (flip _⊙_)

@@ -99,14 +99,14 @@ instance
   *-commutativeᴿ-neg : AA.Commutativeᴿ {A = ℚ} -_ _*_
   *-commutativeᴿ-neg = AA.commutativeᴿ
 
-  *-identityᴸ : AA.Identity AA.handᴸ _*_
+  *-identityᴸ : AA.Identity AA.handᴸ _*_ 1
   *-identityᴸ = AA.identity *-identᴸ
     where
       *-identᴸ : {p : ℚ} → 1 * p ≃ p
       *-identᴸ {p↑ // p↓ ~ _} =
         ≃₀-intro (AA.[a≃b][c≃d] {_⊙_ = _*_} AA.ident (sym AA.ident))
 
-  *-identityᴿ : AA.Identity AA.handᴿ _*_
+  *-identityᴿ : AA.Identity AA.handᴿ _*_ 1
   *-identityᴿ = AA.identityᴿ-from-identityᴸ {A = ℚ}
 
   *-identity₂ : AA.Identity₂ _*_

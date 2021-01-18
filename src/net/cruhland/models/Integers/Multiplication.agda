@@ -106,7 +106,7 @@ instance
               n * m + 0 * 0 + 0
             ∎
 
-  *-identityᴸ : AA.Identity AA.handᴸ _*_
+  *-identityᴸ : AA.Identity AA.handᴸ _*_ 1
   *-identityᴸ = AA.identity *-identᴸ
     where
       *-identᴸ : {x : ℤ} → 1 * x ≃ x
@@ -129,7 +129,7 @@ instance
               x⁺ + (1 * x⁻ + 0 * x⁺)
             ∎
 
-  *-identityᴿ : AA.Identity AA.handᴿ _*_
+  *-identityᴿ : AA.Identity AA.handᴿ _*_ 1
   *-identityᴿ = AA.identityᴿ-from-identityᴸ {A = ℤ}
 
   *-distributive-+ᴸ : AA.Distributive AA.handᴸ _*_ _+_

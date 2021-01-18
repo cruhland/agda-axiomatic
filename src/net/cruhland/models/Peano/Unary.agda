@@ -54,11 +54,14 @@ instance
   +-substitutiveᴸ : ∀ {m} → AA.Substitutive₁ (_+ m) _≡_ _≡_
   +-substitutiveᴸ {m} = AA.substitutive₁ (cong (_+ m))
 
+  +-identityᴸ : AA.Identity AA.handᴸ _+_ 0
+  +-identityᴸ = AA.identity refl
+
   +-commutative-stepᴸ : AA.Commutativeᴸ step _+_
   +-commutative-stepᴸ = record { commᴸ = refl }
 
 addition : Addition base
-addition = record { +-isIdentityᴸ = refl }
+addition = record {}
 
 instance
   star : Op.Star ℕ

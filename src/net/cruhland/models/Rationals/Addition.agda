@@ -131,7 +131,7 @@ instance
 
           ≃-denom = sym AA.assoc
 
-  +-identityᴸ : AA.Identity AA.handᴸ _+_
+  +-identityᴸ : AA.Identity AA.handᴸ _+_ 0
   +-identityᴸ = AA.identity +-identᴸ
     where
       +-identᴸ : {p : ℚ} → 0 + p ≃ p
@@ -150,7 +150,7 @@ instance
 
           ≃-denom = sym AA.ident
 
-  +-identityᴿ : AA.Identity AA.handᴿ _+_
+  +-identityᴿ : AA.Identity AA.handᴿ _+_ 0
   +-identityᴿ = AA.identityᴿ-from-identityᴸ {A = ℚ}
 
   +-identity₂ : AA.Identity₂ _+_
