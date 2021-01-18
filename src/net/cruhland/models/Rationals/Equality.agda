@@ -32,7 +32,6 @@ private
     1≄ⁱ0 = fromWitnessFalse 1≄0
 
 instance
-  -- Exercise 4.2.1
   ≃₀-reflexive : Eq.Reflexive _≃₀_
   ≃₀-reflexive = record { refl = ≃₀-intro Eq.refl }
 
