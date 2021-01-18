@@ -34,16 +34,12 @@ record Identity₂ {A : Set} {{_ : Eq A}} (_⊙_ : A → A → A) : Set where
 
 open Identity₂ {{...}} public using (id₂-elem)
 
-IsAbsorptive :
-  (hand : Hand) {A : Set} {{_ : Eq A}} (_⊙_ : A → A → A) (z : A) → Set
-IsAbsorptive hand _⊙_ z = let _<⊙>_ = forHand hand _⊙_ in ∀ {a} → z <⊙> a ≃ z
-
 record Absorptive
-    (hand : Hand) {A : Set} {{_ : Eq A}} (_⊙_ : A → A → A) : Set where
+    (hand : Hand) {A : Set} {{_ : Eq A}} (_⊙_ : A → A → A) (z : A) : Set where
   constructor absorptive
+  _<⊙>_ = forHand hand _⊙_
   field
-    {z} : A
-    absorb : IsAbsorptive hand _⊙_ z
+    absorb : ∀ {a} → z <⊙> a ≃ z
 
 open Absorptive {{...}} public using (absorb)
 
@@ -51,9 +47,9 @@ absorbᴸ = absorb {handᴸ}
 absorbᴿ = absorb {handᴿ}
 
 absorptiveᴿ-from-absorptiveᴸ :
-  {A : Set} {_⊙_ : A → A → A}
-    {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Absorptive handᴸ _⊙_}} →
-      Absorptive handᴿ _⊙_
+  {A : Set} {_⊙_ : A → A → A} {z : A}
+    {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Absorptive handᴸ _⊙_ z}} →
+      Absorptive handᴿ _⊙_ z
 absorptiveᴿ-from-absorptiveᴸ = absorptive (Eq.trans comm absorb)
 
 {--- Equivalences ---}

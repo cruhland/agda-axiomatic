@@ -67,12 +67,14 @@ instance
   star : Op.Star ℕ
   star = record { _*_ = _*_ }
 
+  *-absorptiveᴸ : AA.Absorptive AA.handᴸ _*_ 0
+  *-absorptiveᴸ = AA.absorptive refl
+
   *-substitutiveᴸ : ∀ {m} → AA.Substitutive₁ (_* m) _≡_ _≡_
   *-substitutiveᴸ {m} = AA.substitutive₁ (cong (_* m))
 
 multiplication : Multiplication base addition
-multiplication =
-  record { *-isAbsorptiveᴸ = refl ; *-stepᴸ = λ {n m} → +-comm m (n * m) }
+multiplication = record { *-stepᴸ = λ {n m} → +-comm m (n * m) }
 
 exponentiation : Exponentiation base addition multiplication
 exponentiation =

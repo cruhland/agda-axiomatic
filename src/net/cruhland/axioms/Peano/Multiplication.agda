@@ -31,21 +31,18 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
   field
     {{star}} : Op.Star ℕ
     {{*-substitutiveᴸ}} : AA.Substitutiveᴸ _*_
-    *-isAbsorptiveᴸ : AA.IsAbsorptive AA.handᴸ _*_ 0
+    {{*-absorptiveᴸ}} : AA.Absorptive AA.handᴸ _*_ 0
     *-stepᴸ : ∀ {n m} → step n * m ≃ n * m + m
 
   instance
-    *-absorptiveᴸ : AA.Absorptive AA.handᴸ _*_
-    *-absorptiveᴸ = AA.absorptive *-isAbsorptiveᴸ
-
-    *-absorptiveᴿ : AA.Absorptive AA.handᴿ _*_
+    *-absorptiveᴿ : AA.Absorptive AA.handᴿ _*_ 0
     *-absorptiveᴿ = AA.absorptive *-zeroᴿ
       where
         *-zeroᴿ : ∀ {n} → n * 0 ≃ 0
         *-zeroᴿ {n} = ind P P0 Ps n
           where
             P = λ x → x * 0 ≃ 0
-            P0 = AA.absorb
+            P0 = AA.absorbᴸ
 
             Ps : step-case P
             Ps {k} Pk =

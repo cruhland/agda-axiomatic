@@ -227,7 +227,7 @@ neg-mult {a⁺ — a⁻} = AA.[a≃b][c≃d] x≃0y+1x x≃0y+1x
   ∎
 
 instance
-  *-absorptiveᴸ : AA.Absorptive AA.handᴸ _*_
+  *-absorptiveᴸ : AA.Absorptive AA.handᴸ _*_ 0
   *-absorptiveᴸ = AA.absorptive *-zeroᴸ
     where
       *-zeroᴸ : {x : ℤ} → 0 * x ≃ 0
@@ -242,7 +242,7 @@ instance
           0
         ∎
 
-  *-absorptiveᴿ : AA.Absorptive AA.handᴿ _*_
+  *-absorptiveᴿ : AA.Absorptive AA.handᴿ _*_ 0
   *-absorptiveᴿ = AA.absorptiveᴿ-from-absorptiveᴸ {A = ℤ}
 
 neg-sub-swap : ∀ {a b} → - (a - b) ≃ b - a
