@@ -24,18 +24,21 @@ record Addition (PB : PeanoBase) : Set where
   field
     {{plus}} : Op.Plus ℕ
     {{+-substitutiveᴸ}} : AA.Substitutiveᴸ _+_
-    {{+-identityᴸ}} : AA.Identityᴸ _+_ 0
+    +-isIdentityᴸ : AA.IsIdentity AA.handᴸ _+_ 0
     {{+-commutative-stepᴸ}} : AA.Commutativeᴸ step _+_
 
   instance
-    +-identityᴿ : AA.Identityᴿ _+_ 0
-    +-identityᴿ = record { identᴿ = +-zeroᴿ }
+    +-identityᴸ : AA.Identity AA.handᴸ _+_
+    +-identityᴸ = AA.identity +-isIdentityᴸ
+
+    +-identityᴿ : AA.Identity AA.handᴿ _+_
+    +-identityᴿ = AA.identity +-zeroᴿ
       where
         +-zeroᴿ : ∀ {n} → n + 0 ≃ n
         +-zeroᴿ {n} = ind P Pz Ps n
           where
             P = λ x → x + 0 ≃ x
-            Pz = AA.identᴸ
+            Pz = AA.ident
 
             Ps : step-case P
             Ps {k} k+z≃k =
@@ -58,9 +61,9 @@ record Addition (PB : PeanoBase) : Set where
             Pz =
               begin
                 0 + step m
-              ≃⟨ AA.identᴸ ⟩
+              ≃⟨ AA.ident ⟩
                 step m
-              ≃˘⟨ AA.subst AA.identᴸ ⟩
+              ≃˘⟨ AA.subst AA.ident ⟩
                 step (0 + m)
               ∎
 
@@ -86,9 +89,9 @@ record Addition (PB : PeanoBase) : Set where
             Pz =
               begin
                 0 + m
-              ≃⟨ AA.identᴸ ⟩
+              ≃⟨ AA.ident ⟩
                 m
-              ≃˘⟨ AA.identᴿ ⟩
+              ≃˘⟨ AA.ident ⟩
                 m + 0
               ∎
 
@@ -121,9 +124,9 @@ record Addition (PB : PeanoBase) : Set where
             Pz =
               begin
                 (0 + m) + p
-              ≃⟨ AA.subst AA.identᴸ ⟩
+              ≃⟨ AA.subst AA.ident ⟩
                 m + p
-              ≃˘⟨ AA.identᴸ ⟩
+              ≃˘⟨ AA.ident ⟩
                 0 + (m + p)
               ∎
 
@@ -153,11 +156,11 @@ record Addition (PB : PeanoBase) : Set where
             Pz z+m≃z+p =
               begin
                 m
-              ≃˘⟨ AA.identᴸ ⟩
+              ≃˘⟨ AA.ident ⟩
                 0 + m
               ≃⟨ z+m≃z+p ⟩
                 0 + p
-              ≃⟨ AA.identᴸ ⟩
+              ≃⟨ AA.ident ⟩
                 p
               ∎
 
@@ -182,7 +185,7 @@ record Addition (PB : PeanoBase) : Set where
   sn≃n+1 {n} =
     begin
       step n
-    ≃˘⟨ AA.subst AA.identᴿ ⟩
+    ≃˘⟨ AA.subst AA.ident ⟩
       step (n + 0)
     ≃˘⟨ AA.commᴿ ⟩
       n + step 0
@@ -200,7 +203,7 @@ record Addition (PB : PeanoBase) : Set where
           step n
         ≃˘⟨ n≃sn ⟩
           n
-        ≃˘⟨ AA.identᴿ ⟩
+        ≃˘⟨ AA.ident ⟩
           n + 0
         ∎
 
@@ -216,7 +219,7 @@ record Addition (PB : PeanoBase) : Set where
       P = λ x → Positive (a + x)
 
       Pz : P 0
-      Pz = Positive-subst (sym AA.identᴿ) pos-a
+      Pz = Positive-subst (sym AA.ident) pos-a
 
       Ps : step-case P
       Ps {k} _ = λ a+sk≃z → step≄zero (trans (sym AA.commᴿ) a+sk≃z)

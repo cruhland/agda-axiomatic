@@ -178,11 +178,11 @@ a[bc]-chain {A} {_⊙_} {a} {b} {c} {d} {e} ab≃d dc≃e =
   ∎
 
 eq→idᴿ :
-  {A : Set} {_⊙_ : A → A → A} {a b d e : A}
-    {{_ : Eq A}} {{_ : Identityᴿ _⊙_ e}}
+  {A : Set} {_⊙_ : A → A → A} {a b d : A}
+    {{_ : Eq A}} {{_ : Identity handᴿ _⊙_}}
     {{cancel : Cancellativeᴸ _⊙_ _≃_}} {{_ : Cancellativeᴸ.C cancel a}} →
-      a ⊙ d ≃ b → a ≃ b → d ≃ e
-eq→idᴿ {A} {_⊙_} {a} {b} {d} {e} ad≃b a≃b = cancelᴸ ad≃ae
+      a ⊙ d ≃ b → a ≃ b → d ≃ id-elem
+eq→idᴿ {A} {_⊙_} {a} {b} {d} ad≃b a≃b = cancelᴸ ad≃ae
   where
     ad≃ae =
       begin
@@ -191,19 +191,19 @@ eq→idᴿ {A} {_⊙_} {a} {b} {d} {e} ad≃b a≃b = cancelᴸ ad≃ae
         b
       ≃˘⟨ a≃b ⟩
         a
-      ≃˘⟨ identᴿ ⟩
-        a ⊙ e
+      ≃˘⟨ ident ⟩
+        a ⊙ id-elem
       ∎
 
 idᴿ→eq :
-  {A : Set} {_⊙_ : A → A → A} {a b d e : A}
-    {{_ : Eq A}} {{_ : Identityᴿ _⊙_ e}} {{_ : Substitutiveᴿ _⊙_}} →
-      a ⊙ d ≃ b → d ≃ e → a ≃ b
-idᴿ→eq {A} {_⊙_} {a} {b} {d} {e} ad≃b d≃e =
+  {A : Set} {_⊙_ : A → A → A} {a b d : A}
+    {{_ : Eq A}} {{_ : Identity handᴿ _⊙_}} {{_ : Substitutiveᴿ _⊙_}} →
+      a ⊙ d ≃ b → d ≃ id-elem → a ≃ b
+idᴿ→eq {A} {_⊙_} {a} {b} {d} ad≃b d≃e =
   begin
     a
-  ≃˘⟨ identᴿ ⟩
-    a ⊙ e
+  ≃˘⟨ ident ⟩
+    a ⊙ id-elem
   ≃˘⟨ subst d≃e ⟩
     a ⊙ d
   ≃⟨ ad≃b ⟩

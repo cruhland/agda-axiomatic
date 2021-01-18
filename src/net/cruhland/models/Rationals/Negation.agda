@@ -67,7 +67,7 @@ instance
               (- p↑ + p↑) * p↓
             ≃⟨ AA.subst {f = _* p↓} AA.invᴸ ⟩
               0 * p↓
-            ≃⟨ AA.absorbᴸ ⟩
+            ≃⟨ AA.absorb ⟩
               0
             ∎
 

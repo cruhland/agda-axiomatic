@@ -96,18 +96,18 @@ instance
           nm+n0+0m≃nm+00+0 =
             begin
               n * m + (n * 0 + 0 * m)
-            ≃⟨ AA.subst (AA.subst AA.absorbᴿ) ⟩
+            ≃⟨ AA.subst (AA.subst AA.absorb) ⟩
               n * m + (0 + 0 * m)
-            ≃˘⟨ AA.subst (AA.subst AA.absorbᴸ) ⟩
+            ≃˘⟨ AA.subst (AA.subst AA.absorbᴿ) ⟩
               n * m + (0 * 0 + 0 * m)
-            ≃⟨ AA.subst (AA.subst AA.absorbᴸ) ⟩
+            ≃⟨ AA.subst (AA.subst AA.absorb) ⟩
               n * m + (0 * 0 + 0)
             ≃˘⟨ AA.assoc ⟩
               n * m + 0 * 0 + 0
             ∎
 
-  *-identityᴸ : AA.Identityᴸ _*_ 1
-  *-identityᴸ = record { identᴸ = *-identᴸ }
+  *-identityᴸ : AA.Identity AA.handᴸ _*_
+  *-identityᴸ = AA.identity *-identᴸ
     where
       *-identᴸ : {x : ℤ} → 1 * x ≃ x
       *-identᴸ {x⁺ — x⁻} = ≃ᶻ-intro [1x⁺+0x⁻]+x⁻≃x⁺+[1x⁻+0x⁺]
@@ -115,22 +115,22 @@ instance
           [1x⁺+0x⁻]+x⁻≃x⁺+[1x⁻+0x⁺] =
             begin
               (1 * x⁺ + 0 * x⁻) + x⁻
-            ≃⟨ AA.subst (AA.subst AA.identᴸ) ⟩
+            ≃⟨ AA.subst (AA.subst AA.ident) ⟩
               (x⁺ + 0 * x⁻) + x⁻
-            ≃⟨ AA.subst (AA.subst AA.absorbᴸ) ⟩
+            ≃⟨ AA.subst (AA.subst AA.absorb) ⟩
               (x⁺ + 0) + x⁻
-            ≃⟨ AA.subst AA.identᴿ ⟩
+            ≃⟨ AA.subst AA.ident ⟩
               x⁺ + x⁻
-            ≃˘⟨ AA.subst AA.identᴿ ⟩
+            ≃˘⟨ AA.subst AA.ident ⟩
               x⁺ + (x⁻ + 0)
-            ≃˘⟨ AA.subst (AA.subst AA.absorbᴸ) ⟩
+            ≃˘⟨ AA.subst (AA.subst AA.absorb) ⟩
               x⁺ + (x⁻ + 0 * x⁺)
-            ≃˘⟨ AA.subst (AA.subst AA.identᴸ) ⟩
+            ≃˘⟨ AA.subst (AA.subst AA.ident) ⟩
               x⁺ + (1 * x⁻ + 0 * x⁺)
             ∎
 
-  *-identityᴿ : AA.Identityᴿ {A = ℤ} _*_ 1
-  *-identityᴿ = AA.identityᴿ
+  *-identityᴿ : AA.Identity AA.handᴿ _*_
+  *-identityᴿ = AA.identityᴿ-from-identityᴸ {A = ℤ}
 
   *-distributive-+ᴸ : AA.Distributiveᴸ _*_ _+_
   *-distributive-+ᴸ = AA.distributiveᴸ *-distrib-+ᴸ
@@ -190,11 +190,11 @@ neg-mult {a⁺ — a⁻} = AA.[a≃b][c≃d] x≃0y+1x x≃0y+1x
     x≃0y+1x {x} {y} =
       begin
         x
-      ≃˘⟨ AA.identᴸ ⟩
+      ≃˘⟨ AA.ident ⟩
         0 + x
-      ≃˘⟨ AA.subst AA.absorbᴸ ⟩
+      ≃˘⟨ AA.subst AA.absorb ⟩
         0 * y + x
-      ≃˘⟨ AA.subst AA.identᴸ ⟩
+      ≃˘⟨ AA.subst AA.ident ⟩
         0 * y + 1 * x
       ∎
 
@@ -227,8 +227,8 @@ neg-mult {a⁺ — a⁻} = AA.[a≃b][c≃d] x≃0y+1x x≃0y+1x
   ∎
 
 instance
-  *-absorptiveᴸ : AA.Absorptiveᴸ _*_ 0
-  *-absorptiveᴸ = record { absorbᴸ = *-zeroᴸ }
+  *-absorptiveᴸ : AA.Absorptive AA.handᴸ _*_
+  *-absorptiveᴸ = AA.absorptive *-zeroᴸ
     where
       *-zeroᴸ : {x : ℤ} → 0 * x ≃ 0
       *-zeroᴸ {x} =
@@ -242,8 +242,8 @@ instance
           0
         ∎
 
-  *-absorptiveᴿ : AA.Absorptiveᴿ {A = ℤ} _*_ 0
-  *-absorptiveᴿ = AA.absorptiveᴿ
+  *-absorptiveᴿ : AA.Absorptive AA.handᴿ _*_
+  *-absorptiveᴿ = AA.absorptiveᴿ-from-absorptiveᴸ {A = ℤ}
 
 neg-sub-swap : ∀ {a b} → - (a - b) ≃ b - a
 neg-sub-swap {a} {b} =
@@ -287,24 +287,24 @@ instance
         let nb⁺≃nb⁻ =
               begin
                 n * b⁺
-              ≃˘⟨ AA.identᴿ ⟩
+              ≃˘⟨ AA.ident ⟩
                 n * b⁺ + 0
-              ≃˘⟨ AA.subst AA.absorbᴸ ⟩
+              ≃˘⟨ AA.subst AA.absorb ⟩
                 n * b⁺ + 0 * b⁻
-              ≃˘⟨ AA.identᴿ ⟩
+              ≃˘⟨ AA.ident ⟩
                 n * b⁺ + 0 * b⁻ + 0
               ≃⟨ nb⁺+0b⁻+0≃0+[nb⁻+0b⁺] ⟩
                 0 + (n * b⁻ + 0 * b⁺)
-              ≃⟨ AA.identᴸ ⟩
+              ≃⟨ AA.ident ⟩
                 n * b⁻ + 0 * b⁺
-              ≃⟨ AA.subst AA.absorbᴸ ⟩
+              ≃⟨ AA.subst AA.absorb ⟩
                 n * b⁻ + 0
-              ≃⟨ AA.identᴿ ⟩
+              ≃⟨ AA.ident ⟩
                 n * b⁻
               ∎
             instance n≄ⁱ0 = fromWitnessFalse n≄0
             b⁺≃b⁻ = AA.cancelᴸ nb⁺≃nb⁻
-            b⁺+0≃0+b⁻ = trans AA.identᴿ (trans b⁺≃b⁻ (sym AA.identᴸ))
+            b⁺+0≃0+b⁻ = trans AA.ident (trans b⁺≃b⁻ (sym AA.ident))
          in ≃ᶻ-intro b⁺+0≃0+b⁻
 
       *-either-zero : ∀ {a b} → a * b ≃ 0 → a ≃ 0 ∨ b ≃ 0

@@ -74,7 +74,7 @@ instance
               let a≃b =
                     begin
                       a
-                    ≃˘⟨ AA.identᴿ ⟩
+                    ≃˘⟨ AA.ident ⟩
                       a + 0
                     ≃˘⟨ AA.subst d≃0 ⟩
                       a + d
@@ -115,7 +115,7 @@ instance
                   b
                 ≃˘⟨ a≃b ⟩
                   a
-                ≃˘⟨ AA.identᴿ ⟩
+                ≃˘⟨ AA.ident ⟩
                   a + 0
                 ∎
 

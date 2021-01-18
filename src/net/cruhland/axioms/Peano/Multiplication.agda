@@ -31,45 +31,48 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
   field
     {{star}} : Op.Star ℕ
     {{*-substitutiveᴸ}} : AA.Substitutiveᴸ _*_
-    {{*-absorptiveᴸ}} : AA.Absorptiveᴸ _*_ zero
+    *-isAbsorptiveᴸ : AA.IsAbsorptive AA.handᴸ _*_ 0
     *-stepᴸ : ∀ {n m} → step n * m ≃ n * m + m
 
   instance
-    *-absorptiveᴿ : AA.Absorptiveᴿ _*_ zero
-    *-absorptiveᴿ = record { absorbᴿ = *-zeroᴿ }
+    *-absorptiveᴸ : AA.Absorptive AA.handᴸ _*_
+    *-absorptiveᴸ = AA.absorptive *-isAbsorptiveᴸ
+
+    *-absorptiveᴿ : AA.Absorptive AA.handᴿ _*_
+    *-absorptiveᴿ = AA.absorptive *-zeroᴿ
       where
-        *-zeroᴿ : ∀ {n} → n * zero ≃ zero
-        *-zeroᴿ {n} = ind P Pz Ps n
+        *-zeroᴿ : ∀ {n} → n * 0 ≃ 0
+        *-zeroᴿ {n} = ind P P0 Ps n
           where
-            P = λ x → x * zero ≃ zero
-            Pz = AA.absorbᴸ
+            P = λ x → x * 0 ≃ 0
+            P0 = AA.absorb
 
             Ps : step-case P
             Ps {k} Pk =
               begin
-                step k * zero
+                step k * 0
               ≃⟨ *-stepᴸ ⟩
-                k * zero + zero
-              ≃⟨ AA.identᴿ ⟩
-                k * zero
+                k * 0 + 0
+              ≃⟨ AA.ident ⟩
+                k * 0
               ≃⟨ Pk ⟩
-                zero
+                0
               ∎
 
   *-stepᴿ : ∀ {n m} → n * step m ≃ n * m + n
-  *-stepᴿ {n} {m} = ind P Pz Ps n
+  *-stepᴿ {n} {m} = ind P P0 Ps n
     where
       P = λ x → x * step m ≃ x * m + x
 
-      Pz =
+      P0 =
         begin
-          zero * step m
-        ≃⟨ AA.absorbᴸ ⟩
-          zero
-        ≃˘⟨ AA.absorbᴸ ⟩
-          zero * m
-        ≃˘⟨ AA.identᴿ ⟩
-          zero * m + zero
+          0 * step m
+        ≃⟨ AA.absorb ⟩
+          0
+        ≃˘⟨ AA.absorb ⟩
+          0 * m
+        ≃˘⟨ AA.ident ⟩
+          0 * m + 0
         ∎
 
       Ps : step-case P
@@ -91,10 +94,10 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
     *-commutative = record { comm = *-comm }
       where
         *-comm : ∀ {n m} → n * m ≃ m * n
-        *-comm {n} {m} = ind P Pz Ps n
+        *-comm {n} {m} = ind P P0 Ps n
           where
             P = λ x → x * m ≃ m * x
-            Pz = trans AA.absorbᴸ (sym AA.absorbᴿ)
+            P0 = trans AA.absorb (sym AA.absorb)
 
             Ps : step-case P
             Ps {k} Pk =
@@ -108,23 +111,23 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
                 m * step k
               ∎
 
-    *-identityᴸ : AA.Identityᴸ _*_ (step zero)
-    *-identityᴸ = record { identᴸ = *-oneᴸ }
+    *-identityᴸ : AA.Identity AA.handᴸ _*_
+    *-identityᴸ = AA.identity *-oneᴸ
       where
-        *-oneᴸ : ∀ {n} → step zero * n ≃ n
+        *-oneᴸ : {n : ℕ} → 1 * n ≃ n
         *-oneᴸ {n} =
           begin
-            step zero * n
+            1 * n
           ≃⟨ *-stepᴸ ⟩
-            zero * n + n
-          ≃⟨ AA.subst AA.absorbᴸ ⟩
-            zero + n
-          ≃⟨ AA.identᴸ ⟩
+            0 * n + n
+          ≃⟨ AA.subst AA.absorb ⟩
+            0 + n
+          ≃⟨ AA.ident ⟩
             n
           ∎
 
-    *-identityᴿ : AA.Identityᴿ _*_ (step zero)
-    *-identityᴿ = AA.identityᴿ
+    *-identityᴿ : AA.Identity AA.handᴿ _*_
+    *-identityᴿ = AA.identityᴿ-from-identityᴸ
 
     zero-product : AA.ZeroProduct _*_
     zero-product = AA.zeroProduct 0 *-either-zero
@@ -157,18 +160,18 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
     *-distributive-+ᴸ = AA.distributiveᴸ *-distrib-+ᴸ
       where
         *-distrib-+ᴸ : ∀ {a b c} → a * (b + c) ≃ a * b + a * c
-        *-distrib-+ᴸ {a} {b} {c} = ind P Pz Ps c
+        *-distrib-+ᴸ {a} {b} {c} = ind P P0 Ps c
           where
             P = λ x → a * (b + x) ≃ a * b + a * x
-            Pz =
+            P0 =
               begin
-                a * (b + zero)
-              ≃⟨ AA.subst AA.identᴿ ⟩
+                a * (b + 0)
+              ≃⟨ AA.subst AA.ident ⟩
                 a * b
-              ≃˘⟨ AA.identᴿ ⟩
-                a * b + zero
-              ≃˘⟨ AA.subst AA.absorbᴿ ⟩
-                a * b + a * zero
+              ≃˘⟨ AA.ident ⟩
+                a * b + 0
+              ≃˘⟨ AA.subst AA.absorb ⟩
+                a * b + a * 0
               ∎
 
             Ps : step-case P
@@ -194,20 +197,20 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
     *-associative = record { assoc = *-assoc }
       where
         *-assoc : ∀ {a b c} → (a * b) * c ≃ a * (b * c)
-        *-assoc {a} {b} {c} = sym (ind P Pz Ps b)
+        *-assoc {a} {b} {c} = sym (ind P P0 Ps b)
           where
             P = λ x → a * (x * c) ≃ (a * x) * c
-            Pz =
+            P0 =
               begin
-                a * (zero * c)
-              ≃⟨ AA.subst AA.absorbᴸ ⟩
-                a * zero
-              ≃⟨ AA.absorbᴿ ⟩
-                zero
-              ≃˘⟨ AA.absorbᴸ ⟩
-                zero * c
-              ≃˘⟨ AA.subst AA.absorbᴿ ⟩
-                (a * zero) * c
+                a * (0 * c)
+              ≃⟨ AA.subst AA.absorb ⟩
+                a * 0
+              ≃⟨ AA.absorb ⟩
+                0
+              ≃˘⟨ AA.absorb ⟩
+                0 * c
+              ≃˘⟨ AA.subst AA.absorb ⟩
+                (a * 0) * c
               ∎
 
             Ps : step-case P
@@ -233,9 +236,9 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
         dc≄0 = AA.nonzero-prod d≄0 c≄0
      in <⁺-intro (≤-intro (d * c) ac+dc≃bc) dc≄0 as a * c < b * c
 
-  *-preserves-<ᴸ : ∀ {a b c} → b < c → a ≄ zero → a * b < a * c
-  *-preserves-<ᴸ {a} {b} {c} b<c a≄z =
-    AA.subst {f = _< a * c} AA.comm (AA.subst AA.comm (*-preserves-<ᴿ b<c a≄z))
+  *-preserves-<ᴸ : ∀ {a b c} → b < c → a ≄ 0 → a * b < a * c
+  *-preserves-<ᴸ {a} {b} {c} b<c a≄0 =
+    AA.subst {f = _< a * c} AA.comm (AA.subst AA.comm (*-preserves-<ᴿ b<c a≄0))
 
   instance
     *-cancellativeᴸ : AA.Cancellativeᴸ _*_ _≃_

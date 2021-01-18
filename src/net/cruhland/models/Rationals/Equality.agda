@@ -98,11 +98,11 @@ q≃0 {q} n≃0 = ≃₀-intro n1≃0d
     n1≃0d =
       begin
         (ℚ.n q) * 1
-      ≃⟨ AA.identᴿ ⟩
+      ≃⟨ AA.ident ⟩
         ℚ.n q
       ≃⟨ n≃0 ⟩
         0
-      ≃˘⟨ AA.absorbᴸ ⟩
+      ≃˘⟨ AA.absorb ⟩
         0 * ℚ.d q
       ∎
 
@@ -110,11 +110,11 @@ q↑≃0 : ∀ {q} → q ≃ 0 → ℚ.n q ≃ 0
 q↑≃0 {q} (≃₀-intro n1≃0d) =
   begin
     ℚ.n q
-  ≃˘⟨ AA.identᴿ ⟩
+  ≃˘⟨ AA.ident ⟩
     (ℚ.n q) * 1
   ≃⟨ n1≃0d ⟩
     0 * ℚ.d q
-  ≃⟨ AA.absorbᴸ ⟩
+  ≃⟨ AA.absorb ⟩
     0
   ∎
 

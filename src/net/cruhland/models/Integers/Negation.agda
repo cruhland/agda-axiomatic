@@ -80,7 +80,7 @@ sub-substᴿ = AA.subst ∘ AA.subst {f = -_}
 ≃ᴸ-subᴿ-toᴸ {a} {b} {c} a-b≃c =
   begin
     a
-  ≃˘⟨ AA.identᴿ ⟩
+  ≃˘⟨ AA.ident ⟩
     a + 0
   ≃˘⟨ AA.subst AA.invᴿ ⟩
     a + (b - b)
@@ -141,18 +141,18 @@ trichotomy x@(x⁺ — x⁻) = record { at-least-one = one≤ ; at-most-one = on
                 x⁺ + n
               ≃⟨ x⁺+n≃x⁻ ⟩
                 x⁻
-              ≃˘⟨ AA.identᴸ ⟩
+              ≃˘⟨ AA.ident ⟩
                 0 + x⁻
               ∎
          in AA.1st (record { n = n ; pos = n≄0 ; x≃-n = ≃ᶻ-intro x⁺+n≃0+x⁻ })
     one≤ | AA.2nd x⁺≃x⁻ =
-      AA.2nd (≃ᶻ-intro (trans AA.identᴿ (trans x⁺≃x⁻ (sym AA.identᴸ))))
+      AA.2nd (≃ᶻ-intro (trans AA.ident (trans x⁺≃x⁻ (sym AA.ident))))
     one≤ | AA.3rd x⁺>x⁻ =
       let ℕ.<⁺-intro (ℕ.≤-intro n x⁻+n≃x⁺) n≄0 = x⁺>x⁻ as x⁺ >⁺ x⁻
           x⁺—x⁻≃n =
             begin
               x⁺ + 0
-            ≃⟨ AA.identᴿ ⟩
+            ≃⟨ AA.ident ⟩
               x⁺
             ≃˘⟨ x⁻+n≃x⁺ ⟩
               x⁻ + n
@@ -192,7 +192,7 @@ trichotomy x@(x⁺ — x⁻) = record { at-least-one = one≤ ; at-most-one = on
               (x⁺ + n₂) + n₁
             ≃⟨ AA.subst x⁺+n₂≃0+x⁻ ⟩
               (0 + x⁻) + n₁
-            ≃⟨ AA.subst AA.identᴸ ⟩
+            ≃⟨ AA.subst AA.ident ⟩
               x⁻ + n₁
             ≃⟨ AA.comm ⟩
               n₁ + x⁻

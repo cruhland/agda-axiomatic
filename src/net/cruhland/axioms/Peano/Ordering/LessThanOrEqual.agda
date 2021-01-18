@@ -40,7 +40,7 @@ n≤sn = record { d = 1 ; n+d≃m = Eq.sym ℕ+.sn≃n+1 }
 
 instance
   ≤-reflexive : Eq.Reflexive _≤_
-  ≤-reflexive = record { refl = record { d = 0 ; n+d≃m = AA.identᴿ } }
+  ≤-reflexive = record { refl = record { d = 0 ; n+d≃m = AA.ident } }
 
   ≤-transitive : Eq.Transitive _≤_
   ≤-transitive = record { trans = ≤-trans }
@@ -59,13 +59,13 @@ instance
                 n + (a + b)
               ≃⟨ AA.a[bc]-chain n+a≃m m+b≃n ⟩
                 n
-              ≃˘⟨ AA.identᴿ ⟩
+              ≃˘⟨ AA.ident ⟩
                 n + 0
               ∎
             ∧-intro a≃0 _ = ℕ+.+-both-zero (AA.cancelᴸ n+a+b≃n+0)
          in begin
               n
-            ≃˘⟨ AA.identᴿ ⟩
+            ≃˘⟨ AA.ident ⟩
               n + 0
             ≃˘⟨ AA.subst a≃0 ⟩
               n + a
@@ -156,7 +156,7 @@ instance
           a+d≃b = AA.cancelᴿ a+d+c≃b+c
 
   ≃-as-≤ : ∀ {n m} → (n ≃ m) As (n ≤ m)
-  ≃-as-≤ = record { cast = λ n≃m → ≤-intro 0 (Eq.trans AA.identᴿ n≃m) }
+  ≃-as-≤ = record { cast = λ n≃m → ≤-intro 0 (Eq.trans AA.ident n≃m) }
 
 0≤n : ∀ {n} → 0 ≤ n
 0≤n {n} = ind P P0 Ps n

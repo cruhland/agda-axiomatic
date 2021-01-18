@@ -96,10 +96,10 @@ instance
               (a + b) * (1 * 1)
             ≃⟨ AA.subst {f = (a + b) *_} AA.identᴿ ⟩
               (a + b) * 1
-            ≃˘⟨ AA.subst {A = ℤ} {f = _* 1} (AA.subst {f = _+ b} AA.identᴿ) ⟩
+            ≃˘⟨ AA.subst {A = ℤ} {f = _* 1} (AA.subst {f = _+ b} AA.ident) ⟩
               (a * 1 + b) * 1
             ≃˘⟨ AA.subst {A = ℤ} {f = _* 1}
-                  (AA.subst {f = a * 1 +_} AA.identᴸ) ⟩
+                  (AA.subst {f = a * 1 +_} AA.ident) ⟩
               (a * 1 + 1 * b) * 1
             ∎
 
@@ -131,8 +131,8 @@ instance
 
           ≃-denom = sym AA.assoc
 
-  +-identityᴸ : AA.Identityᴸ _+_ 0
-  +-identityᴸ = record { identᴸ = +-identᴸ }
+  +-identityᴸ : AA.Identity AA.handᴸ _+_
+  +-identityᴸ = AA.identity +-identᴸ
     where
       +-identᴸ : {p : ℚ} → 0 + p ≃ p
       +-identᴸ {p↑ // p↓ ~ _} = ≃₀-intro (AA.[a≃b][c≃d] ≃-numer ≃-denom)
@@ -140,15 +140,18 @@ instance
           ≃-numer =
             begin
               0 * p↓ + 1 * p↑
-            ≃⟨ AA.subst {f = _+ 1 * p↑} AA.absorbᴸ ⟩
+            ≃⟨ AA.subst {f = _+ 1 * p↑} AA.absorb ⟩
               0 + 1 * p↑
-            ≃⟨ AA.identᴸ ⟩
+            ≃⟨ AA.ident ⟩
               1 * p↑
-            ≃⟨ AA.identᴸ ⟩
+            ≃⟨ AA.ident ⟩
               p↑
             ∎
 
-          ≃-denom = sym AA.identᴸ
+          ≃-denom = sym AA.ident
 
-  +-identityᴿ : AA.Identityᴿ {A = ℚ} _+_ 0
-  +-identityᴿ = AA.identityᴿ
+  +-identityᴿ : AA.Identity AA.handᴿ _+_
+  +-identityᴿ = AA.identityᴿ-from-identityᴸ {A = ℚ}
+
+  +-identity₂ : AA.Identity₂ _+_
+  +-identity₂ = AA.identity₂ {A = ℚ}

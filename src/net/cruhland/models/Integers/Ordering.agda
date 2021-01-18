@@ -47,7 +47,7 @@ _>_ = flip _<_
           (n₁ + n₂ as ℤ)
         ≃⟨ AA.compat₂ ⟩
           (n₁ as ℤ) + (n₂ as ℤ)
-        ≃˘⟨ AA.identᴸ ⟩
+        ≃˘⟨ AA.ident ⟩
           0 + ((n₁ as ℤ) + (n₂ as ℤ))
         ≃˘⟨ AA.subst AA.invᴸ ⟩
           (- a) + a + ((n₁ as ℤ) + (n₂ as ℤ))
@@ -69,7 +69,7 @@ _>_ = flip _<_
         b + (n₂ as ℤ)
       ≃⟨ AA.subst {f = b +_} (AA.subst {_~_ = _≃_} {_≈_ = _≃_} n₂≃0) ⟩
         b + (0 as ℤ)
-      ≃⟨ AA.identᴿ ⟩
+      ≃⟨ AA.ident ⟩
         b
       ∎
 
@@ -96,7 +96,7 @@ order-trichotomy a b = record { at-least-one = 1≤ ; at-most-one = ≤1 }
   where
     1≤ : AA.OneOfThree (a < b) (a ≃ b) (a > b)
     1≤ with AA.ExactlyOneOfThree.at-least-one (ℤ-.trichotomy (b - a))
-    1≤ | AA.2nd b-a≃0 = AA.2nd (sym (trans (ℤ-.≃ᴸ-subᴿ-toᴸ b-a≃0) AA.identᴿ))
+    1≤ | AA.2nd b-a≃0 = AA.2nd (sym (trans (ℤ-.≃ᴸ-subᴿ-toᴸ b-a≃0) AA.ident))
     1≤ | AA.3rd b-a>0 = AA.1st (pos→< b-a>0)
     1≤ | AA.1st b-a<0 = AA.3rd (pos→< (ℤ*.sub-sign-swap {b} b-a<0))
 
@@ -138,7 +138,7 @@ instance
       *-cancelᴸ {a} {b} {c} ab≃ac | ∨-introᴿ b-c≃0 =
         begin
           b
-        ≃˘⟨ AA.identᴿ ⟩
+        ≃˘⟨ AA.ident ⟩
           b + 0
         ≃˘⟨ AA.subst AA.invᴸ ⟩
           b + (- c + c)
@@ -146,7 +146,7 @@ instance
           b - c + c
         ≃⟨ AA.subst b-c≃0 ⟩
           0 + c
-        ≃⟨ AA.identᴸ ⟩
+        ≃⟨ AA.ident ⟩
           c
         ∎
 

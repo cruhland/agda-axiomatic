@@ -54,14 +54,11 @@ instance
   +-substitutiveᴸ : ∀ {m} → AA.Substitutive₁ (_+ m) _≡_ _≡_
   +-substitutiveᴸ {m} = AA.substitutive₁ (cong (_+ m))
 
-  +-identityᴸ : AA.Identityᴸ _+_ zero
-  +-identityᴸ = record { identᴸ = refl }
-
   +-commutative-stepᴸ : AA.Commutativeᴸ step _+_
   +-commutative-stepᴸ = record { commᴸ = refl }
 
 addition : Addition base
-addition = record {}
+addition = record { +-isIdentityᴸ = refl }
 
 instance
   star : Op.Star ℕ
@@ -70,11 +67,9 @@ instance
   *-substitutiveᴸ : ∀ {m} → AA.Substitutive₁ (_* m) _≡_ _≡_
   *-substitutiveᴸ {m} = AA.substitutive₁ (cong (_* m))
 
-  *-absorptiveᴸ : AA.Absorptiveᴸ _*_ zero
-  *-absorptiveᴸ = record { absorbᴸ = refl }
-
 multiplication : Multiplication base addition
-multiplication = record { *-stepᴸ = λ {n m} → +-comm m (n * m) }
+multiplication =
+  record { *-isAbsorptiveᴸ = refl ; *-stepᴸ = λ {n m} → +-comm m (n * m) }
 
 exponentiation : Exponentiation base addition multiplication
 exponentiation =

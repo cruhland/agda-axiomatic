@@ -24,7 +24,7 @@ instance
         (p↑ * q↑) // p↓ * q↓ ~ AA.nonzero-prod p↓≄0 q↓≄0
 
 neg-mult : {q : ℚ} → - q ≃ -1 * q
-neg-mult {q↑ // q↓ ~ _} = ≃₀-intro (AA.[a≃b][c≃d] ℤ.neg-mult AA.identᴸ)
+neg-mult {q↑ // q↓ ~ _} = ≃₀-intro (AA.[a≃b][c≃d] ℤ.neg-mult AA.ident)
 
 instance
   *-commutative : AA.Commutative _*_
@@ -99,15 +99,18 @@ instance
   *-commutativeᴿ-neg : AA.Commutativeᴿ {A = ℚ} -_ _*_
   *-commutativeᴿ-neg = AA.commutativeᴿ
 
-  *-identityᴸ : AA.Identityᴸ _*_ 1
-  *-identityᴸ = record { identᴸ = *-identᴸ }
+  *-identityᴸ : AA.Identity AA.handᴸ _*_
+  *-identityᴸ = AA.identity *-identᴸ
     where
       *-identᴸ : {p : ℚ} → 1 * p ≃ p
       *-identᴸ {p↑ // p↓ ~ _} =
-        ≃₀-intro (AA.[a≃b][c≃d] {_⊙_ = _*_} AA.identᴸ (sym AA.identᴸ))
+        ≃₀-intro (AA.[a≃b][c≃d] {_⊙_ = _*_} AA.ident (sym AA.ident))
 
-  *-identityᴿ : AA.Identityᴿ {A = ℚ} _*_ 1
-  *-identityᴿ = AA.identityᴿ
+  *-identityᴿ : AA.Identity AA.handᴿ _*_
+  *-identityᴿ = AA.identityᴿ-from-identityᴸ {A = ℚ}
+
+  *-identity₂ : AA.Identity₂ _*_
+  *-identity₂ = AA.identity₂ {A = ℚ}
 
   *-distributive-+ᴸ : AA.Distributiveᴸ _*_ _+_
   *-distributive-+ᴸ = AA.distributiveᴸ *-distrib-+ᴸ
