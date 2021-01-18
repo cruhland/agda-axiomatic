@@ -132,8 +132,8 @@ instance
   *-identityᴿ : AA.Identity AA.handᴿ _*_
   *-identityᴿ = AA.identityᴿ-from-identityᴸ {A = ℤ}
 
-  *-distributive-+ᴸ : AA.Distributiveᴸ _*_ _+_
-  *-distributive-+ᴸ = AA.distributiveᴸ *-distrib-+ᴸ
+  *-distributive-+ᴸ : AA.Distributive AA.handᴸ _*_ _+_
+  *-distributive-+ᴸ = AA.distributive *-distrib-+ᴸ
     where
       *-distrib-+ᴸ : {x y z : ℤ} → x * (y + z) ≃ x * y + x * z
       *-distrib-+ᴸ {x⁺ — x⁻} {y⁺ — y⁻} {z⁺ — z⁻} =
@@ -154,7 +154,7 @@ instance
               (b₁ * a₁ + b₂ * a₂) + (b₁ * a₃ + b₂ * a₄)
             ∎
 
-  *-distributive-+ᴿ : AA.Distributiveᴿ _*_ _+_
+  *-distributive-+ᴿ : AA.Distributive AA.handᴿ _*_ _+_
   *-distributive-+ᴿ = AA.distributiveᴿ-from-distributiveᴸ {A = ℤ}
 
   *-associative : AA.Associative _*_
@@ -204,7 +204,7 @@ neg-mult {a⁺ — a⁻} = AA.[a≃b][c≃d] x≃0y+1x x≃0y+1x
     c * (a - b)
   ≃⟨⟩
     c * (a + - b)
-  ≃⟨ AA.distribᴸ ⟩
+  ≃⟨ AA.distrib ⟩
     c * a + c * - b
   ≃⟨ AA.subst {f = c * a +_} AA.commᴿ ⟩
     c * a + - (c * b)
@@ -218,7 +218,7 @@ neg-mult {a⁺ — a⁻} = AA.[a≃b][c≃d] x≃0y+1x x≃0y+1x
     (a - b) * c
   ≃⟨⟩
     (a + - b) * c
-  ≃⟨ AA.distribᴿ ⟩
+  ≃⟨ AA.distrib ⟩
     a * c + (- b) * c
   ≃⟨ AA.subst {f = a * c +_} AA.commᴸ ⟩
     a * c + - (b * c)

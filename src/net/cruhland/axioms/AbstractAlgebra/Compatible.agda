@@ -1,5 +1,7 @@
 module net.cruhland.axioms.AbstractAlgebra.Compatible where
 
+open import net.cruhland.axioms.AbstractAlgebra.Base using
+  (forHand; Hand; handᴸ; handᴿ)
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_; Eq)
 open import net.cruhland.models.Function using (_∘_; _⟨→⟩_)
 open import net.cruhland.models.Logic using (_∨_; ∨-rec)
@@ -41,19 +43,17 @@ record Compatible₂
 
 open Compatible₂ {{...}} public using (compat₂)
 
-record Distributiveᴸ {A : Set} {{_ : Eq A}} (_⊙_ _⊕_ : A → A → A) : Set where
-  constructor distributiveᴸ
+record Distributive
+    (hand : Hand) {A : Set} {{_ : Eq A}} (_⊙_ _⊕_ : A → A → A) : Set where
+  constructor distributive
+  _<⊙>_ = forHand hand _⊙_
   field
-    distribᴸ : ∀ {a b c} → a ⊙ (b ⊕ c) ≃ (a ⊙ b) ⊕ (a ⊙ c)
+    distrib : ∀ {a b c} → a <⊙> (b ⊕ c) ≃ (a <⊙> b) ⊕ (a <⊙> c)
 
-open Distributiveᴸ {{...}} public using (distribᴸ)
+open Distributive {{...}} public using (distrib)
 
-record Distributiveᴿ {A : Set} {{_ : Eq A}} (_⊙_ _⊕_ : A → A → A) : Set where
-  constructor distributiveᴿ
-  field
-    distribᴿ : ∀ {a b c} → (b ⊕ c) ⊙ a ≃ (b ⊙ a) ⊕ (c ⊙ a)
-
-open Distributiveᴿ {{...}} public using (distribᴿ)
+distribᴸ = distrib {handᴸ}
+distribᴿ = distrib {handᴿ}
 
 record ZeroProduct {A : Set} {{_ : Eq A}} (_⊙_ : A → A → A) : Set where
   constructor zeroProduct
@@ -110,20 +110,24 @@ module _ {A B : Set} {f : A → B} {_⊙_ : A → A → A} {{_ : Eq B}} where
 module _ {A : Set} {_⊙_ _⊕_ : A → A → A} {{_ : Eq A}} where
 
   isCompatible₂-from-distributiveᴸ :
-    {{_ : Distributiveᴸ _⊙_ _⊕_}} → ∀ {a} → IsCompatible₂ (a ⊙_) _⊕_ _⊕_ _≃_
-  isCompatible₂-from-distributiveᴸ {a} = isCompatible₂ distribᴸ
+    {{_ : Distributive handᴸ _⊙_ _⊕_}} →
+      ∀ {a} → IsCompatible₂ (a ⊙_) _⊕_ _⊕_ _≃_
+  isCompatible₂-from-distributiveᴸ {a} = isCompatible₂ distrib
 
   distributiveᴸ-from-isCompatible₂ :
-    {{_ : ∀ {a} → IsCompatible₂ (a ⊙_) _⊕_ _⊕_ _≃_}} → Distributiveᴸ _⊙_ _⊕_
-  distributiveᴸ-from-isCompatible₂ = distributiveᴸ isCompat₂
+    {{_ : ∀ {a} → IsCompatible₂ (a ⊙_) _⊕_ _⊕_ _≃_}} →
+      Distributive handᴸ _⊙_ _⊕_
+  distributiveᴸ-from-isCompatible₂ = distributive isCompat₂
 
   isCompatible₂-from-distributiveᴿ :
-    {{_ : Distributiveᴿ _⊙_ _⊕_}} → ∀ {a} → IsCompatible₂ (_⊙ a) _⊕_ _⊕_ _≃_
-  isCompatible₂-from-distributiveᴿ {a} = isCompatible₂ distribᴿ
+    {{_ : Distributive handᴿ _⊙_ _⊕_}} →
+      ∀ {a} → IsCompatible₂ (_⊙ a) _⊕_ _⊕_ _≃_
+  isCompatible₂-from-distributiveᴿ {a} = isCompatible₂ distrib
 
   distributiveᴿ-from-isCompatible₂ :
-    {{_ : ∀ {a} → IsCompatible₂ (_⊙ a) _⊕_ _⊕_ _≃_}} → Distributiveᴿ _⊙_ _⊕_
-  distributiveᴿ-from-isCompatible₂ = distributiveᴿ isCompat₂
+    {{_ : ∀ {a} → IsCompatible₂ (_⊙ a) _⊕_ _⊕_ _≃_}} →
+      Distributive handᴿ _⊙_ _⊕_
+  distributiveᴿ-from-isCompatible₂ = distributive isCompat₂
 
 module _ {A : Set} {_⊙_ : A → A → A} {{_ : Eq A}} where
 

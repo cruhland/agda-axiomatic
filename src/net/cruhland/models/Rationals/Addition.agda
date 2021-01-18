@@ -57,7 +57,7 @@ instance
           prepare {u} {v} {w} {x} {y} {z} =
             begin
               (w * x + u * v) * (y * z)
-            ≃⟨ AA.distribᴿ ⟩
+            ≃⟨ AA.distrib ⟩
               w * x * (y * z) + u * v * (y * z)
             ≃⟨ AA.subst {f = _+ u * v * (y * z)} AA.transpose ⟩
               w * y * (x * z) + u * v * (y * z)

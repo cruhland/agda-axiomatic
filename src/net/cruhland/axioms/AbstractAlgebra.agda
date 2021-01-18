@@ -43,8 +43,8 @@ record ExactlyOneOfThree (A B C : Set) : Set where
 distributiveᴿ-from-distributiveᴸ :
   {A : Set} {_⊙_ _⊕_ : A → A → A}
     {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Substitutive₂ _⊕_}}
-      {{_ : Distributiveᴸ _⊙_ _⊕_}} → Distributiveᴿ _⊙_ _⊕_
-distributiveᴿ-from-distributiveᴸ {A} {_⊙_} {_⊕_} = distributiveᴿ distribᴿ₀
+      {{_ : Distributive handᴸ _⊙_ _⊕_}} → Distributive handᴿ _⊙_ _⊕_
+distributiveᴿ-from-distributiveᴸ {A} {_⊙_} {_⊕_} = distributive distribᴿ₀
   where
     distribᴿ₀ : ∀ {a b c} → (a ⊕ b) ⊙ c ≃ (a ⊙ c) ⊕ (b ⊙ c)
     distribᴿ₀ {a} {b} {c} =
@@ -52,7 +52,7 @@ distributiveᴿ-from-distributiveᴸ {A} {_⊙_} {_⊕_} = distributiveᴿ distr
         (a ⊕ b) ⊙ c
       ≃⟨ comm ⟩
         c ⊙ (a ⊕ b)
-      ≃⟨ distribᴸ ⟩
+      ≃⟨ distrib ⟩
         (c ⊙ a) ⊕ (c ⊙ b)
       ≃⟨ subst comm ⟩
         (a ⊙ c) ⊕ (c ⊙ b)
@@ -119,31 +119,31 @@ perm-adcb {A} {_⊙_} {a} {b} {c} {d} =
 
 distrib-twoᴸ :
   {A : Set} {_⊙_ _⊕_ : A → A → A}
-    {{_ : Eq A}} {{_ : Distributiveᴸ _⊙_ _⊕_}} {{_ : Substitutive₂ _⊕_}} →
+    {{_ : Eq A}} {{_ : Distributive handᴸ _⊙_ _⊕_}} {{_ : Substitutive₂ _⊕_}} →
       ∀ {a b c d e f} →
         (a ⊙ (b ⊕ c)) ⊕ (d ⊙ (e ⊕ f)) ≃
           ((a ⊙ b) ⊕ (a ⊙ c)) ⊕ ((d ⊙ e) ⊕ (d ⊙ f))
 distrib-twoᴸ {A} {_⊙_} {_⊕_} {a} {b} {c} {d} {e} {f} =
   begin
     (a ⊙ (b ⊕ c)) ⊕ (d ⊙ (e ⊕ f))
-  ≃⟨ subst distribᴸ ⟩
+  ≃⟨ subst distrib ⟩
     ((a ⊙ b) ⊕ (a ⊙ c)) ⊕ (d ⊙ (e ⊕ f))
-  ≃⟨ subst distribᴸ ⟩
+  ≃⟨ subst distrib ⟩
     ((a ⊙ b) ⊕ (a ⊙ c)) ⊕ ((d ⊙ e) ⊕ (d ⊙ f))
   ∎
 
 distrib-twoᴿ :
   {A : Set} {_⊙_ _⊕_ : A → A → A}
-    {{_ : Eq A}} {{_ : Distributiveᴿ _⊙_ _⊕_}} {{_ : Substitutive₂ _⊕_}} →
+    {{_ : Eq A}} {{_ : Distributive handᴿ _⊙_ _⊕_}} {{_ : Substitutive₂ _⊕_}} →
       ∀ {a b c d e f} →
         ((a ⊕ b) ⊙ c) ⊕ ((d ⊕ e) ⊙ f) ≃
           ((a ⊙ c) ⊕ (b ⊙ c)) ⊕ ((d ⊙ f) ⊕ (e ⊙ f))
 distrib-twoᴿ {A} {_⊙_} {_⊕_} {a} {b} {c} {d} {e} {f} =
   begin
     ((a ⊕ b) ⊙ c) ⊕ ((d ⊕ e) ⊙ f)
-  ≃⟨ subst distribᴿ ⟩
+  ≃⟨ subst distrib ⟩
     ((a ⊙ c) ⊕ (b ⊙ c)) ⊕ ((d ⊕ e) ⊙ f)
-  ≃⟨ subst distribᴿ ⟩
+  ≃⟨ subst distrib ⟩
     ((a ⊙ c) ⊕ (b ⊙ c)) ⊕ ((d ⊙ f) ⊕ (e ⊙ f))
   ∎
 
@@ -242,7 +242,7 @@ refactor :
   {A : Set} {_⊙_ _⊕_ : A → A → A}
     {{eq : Eq A}} {{_ : Associative _⊙_}} {{_ : Associative _⊕_}}
     {{_ : Commutative _⊕_}} {{_ : Substitutive₂ _⊕_}}
-    {{_ : Distributiveᴸ _⊙_ _⊕_}} {{_ : Distributiveᴿ _⊙_ _⊕_}} →
+    {{_ : Distributive handᴸ _⊙_ _⊕_}} {{_ : Distributive handᴿ _⊙_ _⊕_}} →
       ∀ {b₁ b₂ a₁ a₂ a₃ a₄} →
         (((a₁ ⊙ a₃) ⊕ (a₂ ⊙ a₄)) ⊙ b₁) ⊕ (((a₁ ⊙ a₄) ⊕ (a₂ ⊙ a₃)) ⊙ b₂) ≃
           (a₁ ⊙ ((a₃ ⊙ b₁) ⊕ (a₄ ⊙ b₂))) ⊕ (a₂ ⊙ ((a₃ ⊙ b₂) ⊕ (a₄ ⊙ b₁)))

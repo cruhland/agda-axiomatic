@@ -156,8 +156,8 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
     *-substitutive₂ : AA.Substitutive₂ _*_
     *-substitutive₂ = AA.substitutive₂
 
-    *-distributive-+ᴸ : AA.Distributiveᴸ _*_ _+_
-    *-distributive-+ᴸ = AA.distributiveᴸ *-distrib-+ᴸ
+    *-distributive-+ᴸ : AA.Distributive AA.handᴸ _*_ _+_
+    *-distributive-+ᴸ = AA.distributive *-distrib-+ᴸ
       where
         *-distrib-+ᴸ : ∀ {a b c} → a * (b + c) ≃ a * b + a * c
         *-distrib-+ᴸ {a} {b} {c} = ind P P0 Ps c
@@ -190,7 +190,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
                 a * b + a * step k
               ∎
 
-    *-distributive-+ᴿ : AA.Distributiveᴿ _*_ _+_
+    *-distributive-+ᴿ : AA.Distributive AA.handᴿ _*_ _+_
     *-distributive-+ᴿ = AA.distributiveᴿ-from-distributiveᴸ
 
     *-associative : AA.Associative _*_
@@ -219,11 +219,11 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
                 a * (step k * c)
               ≃⟨ AA.subst *-stepᴸ ⟩
                 a * (k * c + c)
-              ≃⟨ AA.distribᴸ ⟩
+              ≃⟨ AA.distrib ⟩
                 a * (k * c) + a * c
               ≃⟨ AA.subst a[kc]≃[ak]c ⟩
                 (a * k) * c + a * c
-              ≃˘⟨ AA.distribᴿ ⟩
+              ≃˘⟨ AA.distrib ⟩
                 (a * k + a) * c
               ≃˘⟨ AA.subst *-stepᴿ ⟩
                 (a * step k) * c
@@ -232,7 +232,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
   *-preserves-<ᴿ : ∀ {a b c} → a < b → c ≄ 0 → a * c < b * c
   *-preserves-<ᴿ {a} {b} {c} a<b c≄0 =
     let <⁺-intro a≤b@(≤-intro d a+d≃b) d≄0 = a<b as a <⁺ b
-        ac+dc≃bc = trans (sym AA.distribᴿ) (AA.subst a+d≃b)
+        ac+dc≃bc = trans (sym AA.distrib) (AA.subst a+d≃b)
         dc≄0 = AA.nonzero-prod d≄0 c≄0
      in <⁺-intro (≤-intro (d * c) ac+dc≃bc) dc≄0 as a * c < b * c
 

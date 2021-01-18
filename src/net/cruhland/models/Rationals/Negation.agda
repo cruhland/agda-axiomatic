@@ -63,7 +63,7 @@ instance
               - p↑ * p↓ + p↓ * p↑
             ≃⟨ AA.subst {a₁ = p↓ * p↑} AA.comm ⟩
               - p↑ * p↓ + p↑ * p↓
-            ≃˘⟨ AA.distribᴿ ⟩
+            ≃˘⟨ AA.distrib ⟩
               (- p↑ + p↑) * p↓
             ≃⟨ AA.subst {f = _* p↓} AA.invᴸ ⟩
               0 * p↓

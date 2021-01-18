@@ -112,8 +112,8 @@ instance
   *-identity₂ : AA.Identity₂ _*_
   *-identity₂ = AA.identity₂ {A = ℚ}
 
-  *-distributive-+ᴸ : AA.Distributiveᴸ _*_ _+_
-  *-distributive-+ᴸ = AA.distributiveᴸ *-distrib-+ᴸ
+  *-distributive-+ᴸ : AA.Distributive AA.handᴸ _*_ _+_
+  *-distributive-+ᴸ = AA.distributive *-distrib-+ᴸ
     where
       *-distrib-+ᴸ : {a b c : ℚ} → a * (b + c) ≃ a * b + a * c
       *-distrib-+ᴸ {a↑ // a↓ ~ _} {b↑ // b↓ ~ _} {c↑ // c↓ ~ _} =
@@ -157,9 +157,9 @@ instance
           a↑[b↑c↓+b↓c↑]a↓≃a↑b↑[a↓c↓]+a↓b↓[a↑c↑] =
             begin
               a↑ * (b↑ * c↓ + b↓ * c↑) * a↓
-            ≃⟨ AA.subst {f = _* a↓} AA.distribᴸ ⟩
+            ≃⟨ AA.subst {f = _* a↓} AA.distrib ⟩
               (a↑ * (b↑ * c↓) + a↑ * (b↓ * c↑)) * a↓
-            ≃⟨ AA.distribᴿ ⟩
+            ≃⟨ AA.distrib ⟩
               (a↑ * (b↑ * c↓)) * a↓ + (a↑ * (b↓ * c↑)) * a↓
             ≃⟨ AA.[a≃b][c≃d] [a↑[b↑c↓]]a↓≃a↑b↑[a↓c↓] [a↑[b↓c↑]]a↓≃ab↓[a↑c↑] ⟩
               a↑ * b↑ * (a↓ * c↓) + a↓ * b↓ * (a↑ * c↑)
@@ -176,5 +176,5 @@ instance
               (a↑ * b↑ * (a↓ * c↓) + a↓ * b↓ * (a↑ * c↑)) * (a↓ * (b↓ * c↓))
             ∎
 
-  *-distributive-+ᴿ : AA.Distributiveᴿ _*_ _+_
+  *-distributive-+ᴿ : AA.Distributive AA.handᴿ _*_ _+_
   *-distributive-+ᴿ = AA.distributiveᴿ-from-distributiveᴸ {A = ℚ}
