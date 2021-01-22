@@ -40,7 +40,7 @@ instance
       ≃ᶻ-trans
           {a⁺ — a⁻} {b⁺ — b⁻} {c⁺ — c⁻}
           (≃ᶻ-intro a⁺+b⁻≃b⁺+a⁻) (≃ᶻ-intro b⁺+c⁻≃c⁺+b⁻) =
-            ≃ᶻ-intro (AA.cancelᴿ [a⁺+c⁻]+[b⁺+b⁻]≃[c⁺+a⁻]+[b⁺+b⁻])
+            ≃ᶻ-intro (AA.cancel [a⁺+c⁻]+[b⁺+b⁻]≃[c⁺+a⁻]+[b⁺+b⁻])
         where
           [a⁺+c⁻]+[b⁺+b⁻]≃[c⁺+a⁻]+[b⁺+b⁻] =
             begin
@@ -61,8 +61,8 @@ instance
   from-ℕ-substitutive₁ : AA.Substitutive₁ {A = ℕ} (_as ℤ) _≃_ _≃_
   from-ℕ-substitutive₁ = AA.substitutive₁ (≃ᶻ-intro ∘ AA.subst)
 
-  from-ℕ-injective : AA.Injective {A = ℕ} (_as ℤ) _≃_ _≃_
-  from-ℕ-injective = record { inject = AA.cancelᴿ ∘ _≃ᶻ_.elim }
+  from-ℕ-injective : AA.Injective (_as ℤ) _≃_ _≃_
+  from-ℕ-injective = AA.injective {A = ℕ} (AA.cancel ∘ _≃ᶻ_.elim)
 
   ℤ-substitutiveᴸ : ∀ {m} → AA.Substitutive₁ (_— m) _≃_ _≃_
   ℤ-substitutiveᴸ {m} = AA.substitutive₁ ℤ-substᴸ

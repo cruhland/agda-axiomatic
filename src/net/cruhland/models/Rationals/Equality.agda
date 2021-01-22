@@ -71,7 +71,7 @@ instance
               r↑ * p↓ * q↓
             ∎
           instance q↓≄ⁱ0 = fromWitnessFalse q↓≄0
-          p↑r↓≃r↑p↓ = AA.cancelᴿ p↑r↓q↓≃r↑p↓q↓
+          p↑r↓≃r↑p↓ = AA.cancel p↑r↓q↓≃r↑p↓q↓
         in ≃₀-intro p↑r↓≃r↑p↓
 
   eq : Eq ℚ
@@ -88,8 +88,8 @@ instance
   from-ℤ-substitutive₁ : AA.Substitutive₁ {A = ℤ} (_as ℚ) _≃_ _≃_
   from-ℤ-substitutive₁ = AA.substitutive₁ (≃₀-intro ∘ AA.subst)
 
-  from-ℤ-injective : AA.Injective {A = ℤ} (_as ℚ) _≃_ _≃_
-  from-ℤ-injective = record { inject = AA.cancelᴿ ∘ _≃₀_.elim }
+  from-ℤ-injective : AA.Injective (_as ℚ) _≃_ _≃_
+  from-ℤ-injective = AA.injective {A = ℤ} (AA.cancel ∘ _≃₀_.elim)
 
 q≃0 : ∀ {q} → ℚ.n q ≃ 0 → q ≃ 0
 q≃0 {q} n≃0 = ≃₀-intro n1≃0d
@@ -140,4 +140,4 @@ q≃1 {q↑ // q↓ ~ _} q↑≃q↓ = ≃₀-intro q↑1≃1q↓
       ∎
 
 q↑≃q↓ : ∀ {q} → q ≃ 1 → ℚ.n q ≃ ℚ.d q
-q↑≃q↓ (≃₀-intro q↑1≃1q↓) = AA.cancelᴸ (Eq.trans AA.comm q↑1≃1q↓)
+q↑≃q↓ (≃₀-intro q↑1≃1q↓) = AA.cancel (Eq.trans AA.comm q↑1≃1q↓)

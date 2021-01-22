@@ -62,7 +62,7 @@ instance
               ≃˘⟨ AA.ident ⟩
                 n + 0
               ∎
-            ∧-intro a≃0 _ = ℕ+.+-both-zero (AA.cancelᴸ n+a+b≃n+0)
+            ∧-intro a≃0 _ = ℕ+.+-both-zero (AA.cancel n+a+b≃n+0)
          in begin
               n
             ≃˘⟨ AA.ident ⟩
@@ -110,7 +110,7 @@ instance
             ∎
 
   ≤-injective-step : AA.Injective step _≤_ _≤_
-  ≤-injective-step = record { inject = s≤s→≤ }
+  ≤-injective-step = AA.injective s≤s→≤
     where
       s≤s→≤ : ∀ {n m} → step n ≤ step m → n ≤ m
       s≤s→≤ {n} {m} (≤-intro d sn+d≃sm) = ≤-intro d (AA.inject s[n+d]≃sm)
@@ -139,8 +139,8 @@ instance
               b + c
             ∎
 
-  ≤-cancellative-+ᴿ : AA.Cancellativeᴿ _+_ _≤_
-  ≤-cancellative-+ᴿ = AA.cancellativeᴿ ≤-cancel-+ᴿ
+  ≤-cancellative-+ᴿ : AA.Cancellative AA.handᴿ _+_ _≤_
+  ≤-cancellative-+ᴿ = AA.cancellative (λ _ → ⊤) ≤-cancel-+ᴿ
     where
       ≤-cancel-+ᴿ : ∀ {a b c} → a + c ≤ b + c → a ≤ b
       ≤-cancel-+ᴿ {a} {b} {c} (≤-intro d a+c+d≃b+c) = ≤-intro d a+d≃b
@@ -153,7 +153,7 @@ instance
             ≃⟨ a+c+d≃b+c ⟩
               b + c
             ∎
-          a+d≃b = AA.cancelᴿ a+d+c≃b+c
+          a+d≃b = AA.cancel a+d+c≃b+c
 
   ≃-as-≤ : ∀ {n m} → (n ≃ m) As (n ≤ m)
   ≃-as-≤ = record { cast = λ n≃m → ≤-intro 0 (Eq.trans AA.ident n≃m) }

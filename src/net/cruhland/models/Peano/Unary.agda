@@ -36,7 +36,7 @@ instance
   step-substitutive = AA.substitutive₁ (cong step)
 
   step-injective : AA.Injective step _≡_ _≡_
-  step-injective = record { inject = step-inj }
+  step-injective = AA.injective step-inj
 
 base : Peano
 base = record

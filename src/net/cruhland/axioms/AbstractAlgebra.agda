@@ -180,9 +180,9 @@ a[bc]-chain {A} {_⊙_} {a} {b} {c} {d} {e} ab≃d dc≃e =
 eq→idᴿ :
   {A : Set} {_⊙_ : A → A → A} {a b d e : A}
     {{_ : Eq A}} {{_ : Identity handᴿ _⊙_ e}}
-    {{cancel : Cancellativeᴸ _⊙_ _≃_}} {{_ : Cancellativeᴸ.C cancel a}} →
+    {{c : Cancellative handᴸ _⊙_ _≃_}} {{_ : Cancellative.C c a}} →
       a ⊙ d ≃ b → a ≃ b → d ≃ e
-eq→idᴿ {A} {_⊙_} {a} {b} {d} {e} ad≃b a≃b = cancelᴸ ad≃ae
+eq→idᴿ {A} {_⊙_} {a} {b} {d} {e} ad≃b a≃b = cancel ad≃ae
   where
     ad≃ae =
       begin

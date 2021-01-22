@@ -177,11 +177,11 @@ trichotomy x@(x⁺ — x⁻) = record { at-least-one = one≤ ; at-most-one = on
             ≃⟨ AA.comm ⟩
               x⁻ + 0
             ∎
-       in n≄0 (AA.cancelᴸ x⁻+n≃x⁻+0)
+       in n≄0 (AA.cancel x⁻+n≃x⁻+0)
     one≮ (AA.1∧2
             record { n = n ; pos = n≄0 ; x≃-n = ≃ᶻ-intro x⁺+n≃x⁻ }
             (≃ᶻ-intro x⁺+0≃x⁻)) =
-      n≄0 (AA.cancelᴸ (trans x⁺+n≃x⁻ (sym x⁺+0≃x⁻)))
+      n≄0 (AA.cancel (trans x⁺+n≃x⁻ (sym x⁺+0≃x⁻)))
     one≮ (AA.1∧3
             record { n = n₂ ; pos = n₂≄0 ; x≃-n = ≃ᶻ-intro x⁺+n₂≃0+x⁻ }
             record { n = n₁ ; pos = n₁≄0 ; x≃n = ≃ᶻ-intro x⁺+0≃n₁+x⁻ }) =
@@ -199,4 +199,4 @@ trichotomy x@(x⁺ — x⁻) = record { at-least-one = one≤ ; at-most-one = on
             ≃˘⟨ x⁺+0≃n₁+x⁻ ⟩
               x⁺ + 0
             ∎
-       in ℕ.+-positive n₂≄0 (AA.cancelᴸ x⁺+[n₂+n₁]≃x⁺+0)
+       in ℕ.+-positive n₂≄0 (AA.cancel x⁺+[n₂+n₁]≃x⁺+0)

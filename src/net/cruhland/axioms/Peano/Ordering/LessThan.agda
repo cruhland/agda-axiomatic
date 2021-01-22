@@ -104,7 +104,7 @@ instance
           a≤b = Eq.trans ℕ≤.n≤sn sa≤b
 
           a≄b : a ≄ b
-          a≄b a≃b = ℕ.step≄zero (AA.cancelᴸ a+sd≃a+z)
+          a≄b a≃b = ℕ.step≄zero (AA.cancel a+sd≃a+z)
             where
               a+sd≃a+z =
                 begin

@@ -238,8 +238,8 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
     AA.subst {f = _< a * c} AA.comm (AA.subst AA.comm (*-preserves-<ᴿ b<c a≄0))
 
   instance
-    *-cancellativeᴸ : AA.Cancellativeᴸ _*_ _≃_
-    *-cancellativeᴸ = AA.cancellativeⁱᴸ Constraint *-cancelᴸ
+    *-cancellativeᴸ : AA.Cancellative AA.handᴸ _*_ _≃_
+    *-cancellativeᴸ = AA.cancellative Constraint *-cancelᴸ
       where
         Constraint = λ a → False (a ≃? 0)
 
@@ -255,5 +255,5 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
           let <-intro _ ac≄ab = *-preserves-<ᴸ b>c ≄-derive
            in contra (sym ab≃ac) ac≄ab
 
-    *-cancellativeᴿ : AA.Cancellativeᴿ _*_ _≃_
+    *-cancellativeᴿ : AA.Cancellative AA.handᴿ _*_ _≃_
     *-cancellativeᴿ = AA.cancellativeᴿ-from-cancellativeᴸ

@@ -115,8 +115,8 @@ instance
       a ≃?₀ b | AA.2nd a≃b = yes a≃b
       a ≃?₀ b | AA.3rd (<-intro b≤a b≄a) = no (¬sym b≄a)
 
-  *-cancellativeᴸ : AA.Cancellativeᴸ _*_ _≃_
-  *-cancellativeᴸ = AA.cancellativeⁱᴸ Constraint *-cancelᴸ
+  *-cancellativeᴸ : AA.Cancellative AA.handᴸ _*_ _≃_
+  *-cancellativeᴸ = AA.cancellative Constraint *-cancelᴸ
     where
       Constraint = λ a → False (a ≃? 0)
 
@@ -150,5 +150,5 @@ instance
           c
         ∎
 
-  *-cancellativeᴿ : AA.Cancellativeᴿ {A = ℤ} _*_ _≃_
-  *-cancellativeᴿ = AA.cancellativeᴿ-from-cancellativeᴸ
+  *-cancellativeᴿ : AA.Cancellative AA.handᴿ _*_ _≃_
+  *-cancellativeᴿ = AA.cancellativeᴿ-from-cancellativeᴸ {A = ℤ}

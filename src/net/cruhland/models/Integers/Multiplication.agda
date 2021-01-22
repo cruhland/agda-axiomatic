@@ -303,7 +303,7 @@ instance
                 n * b⁻
               ∎
             instance n≄ⁱ0 = fromWitnessFalse n≄0
-            b⁺≃b⁻ = AA.cancelᴸ nb⁺≃nb⁻
+            b⁺≃b⁻ = AA.cancel nb⁺≃nb⁻
             b⁺+0≃0+b⁻ = trans AA.ident (trans b⁺≃b⁻ (sym AA.ident))
          in ≃ᶻ-intro b⁺+0≃0+b⁻
 
