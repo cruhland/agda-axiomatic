@@ -1,10 +1,12 @@
 module net.cruhland.axioms.AbstractAlgebra.Compatible where
 
-open import net.cruhland.axioms.AbstractAlgebra.Base using
-  (forHand; Hand; handᴸ; handᴿ)
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_; Eq)
 open import net.cruhland.models.Function using (_∘_; _⟨→⟩_)
 open import net.cruhland.models.Logic using (_∨_; ∨-rec)
+
+open import net.cruhland.axioms.AbstractAlgebra.Base using
+  (forHand; Hand; handᴸ; handᴿ)
+open import net.cruhland.axioms.AbstractAlgebra.Reductive using (Absorptive)
 
 private
   record IsCompatible₁
@@ -59,6 +61,8 @@ record ZeroProduct {A : Set} {{_ : Eq A}} (_⊙_ : A → A → A) : Set where
   constructor zeroProduct
   field
     z : A
+    {{absorptiveᴸ}} : Absorptive handᴸ _⊙_ z
+    {{absorptiveᴿ}} : Absorptive handᴿ _⊙_ z
     zero-prod : ∀ {a b} → a ⊙ b ≃ z → a ≃ z ∨ b ≃ z
 
 open ZeroProduct {{...}} public using (zero-prod)
@@ -137,5 +141,6 @@ module _ {A : Set} {_⊙_ : A → A → A} {{_ : Eq A}} where
   isCompatible₂-from-zero-product = isCompatible₂ zero-prod
 
   zero-product-from-isCompatible₂ :
-    ∀ {z} {{_ : IsCompatible₂ (_≃ z) _⊙_ _∨_ _⟨→⟩_}} → ZeroProduct _⊙_
+    ∀ {z} {{_ : Absorptive handᴸ _⊙_ z}} {{_ : Absorptive handᴿ _⊙_ z}}
+      {{_ : IsCompatible₂ (_≃ z) _⊙_ _∨_ _⟨→⟩_}} → ZeroProduct _⊙_
   zero-product-from-isCompatible₂ {z} = zeroProduct z isCompat₂

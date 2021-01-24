@@ -1,11 +1,12 @@
 module net.cruhland.axioms.AbstractAlgebra.Reductive where
 
+open import net.cruhland.axioms.Eq as Eq using (_≃_; Eq)
+open import net.cruhland.models.Function using (flip)
+
 open import net.cruhland.axioms.AbstractAlgebra.Base using
   (forHand; Hand; handᴸ; handᴿ)
 open import net.cruhland.axioms.AbstractAlgebra.Commutative using
   (comm; Commutative)
-open import net.cruhland.axioms.Eq as Eq using (_≃_; Eq)
-open import net.cruhland.models.Function using (flip)
 
 record Identity
     (hand : Hand) {A : Set} {{_ : Eq A}} (_⊙_ : A → A → A) (e : A) : Set where
