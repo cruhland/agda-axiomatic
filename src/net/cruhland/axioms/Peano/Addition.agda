@@ -142,7 +142,7 @@ record Addition (PB : PeanoBase) : Set where
               ∎
 
     +-cancellativeᴸ : AA.Cancellative AA.handᴸ _+_ _≃_
-    +-cancellativeᴸ = AA.cancellative (λ _ → ⊤) +-cancelᴸ
+    +-cancellativeᴸ = AA.cancellative λ {n m p} → +-cancelᴸ
       where
         +-cancelᴸ : ∀ {n m p} → n + m ≃ n + p → m ≃ p
         +-cancelᴸ {n} {m} {p} = ind P Pz Ps n

@@ -116,11 +116,11 @@ instance
       a ≃?₀ b | AA.3rd (<-intro b≤a b≄a) = no (¬sym b≄a)
 
   *-cancellativeᴸ : AA.Cancellative AA.handᴸ _*_ _≃_
-  *-cancellativeᴸ = AA.cancellative Constraint *-cancelᴸ
+  *-cancellativeᴸ = AA.cancellative λ a {{_ : C a}} {b c} → *-cancelᴸ
     where
-      Constraint = λ a → False (a ≃? 0)
+      C = λ a → False (a ≃? 0)
 
-      *-cancelᴸ : {a b c : ℤ} {{_ : Constraint a}} → a * b ≃ a * c → b ≃ c
+      *-cancelᴸ : {a b c : ℤ} {{_ : C a}} → a * b ≃ a * c → b ≃ c
       *-cancelᴸ {a} {b} {c} ab≃ac with
         let a[b-c]≃0 =
               begin

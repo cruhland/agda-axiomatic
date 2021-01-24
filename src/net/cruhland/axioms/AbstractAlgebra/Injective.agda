@@ -1,7 +1,7 @@
 module net.cruhland.axioms.AbstractAlgebra.Injective where
 
 open import net.cruhland.axioms.Eq using (_≃_; _≄_; Eq)
-open import net.cruhland.models.Function using (_∘_)
+open import net.cruhland.models.Function using (_∘_; ConstrainableFn; toImpFn)
 open import net.cruhland.models.Logic using (⊤)
 
 open import net.cruhland.axioms.AbstractAlgebra.Base using
@@ -26,18 +26,34 @@ instance
         Substitutive₁ f _≄_ _≄_
   ≄-substitutive = substitutive₁ (λ a₁≄a₂ fa₁≃fa₂ → a₁≄a₂ (inject fa₁≃fa₂))
 
+CancellativeProperty : Hand → {A : Set} → (A → A → A) → (A → A → Set) → A → Set
+CancellativeProperty hand _⊙_ _~_ a =
+  let _<⊙>_ = forHand hand _⊙_
+   in ∀ {b₁ b₂} → (a <⊙> b₁) ~ (a <⊙> b₂) → b₁ ~ b₂
+
 record Cancellative
     (hand : Hand) {A : Set} (_⊙_ : A → A → A) (_~_ : A → A → Set) : Set₁ where
-  constructor cancellative
-  _<⊙>_ = forHand hand _⊙_
   field
     C : A → Set
-    cancel : ∀ {a b₁ b₂} {{_ : C a}} → (a <⊙> b₁) ~ (a <⊙> b₂) → b₁ ~ b₂
+    cancel : ∀ {a} {{_ : C a}} → CancellativeProperty hand _⊙_ _~_ a
 
 open Cancellative {{...}} public using (cancel)
+
+cancellative :
+  {hand : Hand} {A F : Set} {_⊙_ : A → A → A} {_~_ : A → A → Set}
+    {{cf : ConstrainableFn F (CancellativeProperty hand _⊙_ _~_)}} → F →
+      Cancellative hand _⊙_ _~_
+cancellative {hand} {_⊙_ = _⊙_} {_~_} {{cf}} f =
+    record { C = C ; cancel = cancelPrf }
+  where
+    open ConstrainableFn cf using (C)
+
+    cancelPrf : ∀ {a} {{_ : C a}} → CancellativeProperty hand _⊙_ _~_ a
+    cancelPrf {a} {b₁} = toImpFn f {a} {b₁}
 
 cancellativeᴿ-from-cancellativeᴸ :
   {A : Set} {_⊙_ : A → A → A} {{_ : Eq A}} {{_ : Commutative _⊙_}}
     {{c : Cancellative handᴸ _⊙_ _≃_}} → Cancellative handᴿ _⊙_ _≃_
 cancellativeᴿ-from-cancellativeᴸ {{c = c}} =
-  cancellative (Cancellative.C c) (cancel ∘ with-comm)
+  let open Cancellative c using (C)
+   in record { C = C ; cancel = λ {a} {{_ : C a}} → cancel ∘ with-comm }

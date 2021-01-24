@@ -15,6 +15,7 @@ open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
 import net.cruhland.axioms.Peano.Inspect as PeanoInspect
 import net.cruhland.axioms.Peano.Ordering as PeanoOrdering
+import net.cruhland.models.Function
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using
   (_∧_; ∧-elimᴿ; ∧-intro; _∨_; ∨-introᴸ; ∨-introᴿ; contra)
@@ -239,11 +240,11 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
 
   instance
     *-cancellativeᴸ : AA.Cancellative AA.handᴸ _*_ _≃_
-    *-cancellativeᴸ = AA.cancellative Constraint *-cancelᴸ
+    *-cancellativeᴸ = AA.cancellative λ a {{_ : C a}} {b c} → *-cancelᴸ
       where
-        Constraint = λ a → False (a ≃? 0)
+        C = λ a → False (a ≃? 0)
 
-        *-cancelᴸ : ∀ {a b c} {{_ : Constraint a}} → a * b ≃ a * c → b ≃ c
+        *-cancelᴸ : ∀ {a b c} {{_ : C a}} → a * b ≃ a * c → b ≃ c
         *-cancelᴸ ab≃ac with
           AA.ExactlyOneOfThree.at-least-one ℕ≤.order-trichotomy
         ... | AA.1st b<c =

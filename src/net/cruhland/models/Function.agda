@@ -7,21 +7,42 @@ open import Function public
   using (_∘_; const; flip; id) renaming (Morphism to _⟨→⟩_)
 open import Function.Equivalence public using (Equivalence)
 
-with-dummy-constraint : {A B : Set} → (A → B) → (a : A) {{_ : ⊤}} → B
-with-dummy-constraint f a = f a
+addDummyConstraintExp :
+  {A : Set} {B : A → Set} → ((a : A) → B a) → (a : A) {{_ : ⊤}} → B a
+addDummyConstraintExp f a = f a
 
-record ConstrainableFn (F : Set) {A : Set} : Set₁ where
+addDummyConstraintImp :
+  {A : Set} {B : A → Set} → ({a : A} → B a) → {a : A} {{_ : ⊤}} → B a
+addDummyConstraintImp f {a} = f
+
+toExp : {A : Set} {B : A → Set} → ({a : A} → B a) → (a : A) → B a
+toExp f a = f {a}
+
+toImp : {A : Set} {B : A → Set} → ((a : A) → B a) → {a : A} → B a
+toImp f {a} = f a
+
+record ConstrainableFn (F : Set) {A : Set} (B : A → Set) : Set₁ where
   constructor constrainableFn
   field
     {C} : A → Set
-    toConstrainedFn : F → (a : A) {{_ : C a}} → A
+    toExpFn : F → (a : A) {{_ : C a}} → B a
+    toImpFn : F → {a : A} {{_ : C a}} → B a
 
-open ConstrainableFn {{...}} public using (toConstrainedFn)
+open ConstrainableFn {{...}} public using (toExpFn; toImpFn)
 
 instance
-  plainFn : {A : Set} → ConstrainableFn (A → A)
-  plainFn = constrainableFn with-dummy-constraint
+  plainExpFn : {A : Set} {B : A → Set} → ConstrainableFn ((a : A) → B a) B
+  plainExpFn =
+    constrainableFn addDummyConstraintExp (toImp ∘ addDummyConstraintExp)
 
-  constrainedFn :
-    {A : Set} {C : A → Set} → ConstrainableFn ((a : A) {{_ : C a}} → A)
-  constrainedFn = constrainableFn id
+  plainImpFn : {A : Set} {B : A → Set} → ConstrainableFn ({a : A} → B a) B
+  plainImpFn =
+    constrainableFn (toExp ∘ addDummyConstraintImp) addDummyConstraintImp
+
+  constrainedExpFn :
+    {A : Set} {B C : A → Set} → ConstrainableFn ((a : A) {{_ : C a}} → B a) B
+  constrainedExpFn = constrainableFn id toImp
+
+  constrainedImpFn :
+    {A : Set} {B C : A → Set} → ConstrainableFn ({a : A} {{_ : C a}} → B a) B
+  constrainedImpFn = constrainableFn toExp id

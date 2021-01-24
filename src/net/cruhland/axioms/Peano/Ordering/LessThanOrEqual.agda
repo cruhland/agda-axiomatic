@@ -140,7 +140,7 @@ instance
             ∎
 
   ≤-cancellative-+ᴿ : AA.Cancellative AA.handᴿ _+_ _≤_
-  ≤-cancellative-+ᴿ = AA.cancellative (λ _ → ⊤) ≤-cancel-+ᴿ
+  ≤-cancellative-+ᴿ = AA.cancellative λ {a b c} → ≤-cancel-+ᴿ
     where
       ≤-cancel-+ᴿ : ∀ {a b c} → a + c ≤ b + c → a ≤ b
       ≤-cancel-+ᴿ {a} {b} {c} (≤-intro d a+c+d≃b+c) = ≤-intro d a+d≃b
