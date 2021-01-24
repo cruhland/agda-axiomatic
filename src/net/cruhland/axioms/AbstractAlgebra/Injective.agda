@@ -1,8 +1,8 @@
 module net.cruhland.axioms.AbstractAlgebra.Injective where
 
 open import net.cruhland.axioms.Eq using (_≃_; _≄_; Eq)
-open import net.cruhland.models.Function using (_∘_; ConstrainableFn; toImpFn)
-open import net.cruhland.models.Logic using (⊤)
+open import net.cruhland.models.Function using
+  (_∘_; ConstrainableFn; flip; toImpFn)
 
 open import net.cruhland.axioms.AbstractAlgebra.Base using
   (forHand; Hand; handᴸ; handᴿ)
@@ -57,3 +57,27 @@ cancellativeᴿ-from-cancellativeᴸ :
 cancellativeᴿ-from-cancellativeᴸ {{c = c}} =
   let open Cancellative c using (C)
    in record { C = C ; cancel = λ {a} {{_ : C a}} → cancel ∘ with-comm }
+
+{--- Equivalences ---}
+
+module _ {A : Set} {_⊙_ : A → A → A} {_~_ : A → A → Set} where
+
+  injective-from-cancellativeᴸ :
+    ∀ {a} {{c : Cancellative handᴸ _⊙_ _~_}} {{_ : Cancellative.C c a}} →
+      Injective (a ⊙_) _~_ _~_
+  injective-from-cancellativeᴸ = injective cancel
+
+  cancellativeᴸ-from-injective :
+    (∀ a → Injective (a ⊙_) _~_ _~_) → Cancellative handᴸ _⊙_ _~_
+  cancellativeᴸ-from-injective mkInjective =
+    cancellative λ {a b₁ b₂} → inject {{r = mkInjective a}}
+
+  cancellativeᴸ-flip :
+    {{c : Cancellative handᴸ _⊙_ _~_}} → Cancellative handᴿ (flip _⊙_) _~_
+  cancellativeᴸ-flip {{c}} = cancellative λ {a} {{_ : C a}} {b₁ b₂} → cancel
+    where open Cancellative c using (C)
+
+  cancellativeᴿ-flip :
+    {{c : Cancellative handᴿ _⊙_ _~_}} → Cancellative handᴸ (flip _⊙_) _~_
+  cancellativeᴿ-flip {{c}} = cancellative λ {a} {{_ : C a}} {b₁ b₂} → cancel
+    where open Cancellative c using (C)
