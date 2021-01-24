@@ -6,10 +6,12 @@ data Hand : Set where
   handᴸ : Hand
   handᴿ : Hand
 
+handRec : {A : Set} → A → A → Hand → A
+handRec forᴸ forᴿ handᴸ = forᴸ
+handRec forᴸ forᴿ handᴿ = forᴿ
+
 forHand : {A : Set} → Hand → (A → A → A) → (A → A → A)
-forHand handᴸ = id
-forHand handᴿ = flip
+forHand = handRec id flip
 
 other : Hand → Hand
-other handᴸ = handᴿ
-other handᴿ = handᴸ
+other = handRec handᴿ handᴸ

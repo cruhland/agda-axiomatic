@@ -81,23 +81,23 @@ instance
       *-assoc {p↑ // p↓ ~ _} {q↑ // q↓ ~ _} {r↑ // r↓ ~ _} =
         ≃₀-intro (AA.[a≃b][c≃d] {_⊙_ = _*_} AA.assoc (sym AA.assoc))
 
-  *-commutativeᴸ-neg : AA.Commutativeᴸ -_ _*_
-  *-commutativeᴸ-neg = record { commᴸ = *-commᴸ-neg }
+  *-fnOpCommutativeᴸ-neg : AA.FnOpCommutative AA.handᴸ -_ _*_
+  *-fnOpCommutativeᴸ-neg = AA.fnOpCommutative *-commᴸ-neg
     where
-      *-commᴸ-neg : {p q : ℚ} → (- p) * q ≃ - (p * q)
+      *-commᴸ-neg : {p q : ℚ} → - (p * q) ≃ (- p) * q
       *-commᴸ-neg {p} {q} =
         begin
-          (- p) * q
-        ≃⟨ AA.subst neg-mult ⟩
-          (-1 * p) * q
-        ≃⟨ AA.assoc ⟩
-          -1 * (p * q)
-        ≃˘⟨ neg-mult ⟩
           - (p * q)
+        ≃⟨ neg-mult ⟩
+          -1 * (p * q)
+        ≃˘⟨ AA.assoc ⟩
+          (-1 * p) * q
+        ≃˘⟨ AA.subst neg-mult ⟩
+          (- p) * q
         ∎
 
-  *-commutativeᴿ-neg : AA.Commutativeᴿ {A = ℚ} -_ _*_
-  *-commutativeᴿ-neg = AA.commutativeᴿ
+  *-fnOpCommutativeᴿ-neg : AA.FnOpCommutative AA.handᴿ -_ _*_
+  *-fnOpCommutativeᴿ-neg = AA.fnOpCommutativeᴿ-from-fnOpCommutativeᴸ {A = ℚ}
 
   *-identityᴸ : AA.Identity AA.handᴸ _*_ 1
   *-identityᴸ = AA.identity *-identᴸ

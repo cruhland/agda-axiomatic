@@ -5,7 +5,7 @@ open import net.cruhland.models.Function using (_∘_; _⟨→⟩_)
 open import net.cruhland.models.Logic using (_∨_; ∨-rec)
 
 open import net.cruhland.axioms.AbstractAlgebra.Base using
-  (forHand; Hand; handᴸ; handᴿ)
+  (forHand; Hand; handᴸ; handᴿ; handRec)
 open import net.cruhland.axioms.AbstractAlgebra.Reductive using (Absorptive)
 
 private
@@ -44,6 +44,21 @@ record Compatible₂
     compat₂ : ∀ {a b} → f (a ⊙ b) ≃ f a ⊕ f b
 
 open Compatible₂ {{...}} public using (compat₂)
+
+record FnOpCommutative
+    (hand : Hand) {A : Set} {{_ : Eq A}} (f : A → A) (_⊙_ : A → A → A)
+      : Set where
+ constructor fnOpCommutative
+ field
+   fnOpComm : ∀ {a b} → f (a ⊙ b) ≃ handRec (f a ⊙ b) (a ⊙ f b) hand
+
+open FnOpCommutative {{...}} public using (fnOpComm)
+
+fnOpCommSwap :
+  {A : Set} {f : A → A} {_⊙_ : A → A → A} {{_ : Eq A}}
+    {{_ : FnOpCommutative handᴸ f _⊙_}} {{_ : FnOpCommutative handᴿ f _⊙_}} →
+      ∀ {a b} → f a ⊙ b ≃ a ⊙ f b
+fnOpCommSwap = Eq.trans (Eq.sym fnOpComm) fnOpComm
 
 record Distributive
     (hand : Hand) {A : Set} {{_ : Eq A}} (_⊙_ _⊕_ : A → A → A) : Set where
@@ -110,6 +125,28 @@ module _ {A B : Set} {f : A → B} {_⊙_ : A → A → A} {{_ : Eq B}} where
   compatible₂-from-isCompatible₂ :
     {_⊕_ : B → B → B} {{_ : IsCompatible₂ f _⊙_ _⊕_ _≃_}} → Compatible₂ f _⊙_
   compatible₂-from-isCompatible₂ {_⊕_} = compatible₂ _⊕_ isCompat₂
+
+module _ {A : Set} {f : A → A} {_⊙_ : A → A → A} {{_ : Eq A}} where
+
+  isCompatible₁-from-fnOpCommutativeᴸ :
+    {{_ : FnOpCommutative handᴸ f _⊙_}} →
+      ∀ {b} → IsCompatible₁ f (_⊙ b) (_⊙ b) _≃_
+  isCompatible₁-from-fnOpCommutativeᴸ = isCompatible₁ fnOpComm
+
+  fnOpCommutativeᴸ-from-isCompatible₁ :
+    {{_ : ∀ {b} → IsCompatible₁ f (_⊙ b) (_⊙ b) _≃_}} →
+      FnOpCommutative handᴸ f _⊙_
+  fnOpCommutativeᴸ-from-isCompatible₁ = fnOpCommutative isCompat₁
+
+  isCompatible₁-from-fnOpCommutativeᴿ :
+    {{_ : FnOpCommutative handᴿ f _⊙_}} →
+      ∀ {a} → IsCompatible₁ f (a ⊙_) (a ⊙_) _≃_
+  isCompatible₁-from-fnOpCommutativeᴿ = isCompatible₁ fnOpComm
+
+  fnOpCommutativeᴿ-from-isCompatible₁ :
+    {{_ : ∀ {a} → IsCompatible₁ f (a ⊙_) (a ⊙_) _≃_}} →
+      FnOpCommutative handᴿ f _⊙_
+  fnOpCommutativeᴿ-from-isCompatible₁ = fnOpCommutative isCompat₁
 
 module _ {A : Set} {_⊙_ _⊕_ : A → A → A} {{_ : Eq A}} where
 

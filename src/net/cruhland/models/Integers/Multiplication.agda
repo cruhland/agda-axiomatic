@@ -165,23 +165,23 @@ instance
         where
           ≃-assoc = AA.[a≃b][c≃d] AA.refactor (sym AA.refactor)
 
-  *-commutative-negᴸ : AA.Commutativeᴸ -_ _*_
-  *-commutative-negᴸ = record { commᴸ = *-negᴸ }
+  *-fnOpCommutative-negᴸ : AA.FnOpCommutative AA.handᴸ -_ _*_
+  *-fnOpCommutative-negᴸ = AA.fnOpCommutative *-negᴸ
     where
-      *-negᴸ : {a b : ℤ} → - a * b ≃ - (a * b)
-      *-negᴸ {a⁺ — a⁻} {b⁺ — b⁻} = ≃ᶻ-intro eq′
+      *-negᴸ : {a b : ℤ} → - (a * b) ≃ - a * b
+      *-negᴸ {a⁺ — a⁻} {b⁺ — b⁻} = ≃ᶻ-intro eqPrf
         where
-          eq′ =
+          eqPrf =
             begin
-              (a⁻ * b⁺ + a⁺ * b⁻) + (a⁺ * b⁺ + a⁻ * b⁻)
+              (a⁺ * b⁻ + a⁻ * b⁺) + (a⁻ * b⁻ + a⁺ * b⁺)
             ≃⟨ AA.subst AA.comm ⟩
               (a⁺ * b⁻ + a⁻ * b⁺) + (a⁺ * b⁺ + a⁻ * b⁻)
             ≃⟨ AA.subst AA.comm ⟩
-              (a⁺ * b⁻ + a⁻ * b⁺) + (a⁻ * b⁻ + a⁺ * b⁺)
+              (a⁻ * b⁺ + a⁺ * b⁻) + (a⁺ * b⁺ + a⁻ * b⁻)
             ∎
 
-  *-commutative-negᴿ : AA.Commutativeᴿ -_ _*_
-  *-commutative-negᴿ = AA.commutativeᴿ
+  *-fnOpCommutative-negᴿ : AA.FnOpCommutative AA.handᴿ -_ _*_
+  *-fnOpCommutative-negᴿ = AA.fnOpCommutativeᴿ-from-fnOpCommutativeᴸ
 
 neg-mult : {a : ℤ} → - a ≃ -1 * a
 neg-mult {a⁺ — a⁻} = AA.[a≃b][c≃d] x≃0y+1x x≃0y+1x
@@ -206,7 +206,7 @@ neg-mult {a⁺ — a⁻} = AA.[a≃b][c≃d] x≃0y+1x x≃0y+1x
     c * (a + - b)
   ≃⟨ AA.distrib ⟩
     c * a + c * - b
-  ≃⟨ AA.subst {f = c * a +_} AA.commᴿ ⟩
+  ≃˘⟨ AA.subst {f = c * a +_} AA.fnOpComm ⟩
     c * a + - (c * b)
   ≃⟨⟩
     c * a - c * b
@@ -220,7 +220,7 @@ neg-mult {a⁺ — a⁻} = AA.[a≃b][c≃d] x≃0y+1x x≃0y+1x
     (a + - b) * c
   ≃⟨ AA.distrib ⟩
     a * c + (- b) * c
-  ≃⟨ AA.subst {f = a * c +_} AA.commᴸ ⟩
+  ≃˘⟨ AA.subst {f = a * c +_} AA.fnOpComm ⟩
     a * c + - (b * c)
   ≃⟨⟩
     a * c - b * c
@@ -336,7 +336,7 @@ instance
                 - 0 — n * b
               ≃˘⟨ AA.subst (AA.subst {f = -_} a≃0—n) ⟩
                 - a * b
-              ≃⟨ AA.commᴸ ⟩
+              ≃˘⟨ AA.fnOpComm ⟩
                 - (a * b)
               ≃⟨ AA.subst ab≃0 ⟩
                 - 0

@@ -1,11 +1,12 @@
 module net.cruhland.axioms.AbstractAlgebra.Inverse where
 
+open import net.cruhland.axioms.Eq as Eq using (_≃_; Eq)
+open import net.cruhland.models.Function using (ConstrainableFn; const; toExpFn)
+
 open import net.cruhland.axioms.AbstractAlgebra.Base using
   (forHand; Hand; handᴸ; handᴿ)
 open import net.cruhland.axioms.AbstractAlgebra.Reductive using
   (Identity₂; id₂-elem)
-open import net.cruhland.axioms.Eq as Eq using (_≃_; Eq)
-open import net.cruhland.models.Function using (ConstrainableFn; const; toExpFn)
 
 record Inverse (hand : Hand) {A F : Set} {{_ : Eq A}} (f : F) : Set₁ where
   constructor inverse

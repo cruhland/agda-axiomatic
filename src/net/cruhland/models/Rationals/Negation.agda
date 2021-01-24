@@ -41,11 +41,11 @@ instance
           [-a₁↑]a₂↓≃[-a₂↑]a₁↓ =
             begin
               - a₁↑ * a₂↓
-            ≃⟨ AA.commᴸ ⟩
+            ≃˘⟨ AA.fnOpComm ⟩
               - (a₁↑ * a₂↓)
             ≃⟨ AA.subst a₁↑a₂↓≃a₂↑a₁↓ ⟩
               - (a₂↑ * a₁↓)
-            ≃˘⟨ AA.commᴸ ⟩
+            ≃⟨ AA.fnOpComm ⟩
               - a₂↑ * a₁↓
             ∎
 

@@ -5,7 +5,11 @@ open Eq.≃-Reasoning
 open import net.cruhland.models.Function using (_∘_)
 open import net.cruhland.models.Logic using (⊤)
 
-open import net.cruhland.axioms.AbstractAlgebra.Commutative
+open import net.cruhland.axioms.AbstractAlgebra.Base using (handᴸ; handᴿ)
+open import net.cruhland.axioms.AbstractAlgebra.Commutative using
+  (comm; Commutative; with-comm)
+open import net.cruhland.axioms.AbstractAlgebra.Compatible using
+  (fnOpComm; FnOpCommutative; fnOpCommutative)
 
 record Substitutiveⁱ
     {β} {A : Set} {B : A → Set β} {C : A → Set} (f : (a : A) {{c : C a}} → B a)
@@ -75,21 +79,21 @@ substitutive₂ = record {}
     b ⊙ d
   ∎
 
-commutativeᴿ :
+fnOpCommutativeᴿ-from-fnOpCommutativeᴸ :
   {A : Set} {f : A → A} {_⊙_ : A → A → A}
     {{_ : Eq A}} {{_ : Substitutive₁ f _≃_ _≃_}}
-    {{_ : Commutative _⊙_}} {{_ : Commutativeᴸ f _⊙_}} →
-      Commutativeᴿ f _⊙_
-commutativeᴿ {A} {f} {_⊙_} = record { commᴿ = commᴿ₀ }
+    {{_ : Commutative _⊙_}} {{_ : FnOpCommutative handᴸ f _⊙_}} →
+      FnOpCommutative handᴿ f _⊙_
+fnOpCommutativeᴿ-from-fnOpCommutativeᴸ {A} {f} {_⊙_} = fnOpCommutative commᴿ₀
   where
-    commᴿ₀ : ∀ {a b} → a ⊙ f b ≃ f (a ⊙ b)
+    commᴿ₀ : ∀ {a b} → f (a ⊙ b) ≃ a ⊙ f b
     commᴿ₀ {a} {b} =
       begin
-        a ⊙ f b
-      ≃⟨ comm ⟩
-        f b ⊙ a
-      ≃⟨ commᴸ ⟩
-        f (b ⊙ a)
-      ≃⟨ subst comm ⟩
         f (a ⊙ b)
+      ≃⟨ subst comm ⟩
+        f (b ⊙ a)
+      ≃⟨ fnOpComm ⟩
+        f b ⊙ a
+      ≃⟨ comm ⟩
+        a ⊙ f b
       ∎

@@ -86,7 +86,7 @@ instance
             sa+pd≃b =
               begin
                 step a + pd
-              ≃⟨ AA.comm-swap ⟩
+              ≃⟨ AA.fnOpCommSwap ⟩
                 a + step pd
               ≃˘⟨ AA.subst d≃spd ⟩
                 a + d
@@ -109,7 +109,7 @@ instance
               a+sd≃a+z =
                 begin
                   a + step d
-                ≃˘⟨ AA.comm-swap ⟩
+                ≃˘⟨ AA.fnOpCommSwap ⟩
                   step a + d
                 ≃⟨ sa+d≃b ⟩
                   b

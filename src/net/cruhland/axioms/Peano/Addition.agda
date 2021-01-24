@@ -25,7 +25,7 @@ record Addition (PB : PeanoBase) : Set where
     {{plus}} : Op.Plus ℕ
     {{+-substitutiveᴸ}} : AA.Substitutiveᴸ _+_
     {{+-identityᴸ}} : AA.Identity AA.handᴸ _+_ 0
-    {{+-commutative-stepᴸ}} : AA.Commutativeᴸ step _+_
+    {{+-fnOpCommutative-stepᴸ}} : AA.FnOpCommutative AA.handᴸ step _+_
 
   instance
     +-identityᴿ : AA.Identity AA.handᴿ _+_ 0
@@ -41,39 +41,39 @@ record Addition (PB : PeanoBase) : Set where
             Ps {k} k+z≃k =
               begin
                 step k + 0
-              ≃⟨ AA.commᴸ ⟩
+              ≃˘⟨ AA.fnOpComm ⟩
                 step (k + 0)
               ≃⟨ AA.subst k+z≃k ⟩
                 step k
               ∎
 
-    +-commutative-stepᴿ : AA.Commutativeᴿ step _+_
-    +-commutative-stepᴿ = record { commᴿ = +-stepᴿ }
+    +-fnOpCommutative-stepᴿ : AA.FnOpCommutative AA.handᴿ step _+_
+    +-fnOpCommutative-stepᴿ = AA.fnOpCommutative +-stepᴿ
       where
-        +-stepᴿ : ∀ {n m} → n + step m ≃ step (n + m)
+        +-stepᴿ : ∀ {n m} → step (n + m) ≃ n + step m
         +-stepᴿ {n} {m} = ind P Pz Ps n
           where
-            P = λ x → x + step m ≃ step (x + m)
+            P = λ x → step (x + m) ≃ x + step m
 
             Pz =
               begin
-                0 + step m
-              ≃⟨ AA.ident ⟩
-                step m
-              ≃˘⟨ AA.subst AA.ident ⟩
                 step (0 + m)
+              ≃⟨ AA.subst AA.ident ⟩
+                step m
+              ≃˘⟨ AA.ident ⟩
+                0 + step m
               ∎
 
             Ps : step-case P
-            Ps {k} k+sm≃s[k+m] =
+            Ps {k} s[k+m]≃k+sm =
               begin
-                step k + step m
-              ≃⟨ AA.commᴸ ⟩
-                step (k + step m)
-              ≃⟨ AA.subst k+sm≃s[k+m] ⟩
-                step (step (k + m))
-              ≃˘⟨ AA.subst AA.commᴸ ⟩
                 step (step k + m)
+              ≃˘⟨ AA.subst AA.fnOpComm ⟩
+                step (step (k + m))
+              ≃⟨ AA.subst s[k+m]≃k+sm ⟩
+                step (k + step m)
+              ≃⟨ AA.fnOpComm ⟩
+                step k + step m
               ∎
 
     +-commutative : AA.Commutative _+_
@@ -96,11 +96,11 @@ record Addition (PB : PeanoBase) : Set where
             Ps {k} k+m≃m+k =
               begin
                 step k + m
-              ≃⟨ AA.commᴸ ⟩
+              ≃˘⟨ AA.fnOpComm ⟩
                 step (k + m)
               ≃⟨ AA.subst k+m≃m+k ⟩
                 step (m + k)
-              ≃˘⟨ AA.commᴿ ⟩
+              ≃⟨ AA.fnOpComm ⟩
                 m + step k
               ∎
 
@@ -131,13 +131,13 @@ record Addition (PB : PeanoBase) : Set where
             Ps {k} [k+m]+p≃k+[m+p] =
               begin
                 (step k + m) + p
-              ≃⟨ AA.subst AA.commᴸ ⟩
+              ≃˘⟨ AA.subst AA.fnOpComm ⟩
                 step (k + m) + p
-              ≃⟨ AA.commᴸ ⟩
+              ≃˘⟨ AA.fnOpComm ⟩
                 step ((k + m) + p)
               ≃⟨ AA.subst [k+m]+p≃k+[m+p] ⟩
                 step (k + (m + p))
-              ≃˘⟨ AA.commᴸ ⟩
+              ≃⟨ AA.fnOpComm ⟩
                 step k + (m + p)
               ∎
 
@@ -167,11 +167,11 @@ record Addition (PB : PeanoBase) : Set where
                 s[k+m]≃s[k+p] =
                   begin
                     step (k + m)
-                  ≃˘⟨ AA.commᴸ ⟩
+                  ≃⟨ AA.fnOpComm ⟩
                     step k + m
                   ≃⟨ sk+m≃sk+p ⟩
                     step k + p
-                  ≃⟨ AA.commᴸ ⟩
+                  ≃˘⟨ AA.fnOpComm ⟩
                     step (k + p)
                   ∎
 
@@ -184,7 +184,7 @@ record Addition (PB : PeanoBase) : Set where
       step n
     ≃˘⟨ AA.subst AA.ident ⟩
       step (n + 0)
-    ≃˘⟨ AA.commᴿ ⟩
+    ≃⟨ AA.fnOpComm ⟩
       n + step 0
     ≃⟨⟩
       n + 1
@@ -219,7 +219,7 @@ record Addition (PB : PeanoBase) : Set where
       Pz = Positive-subst (sym AA.ident) pos-a
 
       Ps : step-case P
-      Ps {k} _ = λ a+sk≃z → step≄zero (trans (sym AA.commᴿ) a+sk≃z)
+      Ps {k} _ = λ a+sk≃z → step≄zero (trans AA.fnOpComm a+sk≃z)
 
   +-both-zero : {a b : ℕ} → a + b ≃ 0 → a ≃ 0 ∧ b ≃ 0
   +-both-zero {a} {b} a+b≃z =

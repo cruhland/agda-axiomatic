@@ -81,7 +81,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
           k * step m + step m
         ≃⟨ AA.subst Pk ⟩
           k * m + k + step m
-        ≃⟨ AA.substᴿ-with-assoc (trans AA.comm AA.comm-swap) ⟩
+        ≃⟨ AA.substᴿ-with-assoc (trans AA.comm AA.fnOpCommSwap) ⟩
           k * m + m + step k
         ≃˘⟨ AA.subst *-stepᴸ ⟩
           step k * m + step k
@@ -176,7 +176,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
             Ps {k} a[b+k]≃ab+ak =
               begin
                 a * (b + step k)
-              ≃⟨ AA.subst AA.commᴿ ⟩
+              ≃˘⟨ AA.subst AA.fnOpComm ⟩
                 a * step (b + k)
               ≃⟨ *-stepᴿ ⟩
                 a * (b + k) + a

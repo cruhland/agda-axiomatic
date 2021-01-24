@@ -57,8 +57,8 @@ instance
   +-identityᴸ : AA.Identity AA.handᴸ _+_ 0
   +-identityᴸ = AA.identity refl
 
-  +-commutative-stepᴸ : AA.Commutativeᴸ step _+_
-  +-commutative-stepᴸ = record { commᴸ = refl }
+  +-fnOpCommutative-stepᴸ : AA.FnOpCommutative AA.handᴸ step _+_
+  +-fnOpCommutative-stepᴸ = AA.fnOpCommutative refl
 
 addition : Addition base
 addition = record {}
