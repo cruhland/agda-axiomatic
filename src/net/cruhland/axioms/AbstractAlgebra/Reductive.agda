@@ -5,7 +5,7 @@ open import net.cruhland.models.Function using (flip)
 
 open import net.cruhland.axioms.AbstractAlgebra.Base using
   (forHand; Hand; handᴸ; handᴿ)
-open import net.cruhland.axioms.AbstractAlgebra.Commutative using
+open import net.cruhland.axioms.AbstractAlgebra.Swappable using
   (comm; Commutative)
 
 record Identity

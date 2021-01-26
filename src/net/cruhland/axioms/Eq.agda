@@ -9,30 +9,34 @@ private
     A : Set α
 
 record Reflexive {A : Set α} (_~_ : A → A → Set α) : Set α where
+  constructor reflexive
   field
     refl : ∀ {a} → a ~ a
 
 open Reflexive {{...}} public using (refl)
 
 record Symmetric {A : Set α} (_~_ : A → A → Set α) : Set α where
+  constructor symmetric
   field
     sym : ∀ {a b} → a ~ b → b ~ a
 
 open Symmetric {{...}} public using (sym)
 
 record Transitive {A : Set α} (_~_ : A → A → Set α) : Set α where
+  constructor transitive
   field
     trans : ∀ {a b c} → a ~ b → b ~ c → a ~ c
 
 open Transitive {{...}} public using (trans)
 
 record Eq (A : Set α) : Set (sℓ α) where
+  constructor equivalence
   infix 4 _≃_
   field
     _≃_ : A → A → Set α
-    {{reflexive}} : Reflexive _≃_
-    {{symmetric}} : Symmetric _≃_
-    {{transitive}} : Transitive _≃_
+    {{≃-reflexive}} : Reflexive _≃_
+    {{≃-symmetric}} : Symmetric _≃_
+    {{≃-transitive}} : Transitive _≃_
 
   infix 4 _≄_
   _≄_ : A → A → Set α

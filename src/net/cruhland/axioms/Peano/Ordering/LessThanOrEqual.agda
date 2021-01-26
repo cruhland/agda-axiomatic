@@ -40,10 +40,10 @@ n≤sn = record { d = 1 ; n+d≃m = Eq.sym ℕ+.sn≃n+1 }
 
 instance
   ≤-reflexive : Eq.Reflexive _≤_
-  ≤-reflexive = record { refl = record { d = 0 ; n+d≃m = AA.ident } }
+  ≤-reflexive = Eq.reflexive record { d = 0 ; n+d≃m = AA.ident }
 
   ≤-transitive : Eq.Transitive _≤_
-  ≤-transitive = record { trans = ≤-trans }
+  ≤-transitive = Eq.transitive ≤-trans
     where
       ≤-trans : ∀ {n m p} → n ≤ m → m ≤ p → n ≤ p
       ≤-trans (≤-intro a n+a≃m) (≤-intro b m+b≃p) =

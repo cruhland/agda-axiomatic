@@ -28,13 +28,13 @@ record _≃ᶻ_ (a b : ℤ) : Set where
 
 instance
   ≃ᶻ-reflexive : Eq.Reflexive _≃ᶻ_
-  ≃ᶻ-reflexive = record { refl = ≃ᶻ-intro refl }
+  ≃ᶻ-reflexive = Eq.reflexive (≃ᶻ-intro refl)
 
   ≃ᶻ-symmetric : Eq.Symmetric _≃ᶻ_
-  ≃ᶻ-symmetric = record { sym = ≃ᶻ-intro ∘ sym ∘ _≃ᶻ_.elim }
+  ≃ᶻ-symmetric = Eq.symmetric (≃ᶻ-intro ∘ sym ∘ _≃ᶻ_.elim)
 
   ≃ᶻ-transitive : Eq.Transitive _≃ᶻ_
-  ≃ᶻ-transitive = record { trans = ≃ᶻ-trans }
+  ≃ᶻ-transitive = Eq.transitive ≃ᶻ-trans
     where
       ≃ᶻ-trans : ∀ {a b c} → a ≃ᶻ b → b ≃ᶻ c → a ≃ᶻ c
       ≃ᶻ-trans
@@ -56,7 +56,7 @@ instance
             ∎
 
   eq : Eq ℤ
-  eq = record { _≃_ = _≃ᶻ_ }
+  eq = Eq.equivalence _≃ᶻ_
 
   from-ℕ-substitutive₁ : AA.Substitutive₁ {A = ℕ} (_as ℤ) _≃_ _≃_
   from-ℕ-substitutive₁ = AA.substitutive₁ (≃ᶻ-intro ∘ AA.subst)

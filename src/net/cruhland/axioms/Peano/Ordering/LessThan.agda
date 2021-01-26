@@ -134,14 +134,14 @@ instance
         record { n≤m = a≤b ; n≄m = λ a≃b → contra (AA.eq→idᴿ a+d≃b a≃b) d≄0 }
 
   <⁺-transitive : Eq.Transitive _<⁺_
-  <⁺-transitive = record { trans = <⁺-trans }
+  <⁺-transitive = Eq.transitive <⁺-trans
     where
       <⁺-trans : ∀ {n m p} → n <⁺ m → m <⁺ p → n <⁺ p
       <⁺-trans (<⁺-intro n≤m d₁≄0) (<⁺-intro m≤p d₂≄0) =
         <⁺-intro (Eq.trans n≤m m≤p) (ℕ+.+-positive d₁≄0)
 
   <-transitive : Eq.Transitive _<_
-  <-transitive = record { trans = Cast.delegate₂ (Eq.trans {_~_ = _<⁺_}) }
+  <-transitive = Eq.transitive (Cast.delegate₂ (Eq.trans {_~_ = _<⁺_}))
 
   <-substitutiveᴸ : ∀ {n} → AA.Substitutive₁ (_< n) _≃_ _⟨→⟩_
   <-substitutiveᴸ {n} = AA.substitutive₁ <-substᴸ

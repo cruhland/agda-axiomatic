@@ -6,10 +6,10 @@ open import net.cruhland.models.Function using (_∘_)
 open import net.cruhland.models.Logic using (⊤)
 
 open import net.cruhland.axioms.AbstractAlgebra.Base using (handᴸ; handᴿ)
-open import net.cruhland.axioms.AbstractAlgebra.Commutative using
-  (comm; Commutative; with-comm)
 open import net.cruhland.axioms.AbstractAlgebra.Compatible using
   (fnOpComm; FnOpCommutative; fnOpCommutative)
+open import net.cruhland.axioms.AbstractAlgebra.Swappable using
+  (comm; Commutative; with-comm)
 
 record Substitutiveⁱ
     {β} {A : Set} {B : A → Set β} {C : A → Set} (f : (a : A) {{c : C a}} → B a)

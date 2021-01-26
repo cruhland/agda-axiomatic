@@ -15,28 +15,28 @@ open import net.cruhland.axioms.Peano.Exponentiation using (Exponentiation)
 open import net.cruhland.axioms.Peano.Multiplication using (Multiplication)
 open import net.cruhland.models.Function using (_∘_)
 
-ind : (P : ℕ → Set) → P zero → (∀ {k} → P k → P (step k)) → ∀ n → P n
-ind P Pz Ps zero = Pz
-ind P Pz Ps (step n) = ind (P ∘ step) (Ps Pz) Ps n
-
 instance
-  ≡-reflexive : Eq.Reflexive {A = ℕ} _≡_
-  ≡-reflexive = record { refl = refl }
+  ≡-reflexive : Eq.Reflexive _≡_
+  ≡-reflexive = Eq.reflexive {A = ℕ} refl
 
-  ≡-symmetric : Eq.Symmetric {A = ℕ} _≡_
-  ≡-symmetric = record { sym = sym }
+  ≡-symmetric : Eq.Symmetric _≡_
+  ≡-symmetric = Eq.symmetric {A = ℕ} sym
 
-  ≡-transitive : Eq.Transitive {A = ℕ} _≡_
-  ≡-transitive = record { trans = trans }
+  ≡-transitive : Eq.Transitive _≡_
+  ≡-transitive = Eq.transitive {A = ℕ} trans
 
   eq : Eq.Eq ℕ
-  eq = record { _≃_ = _≡_ }
+  eq = Eq.equivalence _≡_
 
   step-substitutive : AA.Substitutive₁ step _≡_ _≡_
   step-substitutive = AA.substitutive₁ (cong step)
 
   step-injective : AA.Injective step _≡_ _≡_
   step-injective = AA.injective step-inj
+
+ind : (P : ℕ → Set) → P zero → (∀ {k} → P k → P (step k)) → ∀ n → P n
+ind P Pz Ps zero = Pz
+ind P Pz Ps (step n) = ind (P ∘ step) (Ps Pz) Ps n
 
 base : Peano
 base = record

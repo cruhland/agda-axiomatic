@@ -33,13 +33,13 @@ private
 
 instance
   ≃₀-reflexive : Eq.Reflexive _≃₀_
-  ≃₀-reflexive = record { refl = ≃₀-intro Eq.refl }
+  ≃₀-reflexive = Eq.reflexive (≃₀-intro Eq.refl)
 
   ≃₀-symmetric : Eq.Symmetric _≃₀_
-  ≃₀-symmetric = record { sym = ≃₀-intro ∘ Eq.sym ∘ _≃₀_.elim }
+  ≃₀-symmetric = Eq.symmetric (≃₀-intro ∘ Eq.sym ∘ _≃₀_.elim)
 
   ≃₀-transitive : Eq.Transitive _≃₀_
-  ≃₀-transitive = record { trans = ≃₀-trans }
+  ≃₀-transitive = Eq.transitive ≃₀-trans
     where
       ≃₀-trans : ∀ {p q r} → p ≃₀ q → q ≃₀ r → p ≃₀ r
       ≃₀-trans
@@ -75,7 +75,7 @@ instance
         in ≃₀-intro p↑r↓≃r↑p↓
 
   eq : Eq ℚ
-  eq = record { _≃_ = _≃₀_ }
+  eq = Eq.equivalence _≃₀_
 
   decEq : DecEq ℚ
   decEq = record { Constraint = λ _ _ → ⊤ ; _≃?_ = _≃?₀_ }

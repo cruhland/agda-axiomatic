@@ -6,12 +6,12 @@ open import net.cruhland.models.Function using (_∘_; ConstrainableFn)
 open import net.cruhland.models.Logic using (_∨_; ∨-rec; ¬_)
 
 open import net.cruhland.axioms.AbstractAlgebra.Base public
-open import net.cruhland.axioms.AbstractAlgebra.Commutative public
 open import net.cruhland.axioms.AbstractAlgebra.Compatible public
 open import net.cruhland.axioms.AbstractAlgebra.Injective public
 open import net.cruhland.axioms.AbstractAlgebra.Inverse public
 open import net.cruhland.axioms.AbstractAlgebra.Reductive public
 open import net.cruhland.axioms.AbstractAlgebra.Substitutive public
+open import net.cruhland.axioms.AbstractAlgebra.Swappable public
 
 record Associative {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set where
   field

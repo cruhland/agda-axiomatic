@@ -46,16 +46,16 @@ module net.cruhland.axioms.Sets.Equality (SA : SetAxioms) where
 
     instance
       ≃₀-reflexive : Eq.Reflexive _≃₀_
-      ≃₀-reflexive = record { refl = ≃₀-refl }
+      ≃₀-reflexive = Eq.reflexive ≃₀-refl
 
       ≃₀-symmetric : Eq.Symmetric _≃₀_
-      ≃₀-symmetric = record { sym = ≃₀-sym }
+      ≃₀-symmetric = Eq.symmetric ≃₀-sym
 
       ≃₀-transitive : Eq.Transitive _≃₀_
-      ≃₀-transitive = record { trans = ≃₀-trans }
+      ≃₀-transitive = Eq.transitive ≃₀-trans
 
       eq : Eq (PSet S)
-      eq = record { _≃_ = _≃₀_ }
+      eq = Eq.equivalence _≃₀_
 
     ≃₀-IsEquivalence : IsEquivalence (_≃₀_)
     ≃₀-IsEquivalence = record { refl = ≃₀-refl ; sym = ≃₀-sym ; trans = ≃₀-trans }
