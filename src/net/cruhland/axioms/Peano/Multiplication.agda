@@ -89,7 +89,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
 
   instance
     *-commutative : AA.Commutative _*_
-    *-commutative = record { comm = *-comm }
+    *-commutative = AA.commutative *-comm
       where
         *-comm : ∀ {n m} → n * m ≃ m * n
         *-comm {n} {m} = ind P P0 Ps n

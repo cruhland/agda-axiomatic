@@ -77,7 +77,7 @@ record Addition (PB : PeanoBase) : Set where
               ∎
 
     +-commutative : AA.Commutative _+_
-    +-commutative = record { comm = +-comm }
+    +-commutative = AA.commutative +-comm
       where
         +-comm : ∀ {n m} → n + m ≃ m + n
         +-comm {n} {m} = ind P Pz Ps n

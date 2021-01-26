@@ -28,7 +28,7 @@ neg-mult {q↑ // q↓ ~ _} = ≃₀-intro (AA.[a≃b][c≃d] ℤ.neg-mult AA.id
 
 instance
   *-commutative : AA.Commutative _*_
-  *-commutative = record { comm = *-comm }
+  *-commutative = AA.commutative *-comm
     where
       *-comm : {a b : ℚ} → a * b ≃ b * a
       *-comm {a↑ // a↓ ~ _} {b↑ // b↓ ~ _} =

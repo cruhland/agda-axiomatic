@@ -28,7 +28,7 @@ instance
       a⁺ — a⁻ *₀ b⁺ — b⁻ = (a⁺ * b⁺ + a⁻ * b⁻) — (a⁺ * b⁻ + a⁻ * b⁺)
 
   *-commutative : AA.Commutative _*_
-  *-commutative = record { comm = *-comm }
+  *-commutative = AA.commutative *-comm
     where
       *-comm : {a b : ℤ} → a * b ≃ b * a
       *-comm {a⁺ — a⁻} {b⁺ — b⁻} = ≃ᶻ-intro eq′

@@ -24,7 +24,7 @@ instance
         (p↑ * q↓ + p↓ * q↑) // p↓ * q↓ ~ AA.nonzero-prod p↓≄0 q↓≄0
 
   +-commutative : AA.Commutative _+_
-  +-commutative = record { comm = +-comm }
+  +-commutative = AA.commutative +-comm
     where
       +-comm : {a b : ℚ} → a + b ≃ b + a
       +-comm {a↑ // a↓ ~ _} {b↑ // b↓ ~ _} =
