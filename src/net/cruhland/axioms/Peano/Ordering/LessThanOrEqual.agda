@@ -67,7 +67,7 @@ instance
               n
             ≃˘⟨ AA.ident ⟩
               n + 0
-            ≃˘⟨ AA.subst a≃0 ⟩
+            ≃˘⟨ AA.subst₂ a≃0 ⟩
               n + a
             ≃⟨ n+a≃m ⟩
               m
@@ -82,7 +82,7 @@ instance
           m₂+d≃n =
             begin
               m₂ + d
-            ≃˘⟨ AA.subst m₁≃m₂ ⟩
+            ≃˘⟨ AA.subst₂ m₁≃m₂ ⟩
               m₁ + d
             ≃⟨ m₁+d≃n ⟩
               n
@@ -105,7 +105,7 @@ instance
               step n + d
             ≃˘⟨ AA.fnOpComm ⟩
               step (n + d)
-            ≃⟨ AA.subst n+d≃m ⟩
+            ≃⟨ AA.subst₁ n+d≃m ⟩
               step m
             ∎
 
@@ -135,7 +135,7 @@ instance
               a + c + d
             ≃⟨ AA.substᴿ-with-assoc AA.comm ⟩
               a + d + c
-            ≃⟨ AA.subst a+d≃b ⟩
+            ≃⟨ AA.subst₂ a+d≃b ⟩
               b + c
             ∎
 
@@ -191,6 +191,6 @@ n ≤? m = ind P P0 Ps n m
                 ∎
            in contra s[k+d]≃0 ℕ.step≄zero
     ... | ℕI.case-step (ℕI.pred-intro j y≃sj) =
-      let k≤j→sk≤y = AA.subst (Eq.sym y≃sj) ∘ AA.subst {f = step}
-          sk≤y→k≤j = AA.inject ∘ AA.subst y≃sj
+      let k≤j→sk≤y = AA.subst₁ (Eq.sym y≃sj) ∘ AA.subst₁ {f = step}
+          sk≤y→k≤j = AA.inject ∘ AA.subst₁ y≃sj
        in dec-map k≤j→sk≤y sk≤y→k≤j (k≤?y j)

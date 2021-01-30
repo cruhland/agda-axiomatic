@@ -56,6 +56,6 @@ module net.cruhland.axioms.Peano.Inspect (PB : PeanoBase) where
               where sk≄y = λ sk≃y → step≄zero (trans sk≃y y≃z)
             ... | case-step (pred-intro j y≃sj) with y→dec[k≃y] j
             ...   | yes k≃j = yes sk≃sj
-                    where sk≃sj = trans (AA.subst k≃j) (sym y≃sj)
+                    where sk≃sj = trans (AA.subst₁ k≃j) (sym y≃sj)
             ...   | no k≄j = no sk≄sj
                     where sk≄sj = λ sk≃y → k≄j (AA.inject (trans sk≃y y≃sj))

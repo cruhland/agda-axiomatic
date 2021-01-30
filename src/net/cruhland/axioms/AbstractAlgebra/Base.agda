@@ -10,7 +10,7 @@ handRec : {A : Set} → A → A → Hand → A
 handRec forᴸ forᴿ handᴸ = forᴸ
 handRec forᴸ forᴿ handᴿ = forᴿ
 
-forHand : {A : Set} → Hand → (A → A → A) → (A → A → A)
+forHand : {A B : Set} → Hand → (A → A → B) → (A → A → B)
 forHand = handRec id flip
 
 other : Hand → Hand

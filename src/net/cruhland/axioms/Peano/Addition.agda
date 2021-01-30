@@ -23,7 +23,7 @@ record Addition (PB : PeanoBase) : Set where
 
   field
     {{plus}} : Op.Plus ℕ
-    {{+-substitutiveᴸ}} : AA.Substitutiveᴸ _+_
+    {{+-substitutiveᴸ}} : AA.Substitutive₂ AA.handᴸ _+_
     {{+-identityᴸ}} : AA.Identity AA.handᴸ _+_ 0
     {{+-fnOpCommutative-stepᴸ}} : AA.FnOpCommutative AA.handᴸ step _+_
 
@@ -43,7 +43,7 @@ record Addition (PB : PeanoBase) : Set where
                 step k + 0
               ≃˘⟨ AA.fnOpComm ⟩
                 step (k + 0)
-              ≃⟨ AA.subst k+z≃k ⟩
+              ≃⟨ AA.subst₁ k+z≃k ⟩
                 step k
               ∎
 
@@ -58,7 +58,7 @@ record Addition (PB : PeanoBase) : Set where
             Pz =
               begin
                 step (0 + m)
-              ≃⟨ AA.subst AA.ident ⟩
+              ≃⟨ AA.subst₁ AA.ident ⟩
                 step m
               ≃˘⟨ AA.ident ⟩
                 0 + step m
@@ -68,9 +68,9 @@ record Addition (PB : PeanoBase) : Set where
             Ps {k} s[k+m]≃k+sm =
               begin
                 step (step k + m)
-              ≃˘⟨ AA.subst AA.fnOpComm ⟩
+              ≃˘⟨ AA.subst₁ AA.fnOpComm ⟩
                 step (step (k + m))
-              ≃⟨ AA.subst s[k+m]≃k+sm ⟩
+              ≃⟨ AA.subst₁ s[k+m]≃k+sm ⟩
                 step (k + step m)
               ≃⟨ AA.fnOpComm ⟩
                 step k + step m
@@ -98,17 +98,17 @@ record Addition (PB : PeanoBase) : Set where
                 step k + m
               ≃˘⟨ AA.fnOpComm ⟩
                 step (k + m)
-              ≃⟨ AA.subst k+m≃m+k ⟩
+              ≃⟨ AA.subst₁ k+m≃m+k ⟩
                 step (m + k)
               ≃⟨ AA.fnOpComm ⟩
                 m + step k
               ∎
 
-    +-substitutiveᴿ : AA.Substitutiveᴿ _+_
-    +-substitutiveᴿ = AA.substitutiveᴿ
+    +-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _+_
+    +-substitutiveᴿ = AA.substitutiveᴿ-from-substitutiveᴸ
 
-    +-substitutive₂ : AA.Substitutive₂ _+_
-    +-substitutive₂ = AA.substitutive₂
+    +-substitutive₂² : AA.Substitutive₂² _+_
+    +-substitutive₂² = AA.substitutive₂²
 
     +-associative : AA.Associative _+_
     +-associative = record { assoc = +-assoc }
@@ -121,7 +121,7 @@ record Addition (PB : PeanoBase) : Set where
             Pz =
               begin
                 (0 + m) + p
-              ≃⟨ AA.subst AA.ident ⟩
+              ≃⟨ AA.subst₂ AA.ident ⟩
                 m + p
               ≃˘⟨ AA.ident ⟩
                 0 + (m + p)
@@ -131,11 +131,11 @@ record Addition (PB : PeanoBase) : Set where
             Ps {k} [k+m]+p≃k+[m+p] =
               begin
                 (step k + m) + p
-              ≃˘⟨ AA.subst AA.fnOpComm ⟩
+              ≃˘⟨ AA.subst₂ AA.fnOpComm ⟩
                 step (k + m) + p
               ≃˘⟨ AA.fnOpComm ⟩
                 step ((k + m) + p)
-              ≃⟨ AA.subst [k+m]+p≃k+[m+p] ⟩
+              ≃⟨ AA.subst₁ [k+m]+p≃k+[m+p] ⟩
                 step (k + (m + p))
               ≃⟨ AA.fnOpComm ⟩
                 step k + (m + p)
@@ -182,7 +182,7 @@ record Addition (PB : PeanoBase) : Set where
   sn≃n+1 {n} =
     begin
       step n
-    ≃˘⟨ AA.subst AA.ident ⟩
+    ≃˘⟨ AA.subst₁ AA.ident ⟩
       step (n + 0)
     ≃⟨ AA.fnOpComm ⟩
       n + step 0

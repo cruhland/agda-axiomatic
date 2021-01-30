@@ -1,5 +1,6 @@
 module net.cruhland.models.Function where
 
+open import Level using (_⊔_; 0ℓ) renaming (suc to sℓ)
 open import Data.Unit using (⊤)
 
 -- Export standard library definitions
@@ -21,7 +22,8 @@ toExp f a = f {a}
 toImp : {A : Set} {B : A → Set} → ((a : A) → B a) → {a : A} → B a
 toImp f {a} = f a
 
-record ConstrainableFn (F : Set) {A : Set} (B : A → Set) : Set₁ where
+record ConstrainableFn
+    {β} (F : Set) {A : Set} (B : A → Set β) : Set (β ⊔ sℓ 0ℓ) where
   constructor constrainableFn
   field
     {C} : A → Set

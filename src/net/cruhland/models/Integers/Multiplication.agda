@@ -36,23 +36,23 @@ instance
           eq′ =
             begin
               (a⁺ * b⁺ + a⁻ * b⁻) + (b⁺ * a⁻ + b⁻ * a⁺)
-            ≃⟨ AA.subst (AA.subst AA.comm) ⟩
+            ≃⟨ AA.subst₂ (AA.subst₂ AA.comm) ⟩
               (b⁺ * a⁺ + a⁻ * b⁻) + (b⁺ * a⁻ + b⁻ * a⁺)
-            ≃⟨ AA.subst (AA.subst AA.comm) ⟩
+            ≃⟨ AA.subst₂ (AA.subst₂ AA.comm) ⟩
               (b⁺ * a⁺ + b⁻ * a⁻) + (b⁺ * a⁻ + b⁻ * a⁺)
-            ≃⟨ AA.subst AA.comm ⟩
+            ≃⟨ AA.subst₂ AA.comm ⟩
               (b⁺ * a⁺ + b⁻ * a⁻) + (b⁻ * a⁺ + b⁺ * a⁻)
-            ≃⟨ AA.subst (AA.subst AA.comm) ⟩
+            ≃⟨ AA.subst₂ (AA.subst₂ AA.comm) ⟩
               (b⁺ * a⁺ + b⁻ * a⁻) + (a⁺ * b⁻ + b⁺ * a⁻)
-            ≃⟨ AA.subst (AA.subst AA.comm) ⟩
+            ≃⟨ AA.subst₂ (AA.subst₂ AA.comm) ⟩
               (b⁺ * a⁺ + b⁻ * a⁻) + (a⁺ * b⁻ + a⁻ * b⁺)
             ∎
 
-  *-substitutiveᴸ : AA.Substitutiveᴸ _*_
-  *-substitutiveᴸ {b@(b⁺ — b⁻)} = AA.substitutive₁ *-substᴸ
+  *-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _*_
+  *-substitutiveᴸ = AA.substitutive₂ *-substᴸ
     where
-      *-substᴸ : {a₁ a₂ : ℤ} → a₁ ≃ a₂ → a₁ * b ≃ a₂ * b
-      *-substᴸ {a₁⁺ — a₁⁻} {a₂⁺ — a₂⁻} (≃ᶻ-intro a₁⁺a₂⁻≃a₂⁺a₁⁻) =
+      *-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ * b ≃ a₂ * b
+      *-substᴸ {a₁⁺ — a₁⁻} {a₂⁺ — a₂⁻} {b⁺ — b⁻} (≃ᶻ-intro a₁⁺a₂⁻≃a₂⁺a₁⁻) =
           ≃ᶻ-intro [a₁⁺b⁺+a₁⁻b⁻]+[a₂⁺b⁻+a₂⁻b⁺]≃[a₂⁺b⁺+a₂⁻b⁻]+[a₁⁺b⁻+a₁⁻b⁺]
         where
           rearr :
@@ -73,19 +73,19 @@ instance
               (a₁⁺ * b⁺ + a₁⁻ * b⁻) + (a₂⁺ * b⁻ + a₂⁻ * b⁺)
             ≃⟨ rearr {w = a₁⁺} {y = a₂⁺} ⟩
               (a₁⁺ + a₂⁻) * b⁺ + (a₂⁺ + a₁⁻) * b⁻
-            ≃⟨ AA.subst (AA.subst a₁⁺a₂⁻≃a₂⁺a₁⁻) ⟩
+            ≃⟨ AA.subst₂ (AA.subst₂ a₁⁺a₂⁻≃a₂⁺a₁⁻) ⟩
               (a₂⁺ + a₁⁻) * b⁺ + (a₂⁺ + a₁⁻) * b⁻
-            ≃˘⟨ AA.subst (AA.subst a₁⁺a₂⁻≃a₂⁺a₁⁻) ⟩
+            ≃˘⟨ AA.subst₂ (AA.subst₂ a₁⁺a₂⁻≃a₂⁺a₁⁻) ⟩
               (a₂⁺ + a₁⁻) * b⁺ + (a₁⁺ + a₂⁻) * b⁻
             ≃˘⟨ rearr {w = a₂⁺} {y = a₁⁺} ⟩
               (a₂⁺ * b⁺ + a₂⁻ * b⁻) + (a₁⁺ * b⁻ + a₁⁻ * b⁺)
             ∎
 
-  *-substitutiveᴿ : AA.Substitutiveᴿ _*_
-  *-substitutiveᴿ = AA.substitutiveᴿ {A = ℤ}
+  *-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _*_
+  *-substitutiveᴿ = AA.substitutiveᴿ-from-substitutiveᴸ {A = ℤ}
 
-  *-substitutive₂ : AA.Substitutive₂ _*_
-  *-substitutive₂ = AA.substitutive₂ {A = ℤ}
+  *-substitutive₂² : AA.Substitutive₂² _*_
+  *-substitutive₂² = AA.substitutive₂² {A = ℤ}
 
   *-compatible-ℕ : AA.Compatible₂ (_as ℤ) _*_
   *-compatible-ℕ = AA.compatible₂ {A = ℕ} _*_ *-compat-ℕ
@@ -96,11 +96,11 @@ instance
           nm+n0+0m≃nm+00+0 =
             begin
               n * m + (n * 0 + 0 * m)
-            ≃⟨ AA.subst (AA.subst AA.absorb) ⟩
+            ≃⟨ AA.subst₂ (AA.subst₂ AA.absorb) ⟩
               n * m + (0 + 0 * m)
-            ≃˘⟨ AA.subst (AA.subst AA.absorbᴿ) ⟩
+            ≃˘⟨ AA.subst₂ (AA.subst₂ AA.absorbᴿ) ⟩
               n * m + (0 * 0 + 0 * m)
-            ≃⟨ AA.subst (AA.subst AA.absorb) ⟩
+            ≃⟨ AA.subst₂ (AA.subst₂ AA.absorb) ⟩
               n * m + (0 * 0 + 0)
             ≃˘⟨ AA.assoc ⟩
               n * m + 0 * 0 + 0
@@ -115,17 +115,17 @@ instance
           [1x⁺+0x⁻]+x⁻≃x⁺+[1x⁻+0x⁺] =
             begin
               (1 * x⁺ + 0 * x⁻) + x⁻
-            ≃⟨ AA.subst (AA.subst AA.ident) ⟩
+            ≃⟨ AA.subst₂ (AA.subst₂ AA.ident) ⟩
               (x⁺ + 0 * x⁻) + x⁻
-            ≃⟨ AA.subst (AA.subst AA.absorb) ⟩
+            ≃⟨ AA.subst₂ (AA.subst₂ AA.absorb) ⟩
               (x⁺ + 0) + x⁻
-            ≃⟨ AA.subst AA.ident ⟩
+            ≃⟨ AA.subst₂ AA.ident ⟩
               x⁺ + x⁻
-            ≃˘⟨ AA.subst AA.ident ⟩
+            ≃˘⟨ AA.subst₂ AA.ident ⟩
               x⁺ + (x⁻ + 0)
-            ≃˘⟨ AA.subst (AA.subst AA.absorb) ⟩
+            ≃˘⟨ AA.subst₂ (AA.subst₂ AA.absorb) ⟩
               x⁺ + (x⁻ + 0 * x⁺)
-            ≃˘⟨ AA.subst (AA.subst AA.ident) ⟩
+            ≃˘⟨ AA.subst₂ (AA.subst₂ AA.ident) ⟩
               x⁺ + (1 * x⁻ + 0 * x⁺)
             ∎
 
@@ -174,9 +174,9 @@ instance
           eqPrf =
             begin
               (a⁺ * b⁻ + a⁻ * b⁺) + (a⁻ * b⁻ + a⁺ * b⁺)
-            ≃⟨ AA.subst AA.comm ⟩
+            ≃⟨ AA.subst₂ AA.comm ⟩
               (a⁺ * b⁻ + a⁻ * b⁺) + (a⁺ * b⁺ + a⁻ * b⁻)
-            ≃⟨ AA.subst AA.comm ⟩
+            ≃⟨ AA.subst₂ AA.comm ⟩
               (a⁻ * b⁺ + a⁺ * b⁻) + (a⁺ * b⁺ + a⁻ * b⁻)
             ∎
 
@@ -192,9 +192,9 @@ neg-mult {a⁺ — a⁻} = AA.[a≃b][c≃d] x≃0y+1x x≃0y+1x
         x
       ≃˘⟨ AA.ident ⟩
         0 + x
-      ≃˘⟨ AA.subst AA.absorb ⟩
+      ≃˘⟨ AA.subst₂ AA.absorb ⟩
         0 * y + x
-      ≃˘⟨ AA.subst AA.ident ⟩
+      ≃˘⟨ AA.subst₂ AA.ident ⟩
         0 * y + 1 * x
       ∎
 
@@ -206,7 +206,7 @@ neg-mult {a⁺ — a⁻} = AA.[a≃b][c≃d] x≃0y+1x x≃0y+1x
     c * (a + - b)
   ≃⟨ AA.distrib ⟩
     c * a + c * - b
-  ≃˘⟨ AA.subst {f = c * a +_} AA.fnOpComm ⟩
+  ≃˘⟨ AA.substᴿ {_⊙_ = _+_} AA.fnOpComm ⟩
     c * a + - (c * b)
   ≃⟨⟩
     c * a - c * b
@@ -220,7 +220,7 @@ neg-mult {a⁺ — a⁻} = AA.[a≃b][c≃d] x≃0y+1x x≃0y+1x
     (a + - b) * c
   ≃⟨ AA.distrib ⟩
     a * c + (- b) * c
-  ≃˘⟨ AA.subst {f = a * c +_} AA.fnOpComm ⟩
+  ≃˘⟨ AA.subst₂ AA.fnOpComm ⟩
     a * c + - (b * c)
   ≃⟨⟩
     a * c - b * c
@@ -234,7 +234,7 @@ instance
       *-zeroᴸ {x} =
         begin
           0 * x
-        ≃˘⟨ AA.subst AA.invᴿ ⟩
+        ≃˘⟨ AA.subst₂ AA.invᴿ ⟩
           (1 - 1) * x
         ≃⟨ *-distrib-subᴿ ⟩
           1 * x - 1 * x
@@ -253,11 +253,11 @@ neg-sub-swap {a} {b} =
     -1 * (a - b)
   ≃⟨ *-distrib-subᴸ {a} {b} { -1} ⟩
     -1 * a - -1 * b
-  ≃˘⟨ AA.subst neg-mult ⟩
+  ≃˘⟨ AA.subst₂ neg-mult ⟩
     - a - -1 * b
-  ≃˘⟨ AA.subst (AA.subst {f = -_} neg-mult) ⟩
+  ≃˘⟨ AA.subst₂ (AA.subst₁ neg-mult) ⟩
     - a - (- b)
-  ≃⟨ AA.subst {f = - a +_} neg-involutive ⟩
+  ≃⟨ AA.substᴿ neg-involutive ⟩
     - a + b
   ≃˘⟨ AA.comm ⟩
     b - a
@@ -272,7 +272,7 @@ sub-sign-swap {a} {b} record { n = n ; pos = n≄0 ; x≃-n = a-b≃-n } =
         b - a
       ≃˘⟨ neg-sub-swap {a} ⟩
         - (a - b)
-      ≃⟨ AA.subst a-b≃-n ⟩
+      ≃⟨ AA.subst₁ a-b≃-n ⟩
         - - (n as ℤ)
       ≃⟨ neg-involutive {n as ℤ} ⟩
         (n as ℤ)
@@ -289,7 +289,7 @@ instance
                 n * b⁺
               ≃˘⟨ AA.ident ⟩
                 n * b⁺ + 0
-              ≃˘⟨ AA.subst AA.absorb ⟩
+              ≃˘⟨ AA.subst₂ AA.absorb ⟩
                 n * b⁺ + 0 * b⁻
               ≃˘⟨ AA.ident ⟩
                 n * b⁺ + 0 * b⁻ + 0
@@ -297,7 +297,7 @@ instance
                 0 + (n * b⁻ + 0 * b⁺)
               ≃⟨ AA.ident ⟩
                 n * b⁻ + 0 * b⁺
-              ≃⟨ AA.subst AA.absorb ⟩
+              ≃⟨ AA.subst₂ AA.absorb ⟩
                 n * b⁻ + 0
               ≃⟨ AA.ident ⟩
                 n * b⁻
@@ -319,7 +319,7 @@ instance
                 (n as ℤ) * b
               ≃⟨⟩
                 n — 0 * b
-              ≃˘⟨ AA.subst a≃n—0 ⟩
+              ≃˘⟨ AA.subst₂ a≃n—0 ⟩
                 a * b
               ≃⟨ ab≃0 ⟩
                 0
@@ -334,11 +334,11 @@ instance
                 n — 0 * b
               ≃⟨⟩
                 - 0 — n * b
-              ≃˘⟨ AA.subst (AA.subst {f = -_} a≃0—n) ⟩
+              ≃˘⟨ AA.subst₂ (AA.subst₁ a≃0—n) ⟩
                 - a * b
               ≃˘⟨ AA.fnOpComm ⟩
                 - (a * b)
-              ≃⟨ AA.subst ab≃0 ⟩
+              ≃⟨ AA.subst₁ ab≃0 ⟩
                 - 0
               ≃⟨⟩
                 0

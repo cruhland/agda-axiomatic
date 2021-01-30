@@ -49,15 +49,15 @@ _>_ = flip _<_
           (n₁ as ℤ) + (n₂ as ℤ)
         ≃˘⟨ AA.ident ⟩
           0 + ((n₁ as ℤ) + (n₂ as ℤ))
-        ≃˘⟨ AA.subst AA.invᴸ ⟩
+        ≃˘⟨ AA.subst₂ AA.invᴸ ⟩
           (- a) + a + ((n₁ as ℤ) + (n₂ as ℤ))
         ≃⟨ AA.assoc ⟩
           (- a) + (a + ((n₁ as ℤ) + (n₂ as ℤ)))
-        ≃˘⟨ AA.subst {f = - a +_} AA.assoc ⟩
+        ≃˘⟨ AA.subst₂ AA.assoc ⟩
           (- a) + (a + (n₁ as ℤ) + (n₂ as ℤ))
-        ≃˘⟨ AA.subst {f = - a +_} (AA.subst b≃a+n₁) ⟩
+        ≃˘⟨ AA.subst₂ (AA.subst₂ b≃a+n₁) ⟩
           (- a) + (b + (n₂ as ℤ))
-        ≃˘⟨ AA.subst a≃b+n₂ ⟩
+        ≃˘⟨ AA.subst₂ a≃b+n₂ ⟩
           (- a) + a
         ≃⟨ AA.invᴸ ⟩
           0
@@ -67,7 +67,7 @@ _>_ = flip _<_
         a
       ≃⟨ a≃b+n₂ ⟩
         b + (n₂ as ℤ)
-      ≃⟨ AA.subst {f = b +_} (AA.subst {_~_ = _≃_} {_≈_ = _≃_} n₂≃0) ⟩
+      ≃⟨ AA.substᴿ (AA.subst₁ n₂≃0) ⟩
         b + (0 as ℤ)
       ≃⟨ AA.ident ⟩
         b
@@ -140,11 +140,11 @@ instance
           b
         ≃˘⟨ AA.ident ⟩
           b + 0
-        ≃˘⟨ AA.subst AA.invᴸ ⟩
+        ≃˘⟨ AA.subst₂ AA.invᴸ ⟩
           b + (- c + c)
         ≃˘⟨ AA.assoc ⟩
           b - c + c
-        ≃⟨ AA.subst b-c≃0 ⟩
+        ≃⟨ AA.subst₂ b-c≃0 ⟩
           0 + c
         ≃⟨ AA.ident ⟩
           c

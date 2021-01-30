@@ -1,81 +1,79 @@
 module net.cruhland.axioms.AbstractAlgebra.Substitutive where
 
+open import Level using (_⊔_; 0ℓ) renaming (suc to sℓ)
 open import net.cruhland.axioms.Eq as Eq using (_≃_; Eq)
 open Eq.≃-Reasoning
-open import net.cruhland.models.Function using (_∘_)
+open import net.cruhland.models.Function using (_∘_; ConstrainableFn; toExpFn)
 open import net.cruhland.models.Logic using (⊤)
 
-open import net.cruhland.axioms.AbstractAlgebra.Base using (handᴸ; handᴿ)
+open import net.cruhland.axioms.AbstractAlgebra.Base using
+  (forHand; Hand; handᴸ; handᴿ)
 open import net.cruhland.axioms.AbstractAlgebra.Compatible using
   (fnOpComm; FnOpCommutative; fnOpCommutative)
 open import net.cruhland.axioms.AbstractAlgebra.Swappable using
   (comm; Commutative; with-comm)
 
-record Substitutiveⁱ
-    {β} {A : Set} {B : A → Set β} {C : A → Set} (f : (a : A) {{c : C a}} → B a)
-      (_~_ : A → A → Set) (_≈_ : ∀ {a₁ a₂} → B a₁ → B a₂ → Set)
-        : Set β where
+record Substitutive₁
+    {β} {A : Set} {B : A → Set β} (f : (a : A) → B a)
+      (_~_ : A → A → Set) (_≈_ : ∀ {a₁ a₂} → B a₁ → B a₂ → Set) : Set β where
+  constructor substitutive₁
   field
-    substⁱ : ∀ {a₁ a₂} {{c₁ : C a₁}} {{c₂ : C a₂}} → a₁ ~ a₂ → f a₁ ≈ f a₂
+    subst₁ : ∀ {a₁ a₂} → a₁ ~ a₂ → f a₁ ≈ f a₂
 
-open Substitutiveⁱ {{...}} public using (substⁱ)
+open Substitutive₁ {{...}} public using (subst₁)
 
-Substitutive₁ :
-  ∀ {β} {A : Set} {B : A → Set β} (f : (a : A) → B a)
-    (_~_ : A → A → Set) (_≈_ : ∀ {a₁ a₂} → B a₁ → B a₂ → Set) →
-      Set β
-Substitutive₁ {A = A} {B} f = Substitutiveⁱ f-with-trivial-constraint
-  where
-    f-with-trivial-constraint : (a : A) {{_ : ⊤}} → B a
-    f-with-trivial-constraint a = f a
+record Substitutiveᶜ
+    {β} {A F : Set} {B : A → Set β}
+      (fn : F) (_~_ : A → A → Set) (_≈_ : ∀ {a₁ a₂} → B a₁ → B a₂ → Set)
+        : Set (β ⊔ sℓ 0ℓ) where
+  constructor substitutiveᶜ
+  field
+    {{cf}} : ConstrainableFn F B
 
-substitutive₁ :
-  ∀ {β} {A : Set} {B : A → Set β} {f : (a : A) → B a}
-    {_~_ : A → A → Set} {_≈_ : ∀ {a₁ a₂} → B a₁ → B a₂ → Set} →
-      (∀ {a₁ a₂} → a₁ ~ a₂ → f a₁ ≈ f a₂) → Substitutive₁ f _~_ _≈_
-substitutive₁ substFn = record { substⁱ = substFn }
+  open ConstrainableFn cf using (C)
+  f = toExpFn fn
 
-subst :
-  ∀ {β} {A : Set} {B : A → Set β} {f : (a : A) → B a}
-    {_~_ : A → A → Set} {_≈_ : ∀ {a₁ a₂} → B a₁ → B a₂ → Set}
-      {{r : Substitutive₁ f _~_ _≈_}} →
-        ∀ {a₁ a₂} → a₁ ~ a₂ → f a₁ ≈ f a₂
-subst = substⁱ
+  field
+    substᶜ : ∀ {a₁ a₂} {{c₁ : C a₁}} {{c₂ : C a₂}} → a₁ ~ a₂ → f a₁ ≈ f a₂
 
-Substitutiveᴸ : {A B : Set} {{_ : Eq A}} {{_ : Eq B}} → (A → A → B) → Set
-Substitutiveᴸ _⊙_ = ∀ {y} → Substitutive₁ (_⊙ y) _≃_ _≃_
-
-Substitutiveᴿ : {A B : Set} {{_ : Eq A}} {{_ : Eq B}} → (A → A → B) → Set
-Substitutiveᴿ _⊙_ = ∀ {x} → Substitutive₁ (x ⊙_) _≃_ _≃_
-
-substitutiveᴿ :
-  {A : Set} {_⊙_ : A → A → A}
-    {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Substitutiveᴸ _⊙_}} →
-      Substitutiveᴿ _⊙_
-substitutiveᴿ = substitutive₁ (with-comm ∘ subst)
+open Substitutiveᶜ {{...}} public using (substᶜ)
 
 record Substitutive₂
-    {A B : Set} {{eqA : Eq A}} {{eqB : Eq B}} (_⊙_ : A → A → B) : Set where
+    (hand : Hand) {A B : Set} {{_ : Eq A}} {{_ : Eq B}} (_⊙_ : A → A → B)
+      : Set where
+  constructor substitutive₂
+  _<⊙>_ = forHand hand _⊙_
   field
-    {{subst₂ᴸ}} : Substitutiveᴸ _⊙_
-    {{subst₂ᴿ}} : Substitutiveᴿ _⊙_
+    subst₂ : ∀ {a₁ a₂ b} → a₁ ≃ a₂ → a₁ <⊙> b ≃ a₂ <⊙> b
 
-substitutive₂ :
+open Substitutive₂ {{...}} public using (subst₂)
+
+substᴸ = subst₂ {handᴸ}
+substᴿ = subst₂ {handᴿ}
+
+substitutiveᴿ-from-substitutiveᴸ :
   {A : Set} {_⊙_ : A → A → A}
-    {{_ : Eq A}} {{_ : Substitutiveᴸ _⊙_}} {{_ : Substitutiveᴿ _⊙_}} →
-      Substitutive₂ _⊙_
-substitutive₂ = record {}
+    {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Substitutive₂ handᴸ _⊙_}} →
+      Substitutive₂ handᴿ _⊙_
+substitutiveᴿ-from-substitutiveᴸ = substitutive₂ (with-comm ∘ subst₂)
+
+record Substitutive₂²
+    {A B : Set} {{_ : Eq A}} {{_ : Eq B}} (_⊙_ : A → A → B) : Set where
+  constructor substitutive₂²
+  field
+    {{substitutiveᴸ}} : Substitutive₂ handᴸ _⊙_
+    {{substitutiveᴿ}} : Substitutive₂ handᴿ _⊙_
 
 [a≃b][c≃d] :
   {A B : Set} {_⊙_ : A → A → B}
-    {{_ : Eq A}} {{_ : Eq B}} {{_ : Substitutive₂ _⊙_}} →
+    {{_ : Eq A}} {{_ : Eq B}} {{_ : Substitutive₂² _⊙_}} →
       ∀ {a b c d} → a ≃ b → c ≃ d → a ⊙ c ≃ b ⊙ d
 [a≃b][c≃d] {A} {B} {_⊙_} {a} {b} {c} {d} a≃b c≃d =
   begin
     a ⊙ c
-  ≃⟨ subst a≃b ⟩
+  ≃⟨ subst₂ a≃b ⟩
     b ⊙ c
-  ≃⟨ subst c≃d ⟩
+  ≃⟨ subst₂ c≃d ⟩
     b ⊙ d
   ∎
 
@@ -90,7 +88,7 @@ fnOpCommutativeᴿ-from-fnOpCommutativeᴸ {A} {f} {_⊙_} = fnOpCommutative com
     commᴿ₀ {a} {b} =
       begin
         f (a ⊙ b)
-      ≃⟨ subst comm ⟩
+      ≃⟨ subst₁ comm ⟩
         f (b ⊙ a)
       ≃⟨ fnOpComm ⟩
         f b ⊙ a

@@ -31,7 +31,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
 
   field
     {{star}} : Op.Star ℕ
-    {{*-substitutiveᴸ}} : AA.Substitutiveᴸ _*_
+    {{*-substitutiveᴸ}} : AA.Substitutive₂ AA.handᴸ _*_
     {{*-absorptiveᴸ}} : AA.Absorptive AA.handᴸ _*_ 0
     *-stepᴸ : ∀ {n m} → step n * m ≃ n * m + m
 
@@ -79,11 +79,11 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
           step k * step m
         ≃⟨ *-stepᴸ ⟩
           k * step m + step m
-        ≃⟨ AA.subst Pk ⟩
+        ≃⟨ AA.subst₂ Pk ⟩
           k * m + k + step m
         ≃⟨ AA.substᴿ-with-assoc (trans AA.comm AA.fnOpCommSwap) ⟩
           k * m + m + step k
-        ≃˘⟨ AA.subst *-stepᴸ ⟩
+        ≃˘⟨ AA.subst₂ *-stepᴸ ⟩
           step k * m + step k
         ∎
 
@@ -103,7 +103,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
                 step k * m
               ≃⟨ *-stepᴸ ⟩
                 k * m + m
-              ≃⟨ AA.subst Pk ⟩
+              ≃⟨ AA.subst₂ Pk ⟩
                 m * k + m
               ≃˘⟨ *-stepᴿ ⟩
                 m * step k
@@ -118,7 +118,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
             1 * n
           ≃⟨ *-stepᴸ ⟩
             0 * n + n
-          ≃⟨ AA.subst AA.absorb ⟩
+          ≃⟨ AA.subst₂ AA.absorb ⟩
             0 + n
           ≃⟨ AA.ident ⟩
             n
@@ -140,7 +140,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
                 p * m + m
               ≃˘⟨ *-stepᴸ ⟩
                 step p * m
-              ≃˘⟨ AA.subst n≃sp ⟩
+              ≃˘⟨ AA.subst₂ n≃sp ⟩
                 n * m
               ≃⟨ n*m≃0 ⟩
                 0
@@ -148,11 +148,11 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
 
             m≃0 = ∧-elimᴿ (+-both-zero p*m+m≃0)
 
-    *-substitutiveᴿ : AA.Substitutiveᴿ _*_
-    *-substitutiveᴿ = AA.substitutiveᴿ
+    *-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _*_
+    *-substitutiveᴿ = AA.substitutiveᴿ-from-substitutiveᴸ
 
-    *-substitutive₂ : AA.Substitutive₂ _*_
-    *-substitutive₂ = AA.substitutive₂
+    *-substitutive₂² : AA.Substitutive₂² _*_
+    *-substitutive₂² = AA.substitutive₂²
 
     *-distributive-+ᴸ : AA.Distributive AA.handᴸ _*_ _+_
     *-distributive-+ᴸ = AA.distributive *-distrib-+ᴸ
@@ -164,11 +164,11 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
             P0 =
               begin
                 a * (b + 0)
-              ≃⟨ AA.subst AA.ident ⟩
+              ≃⟨ AA.subst₂ AA.ident ⟩
                 a * b
               ≃˘⟨ AA.ident ⟩
                 a * b + 0
-              ≃˘⟨ AA.subst AA.absorb ⟩
+              ≃˘⟨ AA.subst₂ AA.absorb ⟩
                 a * b + a * 0
               ∎
 
@@ -176,15 +176,15 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
             Ps {k} a[b+k]≃ab+ak =
               begin
                 a * (b + step k)
-              ≃˘⟨ AA.subst AA.fnOpComm ⟩
+              ≃˘⟨ AA.subst₂ AA.fnOpComm ⟩
                 a * step (b + k)
               ≃⟨ *-stepᴿ ⟩
                 a * (b + k) + a
-              ≃⟨ AA.subst a[b+k]≃ab+ak ⟩
+              ≃⟨ AA.subst₂ a[b+k]≃ab+ak ⟩
                 a * b + a * k + a
               ≃⟨ AA.assoc ⟩
                 a * b + (a * k + a)
-              ≃˘⟨ AA.subst *-stepᴿ ⟩
+              ≃˘⟨ AA.subst₂ *-stepᴿ ⟩
                 a * b + a * step k
               ∎
 
@@ -201,13 +201,13 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
             P0 =
               begin
                 a * (0 * c)
-              ≃⟨ AA.subst AA.absorb ⟩
+              ≃⟨ AA.subst₂ AA.absorb ⟩
                 a * 0
               ≃⟨ AA.absorb ⟩
                 0
               ≃˘⟨ AA.absorb ⟩
                 0 * c
-              ≃˘⟨ AA.subst AA.absorb ⟩
+              ≃˘⟨ AA.subst₂ AA.absorb ⟩
                 (a * 0) * c
               ∎
 
@@ -215,28 +215,28 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
             Ps {k} a[kc]≃[ak]c =
               begin
                 a * (step k * c)
-              ≃⟨ AA.subst *-stepᴸ ⟩
+              ≃⟨ AA.subst₂ *-stepᴸ ⟩
                 a * (k * c + c)
               ≃⟨ AA.distrib ⟩
                 a * (k * c) + a * c
-              ≃⟨ AA.subst a[kc]≃[ak]c ⟩
+              ≃⟨ AA.subst₂ a[kc]≃[ak]c ⟩
                 (a * k) * c + a * c
               ≃˘⟨ AA.distrib ⟩
                 (a * k + a) * c
-              ≃˘⟨ AA.subst *-stepᴿ ⟩
+              ≃˘⟨ AA.subst₂ *-stepᴿ ⟩
                 (a * step k) * c
               ∎
 
   *-preserves-<ᴿ : ∀ {a b c} → a < b → c ≄ 0 → a * c < b * c
   *-preserves-<ᴿ {a} {b} {c} a<b c≄0 =
     let <⁺-intro a≤b@(≤-intro d a+d≃b) d≄0 = a<b as a <⁺ b
-        ac+dc≃bc = trans (sym AA.distrib) (AA.subst a+d≃b)
+        ac+dc≃bc = trans (sym AA.distrib) (AA.subst₂ a+d≃b)
         dc≄0 = AA.nonzero-prod d≄0 c≄0
      in <⁺-intro (≤-intro (d * c) ac+dc≃bc) dc≄0 as a * c < b * c
 
   *-preserves-<ᴸ : ∀ {a b c} → b < c → a ≄ 0 → a * b < a * c
   *-preserves-<ᴸ {a} {b} {c} b<c a≄0 =
-    AA.subst {f = _< a * c} AA.comm (AA.subst AA.comm (*-preserves-<ᴿ b<c a≄0))
+    AA.subst₁ {f = _< a * c} AA.comm (AA.subst₁ AA.comm (*-preserves-<ᴿ b<c a≄0))
 
   instance
     *-cancellativeᴸ : AA.Cancellative AA.handᴸ _*_ _≃_

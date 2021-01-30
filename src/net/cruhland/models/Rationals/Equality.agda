@@ -53,21 +53,21 @@ instance
               p↑ * r↓ * q↓
             ≃⟨ AA.assoc {A = ℤ} {{eq = ℤ.eq}} {_⊙_ = _*_}⟩
               p↑ * (r↓ * q↓)
-            ≃⟨ AA.subst {f = p↑ *_} AA.comm ⟩
+            ≃⟨ AA.subst₂ AA.comm ⟩
               p↑ * (q↓ * r↓)
             ≃˘⟨ AA.assoc ⟩
               (p↑ * q↓) * r↓
-            ≃⟨ AA.subst p↑q↓≃q↑p↓ ⟩
+            ≃⟨ AA.subst₂ p↑q↓≃q↑p↓ ⟩
               (q↑ * p↓) * r↓
-            ≃⟨ AA.subst {f = _* r↓} AA.comm ⟩
+            ≃⟨ AA.subst₂ AA.comm ⟩
               (p↓ * q↑) * r↓
             ≃⟨ AA.assoc ⟩
               p↓ * (q↑ * r↓)
-            ≃⟨ AA.subst q↑r↓≃r↑q↓ ⟩
+            ≃⟨ AA.subst₂ q↑r↓≃r↑q↓ ⟩
               p↓ * (r↑ * q↓)
             ≃˘⟨ AA.assoc ⟩
               (p↓ * r↑) * q↓
-            ≃⟨ AA.subst {f = _* q↓} AA.comm  ⟩
+            ≃⟨ AA.subst₂ AA.comm  ⟩
               r↑ * p↓ * q↓
             ∎
           instance q↓≄ⁱ0 = fromWitnessFalse q↓≄0
@@ -86,7 +86,7 @@ instance
           ℤ≃? = ℚ.n p * ℚ.d q ≃? ℚ.n q * ℚ.d p
 
   from-ℤ-substitutive₁ : AA.Substitutive₁ {A = ℤ} (_as ℚ) _≃_ _≃_
-  from-ℤ-substitutive₁ = AA.substitutive₁ (≃₀-intro ∘ AA.subst)
+  from-ℤ-substitutive₁ = AA.substitutive₁ (≃₀-intro ∘ AA.subst₂)
 
   from-ℤ-injective : AA.Injective (_as ℚ) _≃_ _≃_
   from-ℤ-injective = AA.injective {A = ℤ} (AA.cancel ∘ _≃₀_.elim)
@@ -120,12 +120,12 @@ q↑≃0 {q} (≃₀-intro n1≃0d) =
 subst↑ :
   ∀ {q↑₁ q↑₂ q↓} (q↓≄0 : q↓ ≄ 0) → q↑₁ ≃ q↑₂ →
     (q↑₁ // q↓ ~ q↓≄0) ≃ (q↑₂ // q↓ ~ q↓≄0)
-subst↑ _ q↑₁≃q↑₂ = ≃₀-intro (AA.subst q↑₁≃q↑₂)
+subst↑ _ q↑₁≃q↑₂ = ≃₀-intro (AA.subst₂ q↑₁≃q↑₂)
 
 subst↓ :
   ∀ {q↑ q↓₁ q↓₂} (q↓₁≄0 : q↓₁ ≄ 0) (q↓₂≄0 : q↓₂ ≄ 0) → q↓₁ ≃ q↓₂ →
     (q↑ // q↓₁ ~ q↓₁≄0) ≃ (q↑ // q↓₂ ~ q↓₂≄0)
-subst↓ _ _ q↓₁≃q↓₂ = ≃₀-intro (AA.subst (Eq.sym q↓₁≃q↓₂))
+subst↓ _ _ q↓₁≃q↓₂ = ≃₀-intro (AA.subst₂ (Eq.sym q↓₁≃q↓₂))
 
 q≃1 : ∀ {q} → ℚ.n q ≃ ℚ.d q → q ≃ 1
 q≃1 {q↑ // q↓ ~ _} q↑≃q↓ = ≃₀-intro q↑1≃1q↓
@@ -135,7 +135,7 @@ q≃1 {q↑ // q↓ ~ _} q↑≃q↓ = ≃₀-intro q↑1≃1q↓
         q↑ * 1
       ≃⟨ AA.comm ⟩
         1 * q↑
-      ≃⟨ AA.subst q↑≃q↓ ⟩
+      ≃⟨ AA.subst₂ q↑≃q↓ ⟩
         1 * q↓
       ∎
 

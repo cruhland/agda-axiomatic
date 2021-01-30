@@ -58,23 +58,23 @@ instance
   eq : Eq ℤ
   eq = Eq.equivalence _≃ᶻ_
 
-  from-ℕ-substitutive₁ : AA.Substitutive₁ {A = ℕ} (_as ℤ) _≃_ _≃_
-  from-ℕ-substitutive₁ = AA.substitutive₁ (≃ᶻ-intro ∘ AA.subst)
+  from-ℕ-substitutive₁ : AA.Substitutive₁ (_as ℤ) _≃_ _≃_
+  from-ℕ-substitutive₁ = AA.substitutive₁ {A = ℕ} (≃ᶻ-intro ∘ AA.subst₂)
 
   from-ℕ-injective : AA.Injective (_as ℤ) _≃_ _≃_
   from-ℕ-injective = AA.injective {A = ℕ} (AA.cancel ∘ _≃ᶻ_.elim)
 
-  ℤ-substitutiveᴸ : ∀ {m} → AA.Substitutive₁ (_— m) _≃_ _≃_
-  ℤ-substitutiveᴸ {m} = AA.substitutive₁ ℤ-substᴸ
+  ℤ-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _—_
+  ℤ-substitutiveᴸ = AA.substitutive₂ ℤ-substᴸ
     where
-      ℤ-substᴸ : ∀ {n₁ n₂} → n₁ ≃ n₂ → n₁ — m ≃ n₂ — m
-      ℤ-substᴸ n₁≃n₂ = ≃ᶻ-intro (AA.subst n₁≃n₂)
+      ℤ-substᴸ : ∀ {n₁ n₂ m} → n₁ ≃ n₂ → n₁ — m ≃ n₂ — m
+      ℤ-substᴸ n₁≃n₂ = ≃ᶻ-intro (AA.subst₂ n₁≃n₂)
 
-  ℤ-substitutiveᴿ : ∀ {m} → AA.Substitutive₁ (m —_) _≃_ _≃_
-  ℤ-substitutiveᴿ {m} = AA.substitutive₁ ℤ-substᴿ
+  ℤ-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _—_
+  ℤ-substitutiveᴿ = AA.substitutive₂ ℤ-substᴿ
     where
-      ℤ-substᴿ : ∀ {n₁ n₂} → n₁ ≃ n₂ → m — n₁ ≃ m — n₂
-      ℤ-substᴿ n₁≃n₂ = ≃ᶻ-intro (AA.subst (sym n₁≃n₂))
+      ℤ-substᴿ : ∀ {n₁ n₂ m} → n₁ ≃ n₂ → m — n₁ ≃ m — n₂
+      ℤ-substᴿ n₁≃n₂ = ≃ᶻ-intro (AA.subst₂ (sym n₁≃n₂))
 
-  ℤ-substitutive₂ : AA.Substitutive₂ _—_
-  ℤ-substitutive₂ = record {}
+  ℤ-substitutive₂² : AA.Substitutive₂² _—_
+  ℤ-substitutive₂² = record {}

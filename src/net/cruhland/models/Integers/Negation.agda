@@ -56,7 +56,7 @@ instance
               (x⁻ + x⁺) + 0
             ≃⟨ AA.comm ⟩
               0 + (x⁻ + x⁺)
-            ≃⟨ AA.subst AA.comm ⟩
+            ≃⟨ AA.subst₂ AA.comm ⟩
               0 + (x⁺ + x⁻)
             ∎
 
@@ -71,10 +71,10 @@ instance
   sub-dash = Op.subtraction
 
 sub-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ - b ≃ a₂ - b
-sub-substᴸ = AA.subst
+sub-substᴸ = AA.subst₂
 
 sub-substᴿ : {a b₁ b₂ : ℤ} → b₁ ≃ b₂ → a - b₁ ≃ a - b₂
-sub-substᴿ = AA.subst ∘ AA.subst {f = -_}
+sub-substᴿ = AA.subst₂ ∘ AA.subst₁
 
 ≃ᴸ-subᴿ-toᴸ : {a b c : ℤ} → a - b ≃ c → a ≃ b + c
 ≃ᴸ-subᴿ-toᴸ {a} {b} {c} a-b≃c =
@@ -82,13 +82,13 @@ sub-substᴿ = AA.subst ∘ AA.subst {f = -_}
     a
   ≃˘⟨ AA.ident ⟩
     a + 0
-  ≃˘⟨ AA.subst AA.invᴿ ⟩
+  ≃˘⟨ AA.subst₂ AA.invᴿ ⟩
     a + (b - b)
-  ≃⟨ AA.subst {f = a +_} AA.comm ⟩
+  ≃⟨ AA.subst₂ AA.comm ⟩
     a + (- b + b)
   ≃˘⟨ AA.assoc ⟩
     a - b + b
-  ≃⟨ AA.subst a-b≃c ⟩
+  ≃⟨ AA.subst₂ a-b≃c ⟩
     c + b
   ≃⟨ AA.comm ⟩
     b + c
@@ -123,11 +123,11 @@ instance
 
 neg-Positive : ∀ {a} → Positive a → Negative (- a)
 neg-Positive record { n = n ; pos = n≄0 ; x≃n = a≃n } =
-  record { n = n ; pos = n≄0 ; x≃-n = AA.subst a≃n }
+  record { n = n ; pos = n≄0 ; x≃-n = AA.subst₁ a≃n }
 
 neg-Negative : ∀ {a} → Negative a → Positive (- a)
 neg-Negative record { n = n ; pos = n≄0 ; x≃-n = a≃-n } =
-  record { n = n ; pos = n≄0 ; x≃n = trans (AA.subst a≃-n) neg-involutive }
+  record { n = n ; pos = n≄0 ; x≃n = trans (AA.subst₁ a≃-n) neg-involutive }
 
 trichotomy : ∀ x → AA.ExactlyOneOfThree (Negative x) (x ≃ 0) (Positive x)
 trichotomy x@(x⁺ — x⁻) = record { at-least-one = one≤ ; at-most-one = one≮ }
@@ -190,9 +190,9 @@ trichotomy x@(x⁺ — x⁻) = record { at-least-one = one≤ ; at-most-one = on
               x⁺ + (n₂ + n₁)
             ≃˘⟨ AA.assoc ⟩
               (x⁺ + n₂) + n₁
-            ≃⟨ AA.subst x⁺+n₂≃0+x⁻ ⟩
+            ≃⟨ AA.subst₂ x⁺+n₂≃0+x⁻ ⟩
               (0 + x⁻) + n₁
-            ≃⟨ AA.subst AA.ident ⟩
+            ≃⟨ AA.subst₂ AA.ident ⟩
               x⁻ + n₁
             ≃⟨ AA.comm ⟩
               n₁ + x⁻

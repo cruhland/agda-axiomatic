@@ -43,7 +43,7 @@ instance
               - a₁↑ * a₂↓
             ≃˘⟨ AA.fnOpComm ⟩
               - (a₁↑ * a₂↓)
-            ≃⟨ AA.subst a₁↑a₂↓≃a₂↑a₁↓ ⟩
+            ≃⟨ AA.subst₁ a₁↑a₂↓≃a₂↑a₁↓ ⟩
               - (a₂↑ * a₁↓)
             ≃⟨ AA.fnOpComm ⟩
               - a₂↑ * a₁↓
@@ -61,11 +61,11 @@ instance
           -p↑p↓+p↓p↑ =
             begin
               - p↑ * p↓ + p↓ * p↑
-            ≃⟨ AA.subst {a₁ = p↓ * p↑} AA.comm ⟩
+            ≃⟨ AA.subst₂ AA.comm ⟩
               - p↑ * p↓ + p↑ * p↓
             ≃˘⟨ AA.distrib ⟩
               (- p↑ + p↑) * p↓
-            ≃⟨ AA.subst {f = _* p↓} AA.invᴸ ⟩
+            ≃⟨ AA.subst₂ AA.invᴸ ⟩
               0 * p↓
             ≃⟨ AA.absorb ⟩
               0

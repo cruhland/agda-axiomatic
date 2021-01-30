@@ -76,7 +76,7 @@ instance
                       a
                     ≃˘⟨ AA.ident ⟩
                       a + 0
-                    ≃˘⟨ AA.subst d≃0 ⟩
+                    ≃˘⟨ AA.subst₂ d≃0 ⟩
                       a + d
                     ≃⟨ a+d≃b ⟩
                       b
@@ -88,7 +88,7 @@ instance
                 step a + pd
               ≃⟨ AA.fnOpCommSwap ⟩
                 a + step pd
-              ≃˘⟨ AA.subst d≃spd ⟩
+              ≃˘⟨ AA.subst₂ d≃spd ⟩
                 a + d
               ≃⟨ a+d≃b ⟩
                 b
@@ -147,7 +147,7 @@ instance
   <-substitutiveᴸ {n} = AA.substitutive₁ <-substᴸ
     where
       <-substᴸ : ∀ {m₁ m₂} → m₁ ≃ m₂ → m₁ < n → m₂ < n
-      <-substᴸ m₁≃m₂ (<-intro m₁≤n m₁≄n) = <-intro (AA.subst m₁≃m₂ m₁≤n) m₂≄n
+      <-substᴸ m₁≃m₂ (<-intro m₁≤n m₁≄n) = <-intro (AA.subst₁ m₁≃m₂ m₁≤n) m₂≄n
         where
           m₂≄n = λ m₂≃n → contra (Eq.trans m₁≃m₂ m₂≃n) m₁≄n
 
@@ -155,7 +155,7 @@ instance
   <-substitutiveᴿ {n} = AA.substitutive₁ <-substᴿ
     where
       <-substᴿ : ∀ {m₁ m₂} → m₁ ≃ m₂ → n < m₁ → n < m₂
-      <-substᴿ m₁≃m₂ (<-intro n≤m₁ n≄m₁) = <-intro (AA.subst m₁≃m₂ n≤m₁) n≄m₂
+      <-substᴿ m₁≃m₂ (<-intro n≤m₁ n≄m₁) = <-intro (AA.subst₁ m₁≃m₂ n≤m₁) n≄m₂
         where
           n≄m₂ = λ n≃m₂ → contra (Eq.trans n≃m₂ (Eq.sym m₁≃m₂)) n≄m₁
 
@@ -178,7 +178,7 @@ order-trichotomy = record { at-least-one = 1≤ ; at-most-one = ≤1 }
         ... | ∨-introᴸ sk<m = AA.1st sk<m
         ... | ∨-introᴿ sk≃m = AA.2nd sk≃m
         Ps {k} (AA.2nd k≃m) =
-          let sm≃sk = AA.subst {f = step} (Eq.sym k≃m)
+          let sm≃sk = AA.subst₁ {f = step} (Eq.sym k≃m)
            in AA.3rd (sm≃sk as step m ≤ step k as m < step k)
         Ps (AA.3rd k>m) =
           AA.3rd (Eq.trans k>m n<sn)
@@ -208,7 +208,7 @@ strong-ind P b Pm n b≤n = Pm n b≤n (ℕ.ind Q Q0 Qs n)
     Q0 = λ j b≤j j<0 → contra j<0 n≮0
 
     Q-subst : ∀ {x₁ x₂} → x₁ ≃ x₂ → Q x₁ → Q x₂
-    Q-subst x₁≃x₂ Qx₁ j b≤j j<x₂ = Qx₁ j b≤j (AA.subst (Eq.sym x₁≃x₂) j<x₂)
+    Q-subst x₁≃x₂ Qx₁ j b≤j j<x₂ = Qx₁ j b≤j (AA.subst₁ (Eq.sym x₁≃x₂) j<x₂)
 
     Qs : ℕ.step-case Q
     Qs Qk j b≤j j<sk with <s-split j<sk

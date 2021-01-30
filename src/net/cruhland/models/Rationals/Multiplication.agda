@@ -37,18 +37,19 @@ instance
           [a↑b↑][b↓a↓]≃[b↑a↑][a↓b↓] =
             begin
               a↑ * b↑ * (b↓ * a↓)
-            ≃⟨ AA.subst {a₁ = a↑ * b↑} AA.comm ⟩
+            ≃⟨ AA.subst₂ AA.comm ⟩
               b↑ * a↑ * (b↓ * a↓)
-            ≃⟨ AA.subst {a₁ = b↓ * a↓} AA.comm ⟩
+            ≃⟨ AA.subst₂ AA.comm ⟩
               b↑ * a↑ * (a↓ * b↓)
             ∎
 
-  *-substitutiveᴸ : AA.Substitutiveᴸ _*_
-  *-substitutiveᴸ {b@(b↑ // b↓ ~ _)} = AA.substitutive₁ *-substᴸ
+  *-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _*_
+  *-substitutiveᴸ = AA.substitutive₂ *-substᴸ
     where
-      *-substᴸ : {a₁ a₂ : ℚ} → a₁ ≃ a₂ → a₁ * b ≃ a₂ * b
+      *-substᴸ : {a₁ a₂ b : ℚ} → a₁ ≃ a₂ → a₁ * b ≃ a₂ * b
       *-substᴸ
-        {a₁↑ // a₁↓ ~ _} {a₂↑ // a₂↓ ~ _} (≃₀-intro a₁↑a₂↓≃a₂↑a₁↓) =
+        {a₁↑ // a₁↓ ~ _} {a₂↑ // a₂↓ ~ _} {b↑ // b↓ ~ _}
+        (≃₀-intro a₁↑a₂↓≃a₂↑a₁↓) =
           ≃₀-intro [a₁↑b↑][a₂↓b↓]≃[a₂↑b↑][a₁↓b↓]
         where
           [a₁↑b↑][a₂↓b↓]≃[a₂↑b↑][a₁↓b↓] =
@@ -56,23 +57,23 @@ instance
               a₁↑ * b↑ * (a₂↓ * b↓)
             ≃⟨ AA.transpose ⟩
               a₁↑ * a₂↓ * (b↑ * b↓)
-            ≃⟨ AA.subst a₁↑a₂↓≃a₂↑a₁↓ ⟩
+            ≃⟨ AA.subst₂ a₁↑a₂↓≃a₂↑a₁↓ ⟩
               a₂↑ * a₁↓ * (b↑ * b↓)
             ≃˘⟨ AA.transpose ⟩
               a₂↑ * b↑ * (a₁↓ * b↓)
             ∎
 
-  *-substitutiveᴿ : AA.Substitutiveᴿ _*_
-  *-substitutiveᴿ = AA.substitutiveᴿ {A = ℚ}
+  *-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _*_
+  *-substitutiveᴿ = AA.substitutiveᴿ-from-substitutiveᴸ {A = ℚ}
 
-  *-substitutive₂ : AA.Substitutive₂ _*_
-  *-substitutive₂ = AA.substitutive₂ {A = ℚ}
+  *-substitutive₂ : AA.Substitutive₂² _*_
+  *-substitutive₂ = AA.substitutive₂² {A = ℚ}
 
   *-compatible-ℤ : AA.Compatible₂ (_as ℚ) _*_
   *-compatible-ℤ = AA.compatible₂ {A = ℤ} _*_ *-compat-ℤ
     where
       *-compat-ℤ : {a b : ℤ} → (a * b as ℚ) ≃ (a as ℚ) * (b as ℚ)
-      *-compat-ℤ {a} {b} = ≃₀-intro (AA.subst {f = a * b *_} AA.identᴿ)
+      *-compat-ℤ {a} {b} = ≃₀-intro (AA.subst₂ AA.identᴿ)
 
   *-associative : AA.Associative _*_
   *-associative = record { assoc = *-assoc }
@@ -92,7 +93,7 @@ instance
           -1 * (p * q)
         ≃˘⟨ AA.assoc ⟩
           (-1 * p) * q
-        ≃˘⟨ AA.subst neg-mult ⟩
+        ≃˘⟨ AA.subst₂ neg-mult ⟩
           (- p) * q
         ∎
 
@@ -131,11 +132,11 @@ instance
           [a↑[b↑c↓]]a↓≃a↑b↑[a↓c↓] =
             begin
               (a↑ * (b↑ * c↓)) * a↓
-            ≃˘⟨ AA.subst {f = _* a↓} AA.assoc ⟩
+            ≃˘⟨ AA.subst₂ AA.assoc ⟩
               (a↑ * b↑ * c↓) * a↓
             ≃⟨ AA.assoc ⟩
               a↑ * b↑ * (c↓ * a↓)
-            ≃⟨ AA.subst {a₁ = c↓ * a↓} AA.comm ⟩
+            ≃⟨ AA.subst₂ AA.comm ⟩
               a↑ * b↑ * (a↓ * c↓)
             ∎
 
@@ -144,11 +145,11 @@ instance
               (a↑ * (b↓ * c↑)) * a↓
             ≃⟨ AA.comm ⟩
               a↓ * (a↑ * (b↓ * c↑))
-            ≃˘⟨ AA.subst {f = a↓ *_} AA.assoc ⟩
+            ≃˘⟨ AA.subst₂ AA.assoc ⟩
               a↓ * (a↑ * b↓ * c↑)
-            ≃⟨ AA.subst {f = a↓ *_} (AA.subst {f = _* c↑} AA.comm) ⟩
+            ≃⟨ AA.subst₂ (AA.subst₂ AA.comm) ⟩
               a↓ * (b↓ * a↑ * c↑)
-            ≃⟨ AA.subst {f = a↓ *_} AA.assoc ⟩
+            ≃⟨ AA.subst₂ AA.assoc ⟩
               a↓ * (b↓ * (a↑ * c↑))
             ≃˘⟨ AA.assoc ⟩
               a↓ * b↓ * (a↑ * c↑)
@@ -157,7 +158,7 @@ instance
           a↑[b↑c↓+b↓c↑]a↓≃a↑b↑[a↓c↓]+a↓b↓[a↑c↑] =
             begin
               a↑ * (b↑ * c↓ + b↓ * c↑) * a↓
-            ≃⟨ AA.subst {f = _* a↓} AA.distrib ⟩
+            ≃⟨ AA.subst₂ AA.distrib ⟩
               (a↑ * (b↑ * c↓) + a↑ * (b↓ * c↑)) * a↓
             ≃⟨ AA.distrib ⟩
               (a↑ * (b↑ * c↓)) * a↓ + (a↑ * (b↓ * c↑)) * a↓
@@ -168,11 +169,11 @@ instance
           a[b+c]≃ab+ac =
             begin
               a↑ * (b↑ * c↓ + b↓ * c↑) * (a↓ * b↓ * (a↓ * c↓))
-            ≃⟨ AA.subst a↓b↓[a↓c↓]≃a↓[a↓[b↓c↓]] ⟩
+            ≃⟨ AA.subst₂ a↓b↓[a↓c↓]≃a↓[a↓[b↓c↓]] ⟩
               a↑ * (b↑ * c↓ + b↓ * c↑) * (a↓ * (a↓ * (b↓ * c↓)))
             ≃˘⟨ AA.assoc ⟩
               a↑ * (b↑ * c↓ + b↓ * c↑) * a↓ * (a↓ * (b↓ * c↓))
-            ≃⟨ AA.subst a↑[b↑c↓+b↓c↑]a↓≃a↑b↑[a↓c↓]+a↓b↓[a↑c↑] ⟩
+            ≃⟨ AA.subst₂ a↑[b↑c↓+b↓c↑]a↓≃a↑b↑[a↓c↓]+a↓b↓[a↑c↑] ⟩
               (a↑ * b↑ * (a↓ * c↓) + a↓ * b↓ * (a↑ * c↑)) * (a↓ * (b↓ * c↓))
             ∎
 

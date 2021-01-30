@@ -51,8 +51,8 @@ instance
   plus : Op.Plus ℕ
   plus = record { _+_ = _+_ }
 
-  +-substitutiveᴸ : ∀ {m} → AA.Substitutive₁ (_+ m) _≡_ _≡_
-  +-substitutiveᴸ {m} = AA.substitutive₁ (cong (_+ m))
+  +-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _+_
+  +-substitutiveᴸ = AA.substitutive₂ λ {b = b} → cong (_+ b)
 
   +-identityᴸ : AA.Identity AA.handᴸ _+_ 0
   +-identityᴸ = AA.identity refl
@@ -70,8 +70,8 @@ instance
   *-absorptiveᴸ : AA.Absorptive AA.handᴸ _*_ 0
   *-absorptiveᴸ = AA.absorptive refl
 
-  *-substitutiveᴸ : ∀ {m} → AA.Substitutive₁ (_* m) _≡_ _≡_
-  *-substitutiveᴸ {m} = AA.substitutive₁ (cong (_* m))
+  *-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _*_
+  *-substitutiveᴸ = AA.substitutive₂ λ {b = b} → cong (_* b)
 
 multiplication : Multiplication base addition
 multiplication = record { *-stepᴸ = λ {n m} → +-comm m (n * m) }
