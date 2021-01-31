@@ -1,5 +1,5 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
-open import net.cruhland.axioms.Cast using (_As_)
+open import net.cruhland.axioms.Cast using (_As_; As-intro)
 open import net.cruhland.axioms.Eq as Eq using (_≃_)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Operators using (_+_)
@@ -7,16 +7,18 @@ open import net.cruhland.axioms.Peano.Addition
   using () renaming (Addition to PeanoAddition)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
+open import net.cruhland.axioms.Peano.Sign using (Sign)
 open import net.cruhland.models.Function using (_∘_; _⟨→⟩_; const; flip)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using
   (⊤; ∧-intro; ¬_; contra; Dec; dec-map; no; yes)
 
 module net.cruhland.axioms.Peano.Ordering.LessThanOrEqual
-  (PB : PeanoBase) (PA : PeanoAddition PB) where
+  (PB : PeanoBase) (PA : PeanoAddition PB) (PS : Sign PB PA) where
 
 private module ℕ+ = PeanoAddition PA
 private module ℕ = PeanoBase PB
+private module ℕ± = Sign PS
 open ℕ using (ℕ; ind; step; step-case)
 import net.cruhland.axioms.Peano.Inspect PB as ℕI
 import net.cruhland.axioms.Peano.Literals PB as ℕLit
@@ -62,7 +64,7 @@ instance
               ≃˘⟨ AA.ident ⟩
                 n + 0
               ∎
-            ∧-intro a≃0 _ = ℕ+.+-both-zero (AA.cancel n+a+b≃n+0)
+            ∧-intro a≃0 _ = ℕ±.+-both-zero (AA.cancel n+a+b≃n+0)
          in begin
               n
             ≃˘⟨ AA.ident ⟩
@@ -156,7 +158,7 @@ instance
           a+d≃b = AA.cancel a+d+c≃b+c
 
   ≃-as-≤ : ∀ {n m} → (n ≃ m) As (n ≤ m)
-  ≃-as-≤ = record { cast = λ n≃m → ≤-intro 0 (Eq.trans AA.ident n≃m) }
+  ≃-as-≤ = As-intro λ n≃m → ≤-intro 0 (Eq.trans AA.ident n≃m)
 
 0≤n : ∀ {n} → 0 ≤ n
 0≤n {n} = ind P P0 Ps n

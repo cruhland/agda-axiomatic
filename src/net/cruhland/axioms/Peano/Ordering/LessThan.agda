@@ -1,5 +1,5 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
-open import net.cruhland.axioms.Cast as Cast using (_As_; _as_)
+open import net.cruhland.axioms.Cast as Cast using (_As_; _as_; As-intro)
 open import net.cruhland.axioms.DecEq using (_≃?_)
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_)
 open Eq.≃-Reasoning
@@ -8,23 +8,25 @@ open import net.cruhland.axioms.Peano.Addition
   using () renaming (Addition to PeanoAddition)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
+import net.cruhland.axioms.Peano.Literals as Literals
 import net.cruhland.axioms.Peano.Inspect as PeanoInspect
+open import net.cruhland.axioms.Peano.Sign using (Sign)
 open import net.cruhland.models.Function using (_∘_; _⟨→⟩_; flip)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using
   (∧-intro; _∨_; ∨-introᴸ; ∨-introᴿ; ∨-mapᴸ; ¬_; contra; Dec; dec-map; no; yes)
 
 module net.cruhland.axioms.Peano.Ordering.LessThan
-  (PB : PeanoBase) (PA : PeanoAddition PB) where
+  (PB : PeanoBase) (PA : PeanoAddition PB) (PS : Sign PB PA) where
 
 private module ℕ+ = PeanoAddition PA
-private module ℕ = PeanoBase PB
-open ℕ using (ℕ; step)
-private module ℕI = PeanoInspect PB
-open ℕI using (pred; pred-intro)
+private open module ℕ = PeanoBase PB using (ℕ; step)
+private module ℕ± = Sign PS
+private open module ℕI = PeanoInspect PB using (pred; pred-intro)
+private module ℕLit = Literals PB
 
-open import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual PB PA as ℕ≤ using
-  (_≤_; _≤?_; ≤-intro)
+open import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual PB PA PS as ℕ≤
+  using (_≤_; _≤?_; ≤-intro)
 
 infix 4 _<_ _>_ _<⁺_ _>⁺_ _≮_ _≯_ _≮⁺_ _≯⁺_
 
@@ -61,12 +63,12 @@ n<sn = record { n≤m = ℕ≤.n≤sn ; n≄m = ℕ+.n≄sn }
 
 n≮0 : ∀ {n} → n ≮ 0
 n≮0 (<-intro (≤-intro d n+d≃0) n≄0) =
-  let ∧-intro n≃0 _ = ℕ+.+-both-zero n+d≃0
+  let ∧-intro n≃0 _ = ℕ±.+-both-zero n+d≃0
    in contra n≃0 n≄0
 
 instance
   <-as-s≤ : ∀ {a b} → (a < b) As (step a ≤ b)
-  <-as-s≤ {a} {b} = record { cast = <→s≤ }
+  <-as-s≤ {a} {b} = As-intro <→s≤
     where
       <→s≤ : a < b → step a ≤ b
       <→s≤ (<-intro (≤-intro d a+d≃b) a≄b) =
@@ -96,7 +98,7 @@ instance
          in record { d = pd ; n+d≃m = sa+pd≃b }
 
   s≤-as-< : ∀ {a b} → (step a ≤ b) As (a < b)
-  s≤-as-< {a} {b} = record { cast = s≤→< }
+  s≤-as-< {a} {b} = As-intro s≤→<
     where
       s≤→< : step a ≤ b → a < b
       s≤→< sa≤b@(≤-intro d sa+d≃b) = <-intro a≤b a≄b
@@ -120,14 +122,14 @@ instance
                 ∎
 
   <-as-<⁺ : ∀ {a b} → (a < b) As (a <⁺ b)
-  <-as-<⁺ {a} {b} = record { cast = <→<⁺ }
+  <-as-<⁺ {a} {b} = As-intro <→<⁺
     where
       <→<⁺ : a < b → a <⁺ b
       <→<⁺ (<-intro a≤b@(≤-intro d a+d≃b) a≄b) =
         record { n≤m = a≤b ; d≄0 = λ d≃0 → contra (AA.idᴿ→eq a+d≃b d≃0) a≄b }
 
   <⁺-as-< : ∀ {a b} → (a <⁺ b) As (a < b)
-  <⁺-as-< {a} {b} = record { cast = <⁺→< }
+  <⁺-as-< {a} {b} = As-intro <⁺→<
     where
       <⁺→< : a <⁺ b → a < b
       <⁺→< (<⁺-intro a≤b@(≤-intro d a+d≃b) d≄0) =
@@ -138,7 +140,7 @@ instance
     where
       <⁺-trans : ∀ {n m p} → n <⁺ m → m <⁺ p → n <⁺ p
       <⁺-trans (<⁺-intro n≤m d₁≄0) (<⁺-intro m≤p d₂≄0) =
-        <⁺-intro (Eq.trans n≤m m≤p) (ℕ+.+-positive d₁≄0)
+        <⁺-intro (Eq.trans n≤m m≤p) (ℕ±.+-nonzero d₁≄0)
 
   <-transitive : Eq.Transitive _<_
   <-transitive = Eq.transitive (Cast.delegate₂ (Eq.trans {_~_ = _<⁺_}))

@@ -1,20 +1,23 @@
 module net.cruhland.axioms.Cast where
 
-record _As_ (A B : Set) : Set where
+open import Level using (_⊔_)
+
+record _As_ {α β} (A : Set α) (B : Set β) : Set (α ⊔ β) where
+  constructor As-intro
   field
     cast : A → B
 
 open _As_ {{...}} public using (cast)
 
 infixl 0 _as_
-_as_ : {A : Set} → A → (B : Set) {{_ : A As B}} → B
+_as_ : ∀ {α β} {A : Set α} → A → (B : Set β) {{_ : A As B}} → B
 x as B = cast x
 
 _value_ : (A : Set) → A → A
 A value x = x
 
 via : ({A} B {C} : Set) {{_ : A As B}} {{_ : B As C}} → A As C
-via B {C} = record { cast = λ x → (x as B) as C }
+via B {C} = As-intro λ x → (x as B) as C
 
 delegate₂ :
   {A₁ B₁ C₁ A₂ B₂ C₂ : Set} (f : A₂ → B₂ → C₂)

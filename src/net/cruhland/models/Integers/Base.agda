@@ -1,4 +1,4 @@
-open import net.cruhland.axioms.Cast using (_As_)
+open import net.cruhland.axioms.Cast using (_As_; As-intro)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.models.Literals
 
@@ -15,4 +15,4 @@ record ℤ : Set where
 
 instance
   from-ℕ : ℕ As ℤ
-  from-ℕ = record { cast = λ n → n — 0 }
+  from-ℕ = As-intro λ n → n — 0

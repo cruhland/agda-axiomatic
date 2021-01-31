@@ -8,11 +8,13 @@ open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
 open import net.cruhland.axioms.Peano.Multiplication
   using () renaming (Multiplication to PeanoMultiplication)
+open import net.cruhland.axioms.Peano.Sign using (Sign)
 
 record Exponentiation
     (PB : PeanoBase)
     (PA : PeanoAddition PB)
-    (PM : PeanoMultiplication PB PA) : Set where
+    (PS : Sign PB PA)
+    (PM : PeanoMultiplication PB PA PS) : Set where
   open PeanoBase PB using (ℕ; step; zero)
 
   infixr 8 _^_

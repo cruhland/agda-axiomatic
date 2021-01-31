@@ -1,6 +1,6 @@
 open import Relation.Nullary.Decidable using (False)
 import net.cruhland.axioms.AbstractAlgebra as AA
-open import net.cruhland.axioms.Cast as Cast using (_As_)
+open import net.cruhland.axioms.Cast as Cast using (_As_; As-intro)
 open import net.cruhland.axioms.DecEq using (_≃?_; ≄-derive)
 open import net.cruhland.axioms.Eq using (_≄_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
@@ -30,7 +30,7 @@ a //1 = a // 1 ~ ℕ.step≄zero ∘ AA.inject
 
 instance
   from-ℤ : ℤ As ℚ
-  from-ℤ = record { cast = _//1 }
+  from-ℤ = As-intro _//1
 
   from-ℕ : ℕ As ℚ
   from-ℕ = Cast.via ℤ

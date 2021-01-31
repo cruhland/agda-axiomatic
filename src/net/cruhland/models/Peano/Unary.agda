@@ -6,14 +6,18 @@ open import Data.Nat.Properties
 open import Relation.Binary.PropositionalEquality using
   (_≡_; _≢_; cong; refl; sym; ≢-sym; trans)
 import net.cruhland.axioms.AbstractAlgebra as AA
+open import net.cruhland.axioms.Cast using (_As_; As-intro)
 import net.cruhland.axioms.Eq as Eq
 import net.cruhland.axioms.Operators as Op
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base using (Peano)
+import net.cruhland.axioms.Peano.Inspect as Inspect
 open import net.cruhland.axioms.Peano.Exponentiation using (Exponentiation)
 open import net.cruhland.axioms.Peano.Multiplication using (Multiplication)
-open import net.cruhland.models.Function using (_∘_)
+open import net.cruhland.axioms.Peano.Sign using (Sign)
+open import net.cruhland.axioms.Sign using (Positive)
+open import net.cruhland.models.Function using (_∘_; id)
 
 instance
   ≡-reflexive : Eq.Reflexive _≡_
@@ -63,6 +67,17 @@ instance
 addition : Addition base
 addition = record {}
 
+module inspect = Inspect base
+
+instance
+  default-positivity = inspect.non-zero-positivity
+
+  from-n≄0 : {n : ℕ} → (n ≢ 0) As Positive n
+  from-n≄0 = As-intro id
+
+sign : Sign base addition
+sign = record {}
+
 instance
   star : Op.Star ℕ
   star = record { _*_ = _*_ }
@@ -73,13 +88,18 @@ instance
   *-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _*_
   *-substitutiveᴸ = AA.substitutive₂ λ {b = b} → cong (_* b)
 
-multiplication : Multiplication base addition
+multiplication : Multiplication base addition sign
 multiplication = record { *-stepᴸ = λ {n m} → +-comm m (n * m) }
 
-exponentiation : Exponentiation base addition multiplication
+exponentiation : Exponentiation base addition sign multiplication
 exponentiation =
   record { _^_ = _^_ ; ^-zeroᴿ = refl ; ^-stepᴿ = λ {n m} → *-comm n (n ^ m) }
 
 peanoArithmetic : PeanoArithmetic
 peanoArithmetic = record
-  { PB = base ; PA = addition ; PM = multiplication ; PE = exponentiation }
+  { PB = base
+  ; PA = addition
+  ; PS = sign
+  ; PM = multiplication
+  ; PE = exponentiation
+  }

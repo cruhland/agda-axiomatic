@@ -6,6 +6,7 @@ open import net.cruhland.axioms.Eq using
 open ≃-Reasoning
 open import net.cruhland.axioms.Operators as Op using (_+_; _*_; -_; _-_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
+import net.cruhland.axioms.Sign as Sign
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using (_∨_; ∨-introᴸ; ∨-introᴿ)
 
@@ -313,7 +314,7 @@ instance
       *-either-zero {a} {b} ab≃0 | AA.2nd a≃0 =
         ∨-introᴸ a≃0
       *-either-zero {a} {b} ab≃0
-          | AA.3rd record { n = n ; pos = n≄0 ; x≃n = a≃n—0 } =
+          | AA.3rd record { n = n ; pos = pos-n ; x≃n = a≃n—0 } =
         let nb≃0 =
               begin
                 (n as ℤ) * b
@@ -324,9 +325,9 @@ instance
               ≃⟨ ab≃0 ⟩
                 0
               ∎
-         in ∨-introᴿ (b≃0 n≄0 nb≃0)
+         in ∨-introᴿ (b≃0 (Sign.nonzero pos-n) nb≃0)
       *-either-zero {a} {b} ab≃0
-          | AA.1st record { n = n ; pos = n≄0 ; x≃-n = a≃0—n } =
+          | AA.1st record { n = n ; pos = pos-n ; x≃-n = a≃0—n } =
         let nb≃0 =
               begin
                 (n as ℤ) * b
@@ -343,4 +344,4 @@ instance
               ≃⟨⟩
                 0
               ∎
-         in ∨-introᴿ (b≃0 n≄0 nb≃0)
+         in ∨-introᴿ (b≃0 (Sign.nonzero pos-n) nb≃0)

@@ -7,10 +7,11 @@ open import net.cruhland.axioms.Eq using
 open ≃-Reasoning
 open import net.cruhland.axioms.Operators using (_+_; _*_; -_; _-_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
+import net.cruhland.axioms.Sign as Sign
 open import net.cruhland.models.Function using (flip)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using
-  (⊤; ∧-elimᴿ; ∨-introᴸ; ∨-introᴿ; ⊥-elim; ¬_; Dec; no; yes)
+  (⊤; ∧-elimᴿ; ∨-introᴸ; ∨-introᴿ; contra; ⊥-elim; ¬_; Dec; no; yes)
 
 module net.cruhland.models.Integers.Ordering (PA : PeanoArithmetic) where
 
@@ -74,11 +75,11 @@ _>_ = flip _<_
       ∎
 
 pos→< : ∀ {x y} → ℤ-.Positive (y - x) → x < y
-pos→< {x} {y} record { n = n ; pos = n≄0 ; x≃n = y-x≃n } =
+pos→< {x} {y} record { n = n ; pos = pos-n ; x≃n = y-x≃n } =
     <-intro (≤-intro n (ℤ-.≃ᴸ-subᴿ-toᴸ y-x≃n)) x≄y
   where
     x≄y : x ≄ y
-    x≄y x≃y = n≄0 (AA.inject n≃0)
+    x≄y x≃y = contra (AA.inject n≃0) (Sign.nonzero pos-n)
       where
         n≃0 =
           begin

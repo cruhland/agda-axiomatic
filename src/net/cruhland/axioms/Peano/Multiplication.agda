@@ -14,20 +14,24 @@ open import net.cruhland.axioms.Peano.Addition
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
 import net.cruhland.axioms.Peano.Inspect as PeanoInspect
+import net.cruhland.axioms.Peano.Literals as Literals
 import net.cruhland.axioms.Peano.Ordering as PeanoOrdering
+open import net.cruhland.axioms.Peano.Sign using (Sign)
 import net.cruhland.models.Function
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using
   (_∧_; ∧-elimᴿ; ∧-intro; _∨_; ∨-introᴸ; ∨-introᴿ; contra)
 
-record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
-  private module Add = PeanoAddition PA
-  open Add using (+-both-zero; Positive)
+record Multiplication
+    (PB : PeanoBase) (PA : PeanoAddition PB) (PS : Sign PB PA) : Set where
+  private module ℕ+ = PeanoAddition PA
   open PeanoBase PB using (ℕ; ind; step; step-case; zero)
   private module Inspect = PeanoInspect PB
   open Inspect using (case; case-step; case-zero; pred-intro)
-  private module ℕ≤ = PeanoOrdering PB PA
+  private module ℕLit = Literals PB
+  private module ℕ≤ = PeanoOrdering PB PA PS
   open ℕ≤ using (_<_; _<⁺_; ≤-intro; <-intro; <⁺-intro)
+  private module ℕ± = Sign PS
 
   field
     {{star}} : Op.Star ℕ
@@ -146,7 +150,7 @@ record Multiplication (PB : PeanoBase) (PA : PeanoAddition PB) : Set where
                 0
               ∎
 
-            m≃0 = ∧-elimᴿ (+-both-zero p*m+m≃0)
+            m≃0 = ∧-elimᴿ (ℕ±.+-both-zero p*m+m≃0)
 
     *-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _*_
     *-substitutiveᴿ = AA.substitutiveᴿ-from-substitutiveᴸ

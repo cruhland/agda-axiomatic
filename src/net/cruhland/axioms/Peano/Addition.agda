@@ -19,7 +19,7 @@ open import net.cruhland.models.Logic using
 record Addition (PB : PeanoBase) : Set where
   open PeanoBase PB using (ℕ; ind; step; step-case; step≄zero; zero)
   open PeanoInspect PB using (case; case-zero; case-step; decEq; pred-intro)
-  module ℕLit = PeanoLiterals PB
+  private module ℕLit = PeanoLiterals PB
 
   field
     {{plus}} : Op.Plus ℕ
@@ -203,28 +203,3 @@ record Addition (PB : PeanoBase) : Set where
         ≃˘⟨ AA.ident ⟩
           n + 0
         ∎
-
-  Positive : ℕ → Set
-  Positive n = n ≄ 0
-
-  Positive-subst : ∀ {n₁ n₂} → n₁ ≃ n₂ → Positive n₁ → Positive n₂
-  Positive-subst n₁≃n₂ n₁≄z n₂≃z = n₁≄z (trans n₁≃n₂ n₂≃z)
-
-  +-positive : ∀ {a b} → Positive a → Positive (a + b)
-  +-positive {a} {b} pos-a = ind P Pz Ps b
-    where
-      P = λ x → Positive (a + x)
-
-      Pz : P 0
-      Pz = Positive-subst (sym AA.ident) pos-a
-
-      Ps : step-case P
-      Ps {k} _ = λ a+sk≃z → step≄zero (trans AA.fnOpComm a+sk≃z)
-
-  +-both-zero : {a b : ℕ} → a + b ≃ 0 → a ≃ 0 ∧ b ≃ 0
-  +-both-zero {a} {b} a+b≃z =
-    ¬[¬a∨¬b]→a∧b (a ≃? 0) (b ≃? 0) neither-positive
-      where
-        neither-positive : ¬ (a ≄ 0 ∨ b ≄ 0)
-        neither-positive (∨-introᴸ a≄z) = +-positive a≄z a+b≃z
-        neither-positive (∨-introᴿ b≄z) = +-positive b≄z (trans AA.comm a+b≃z)

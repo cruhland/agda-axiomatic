@@ -6,9 +6,10 @@ open import net.cruhland.axioms.Eq using
 open ≃-Reasoning
 open import net.cruhland.axioms.Operators as Op using (_+_; -_; _-_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
+import net.cruhland.axioms.Sign as Sign
 open import net.cruhland.models.Function using (_∘_; _⟨→⟩_)
 open import net.cruhland.models.Literals as Literals
-open import net.cruhland.models.Logic using (⊤; ¬_)
+open import net.cruhland.models.Logic using (⊤; ¬_; contra)
 
 module net.cruhland.models.Integers.Negation (PA : PeanoArithmetic) where
 
@@ -97,21 +98,21 @@ sub-substᴿ = AA.subst₂ ∘ AA.subst₁
 record Positive (x : ℤ) : Set where
   field
     n : ℕ
-    pos : ℕ.Positive n
+    pos : Sign.Positive n
     x≃n : x ≃ (n as ℤ)
 
 record Negative (x : ℤ) : Set where
   field
     n : ℕ
-    pos : ℕ.Positive n
+    pos : Sign.Positive n
     x≃-n : x ≃ - (n as ℤ)
 
 1-Positive : Positive 1
-1-Positive = record { n = 1 ; pos = ℕ.step≄zero ; x≃n = refl }
+1-Positive = record { n = 1 ; pos = ℕ.mkPositive ℕ.step≄zero ; x≃n = refl }
 
 pos-nonzero : ∀ {a} → Positive a → a ≄ 0
-pos-nonzero (record { n = n ; pos = n≄0 ; x≃n = a≃n }) a≃0 =
-  n≄0 (AA.inject (trans (sym a≃n) a≃0))
+pos-nonzero (record { n = n ; pos = pos-n ; x≃n = a≃n }) a≃0 =
+  Sign.nonzero pos-n (AA.inject (trans (sym a≃n) a≃0))
 
 instance
   Positive-substitutive : AA.Substitutive₁ Positive _≃_ _⟨→⟩_
@@ -144,7 +145,8 @@ trichotomy x@(x⁺ — x⁻) = record { at-least-one = one≤ ; at-most-one = on
               ≃˘⟨ AA.ident ⟩
                 0 + x⁻
               ∎
-         in AA.1st (record { n = n ; pos = n≄0 ; x≃-n = ≃ᶻ-intro x⁺+n≃0+x⁻ })
+            pos-n = ℕ.mkPositive n≄0
+         in AA.1st (record { n = n ; pos = pos-n ; x≃-n = ≃ᶻ-intro x⁺+n≃0+x⁻ })
     one≤ | AA.2nd x⁺≃x⁻ =
       AA.2nd (≃ᶻ-intro (trans AA.ident (trans x⁺≃x⁻ (sym AA.ident))))
     one≤ | AA.3rd x⁺>x⁻ =
@@ -159,12 +161,13 @@ trichotomy x@(x⁺ — x⁻) = record { at-least-one = one≤ ; at-most-one = on
             ≃⟨ AA.comm ⟩
               n + x⁻
             ∎
-       in AA.3rd (record { n = n ; pos = n≄0 ; x≃n = ≃ᶻ-intro x⁺—x⁻≃n })
+          pos-n = ℕ.mkPositive n≄0
+       in AA.3rd (record { n = n ; pos = pos-n ; x≃n = ≃ᶻ-intro x⁺—x⁻≃n })
 
     one≮ : ¬ AA.TwoOfThree (Negative x) (x ≃ 0) (Positive x)
     one≮ (AA.2∧3
             (≃ᶻ-intro x⁺+0≃0+x⁻)
-            record { n = n ; pos = n≄0 ; x≃n = ≃ᶻ-intro x⁺+0≃n+x⁻ }) =
+            record { n = n ; pos = pos-n ; x≃n = ≃ᶻ-intro x⁺+0≃n+x⁻ }) =
       let x⁻+n≃x⁻+0 =
             begin
               x⁻ + n
@@ -177,14 +180,14 @@ trichotomy x@(x⁺ — x⁻) = record { at-least-one = one≤ ; at-most-one = on
             ≃⟨ AA.comm ⟩
               x⁻ + 0
             ∎
-       in n≄0 (AA.cancel x⁻+n≃x⁻+0)
+       in contra (AA.cancel x⁻+n≃x⁻+0) (Sign.nonzero pos-n)
     one≮ (AA.1∧2
-            record { n = n ; pos = n≄0 ; x≃-n = ≃ᶻ-intro x⁺+n≃x⁻ }
+            record { n = n ; pos = pos-n ; x≃-n = ≃ᶻ-intro x⁺+n≃x⁻ }
             (≃ᶻ-intro x⁺+0≃x⁻)) =
-      n≄0 (AA.cancel (trans x⁺+n≃x⁻ (sym x⁺+0≃x⁻)))
+      contra (AA.cancel (trans x⁺+n≃x⁻ (sym x⁺+0≃x⁻))) (Sign.nonzero pos-n)
     one≮ (AA.1∧3
-            record { n = n₂ ; pos = n₂≄0 ; x≃-n = ≃ᶻ-intro x⁺+n₂≃0+x⁻ }
-            record { n = n₁ ; pos = n₁≄0 ; x≃n = ≃ᶻ-intro x⁺+0≃n₁+x⁻ }) =
+            record { n = n₂ ; pos = pos-n₂ ; x≃-n = ≃ᶻ-intro x⁺+n₂≃0+x⁻ }
+            record { n = n₁ ; pos = pos-n₁ ; x≃n = ≃ᶻ-intro x⁺+0≃n₁+x⁻ }) =
       let x⁺+[n₂+n₁]≃x⁺+0 =
             begin
               x⁺ + (n₂ + n₁)
@@ -199,4 +202,5 @@ trichotomy x@(x⁺ — x⁻) = record { at-least-one = one≤ ; at-most-one = on
             ≃˘⟨ x⁺+0≃n₁+x⁻ ⟩
               x⁺ + 0
             ∎
-       in ℕ.+-positive n₂≄0 (AA.cancel x⁺+[n₂+n₁]≃x⁺+0)
+          n₂+n₁≄0 = Sign.nonzero (ℕ.+-positive pos-n₂)
+       in contra (AA.cancel x⁺+[n₂+n₁]≃x⁺+0) n₂+n₁≄0

@@ -7,19 +7,22 @@ import net.cruhland.axioms.Peano.Inspect as Inspect
 import net.cruhland.axioms.Peano.Literals as Literals
 open import net.cruhland.axioms.Peano.Multiplication using (Multiplication)
 import net.cruhland.axioms.Peano.Ordering as Ordering
+open import net.cruhland.axioms.Peano.Sign using (Sign)
 
 -- Bundle all child modules together for convenience
 record PeanoArithmetic : Set₁ where
   field
     PB : Peano
     PA : Addition PB
-    PM : Multiplication PB PA
-    PE : Exponentiation PB PA PM
+    PS : Sign PB PA
+    PM : Multiplication PB PA PS
+    PE : Exponentiation PB PA PS PM
 
   open Addition PA public
   open Exponentiation PE public
   open Inspect PB public
   open Literals PB public
   open Multiplication PM public
-  open Ordering PB PA public
+  open Ordering PB PA PS public
   open Peano PB public
+  open Sign PS public
