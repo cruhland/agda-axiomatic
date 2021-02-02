@@ -51,6 +51,17 @@ base = record
   ; ind = ind
   }
 
+module inspect = Inspect base
+
+instance
+  default-positivity = inspect.non-zero-positivity
+
+  from-n≄0 : {n : ℕ} → (n ≢ 0) As Positive n
+  from-n≄0 = As-intro id
+
+sign : Sign base
+sign = record {}
+
 instance
   plus : Op.Plus ℕ
   plus = record { _+_ = _+_ }
@@ -64,19 +75,8 @@ instance
   +-fnOpCommutative-stepᴸ : AA.FnOpCommutative AA.handᴸ step _+_
   +-fnOpCommutative-stepᴸ = AA.fnOpCommutative refl
 
-addition : Addition base
+addition : Addition base sign
 addition = record {}
-
-module inspect = Inspect base
-
-instance
-  default-positivity = inspect.non-zero-positivity
-
-  from-n≄0 : {n : ℕ} → (n ≢ 0) As Positive n
-  from-n≄0 = As-intro id
-
-sign : Sign base addition
-sign = record {}
 
 instance
   star : Op.Star ℕ
@@ -88,10 +88,10 @@ instance
   *-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _*_
   *-substitutiveᴸ = AA.substitutive₂ λ {b = b} → cong (_* b)
 
-multiplication : Multiplication base addition sign
+multiplication : Multiplication base sign addition
 multiplication = record { *-stepᴸ = λ {n m} → +-comm m (n * m) }
 
-exponentiation : Exponentiation base addition sign multiplication
+exponentiation : Exponentiation base sign addition multiplication
 exponentiation =
   record { _^_ = _^_ ; ^-zeroᴿ = refl ; ^-stepᴿ = λ {n m} → *-comm n (n ^ m) }
 

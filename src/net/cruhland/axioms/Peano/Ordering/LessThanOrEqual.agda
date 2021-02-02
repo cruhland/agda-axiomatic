@@ -14,11 +14,10 @@ open import net.cruhland.models.Logic using
   (⊤; ∧-intro; ¬_; contra; Dec; dec-map; no; yes)
 
 module net.cruhland.axioms.Peano.Ordering.LessThanOrEqual
-  (PB : PeanoBase) (PA : PeanoAddition PB) (PS : Sign PB PA) where
+  (PB : PeanoBase) (PS : Sign PB) (PA : PeanoAddition PB PS) where
 
 private module ℕ+ = PeanoAddition PA
 private module ℕ = PeanoBase PB
-private module ℕ± = Sign PS
 open ℕ using (ℕ; ind; step; step-case)
 import net.cruhland.axioms.Peano.Inspect PB as ℕI
 import net.cruhland.axioms.Peano.Literals PB as ℕLit
@@ -64,7 +63,7 @@ instance
               ≃˘⟨ AA.ident ⟩
                 n + 0
               ∎
-            ∧-intro a≃0 _ = ℕ±.+-both-zero (AA.cancel n+a+b≃n+0)
+            ∧-intro a≃0 _ = ℕ+.+-both-zero (AA.cancel n+a+b≃n+0)
          in begin
               n
             ≃˘⟨ AA.ident ⟩

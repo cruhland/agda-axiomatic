@@ -12,9 +12,9 @@ open import net.cruhland.axioms.Peano.Sign using (Sign)
 
 record Exponentiation
     (PB : PeanoBase)
-    (PA : PeanoAddition PB)
-    (PS : Sign PB PA)
-    (PM : PeanoMultiplication PB PA PS) : Set where
+    (PS : Sign PB)
+    (PA : PeanoAddition PB PS)
+    (PM : PeanoMultiplication PB PS PA) : Set where
   open PeanoBase PB using (ℕ; step; zero)
 
   infixr 8 _^_

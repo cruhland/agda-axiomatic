@@ -23,15 +23,14 @@ open import net.cruhland.models.Logic using
   (_∧_; ∧-elimᴿ; ∧-intro; _∨_; ∨-introᴸ; ∨-introᴿ; contra)
 
 record Multiplication
-    (PB : PeanoBase) (PA : PeanoAddition PB) (PS : Sign PB PA) : Set where
+    (PB : PeanoBase) (PS : Sign PB) (PA : PeanoAddition PB PS) : Set where
   private module ℕ+ = PeanoAddition PA
   open PeanoBase PB using (ℕ; ind; step; step-case; zero)
   private module Inspect = PeanoInspect PB
   open Inspect using (case; case-step; case-zero; pred-intro)
   private module ℕLit = Literals PB
-  private module ℕ≤ = PeanoOrdering PB PA PS
+  private module ℕ≤ = PeanoOrdering PB PS PA
   open ℕ≤ using (_<_; _<⁺_; ≤-intro; <-intro; <⁺-intro)
-  private module ℕ± = Sign PS
 
   field
     {{star}} : Op.Star ℕ
@@ -150,7 +149,7 @@ record Multiplication
                 0
               ∎
 
-            m≃0 = ∧-elimᴿ (ℕ±.+-both-zero p*m+m≃0)
+            m≃0 = ∧-elimᴿ (ℕ+.+-both-zero p*m+m≃0)
 
     *-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _*_
     *-substitutiveᴿ = AA.substitutiveᴿ-from-substitutiveᴸ

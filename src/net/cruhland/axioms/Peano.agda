@@ -13,16 +13,16 @@ open import net.cruhland.axioms.Peano.Sign using (Sign)
 record PeanoArithmetic : Set₁ where
   field
     PB : Peano
-    PA : Addition PB
-    PS : Sign PB PA
-    PM : Multiplication PB PA PS
-    PE : Exponentiation PB PA PS PM
+    PS : Sign PB
+    PA : Addition PB PS
+    PM : Multiplication PB PS PA
+    PE : Exponentiation PB PS PA PM
 
   open Addition PA public
   open Exponentiation PE public
   open Inspect PB public
   open Literals PB public
   open Multiplication PM public
-  open Ordering PB PA PS public
+  open Ordering PB PS PA public
   open Peano PB public
   open Sign PS public

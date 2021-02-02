@@ -17,15 +17,14 @@ open import net.cruhland.models.Logic using
   (∧-intro; _∨_; ∨-introᴸ; ∨-introᴿ; ∨-mapᴸ; ¬_; contra; Dec; dec-map; no; yes)
 
 module net.cruhland.axioms.Peano.Ordering.LessThan
-  (PB : PeanoBase) (PA : PeanoAddition PB) (PS : Sign PB PA) where
+  (PB : PeanoBase) (PS : Sign PB) (PA : PeanoAddition PB PS) where
 
 private module ℕ+ = PeanoAddition PA
 private open module ℕ = PeanoBase PB using (ℕ; step)
-private module ℕ± = Sign PS
 private open module ℕI = PeanoInspect PB using (pred; pred-intro)
 private module ℕLit = Literals PB
 
-open import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual PB PA PS as ℕ≤
+open import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual PB PS PA as ℕ≤
   using (_≤_; _≤?_; ≤-intro)
 
 infix 4 _<_ _>_ _<⁺_ _>⁺_ _≮_ _≯_ _≮⁺_ _≯⁺_
@@ -63,7 +62,7 @@ n<sn = record { n≤m = ℕ≤.n≤sn ; n≄m = ℕ+.n≄sn }
 
 n≮0 : ∀ {n} → n ≮ 0
 n≮0 (<-intro (≤-intro d n+d≃0) n≄0) =
-  let ∧-intro n≃0 _ = ℕ±.+-both-zero n+d≃0
+  let ∧-intro n≃0 _ = ℕ+.+-both-zero n+d≃0
    in contra n≃0 n≄0
 
 instance
@@ -140,7 +139,7 @@ instance
     where
       <⁺-trans : ∀ {n m p} → n <⁺ m → m <⁺ p → n <⁺ p
       <⁺-trans (<⁺-intro n≤m d₁≄0) (<⁺-intro m≤p d₂≄0) =
-        <⁺-intro (Eq.trans n≤m m≤p) (ℕ±.+-nonzero d₁≄0)
+        <⁺-intro (Eq.trans n≤m m≤p) (ℕ+.+-nonzero d₁≄0)
 
   <-transitive : Eq.Transitive _<_
   <-transitive = Eq.transitive (Cast.delegate₂ (Eq.trans {_~_ = _<⁺_}))
