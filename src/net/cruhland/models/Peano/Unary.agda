@@ -67,7 +67,7 @@ instance
   plus = record { _+_ = _+_ }
 
   +-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _+_
-  +-substitutiveᴸ = AA.substitutive₂ λ {b = b} → cong (_+ b)
+  +-substitutiveᴸ = AA.substitutive₂ λ {_ _ b} → cong (_+ b)
 
   +-identityᴸ : AA.Identity AA.handᴸ _+_ 0
   +-identityᴸ = AA.identity refl
@@ -86,7 +86,7 @@ instance
   *-absorptiveᴸ = AA.absorptive refl
 
   *-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _*_
-  *-substitutiveᴸ = AA.substitutive₂ λ {b = b} → cong (_* b)
+  *-substitutiveᴸ = AA.substitutive₂ λ {_ _ b} → cong (_* b)
 
 multiplication : Multiplication base sign addition
 multiplication = record { *-stepᴸ = λ {n m} → +-comm m (n * m) }
