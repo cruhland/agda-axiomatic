@@ -28,6 +28,17 @@ private
 
   open IsCompatible₂ {{...}} using (isCompat₂)
 
+  record Semicompatible₂
+      (hand : Hand) {A B : Set}
+        (f : A → B) (_⊙_ : A → A → A) (_~_ : B → B → Set) : Set where
+    constructor semicompatible₂
+    _<~>_ = forHand hand _~_
+    field
+      _⊕_ : B → B → B
+      semicompat₂ : ∀ {a b} → (f (a ⊙ b)) <~> (f a ⊕ f b)
+
+  open Semicompatible₂ {{...}} using (semicompat₂)
+
 record Compatible₁ {A B : Set} {{_ : Eq B}} (f : A → B) (g : A → A) : Set where
   constructor compatible₁
   field
@@ -35,6 +46,13 @@ record Compatible₁ {A B : Set} {{_ : Eq B}} (f : A → B) (g : A → A) : Set 
     compat₁ : ∀ {a} → f (g a) ≃ h (f a)
 
 open Compatible₁ {{...}} public using (compat₁)
+
+record Preserves {A : Set} (P : A → Set) (_⊙_ : A → A → A) : Set where
+  constructor preserves
+  field
+    pres : ∀ {a b} → P a → P b → P (a ⊙ b)
+
+open Preserves {{...}} public using (pres)
 
 record Compatible₂
     {A B : Set} {{_ : Eq B}} (f : A → B) (_⊙_ : A → A → A) : Set where
@@ -114,6 +132,8 @@ module _
     {{_ : ∀ {b} → IsCompatible₁ f (_⊙ b) (_⊕ f b) _~_}} →
       IsCompatible₂ f _⊙_ _⊕_ _~_
   isCompatible₂-from-isCompatible₁ = isCompatible₂ isCompat₁
+
+-- TODO Equivalences for Semicompatible₂ and Preserves
 
 module _ {A B : Set} {f : A → B} {_⊙_ : A → A → A} {{_ : Eq B}} where
 

@@ -39,7 +39,7 @@ instance
               (b⁺ + a⁺) + (a⁻ + b⁻)
             ∎
 
-  +-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _+_
+  +-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _+_ _≃_ _≃_
   +-substitutiveᴸ = AA.substitutive₂ +-substᴸ
     where
       +-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ + b ≃ a₂ + b
@@ -57,10 +57,10 @@ instance
               (a₂⁺ + b⁺) + (a₁⁻ + b⁻)
             ∎
 
-  +-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _+_
+  +-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _+_ _≃_ _≃_
   +-substitutiveᴿ = AA.substitutiveᴿ-from-substitutiveᴸ {A = ℤ}
 
-  +-substitutive₂² : AA.Substitutive₂² _+_
+  +-substitutive₂² : AA.Substitutive₂² _+_ _≃_ _≃_
   +-substitutive₂² = AA.substitutive₂² {A = ℤ}
 
   +-associative : AA.Associative _+_

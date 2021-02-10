@@ -64,17 +64,17 @@ instance
   from-ℕ-injective : AA.Injective (_as ℤ) _≃_ _≃_
   from-ℕ-injective = AA.injective {A = ℕ} (AA.cancel ∘ _≃ᶻ_.elim)
 
-  ℤ-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _—_
+  ℤ-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _—_ _≃_ _≃_
   ℤ-substitutiveᴸ = AA.substitutive₂ ℤ-substᴸ
     where
       ℤ-substᴸ : ∀ {n₁ n₂ m} → n₁ ≃ n₂ → n₁ — m ≃ n₂ — m
       ℤ-substᴸ n₁≃n₂ = ≃ᶻ-intro (AA.subst₂ n₁≃n₂)
 
-  ℤ-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _—_
+  ℤ-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _—_ _≃_ _≃_
   ℤ-substitutiveᴿ = AA.substitutive₂ ℤ-substᴿ
     where
       ℤ-substᴿ : ∀ {n₁ n₂ m} → n₁ ≃ n₂ → m — n₁ ≃ m — n₂
       ℤ-substᴿ n₁≃n₂ = ≃ᶻ-intro (AA.subst₂ (sym n₁≃n₂))
 
-  ℤ-substitutive₂² : AA.Substitutive₂² _—_
+  ℤ-substitutive₂² : AA.Substitutive₂² _—_ _≃_ _≃_
   ℤ-substitutive₂² = record {}

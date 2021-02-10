@@ -1,7 +1,7 @@
 module net.cruhland.axioms.Peano.Exponentiation where
 
 open import net.cruhland.axioms.Eq using (_≃_)
-open import net.cruhland.axioms.Operators using (_*_)
+open import net.cruhland.axioms.Operators as Op using (_*_; _^_)
 open import net.cruhland.axioms.Peano.Addition
   using () renaming (Addition to PeanoAddition)
 open import net.cruhland.axioms.Peano.Base
@@ -17,9 +17,7 @@ record Exponentiation
     (PM : PeanoMultiplication PB PS PA) : Set where
   open PeanoBase PB using (ℕ; step; zero)
 
-  infixr 8 _^_
-
   field
-    _^_ : ℕ → ℕ → ℕ
+    {{caret}} : Op.Caret ℕ
     ^-zeroᴿ : ∀ {n} → n ^ zero ≃ step zero
     ^-stepᴿ : ∀ {n m} → n ^ step m ≃ n ^ m * n

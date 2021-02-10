@@ -26,7 +26,7 @@ record Addition (PB : PeanoBase) (PS : Sign PB) : Set where
 
   field
     {{plus}} : Op.Plus ℕ
-    {{+-substitutiveᴸ}} : AA.Substitutive₂ AA.handᴸ _+_
+    {{+-substitutiveᴸ}} : AA.Substitutive₂ AA.handᴸ _+_ _≃_ _≃_
     {{+-identityᴸ}} : AA.Identity AA.handᴸ _+_ 0
     {{+-fnOpCommutative-stepᴸ}} : AA.FnOpCommutative AA.handᴸ step _+_
 
@@ -107,10 +107,10 @@ record Addition (PB : PeanoBase) (PS : Sign PB) : Set where
                 m + step k
               ∎
 
-    +-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _+_
+    +-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _+_ _≃_ _≃_
     +-substitutiveᴿ = AA.substitutiveᴿ-from-substitutiveᴸ
 
-    +-substitutive₂² : AA.Substitutive₂² _+_
+    +-substitutive₂² : AA.Substitutive₂² _+_ _≃_ _≃_
     +-substitutive₂² = AA.substitutive₂²
 
     +-associative : AA.Associative _+_

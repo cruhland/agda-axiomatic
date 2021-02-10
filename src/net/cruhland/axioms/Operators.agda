@@ -1,6 +1,7 @@
 module net.cruhland.axioms.Operators where
 
 record Plus (A : Set) : Set where
+  constructor plus
   infixl 6 _+_
   field
     _+_ : A → A → A
@@ -8,6 +9,7 @@ record Plus (A : Set) : Set where
 open Plus {{...}} public
 
 record Star (A : Set) : Set where
+  constructor star
   infixl 7 _*_
   field
     _*_ : A → A → A
@@ -15,6 +17,7 @@ record Star (A : Set) : Set where
 open Star {{...}} public
 
 record Dashᴸ (A : Set) : Set where
+  constructor dashᴸ
   infix 8 -_
   field
     -_ : A → A
@@ -22,6 +25,7 @@ record Dashᴸ (A : Set) : Set where
 open Dashᴸ {{...}} public
 
 record Dash₂ (A : Set) : Set where
+  constructor dash₂
   infixl 6 _-_
   field
     _-_ : A → A → A
@@ -29,4 +33,12 @@ record Dash₂ (A : Set) : Set where
 open Dash₂ {{...}} public
 
 subtraction : {A : Set} {{_ : Plus A}} {{_ : Dashᴸ A}} → Dash₂ A
-subtraction = record { _-_ = λ x y → x + - y }
+subtraction = dash₂ λ x y → x + - y
+
+record Caret (A : Set) : Set where
+  constructor caret
+  infixr 8 _^_
+  field
+    _^_ : A → A → A
+
+open Caret {{...}} public

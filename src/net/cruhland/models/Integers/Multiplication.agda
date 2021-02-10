@@ -49,7 +49,7 @@ instance
               (b⁺ * a⁺ + b⁻ * a⁻) + (a⁺ * b⁻ + a⁻ * b⁺)
             ∎
 
-  *-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _*_
+  *-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _*_ _≃_ _≃_
   *-substitutiveᴸ = AA.substitutive₂ *-substᴸ
     where
       *-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ * b ≃ a₂ * b
@@ -82,10 +82,10 @@ instance
               (a₂⁺ * b⁺ + a₂⁻ * b⁻) + (a₁⁺ * b⁻ + a₁⁻ * b⁺)
             ∎
 
-  *-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _*_
+  *-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _*_ _≃_ _≃_
   *-substitutiveᴿ = AA.substitutiveᴿ-from-substitutiveᴸ {A = ℤ}
 
-  *-substitutive₂² : AA.Substitutive₂² _*_
+  *-substitutive₂² : AA.Substitutive₂² _*_ _≃_ _≃_
   *-substitutive₂² = AA.substitutive₂² {A = ℤ}
 
   *-compatible-ℕ : AA.Compatible₂ (_as ℤ) _*_
@@ -207,7 +207,7 @@ neg-mult {a⁺ — a⁻} = AA.[a≃b][c≃d] x≃0y+1x x≃0y+1x
     c * (a + - b)
   ≃⟨ AA.distrib ⟩
     c * a + c * - b
-  ≃˘⟨ AA.substᴿ {_⊙_ = _+_} AA.fnOpComm ⟩
+  ≃˘⟨ AA.substᴿ {A = ℤ} AA.fnOpComm ⟩
     c * a + - (c * b)
   ≃⟨⟩
     c * a - c * b

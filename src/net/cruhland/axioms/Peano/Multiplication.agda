@@ -34,7 +34,7 @@ record Multiplication
 
   field
     {{star}} : Op.Star ℕ
-    {{*-substitutiveᴸ}} : AA.Substitutive₂ AA.handᴸ _*_
+    {{*-substitutiveᴸ}} : AA.Substitutive₂ AA.handᴸ _*_ _≃_ _≃_
     {{*-absorptiveᴸ}} : AA.Absorptive AA.handᴸ _*_ 0
     *-stepᴸ : ∀ {n m} → step n * m ≃ n * m + m
 
@@ -151,10 +151,10 @@ record Multiplication
 
             m≃0 = ∧-elimᴿ (ℕ+.+-both-zero p*m+m≃0)
 
-    *-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _*_
+    *-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _*_ _≃_ _≃_
     *-substitutiveᴿ = AA.substitutiveᴿ-from-substitutiveᴸ
 
-    *-substitutive₂² : AA.Substitutive₂² _*_
+    *-substitutive₂² : AA.Substitutive₂² _*_ _≃_ _≃_
     *-substitutive₂² = AA.substitutive₂²
 
     *-distributive-+ᴸ : AA.Distributive AA.handᴸ _*_ _+_

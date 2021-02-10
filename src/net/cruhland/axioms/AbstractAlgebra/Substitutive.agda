@@ -39,12 +39,12 @@ record Substitutiveᶜ
 open Substitutiveᶜ {{...}} public using (substᶜ)
 
 record Substitutive₂
-    (hand : Hand) {A B : Set} {{_ : Eq A}} {{_ : Eq B}} (_⊙_ : A → A → B)
-      : Set where
+    (hand : Hand) {β} {A : Set} {B : Set β}
+      (_⊙_ : A → A → B) (_~_ : A → A → Set) (_≈_ : B → B → Set) : Set where
   constructor substitutive₂
   _<⊙>_ = forHand hand _⊙_
   field
-    subst₂ : ∀ {a₁ a₂ b} → a₁ ≃ a₂ → a₁ <⊙> b ≃ a₂ <⊙> b
+    subst₂ : ∀ {a₁ a₂ b} → a₁ ~ a₂ → (a₁ <⊙> b) ≈ (a₂ <⊙> b)
 
 open Substitutive₂ {{...}} public using (subst₂)
 
@@ -53,20 +53,21 @@ substᴿ = subst₂ {handᴿ}
 
 substitutiveᴿ-from-substitutiveᴸ :
   {A : Set} {_⊙_ : A → A → A}
-    {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Substitutive₂ handᴸ _⊙_}} →
-      Substitutive₂ handᴿ _⊙_
+    {{_ : Eq A}} {{_ : Commutative _⊙_}}
+      {{_ : Substitutive₂ handᴸ _⊙_ _≃_ _≃_}} → Substitutive₂ handᴿ _⊙_ _≃_ _≃_
 substitutiveᴿ-from-substitutiveᴸ = substitutive₂ (with-comm ∘ subst₂)
 
 record Substitutive₂²
-    {A B : Set} {{_ : Eq A}} {{_ : Eq B}} (_⊙_ : A → A → B) : Set where
+    {β} {A : Set} {B : Set β}
+      (_⊙_ : A → A → B) (_~_ : A → A → Set) (_≈_ : B → B → Set) : Set where
   constructor substitutive₂²
   field
-    {{substitutiveᴸ}} : Substitutive₂ handᴸ _⊙_
-    {{substitutiveᴿ}} : Substitutive₂ handᴿ _⊙_
+    {{substitutiveᴸ}} : Substitutive₂ handᴸ _⊙_ _~_ _≈_
+    {{substitutiveᴿ}} : Substitutive₂ handᴿ _⊙_ _~_ _≈_
 
 [a≃b][c≃d] :
   {A B : Set} {_⊙_ : A → A → B}
-    {{_ : Eq A}} {{_ : Eq B}} {{_ : Substitutive₂² _⊙_}} →
+    {{_ : Eq A}} {{_ : Eq B}} {{_ : Substitutive₂² _⊙_ _≃_ _≃_}} →
       ∀ {a b c d} → a ≃ b → c ≃ d → a ⊙ c ≃ b ⊙ d
 [a≃b][c≃d] {A} {B} {_⊙_} {a} {b} {c} {d} a≃b c≃d =
   begin

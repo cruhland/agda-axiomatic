@@ -64,9 +64,9 @@ sign = record {}
 
 instance
   plus : Op.Plus ℕ
-  plus = record { _+_ = _+_ }
+  plus = Op.plus _+_
 
-  +-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _+_
+  +-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _+_ _≡_ _≡_
   +-substitutiveᴸ = AA.substitutive₂ λ {_ _ b} → cong (_+ b)
 
   +-identityᴸ : AA.Identity AA.handᴸ _+_ 0
@@ -80,20 +80,24 @@ addition = record {}
 
 instance
   star : Op.Star ℕ
-  star = record { _*_ = _*_ }
+  star = Op.star _*_
 
   *-absorptiveᴸ : AA.Absorptive AA.handᴸ _*_ 0
   *-absorptiveᴸ = AA.absorptive refl
 
-  *-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _*_
+  *-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _*_ _≡_ _≡_
   *-substitutiveᴸ = AA.substitutive₂ λ {_ _ b} → cong (_* b)
 
 multiplication : Multiplication base sign addition
 multiplication = record { *-stepᴸ = λ {n m} → +-comm m (n * m) }
 
+instance
+  caret : Op.Caret ℕ
+  caret = Op.caret _^_
+
 exponentiation : Exponentiation base sign addition multiplication
 exponentiation =
-  record { _^_ = _^_ ; ^-zeroᴿ = refl ; ^-stepᴿ = λ {n m} → *-comm n (n ^ m) }
+  record { ^-zeroᴿ = refl ; ^-stepᴿ = λ {n m} → *-comm n (n ^ m) }
 
 peanoArithmetic : PeanoArithmetic
 peanoArithmetic = record
