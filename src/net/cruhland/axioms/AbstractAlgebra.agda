@@ -14,12 +14,14 @@ open import net.cruhland.axioms.AbstractAlgebra.Substitutive public
 open import net.cruhland.axioms.AbstractAlgebra.Swappable public
 
 record Associative {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set where
+  constructor associative
   field
     assoc : ∀ {a b c} → (a ⊙ b) ⊙ c ≃ a ⊙ (b ⊙ c)
 
 open Associative {{...}} public using (assoc)
 
 record Antisymmetric {A : Set} {{eq : Eq A}} (_~_ : A → A → Set) : Set where
+  constructor antisymmetric
   field
     antisym : ∀ {a b} → a ~ b → b ~ a → a ≃ b
 
@@ -36,6 +38,7 @@ data TwoOfThree (A B C : Set) : Set where
   2∧3 : B → C → TwoOfThree A B C
 
 record ExactlyOneOfThree (A B C : Set) : Set where
+  constructor exactlyOneOfThree
   field
     at-least-one : OneOfThree A B C
     at-most-one : ¬ TwoOfThree A B C
