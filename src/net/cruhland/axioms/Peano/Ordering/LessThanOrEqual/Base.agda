@@ -38,44 +38,47 @@ record LteBase : Set₁ where
     0≤n : ∀ {n : ℕ} → 0 ≤ n
     ≤-step : ∀ {n m} → n ≤ m → n ≤ step m
 
-instance
-  lessThanOrEqual-+d≃ : LessThanOrEqual ℕ
-  lessThanOrEqual-+d≃ = record { _≤_ = _+d≃_ }
+open LteBase {{...}} public using (≤-intro-+d≃; ≤-elim-+d≃; 0≤n; ≤-step)
 
-  substitutive-+d≃-≃ᴸ : AA.Substitutive₂ AA.handᴸ _+d≃_ _≃_ _⟨→⟩_
-  substitutive-+d≃-≃ᴸ = AA.substitutive₂ +d≃-substᴸ
-    where
-      +d≃-substᴸ : ∀ {n₁ n₂ m} → n₁ ≃ n₂ → n₁ +d≃ m → n₂ +d≃ m
-      +d≃-substᴸ n₁≃n₂ (+d≃-intro n₁+d≃m) =
-        +d≃-intro (Eq.trans (AA.subst₂ (Eq.sym n₁≃n₂)) n₁+d≃m)
+private
+  instance
+    lessThanOrEqual-+d≃ : LessThanOrEqual ℕ
+    lessThanOrEqual-+d≃ = record { _≤_ = _+d≃_ }
 
-  substitutive-+d≃-≃ᴿ : AA.Substitutive₂ AA.handᴿ _+d≃_ _≃_ _⟨→⟩_
-  substitutive-+d≃-≃ᴿ = AA.substitutive₂ +d≃-substᴿ
-    where
-      +d≃-substᴿ : ∀ {n₁ n₂ m} → n₁ ≃ n₂ → m +d≃ n₁ → m +d≃ n₂
-      +d≃-substᴿ n₁≃n₂ (+d≃-intro {d} m+d≃n₁) =
-        +d≃-intro (Eq.trans m+d≃n₁ n₁≃n₂)
+    substitutive-+d≃-≃ᴸ : AA.Substitutive₂ AA.handᴸ _+d≃_ _≃_ _⟨→⟩_
+    substitutive-+d≃-≃ᴸ = AA.substitutive₂ +d≃-substᴸ
+      where
+        +d≃-substᴸ : ∀ {n₁ n₂ m} → n₁ ≃ n₂ → n₁ +d≃ m → n₂ +d≃ m
+        +d≃-substᴸ n₁≃n₂ (+d≃-intro n₁+d≃m) =
+          +d≃-intro (Eq.trans (AA.subst₂ (Eq.sym n₁≃n₂)) n₁+d≃m)
 
-  substitutive-+d≃-≃ : AA.Substitutive₂² _+d≃_ _≃_ _⟨→⟩_
-  substitutive-+d≃-≃ = AA.substitutive₂²
+    substitutive-+d≃-≃ᴿ : AA.Substitutive₂ AA.handᴿ _+d≃_ _≃_ _⟨→⟩_
+    substitutive-+d≃-≃ᴿ = AA.substitutive₂ +d≃-substᴿ
+      where
+        +d≃-substᴿ : ∀ {n₁ n₂ m} → n₁ ≃ n₂ → m +d≃ n₁ → m +d≃ n₂
+        +d≃-substᴿ n₁≃n₂ (+d≃-intro {d} m+d≃n₁) =
+          +d≃-intro (Eq.trans m+d≃n₁ n₁≃n₂)
 
-  reflexive-+d≃ : Eq.Reflexive _+d≃_
-  reflexive-+d≃ = Eq.reflexive (+d≃-intro AA.ident)
+    substitutive-+d≃-≃ : AA.Substitutive₂² _+d≃_ _≃_ _⟨→⟩_
+    substitutive-+d≃-≃ = AA.substitutive₂²
 
-  substitutive-+d≃-step : AA.Substitutive₁ step _+d≃_ _+d≃_
-  substitutive-+d≃-step = AA.substitutive₁ +d≃-subst-step
-    where
-      +d≃-subst-step : ∀ {n m} → n +d≃ m → step n +d≃ step m
-      +d≃-subst-step {n} {m} (+d≃-intro {d} n+d≃m) =
-        let sn+d≃sm =
-              begin
-                step n + d
-              ≃˘⟨ AA.fnOpComm ⟩
-                step (n + d)
-              ≃⟨ AA.subst₁ n+d≃m ⟩
-                step m
-              ∎
-         in +d≃-intro sn+d≃sm
+    reflexive-+d≃ : Eq.Reflexive _+d≃_
+    reflexive-+d≃ = Eq.reflexive (+d≃-intro AA.ident)
+
+    substitutive-+d≃-step : AA.Substitutive₁ step _+d≃_ _+d≃_
+    substitutive-+d≃-step = AA.substitutive₁ +d≃-subst-step
+      where
+        +d≃-subst-step : ∀ {n m} → n +d≃ m → step n +d≃ step m
+        +d≃-subst-step {n} {m} (+d≃-intro {d} n+d≃m) =
+          let sn+d≃sm =
+                begin
+                  step n + d
+                ≃˘⟨ AA.fnOpComm ⟩
+                  step (n + d)
+                ≃⟨ AA.subst₁ n+d≃m ⟩
+                  step m
+                ∎
+           in +d≃-intro sn+d≃sm
 
 0+d≃n : ∀ {n} → 0 +d≃ n
 0+d≃n = +d≃-intro AA.ident
