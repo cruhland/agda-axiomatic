@@ -18,27 +18,28 @@ private module ℕ+ = Addition PA
 import net.cruhland.axioms.Peano.Inspect PB as ℕI
 import net.cruhland.axioms.Peano.Literals PB as ℕLit
 
-infix 4 _+d≃_
-record _+d≃_ (n m : ℕ) : Set where
-  constructor +d≃-intro
-  field
-    {d} : ℕ
-    n+d≃m : n + d ≃ m
-
 record LteBase : Set₁ where
   field
     {{lessThanOrEqual}} : LessThanOrEqual ℕ
     {{substitutive-≃}} : AA.Substitutive₂² _≤_ _≃_ _⟨→⟩_
     {{reflexive}} : Eq.Reflexive _≤_
 
-    ≤-intro-+d≃ : ∀ {n m} → n +d≃ m → n ≤ m
-    ≤-elim-+d≃ : ∀ {n m} → n ≤ m → n +d≃ m
+    diff : {n m : ℕ} → n ≤ m → ℕ
+    ≤-intro-diff : {n m d : ℕ} → n + d ≃ m → n ≤ m
+    ≤-elim-diff : ∀ {n m} (n≤m : n ≤ m) → n + diff n≤m ≃ m
 
     {{substitutive-step}} : AA.Substitutive₁ step _≤_ _≤_
     0≤n : ∀ {n : ℕ} → 0 ≤ n
     ≤-step : ∀ {n m} → n ≤ m → n ≤ step m
 
-open LteBase {{...}} public using (≤-intro-+d≃; ≤-elim-+d≃; 0≤n; ≤-step)
+open LteBase {{...}} public using (diff; ≤-intro-diff; ≤-elim-diff; 0≤n; ≤-step)
+
+infix 4 _+d≃_
+record _+d≃_ (n m : ℕ) : Set where
+  constructor +d≃-intro
+  field
+    {d} : ℕ
+    n+d≃m : n + d ≃ m
 
 private
   instance
@@ -97,8 +98,9 @@ private
 
 ≤-base-+d≃ : LteBase
 ≤-base-+d≃ = record
-  { ≤-intro-+d≃ = id
-  ; ≤-elim-+d≃ = id
+  { diff = _+d≃_.d
+  ; ≤-intro-diff = +d≃-intro
+  ; ≤-elim-diff = _+d≃_.n+d≃m
   ; 0≤n = 0+d≃n
   ; ≤-step = +d≃-step
   }

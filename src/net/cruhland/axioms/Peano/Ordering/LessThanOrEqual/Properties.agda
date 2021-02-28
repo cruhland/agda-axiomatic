@@ -44,17 +44,19 @@ module _ {{_ : ℕ≤.LteBase}} where
         where
           ≤-trans : {n m p : ℕ} → n ≤ m → m ≤ p → n ≤ p
           ≤-trans n≤m m≤p =
-            let ℕ≤.+d≃-intro n+a≃m = ℕ≤.≤-elim-+d≃ n≤m
-                ℕ≤.+d≃-intro m+b≃p = ℕ≤.≤-elim-+d≃ m≤p
-             in ℕ≤.≤-intro-+d≃ (ℕ≤.+d≃-intro (AA.a[bc]-chain n+a≃m m+b≃p))
+            let n+a≃m = ℕ≤.≤-elim-diff n≤m
+                m+b≃p = ℕ≤.≤-elim-diff m≤p
+             in ℕ≤.≤-intro-diff (AA.a[bc]-chain n+a≃m m+b≃p)
 
       ≤-antisymmetric : AA.Antisymmetric _≤_
       ≤-antisymmetric = AA.antisymmetric ≤-antisym
         where
           ≤-antisym : {n m : ℕ} → n ≤ m → m ≤ n → n ≃ m
           ≤-antisym {n} {m} n≤m m≤n =
-            let ℕ≤.+d≃-intro {a} n+a≃m = ℕ≤.≤-elim-+d≃ n≤m
-                ℕ≤.+d≃-intro {b} m+b≃n = ℕ≤.≤-elim-+d≃ m≤n
+            let a = ℕ≤.diff n≤m
+                b = ℕ≤.diff m≤n
+                n+a≃m = ℕ≤.≤-elim-diff n≤m
+                m+b≃n = ℕ≤.≤-elim-diff m≤n
                 n+a+b≃n+0 =
                   begin
                     n + (a + b)
@@ -79,7 +81,8 @@ module _ {{_ : ℕ≤.LteBase}} where
         where
           s≤s→≤ : ∀ {n m} → step n ≤ step m → n ≤ m
           s≤s→≤ {n} {m} sn≤sm =
-            let ℕ≤.+d≃-intro {d} sn+d≃sm = ℕ≤.≤-elim-+d≃ sn≤sm
+            let d = ℕ≤.diff sn≤sm
+                sn+d≃sm = ℕ≤.≤-elim-diff sn≤sm
                 s[n+d]≃sm =
                   begin
                     step (n + d)
@@ -88,14 +91,15 @@ module _ {{_ : ℕ≤.LteBase}} where
                   ≃⟨ sn+d≃sm ⟩
                     step m
                   ∎
-             in ℕ≤.≤-intro-+d≃ (ℕ≤.+d≃-intro (AA.inject s[n+d]≃sm))
+             in ℕ≤.≤-intro-diff (AA.inject s[n+d]≃sm)
 
       +-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _+_ _≤_ _≤_
       +-substitutiveᴸ = AA.substitutive₂ ≤-subst-+ᴸ
         where
           ≤-subst-+ᴸ : {a b c : ℕ} → a ≤ b → a + c ≤ b + c
           ≤-subst-+ᴸ {a} {b} {c} a≤b =
-            let ℕ≤.+d≃-intro {d} a+d≃b = ℕ≤.≤-elim-+d≃ a≤b
+            let d = ℕ≤.diff a≤b
+                a+d≃b = ℕ≤.≤-elim-diff a≤b
                 a+c+d≃b+c =
                   begin
                     a + c + d
@@ -104,14 +108,15 @@ module _ {{_ : ℕ≤.LteBase}} where
                   ≃⟨ AA.subst₂ a+d≃b ⟩
                     b + c
                   ∎
-             in ℕ≤.≤-intro-+d≃ (ℕ≤.+d≃-intro a+c+d≃b+c)
+             in ℕ≤.≤-intro-diff a+c+d≃b+c
 
       +-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _+_ _≤_ _≤_
       +-substitutiveᴿ = AA.substitutive₂ ≤-subst-+ᴿ
         where
           ≤-subst-+ᴿ : {a b c : ℕ} → a ≤ b → c + a ≤ c + b
           ≤-subst-+ᴿ {a} {b} {c} a≤b =
-            let ℕ≤.+d≃-intro {d} a+d≃b = ℕ≤.≤-elim-+d≃ a≤b
+            let d = ℕ≤.diff a≤b
+                a+d≃b = ℕ≤.≤-elim-diff a≤b
                 c+a+d≃c+b =
                   begin
                     c + a + d
@@ -120,7 +125,7 @@ module _ {{_ : ℕ≤.LteBase}} where
                   ≃⟨ AA.subst₂ a+d≃b ⟩
                     c + b
                   ∎
-             in ℕ≤.≤-intro-+d≃ (ℕ≤.+d≃-intro c+a+d≃c+b)
+             in ℕ≤.≤-intro-diff c+a+d≃c+b
 
       +-substitutive₂²-≤ : AA.Substitutive₂² _+_ _≤_ _≤_
       +-substitutive₂²-≤ = AA.substitutive₂²
@@ -130,7 +135,8 @@ module _ {{_ : ℕ≤.LteBase}} where
         where
           ≤-cancel-+ᴸ : ∀ {a b c} → c + a ≤ c + b → a ≤ b
           ≤-cancel-+ᴸ {a} {b} {c} c+a≤c+b =
-            let ℕ≤.+d≃-intro {d} c+a+d≃c+b = ℕ≤.≤-elim-+d≃ c+a≤c+b
+            let d = ℕ≤.diff c+a≤c+b
+                c+a+d≃c+b = ℕ≤.≤-elim-diff c+a≤c+b
                 c+[a+d]≃c+b =
                   begin
                     c + (a + d)
@@ -140,14 +146,15 @@ module _ {{_ : ℕ≤.LteBase}} where
                     c + b
                   ∎
                 a+d≃b = AA.cancel c+[a+d]≃c+b
-             in ℕ≤.≤-intro-+d≃ (ℕ≤.+d≃-intro a+d≃b)
+             in ℕ≤.≤-intro-diff a+d≃b
 
       cancellativeᴿ-+ : AA.Cancellative AA.handᴿ _+_ _≤_
       cancellativeᴿ-+ = AA.cancellative λ {a b c} → ≤-cancel-+ᴿ
         where
           ≤-cancel-+ᴿ : ∀ {a b c} → a + c ≤ b + c → a ≤ b
           ≤-cancel-+ᴿ {a} {b} {c} a+c≤b+c =
-            let ℕ≤.+d≃-intro {d} a+c+d≃b+c = ℕ≤.≤-elim-+d≃ a+c≤b+c
+            let d = ℕ≤.diff a+c≤b+c
+                a+c+d≃b+c = ℕ≤.≤-elim-diff a+c≤b+c
                 a+d+c≃b+c =
                   begin
                     a + d + c
@@ -157,7 +164,7 @@ module _ {{_ : ℕ≤.LteBase}} where
                     b + c
                   ∎
                 a+d≃b = AA.cancel a+d+c≃b+c
-             in ℕ≤.≤-intro-+d≃ (ℕ≤.+d≃-intro a+d≃b)
+             in ℕ≤.≤-intro-diff a+d≃b
 
   ≤-from-≃ : {n m : ℕ} → n ≃ m → n ≤ m
   ≤-from-≃ n≃m = AA.subst₂ n≃m Eq.refl
@@ -177,7 +184,8 @@ module _ {{_ : ℕ≤.LteBase}} where
         where
           sk≰y : step k ≰ y
           sk≰y sk≤y =
-            let ℕ≤.+d≃-intro {d} sk+d≃y = ℕ≤.≤-elim-+d≃ sk≤y
+            let d = ℕ≤.diff sk≤y
+                sk+d≃y = ℕ≤.≤-elim-diff sk≤y
                 s[k+d]≃0 =
                   begin
                     step (k + d)

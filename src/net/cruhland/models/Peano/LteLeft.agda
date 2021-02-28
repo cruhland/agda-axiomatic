@@ -1,11 +1,12 @@
 module net.cruhland.models.Peano.LteLeft where
 
 open import Data.Nat using (suc; s≤s; zero; z≤n) renaming (_≤_ to _≤ᴸ_)
-open import Data.Nat.Properties using (≤-refl; ≤-step)
-open import Relation.Binary.PropositionalEquality using (refl)
+open import Data.Nat.Properties using (suc-injective; ≤-refl; ≤-step)
+open import Relation.Binary.PropositionalEquality using (cong; refl)
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq as Eq using (_≃_)
 open import net.cruhland.axioms.NewOrd using (LessThanOrEqual)
+open import net.cruhland.axioms.Operators using (_+_)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
 import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.Base as LteBase
@@ -16,15 +17,19 @@ open module LB = LteBase U.base U.sign U.addition using
   (_+d≃_; +d≃-intro; 0+d≃n; LteBase)
 open PeanoBase U.base using (ℕ; step)
 
-+d≃-from-≤ᴸ : ∀ {n m} → n ≤ᴸ m → n +d≃ m
-+d≃-from-≤ᴸ z≤n = 0+d≃n
-+d≃-from-≤ᴸ (s≤s n≤ᴸm) = AA.subst₁ (+d≃-from-≤ᴸ n≤ᴸm)
+diff : ∀ {n m} → n ≤ᴸ m → ℕ
+diff (z≤n {d}) = d
+diff (s≤s n≤ᴸm) = diff n≤ᴸm
 
-≤ᴸ-from-+d≃ : ∀ {n m} → n +d≃ m → n ≤ᴸ m
-≤ᴸ-from-+d≃ {zero} _ =
+n≤ᴸm-from-n+d≃m : ∀ {n m d} → n + d ≃ m → n ≤ᴸ m
+n≤ᴸm-from-n+d≃m {zero} n+d≃m =
   z≤n
-≤ᴸ-from-+d≃ {suc n} {suc m} (+d≃-intro refl) =
-  s≤s (≤ᴸ-from-+d≃ (+d≃-intro refl))
+n≤ᴸm-from-n+d≃m {suc n} {suc m} sn+d≡sm =
+  s≤s (n≤ᴸm-from-n+d≃m (suc-injective sn+d≡sm))
+
+n+d≃m-from-n≤ᴸm : ∀ {n m} (n≤ᴸm : n ≤ᴸ m) → n + diff n≤ᴸm ≃ m
+n+d≃m-from-n≤ᴸm z≤n = refl
+n+d≃m-from-n≤ᴸm (s≤s n≤ᴸm) = cong suc (n+d≃m-from-n≤ᴸm n≤ᴸm)
 
 instance
   lessThanOrEqual-≤ᴸ : LessThanOrEqual ℕ
@@ -47,8 +52,9 @@ instance
 
 ≤-base-≤ᴸ : LteBase
 ≤-base-≤ᴸ = record
-  { ≤-intro-+d≃ = ≤ᴸ-from-+d≃
-  ; ≤-elim-+d≃ = +d≃-from-≤ᴸ
+  { diff = diff
+  ; ≤-intro-diff = n≤ᴸm-from-n+d≃m
+  ; ≤-elim-diff = n+d≃m-from-n≤ᴸm
   ; 0≤n = z≤n
   ; ≤-step = ≤-step
   }
