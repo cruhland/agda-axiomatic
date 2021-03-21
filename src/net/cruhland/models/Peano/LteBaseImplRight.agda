@@ -1,0 +1,47 @@
+module net.cruhland.models.Peano.LteBaseImplRight where
+
+open import Data.Nat using (ℕ; zero) renaming (suc to step)
+open import Relation.Binary.PropositionalEquality using (refl)
+import net.cruhland.axioms.AbstractAlgebra as AA
+open import net.cruhland.axioms.Eq as Eq using (_≃_)
+open Eq.≃-Reasoning
+open import net.cruhland.axioms.NewOrd using (_≤_; LessThanOrEqual)
+open import net.cruhland.axioms.Operators using (_+_)
+open import net.cruhland.axioms.Peano.Addition using (Addition)
+import net.cruhland.models.Peano.Unary as U
+
+module ℕ+ = Addition U.addition
+
+data _≤ᴿ_ (n : ℕ) : ℕ → Set where
+  ≤-refl : n ≤ᴿ n
+  ≤-step : ∀ {m} → n ≤ᴿ m → n ≤ᴿ step m
+
+instance
+  lessThanOrEqual : LessThanOrEqual ℕ
+  lessThanOrEqual = record { _≤_ = _≤ᴿ_ }
+
+  ≤-reflexive : Eq.Reflexive _≤_
+  ≤-reflexive = Eq.reflexive ≤-refl
+
+diff : {n m : ℕ} → n ≤ m → ℕ
+diff ≤-refl = 0
+diff (≤-step n≤m) = step (diff n≤m)
+
+≤-intro-diff : {n m d : ℕ} → n + d ≃ m → n ≤ m
+≤-intro-diff {n} {m} {zero} n+0≃m with Eq.trans (Eq.sym AA.identᴿ) n+0≃m
+... | refl = ≤-refl
+≤-intro-diff {n} {m} {step d} n+sd≃m with Eq.trans AA.fnOpComm n+sd≃m
+≤-intro-diff {n} {step m} {step d} _ | s[n+d]≃sm =
+  ≤-step (≤-intro-diff (AA.inject s[n+d]≃sm))
+
+≤-elim-diff : {n m : ℕ} (n≤m : n ≤ m) → n + diff n≤m ≃ m
+≤-elim-diff ≤-refl =
+  AA.ident
+≤-elim-diff {n} (≤-step {m} n≤m) =
+  begin
+    n + step (diff n≤m)
+  ≃˘⟨ AA.fnOpComm ⟩
+    step (n + diff n≤m)
+  ≃⟨ AA.subst₁ (≤-elim-diff n≤m) ⟩
+    step m
+  ∎

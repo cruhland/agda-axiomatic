@@ -1,11 +1,11 @@
 module net.cruhland.axioms.Eq where
 
 open import Level using (_⊔_; 0ℓ; Level) renaming (suc to sℓ)
-open import net.cruhland.models.Logic using (¬_; ¬ⁱ_; ¬ⁱ-intro)
+open import net.cruhland.models.Logic using (¬_; ¬ⁱ_; ¬ⁱ-intro; contra)
 
 private
   variable
-    α : Level
+    α β : Level
     A : Set α
 
 record Reflexive {A : Set α} (_~_ : A → A → Set α) : Set α where
@@ -15,14 +15,14 @@ record Reflexive {A : Set α} (_~_ : A → A → Set α) : Set α where
 
 open Reflexive {{...}} public using (refl)
 
-record Symmetric {A : Set α} (_~_ : A → A → Set α) : Set α where
+record Symmetric {A : Set α} (_~_ : A → A → Set β) : Set (α ⊔ β) where
   constructor symmetric
   field
     sym : ∀ {a b} → a ~ b → b ~ a
 
 open Symmetric {{...}} public using (sym)
 
-record Transitive {A : Set α} (_~_ : A → A → Set α) : Set α where
+record Transitive {A : Set α} (_~_ : A → A → Set β) : Set (α ⊔ β) where
   constructor transitive
   field
     trans : ∀ {a b c} → a ~ b → b ~ c → a ~ c
@@ -46,8 +46,9 @@ open Eq {{...}} public
 
 module _ {{eq : Eq A}} where
 
-  ¬sym : {x y : A} → x ≄ y → y ≄ x
-  ¬sym x≄y = λ y≃x → x≄y (sym y≃x)
+  instance
+    ≄-symmetric : Symmetric _≄_
+    ≄-symmetric = symmetric λ x≄y y≃x → contra (sym y≃x) x≄y
 
   module ≃-Reasoning where
 

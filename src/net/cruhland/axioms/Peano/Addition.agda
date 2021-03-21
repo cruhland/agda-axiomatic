@@ -109,6 +109,7 @@ record Addition (PB : PeanoBase) (PS : Sign PB) : Set where
 
     +-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _+_ _≃_ _≃_
     +-substitutiveᴿ = AA.substitutiveᴿ-from-substitutiveᴸ
+      where instance +-swappable = AA.swappable-from-commutative
 
     +-substitutive₂² : AA.Substitutive₂² _+_ _≃_ _≃_
     +-substitutive₂² = AA.substitutive₂²

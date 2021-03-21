@@ -1,4 +1,4 @@
-open import net.cruhland.axioms.Eq using (¬sym)
+import net.cruhland.axioms.Eq as Eq
 open import net.cruhland.axioms.Peano.Addition
   using () renaming (Addition to PeanoAddition)
 open import net.cruhland.axioms.Peano.Base
@@ -19,4 +19,5 @@ open import net.cruhland.axioms.Peano.Ordering.LessThan PB PS PA public
 open import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual PB PS PA public
 
 greater-zero-positivity : Positivity 0
-greater-zero-positivity = record { Positive = _> 0 ; nonzero = ¬sym ∘ _<_.n≄m }
+greater-zero-positivity =
+  record { Positive = _> 0 ; nonzero = Eq.sym ∘ _<_.n≄m }

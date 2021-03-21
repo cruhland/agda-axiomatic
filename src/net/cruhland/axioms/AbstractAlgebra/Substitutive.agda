@@ -1,17 +1,19 @@
 module net.cruhland.axioms.AbstractAlgebra.Substitutive where
 
 open import Level using (_⊔_; 0ℓ) renaming (suc to sℓ)
-open import net.cruhland.axioms.Eq as Eq using (_≃_; Eq)
+open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_; Eq)
 open Eq.≃-Reasoning
-open import net.cruhland.models.Function using (_∘_; ConstrainableFn; toExpFn)
-open import net.cruhland.models.Logic using (⊤)
+open import net.cruhland.models.Function using
+  (_∘_; _⟨→⟩_; ConstrainableFn; toExpFn)
+import net.cruhland.models.Function.Properties
+open import net.cruhland.models.Logic using (⊤; contra)
 
 open import net.cruhland.axioms.AbstractAlgebra.Base using
   (forHand; Hand; handᴸ; handᴿ)
 open import net.cruhland.axioms.AbstractAlgebra.Compatible using
   (fnOpComm; FnOpCommutative; fnOpCommutative)
 open import net.cruhland.axioms.AbstractAlgebra.Swappable using
-  (comm; Commutative; with-comm)
+  (comm; Commutative; Swappable; swappable-from-symmetric; with-swap)
 
 record Substitutive₁
     {β} {A : Set} {B : A → Set β} (f : (a : A) → B a)
@@ -52,10 +54,10 @@ substᴸ = subst₂ {handᴸ}
 substᴿ = subst₂ {handᴿ}
 
 substitutiveᴿ-from-substitutiveᴸ :
-  {A : Set} {_⊙_ : A → A → A}
-    {{_ : Eq A}} {{_ : Commutative _⊙_}}
-      {{_ : Substitutive₂ handᴸ _⊙_ _≃_ _≃_}} → Substitutive₂ handᴿ _⊙_ _≃_ _≃_
-substitutiveᴿ-from-substitutiveᴸ = substitutive₂ (with-comm ∘ subst₂)
+  ∀ {β} {A : Set} {B : Set β} {_⊙_ : A → A → B} {_~_ : B → B → Set}
+    {{_ : Eq A}} {{_ : Eq.Transitive _~_}} {{_ : Swappable _⊙_ _~_}}
+      {{_ : Substitutive₂ handᴸ _⊙_ _≃_ _~_}} → Substitutive₂ handᴿ _⊙_ _≃_ _~_
+substitutiveᴿ-from-substitutiveᴸ = substitutive₂ (with-swap ∘ subst₂)
 
 record Substitutive₂²
     {β} {A : Set} {B : Set β}
@@ -96,3 +98,20 @@ fnOpCommutativeᴿ-from-fnOpCommutativeᴸ {A} {f} {_⊙_} = fnOpCommutative com
       ≃⟨ comm ⟩
         a ⊙ f b
       ∎
+
+module _ {A : Set} {{_ : Eq A}} where
+
+  instance
+    ≄-substitutiveᴸ : Substitutive₂ handᴸ _≄_ _≃_ _⟨→⟩_
+    ≄-substitutiveᴸ = substitutive₂ ≄-substᴸ
+      where
+        ≄-substᴸ : {a₁ a₂ b : A} → a₁ ≃ a₂ → a₁ ≄ b → a₂ ≄ b
+        ≄-substᴸ a₁≃a₂ a₁≄b a₂≃b = contra (Eq.trans a₁≃a₂ a₂≃b) a₁≄b
+
+    ≄-substitutiveᴿ : Substitutive₂ handᴿ _≄_ _≃_ _⟨→⟩_
+    ≄-substitutiveᴿ = substitutiveᴿ-from-substitutiveᴸ
+      where
+        instance ≄-swappable = swappable-from-symmetric
+
+    ≄-substitutive₂² : Substitutive₂² _≄_ _≃_ _⟨→⟩_
+    ≄-substitutive₂² = substitutive₂²

@@ -6,13 +6,12 @@ open import net.cruhland.axioms.Eq as Eq using
 open Eq.≃-Reasoning
 open import net.cruhland.models.Function using (_⟨→⟩_; flip)
 
-private
-  record Swappable
-      {α β} {A : Set α} {B : Set β} (_⊙_ : A → A → B) (_~_ : B → B → Set)
-        : Set (α ⊔ β) where
-    constructor swappable
-    field
-      swap : ∀ {x y} → (x ⊙ y) ~ (y ⊙ x)
+record Swappable
+    {α β χ} {A : Set α} {B : Set β} (_⊙_ : A → A → B) (_~_ : B → B → Set χ)
+      : Set (α ⊔ β ⊔ χ) where
+  constructor swappable
+  field
+    swap : ∀ {x y} → (x ⊙ y) ~ (y ⊙ x)
 
 open Swappable {{...}} using (swap)
 
@@ -22,21 +21,6 @@ record Commutative {A : Set} {{_ : Eq A}} (_⊙_ : A → A → A) : Set where
     comm : ∀ {a b} → a ⊙ b ≃ b ⊙ a
 
 open Commutative {{...}} public using (comm)
-
-with-comm :
-  {A : Set} {_⊙_ : A → A → A}
-    {{_ : Eq A}} {{_ : Commutative _⊙_}} →
-      ∀ {a b c d} → b ⊙ a ≃ d ⊙ c → a ⊙ b ≃ c ⊙ d
-with-comm {A} {_⊙_} {a} {b} {c} {d} b⊙a≃d⊙c =
-  begin
-    a ⊙ b
-  ≃⟨ comm ⟩
-    b ⊙ a
-  ≃⟨ b⊙a≃d⊙c ⟩
-    d ⊙ c
-  ≃⟨ comm ⟩
-    c ⊙ d
-  ∎
 
 {--- Equivalences ---}
 
@@ -60,3 +44,16 @@ module _ {A : Set} {_~_ : A → A → Set} where
 
   symmetric-from-swappable : {{_ : Swappable _~_ _⟨→⟩_}} → Symmetric _~_
   symmetric-from-swappable = symmetric swap
+
+with-swap :
+  ∀ {α β} {A : Set α} {B : Set β} {_⊙_ : A → A → B} {_~_ : B → B → Set}
+    {{_ : Eq.Transitive _~_}} {{_ : Swappable _⊙_ _~_}} →
+      ∀ {a b c d} → (b ⊙ a) ~ (d ⊙ c) → (a ⊙ b) ~ (c ⊙ d)
+with-swap b⊙a~d⊙c = Eq.trans swap (Eq.trans b⊙a~d⊙c swap)
+
+with-comm :
+  {A : Set} {_⊙_ : A → A → A}
+    {{_ : Eq A}} {{_ : Commutative _⊙_}} →
+      ∀ {a b c d} → b ⊙ a ≃ d ⊙ c → a ⊙ b ≃ c ⊙ d
+with-comm = with-swap
+  where instance ⊙-swappable = swappable-from-commutative

@@ -8,7 +8,7 @@ open import Data.Empty.Polymorphic public
   using () renaming (⊥ to ⊥ᴸᴾ; ⊥-elim to ⊥ᴸᴾ-elim)
 open import Relation.Nullary public using (¬_)
 
-contra : {A B : Set} → A → ¬ A → B
+contra : ∀ {α β} {A : Set α} {B : Set β} → A → ¬ A → B
 contra a ¬a = ⊥-elim (¬a a)
 
 record ¬ⁱ_ {α} (A : Set α) : Set α where
