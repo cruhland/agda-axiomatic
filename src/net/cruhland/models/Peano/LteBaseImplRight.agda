@@ -45,3 +45,28 @@ diff (≤-step n≤m) = step (diff n≤m)
   ≃⟨ AA.subst₁ (≤-elim-diff n≤m) ⟩
     step m
   ∎
+
+≤-zeroᴸ : {n : ℕ} → 0 ≤ n
+≤-zeroᴸ {zero} = ≤-refl
+≤-zeroᴸ {step n} = ≤-step ≤-zeroᴸ
+
+≤-widenᴿ : {n m : ℕ} → n ≤ m → n ≤ step m
+≤-widenᴿ = ≤-step
+
+instance
+  ≤-substitutive-step : AA.Substitutive₁ step _≤_ _≤_
+  ≤-substitutive-step = AA.substitutive₁ ≤-subst-step
+    where
+      ≤-subst-step : {n m : ℕ} → n ≤ m → step n ≤ step m
+      ≤-subst-step {n} {m} n≤m =
+        let d = diff n≤m
+            n+d≃m = ≤-elim-diff n≤m
+            sn+d≃sm =
+              begin
+                step n + d
+              ≃˘⟨ AA.fnOpComm {a = n} ⟩
+                step (n + d)
+              ≃⟨ AA.subst₁ n+d≃m ⟩
+                step m
+              ∎
+         in ≤-intro-diff sn+d≃sm

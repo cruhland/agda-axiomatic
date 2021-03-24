@@ -3,15 +3,13 @@ module net.cruhland.models.Peano.LteBaseImplLeft where
 open import Data.Nat
   using (ℕ; s≤s; z≤n; zero) renaming (_≤_ to _≤ᴸ_; suc to step)
 open import Data.Nat.Properties
-  using (≤-refl) renaming (suc-injective to step-injective)
+  using (≤-refl; ≤-step) renaming (suc-injective to step-injective)
 open import Relation.Binary.PropositionalEquality using (cong; refl)
+import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq as Eq using (_≃_)
 open import net.cruhland.axioms.NewOrd using (_≤_; LessThanOrEqual)
 open import net.cruhland.axioms.Operators using (_+_)
 import net.cruhland.models.Peano.Unary
-
--- Re-export this
-open import Data.Nat.Properties public using (≤-step)
 
 instance
   lessThanOrEqual : LessThanOrEqual ℕ
@@ -19,6 +17,9 @@ instance
 
   ≤-reflexive : Eq.Reflexive _≤_
   ≤-reflexive = Eq.reflexive ≤-refl
+
+  ≤-substitutive-step : AA.Substitutive₁ step _≤_ _≤_
+  ≤-substitutive-step = AA.substitutive₁ s≤s
 
 diff : {n m : ℕ} → n ≤ m → ℕ
 diff (z≤n {d}) = d
@@ -33,3 +34,9 @@ diff (s≤s n≤m) = diff n≤m
 ≤-elim-diff : {n m : ℕ} (n≤m : n ≤ m) → n + diff n≤m ≃ m
 ≤-elim-diff z≤n = refl
 ≤-elim-diff (s≤s n≤m) = cong step (≤-elim-diff n≤m)
+
+≤-zeroᴸ : {n : ℕ} → 0 ≤ n
+≤-zeroᴸ = z≤n
+
+≤-widenᴿ : {n m : ℕ} → n ≤ m → n ≤ step m
+≤-widenᴿ = ≤-step

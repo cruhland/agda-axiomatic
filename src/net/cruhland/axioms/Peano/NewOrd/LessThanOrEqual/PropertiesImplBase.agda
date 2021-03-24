@@ -9,7 +9,7 @@ open import net.cruhland.axioms.Peano.Base
 open import net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.BaseDecl using
   (LteBase)
 open import net.cruhland.axioms.Peano.Sign using (Sign)
-open import net.cruhland.models.Function using (_⟨→⟩_)
+open import net.cruhland.models.Function using (_∘_; _⟨→⟩_)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using (∧-intro)
 
@@ -91,5 +91,25 @@ instance
   ≤-substitutive-≃ : AA.Substitutive₂² _≤_ _≃_ _⟨→⟩_
   ≤-substitutive-≃ = AA.substitutive₂²
 
+  ≤-injective-step : AA.Injective step _≤_ _≤_
+  ≤-injective-step = AA.injective ≤-inject
+    where
+      ≤-inject : {n m : ℕ} → step n ≤ step m → n ≤ m
+      ≤-inject {n} {m} sn≤sm =
+        let d = ℕ≤.diff sn≤sm
+            sn+d≃sm = ℕ≤.≤-elim-diff sn≤sm
+            s[n+d]≃sm =
+              begin
+                step (n + d)
+              ≃⟨ AA.fnOpComm ⟩
+                step n + d
+              ≃⟨ sn+d≃sm ⟩
+                step m
+              ∎
+         in ℕ≤.≤-intro-diff (AA.inject s[n+d]≃sm)
+
 n≤sn : {n : ℕ} → n ≤ step n
-n≤sn = ℕ≤.≤-step Eq.refl
+n≤sn = ℕ≤.≤-widenᴿ Eq.refl
+
+≤-widenᴸ : {n m : ℕ} → step n ≤ m → n ≤ m
+≤-widenᴸ = AA.inject ∘ ℕ≤.≤-widenᴿ

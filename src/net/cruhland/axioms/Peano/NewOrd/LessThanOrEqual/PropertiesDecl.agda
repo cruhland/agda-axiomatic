@@ -23,4 +23,6 @@ record LteProperties : Set where
     {{≤-antisymmetric}} : AA.Antisymmetric _≤_
     {{≤-substitutive-≃}} : AA.Substitutive₂² _≤_ _≃_ _⟨→⟩_
 
+    {{≤-injective-step}} : AA.Injective step _≤_ _≤_
     n≤sn : {n : ℕ} → n ≤ step n
+    ≤-widenᴸ : {n m : ℕ} → step n ≤ m → n ≤ m
