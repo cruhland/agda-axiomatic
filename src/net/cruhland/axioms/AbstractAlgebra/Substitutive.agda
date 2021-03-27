@@ -43,8 +43,9 @@ record Substitutiveᶜ
 open Substitutiveᶜ {{...}} public using (substᶜ)
 
 record Substitutive₂
-    (hand : Hand) {β} {A : Set} {B : Set β}
-      (_⊙_ : A → A → B) (_~_ : A → A → Set) (_≈_ : B → B → Set) : Set where
+    (hand : Hand) {α β χ δ} {A : Set α} {B : Set β}
+      (_⊙_ : A → A → B) (_~_ : A → A → Set χ) (_≈_ : B → B → Set δ)
+        : Set (α ⊔ χ ⊔ δ) where
   constructor substitutive₂
   _<⊙>_ = forHand hand _⊙_
   field
@@ -56,24 +57,25 @@ substᴸ = subst₂ {handᴸ}
 substᴿ = subst₂ {handᴿ}
 
 substitutiveᴿ-from-substitutiveᴸ :
-  ∀ {β} {A : Set} {B : Set β}
-    {_⊙_ : A → A → B} {_~_ : A → A → Set} {_≈_ : B → B → Set}
+  ∀ {α β χ δ} {A : Set α} {B : Set β}
+    {_⊙_ : A → A → B} {_~_ : A → A → Set χ} {_≈_ : B → B → Set δ}
       {{_ : Eq.Transitive _≈_}} {{_ : Swappable _⊙_ _≈_}}
       {{_ : Substitutive₂ handᴸ _⊙_ _~_ _≈_}} → Substitutive₂ handᴿ _⊙_ _~_ _≈_
 substitutiveᴿ-from-substitutiveᴸ = substitutive₂ (with-swap ∘ subst₂)
 
 record Substitutive₂²
-    {β} {A : Set} {B : Set β}
-      (_⊙_ : A → A → B) (_~_ : A → A → Set) (_≈_ : B → B → Set) : Set where
+    {α β χ δ} {A : Set α} {B : Set β}
+      (_⊙_ : A → A → B) (_~_ : A → A → Set χ) (_≈_ : B → B → Set δ)
+        : Set (α ⊔ χ ⊔ δ) where
   constructor substitutive₂²
   field
     {{substitutiveᴸ}} : Substitutive₂ handᴸ _⊙_ _~_ _≈_
     {{substitutiveᴿ}} : Substitutive₂ handᴿ _⊙_ _~_ _≈_
 
-module _ {A : Set} {_⊙_ : A → A → A} {{_ : Eq A}} where
+module _ {β} {A : Set} {B : Set β} {_⊙_ : A → A → B} {{_ : Eq B}} where
 
   swappable-from-commutative :
-    {_~_ : A → A → Set} {{_ : Commutative _⊙_}} {{_ : Eq.Reflexive _~_}}
+    {_~_ : B → B → Set β} {{_ : Commutative _⊙_}} {{_ : Eq.Reflexive _~_}}
       {{_ : Substitutive₂ handᴿ _~_ _≃_ _⟨→⟩_}} → Swappable _⊙_ _~_
   swappable-from-commutative = swappable (subst₂ comm Eq.refl)
 
@@ -112,7 +114,7 @@ fnOpCommutativeᴿ-from-fnOpCommutativeᴸ {A} {f} {_⊙_} = fnOpCommutative com
         a ⊙ f b
       ∎
 
-module EqProperties {A : Set} {{_ : Eq A}} where
+module EqProperties {α} {A : Set α} {{_ : Eq A}} where
 
   ≃-substitutiveᴸ : Substitutive₂ handᴸ _≃_ _≃_ _⟨→⟩_
   ≃-substitutiveᴸ = substitutive₂ ≃-substᴸ
@@ -154,5 +156,14 @@ with-comm :
     ∀ {a b c d} → b ⊙ a ≃ d ⊙ c → a ⊙ b ≃ c ⊙ d
 with-comm = with-swap
   where
-    instance ⊙-swappable = swappable-from-commutative
+    instance ⊙-swap = swappable-from-commutative
+    instance ≃-substᴿ = EqProperties.≃-substitutiveᴿ
+
+substᴿ-from-substᴸ-comm :
+  ∀ {β} {A : Set} {B : Set β} {_⊙_ : A → A → B} {_~_ : A → A → Set}
+    {{_ : Eq B}} {{_ : Commutative _⊙_}}
+      {{_ : Substitutive₂ handᴸ _⊙_ _~_ _≃_}} → Substitutive₂ handᴿ _⊙_ _~_ _≃_
+substᴿ-from-substᴸ-comm = substitutiveᴿ-from-substitutiveᴸ
+  where
+    instance ⊙-swap = swappable-from-commutative
     instance ≃-substᴿ = EqProperties.≃-substitutiveᴿ

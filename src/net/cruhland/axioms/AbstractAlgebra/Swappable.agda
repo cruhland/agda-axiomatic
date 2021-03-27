@@ -15,7 +15,8 @@ record Swappable
 
 open Swappable {{...}} public using (swap)
 
-record Commutative {A : Set} {{_ : Eq A}} (_⊙_ : A → A → A) : Set where
+record Commutative
+    {β} {A : Set} {B : Set β} {{_ : Eq B}} (_⊙_ : A → A → B) : Set β where
   constructor commutative
   field
     comm : ∀ {a b} → a ⊙ b ≃ b ⊙ a
@@ -29,7 +30,7 @@ swappable-flip :
     {{_ : Swappable _⊙_ _~_}} → Swappable (flip _⊙_) _~_
 swappable-flip = swappable swap
 
-module _ {A : Set} {_~_ : A → A → Set} where
+module _ {α β} {A : Set α} {_~_ : A → A → Set β} where
 
   swappable-from-symmetric : {{_ : Symmetric _~_}} → Swappable _~_ _⟨→⟩_
   swappable-from-symmetric = swappable sym
@@ -38,7 +39,7 @@ module _ {A : Set} {_~_ : A → A → Set} where
   symmetric-from-swappable = symmetric swap
 
 with-swap :
-  ∀ {α β} {A : Set α} {B : Set β} {_⊙_ : A → A → B} {_~_ : B → B → Set}
+  ∀ {α β χ} {A : Set α} {B : Set β} {_⊙_ : A → A → B} {_~_ : B → B → Set χ}
     {{_ : Eq.Transitive _~_}} {{_ : Swappable _⊙_ _~_}} →
       ∀ {a b c d} → (b ⊙ a) ~ (d ⊙ c) → (a ⊙ b) ~ (c ⊙ d)
 with-swap b⊙a~d⊙c = Eq.trans swap (Eq.trans b⊙a~d⊙c swap)

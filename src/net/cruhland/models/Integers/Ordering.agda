@@ -2,9 +2,8 @@ open import Relation.Nullary.Decidable using (False)
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.DecEq using (_≃?_; DecEq; ≄-derive)
-open import net.cruhland.axioms.Eq using
-  (_≃_; _≄_; sym; ¬sym; trans; module ≃-Reasoning)
-open ≃-Reasoning
+open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_)
+open Eq.≃-Reasoning
 open import net.cruhland.axioms.Operators using (_+_; _*_; -_; _-_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 import net.cruhland.axioms.Sign as Sign
@@ -97,14 +96,17 @@ order-trichotomy a b = record { at-least-one = 1≤ ; at-most-one = ≤1 }
   where
     1≤ : AA.OneOfThree (a < b) (a ≃ b) (a > b)
     1≤ with AA.ExactlyOneOfThree.at-least-one (ℤ-.trichotomy (b - a))
-    1≤ | AA.2nd b-a≃0 = AA.2nd (sym (trans (ℤ-.≃ᴸ-subᴿ-toᴸ b-a≃0) AA.ident))
-    1≤ | AA.3rd b-a>0 = AA.1st (pos→< b-a>0)
-    1≤ | AA.1st b-a<0 = AA.3rd (pos→< (ℤ*.sub-sign-swap {b} b-a<0))
+    1≤ | AA.2nd b-a≃0 =
+      AA.2nd (Eq.sym (Eq.trans (ℤ-.≃ᴸ-subᴿ-toᴸ b-a≃0) AA.ident))
+    1≤ | AA.3rd b-a>0 =
+      AA.1st (pos→< b-a>0)
+    1≤ | AA.1st b-a<0 =
+      AA.3rd (pos→< (ℤ*.sub-sign-swap {b} b-a<0))
 
     ≤1 : ¬ AA.TwoOfThree (a < b) (a ≃ b) (a > b)
     ≤1 (AA.1∧2 (<-intro a≤b a≄b) a≃b) = a≄b a≃b
     ≤1 (AA.1∧3 (<-intro a≤b a≄b) (<-intro b≤a b≄a)) = a≄b (≤-antisym a≤b b≤a)
-    ≤1 (AA.2∧3 a≃b (<-intro b≤a b≄a)) = b≄a (sym a≃b)
+    ≤1 (AA.2∧3 a≃b (<-intro b≤a b≄a)) = b≄a (Eq.sym a≃b)
 
 instance
   decEq : DecEq ℤ
@@ -114,7 +116,7 @@ instance
       a ≃?₀ b with AA.ExactlyOneOfThree.at-least-one (order-trichotomy a b)
       a ≃?₀ b | AA.1st (<-intro a≤b a≄b) = no a≄b
       a ≃?₀ b | AA.2nd a≃b = yes a≃b
-      a ≃?₀ b | AA.3rd (<-intro b≤a b≄a) = no (¬sym b≄a)
+      a ≃?₀ b | AA.3rd (<-intro b≤a b≄a) = no (Eq.sym b≄a)
 
   *-cancellativeᴸ : AA.Cancellative AA.handᴸ _*_ _≃_
   *-cancellativeᴸ = AA.cancellative λ a {{_ : C a}} {b c} → *-cancelᴸ
@@ -153,3 +155,6 @@ instance
 
   *-cancellativeᴿ : AA.Cancellative AA.handᴿ _*_ _≃_
   *-cancellativeᴿ = AA.cancellativeᴿ-from-cancellativeᴸ {A = ℤ}
+
+  *-cancellative² : AA.Cancellative² _*_ _≃_
+  *-cancellative² = AA.cancellative² {A = ℤ}

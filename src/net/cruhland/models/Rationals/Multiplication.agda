@@ -64,7 +64,7 @@ instance
             ∎
 
   *-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _*_ _≃_ _≃_
-  *-substitutiveᴿ = AA.substitutiveᴿ-from-substitutiveᴸ {A = ℚ}
+  *-substitutiveᴿ = AA.substᴿ-from-substᴸ-comm {A = ℚ}
 
   *-substitutive₂ : AA.Substitutive₂² _*_ _≃_ _≃_
   *-substitutive₂ = AA.substitutive₂² {A = ℚ}

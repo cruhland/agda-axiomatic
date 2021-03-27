@@ -152,10 +152,7 @@ record Multiplication
             m≃0 = ∧-elimᴿ (ℕ+.+-both-zero p*m+m≃0)
 
     *-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _*_ _≃_ _≃_
-    *-substitutiveᴿ = AA.substitutiveᴿ-from-substitutiveᴸ
-      where
-        instance *-swappable = AA.swappable-from-commutative
-        instance ≃-substᴿ = AA.EqProperties.≃-substitutiveᴿ
+    *-substitutiveᴿ = AA.substᴿ-from-substᴸ-comm
 
     *-substitutive₂² : AA.Substitutive₂² _*_ _≃_ _≃_
     *-substitutive₂² = AA.substitutive₂²
@@ -264,3 +261,6 @@ record Multiplication
 
     *-cancellativeᴿ : AA.Cancellative AA.handᴿ _*_ _≃_
     *-cancellativeᴿ = AA.cancellativeᴿ-from-cancellativeᴸ
+
+    *-cancellative² : AA.Cancellative² _*_ _≃_
+    *-cancellative² = AA.cancellative²

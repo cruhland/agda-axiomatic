@@ -8,7 +8,7 @@ private
     α β : Level
     A : Set α
 
-record Reflexive {A : Set α} (_~_ : A → A → Set α) : Set α where
+record Reflexive {A : Set α} (_~_ : A → A → Set β) : Set (α ⊔ β) where
   constructor reflexive
   field
     refl : ∀ {a} → a ~ a

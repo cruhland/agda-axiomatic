@@ -1,4 +1,3 @@
-import net.cruhland.models.Peano.Unary as U
 open import net.cruhland.axioms.Peano.NewOrd.LessThan.BaseDecl using (LtBase)
 import net.cruhland.axioms.Peano.NewOrd.LessThan.BaseImplNeq
   as LtBaseImplNeq
@@ -14,6 +13,7 @@ open import net.cruhland.axioms.Peano.NewOrd.PropertiesDecl as PropertiesDecl
 import net.cruhland.axioms.Peano.NewOrd.PropertiesImpl as PropertiesImpl
 import net.cruhland.models.Peano.LteBaseImplLeft as LteBaseImplLeft
 import net.cruhland.models.Peano.LteBaseImplRight as LteBaseImplRight
+import net.cruhland.models.Peano.Unary as U
 
 module net.cruhland.models.Peano.Ordering where
 

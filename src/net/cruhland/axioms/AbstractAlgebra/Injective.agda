@@ -58,6 +58,13 @@ cancellativeᴿ-from-cancellativeᴸ {{c = c}} =
   let open Cancellative c using (C)
    in record { C = C ; cancel = λ {a} {{_ : C a}} → cancel ∘ with-comm }
 
+record Cancellative²
+    {A : Set} (_⊙_ : A → A → A) (_~_ : A → A → Set) : Set₁ where
+  constructor cancellative²
+  field
+    {{cancellativeᴸ}} : Cancellative handᴸ _⊙_ _~_
+    {{cancellativeᴿ}} : Cancellative handᴿ _⊙_ _~_
+
 {--- Equivalences ---}
 
 module _ {A : Set} {_⊙_ : A → A → A} {_~_ : A → A → Set} where
