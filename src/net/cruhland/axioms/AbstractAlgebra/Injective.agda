@@ -7,9 +7,9 @@ open import net.cruhland.models.Function using
 open import net.cruhland.axioms.AbstractAlgebra.Base using
   (forHand; Hand; handᴸ; handᴿ)
 open import net.cruhland.axioms.AbstractAlgebra.Substitutive using
-  (Substitutive₁; substitutive₁)
+  (Substitutive₁; substitutive₁; with-comm)
 open import net.cruhland.axioms.AbstractAlgebra.Swappable using
-  (Commutative; with-comm)
+  (Commutative)
 
 record Injective
     {A B : Set} (f : A → B) (_~_ : A → A → Set) (_≈_ : B → B → Set) : Set where

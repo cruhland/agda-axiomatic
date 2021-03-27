@@ -1,6 +1,7 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq as Eq using (_≃_)
 open import net.cruhland.axioms.NewOrd using (_≤_)
+open import net.cruhland.axioms.Operators using (_+_)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
@@ -26,3 +27,5 @@ record LteProperties : Set where
     {{≤-injective-step}} : AA.Injective step _≤_ _≤_
     n≤sn : {n : ℕ} → n ≤ step n
     ≤-widenᴸ : {n m : ℕ} → step n ≤ m → n ≤ m
+
+    {{≤-substitutive-+₂²}} : AA.Substitutive₂² _+_ _≤_ _≤_

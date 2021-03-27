@@ -108,6 +108,30 @@ instance
               ∎
          in ℕ≤.≤-intro-diff (AA.inject s[n+d]≃sm)
 
+  ≤-substitutive-+ᴸ : AA.Substitutive₂ AA.handᴸ _+_ _≤_ _≤_
+  ≤-substitutive-+ᴸ = AA.substitutive₂ ≤-subst-+ᴸ
+    where
+      ≤-subst-+ᴸ : {n₁ n₂ m : ℕ} → n₁ ≤ n₂ → n₁ + m ≤ n₂ + m
+      ≤-subst-+ᴸ {n₁} {n₂} {m} n₁≤n₂ =
+        let d = ℕ≤.diff n₁≤n₂
+            n₁+d≃n₂ = ℕ≤.≤-elim-diff n₁≤n₂
+            n₁+m+d≃n₂+m =
+              begin
+                n₁ + m + d
+              ≃⟨ AA.substᴿ-with-assoc AA.comm ⟩
+                n₁ + d + m
+              ≃⟨ AA.subst₂ n₁+d≃n₂ ⟩
+                n₂ + m
+              ∎
+         in ℕ≤.≤-intro-diff n₁+m+d≃n₂+m
+
+  ≤-substitutive-+ᴿ : AA.Substitutive₂ AA.handᴿ _+_ _≤_ _≤_
+  ≤-substitutive-+ᴿ = AA.substitutiveᴿ-from-substitutiveᴸ
+    where instance +-swappable = AA.swappable-from-commutative
+
+  ≤-substitutive-+₂² : AA.Substitutive₂² _+_ _≤_ _≤_
+  ≤-substitutive-+₂² = AA.substitutive₂²
+
 n≤sn : {n : ℕ} → n ≤ step n
 n≤sn = ℕ≤.≤-widenᴿ Eq.refl
 

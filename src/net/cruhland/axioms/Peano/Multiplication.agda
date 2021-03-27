@@ -153,7 +153,9 @@ record Multiplication
 
     *-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _*_ _≃_ _≃_
     *-substitutiveᴿ = AA.substitutiveᴿ-from-substitutiveᴸ
-      where instance *-swappable = AA.swappable-from-commutative
+      where
+        instance *-swappable = AA.swappable-from-commutative
+        instance ≃-substᴿ = AA.EqProperties.≃-substitutiveᴿ
 
     *-substitutive₂² : AA.Substitutive₂² _*_ _≃_ _≃_
     *-substitutive₂² = AA.substitutive₂²
