@@ -23,6 +23,6 @@ record LteBase : Set₁ where
     {{≤-substitutive-step}} : AA.Substitutive₁ step _≤_ _≤_
     ≤-widenᴿ : {n m : ℕ} → n ≤ m → n ≤ step m
 
-    diff : {n m : ℕ} → n ≤ m → ℕ
+    ≤-diff : {n m : ℕ} → n ≤ m → ℕ
     ≤-intro-diff : {n m d : ℕ} → n + d ≃ m → n ≤ m
-    ≤-elim-diff : {n m : ℕ} (n≤m : n ≤ m) → n + diff n≤m ≃ m
+    ≤-elim-diff : {n m : ℕ} (n≤m : n ≤ m) → n + ≤-diff n≤m ≃ m

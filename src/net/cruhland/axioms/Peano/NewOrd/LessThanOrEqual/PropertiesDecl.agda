@@ -18,6 +18,7 @@ module net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.PropertiesDecl
   (LTEB : LteBase PB PS PA) where
 
 open PeanoBase PB using (ℕ; step)
+private module ℕ≤ = LteBase LTEB
 
 record LteProperties : Set₁ where
   field
@@ -33,3 +34,5 @@ record LteProperties : Set₁ where
 
     {{≤-substitutive-+}} : AA.Substitutive₂² _+_ _≤_ _≤_
     {{≤-cancellative-+}} : AA.Cancellative² _+_ _≤_
+    intro-diff-id :
+      {n m d : ℕ} (n+d≃m : n + d ≃ m) → ℕ≤.≤-diff (ℕ≤.≤-intro-diff n+d≃m) ≃ d

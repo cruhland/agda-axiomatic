@@ -32,27 +32,27 @@ private module ℕ< = LtBase LTB
 private module ℕ≤ = LteBase LTEB
 private module ℕ≤P = LteProperties LTEP
 
-zero-diff : {n m : ℕ} (n≤m : n ≤ m) → ℕ≤.diff n≤m ≃ 0 → n ≃ m
+zero-diff : {n m : ℕ} (n≤m : n ≤ m) → ℕ≤.≤-diff n≤m ≃ 0 → n ≃ m
 zero-diff {n} {m} n≤m d≃0 =
   begin
     n
   ≃˘⟨ AA.ident ⟩
     n + 0
   ≃˘⟨ AA.subst₂ d≃0 ⟩
-    n + ℕ≤.diff n≤m
+    n + ℕ≤.≤-diff n≤m
   ≃⟨ ℕ≤.≤-elim-diff n≤m ⟩
     m
   ∎
 
 ≤-dec-≃ : {n m : ℕ} → n ≤ m → n ≃ m ∨ n ≄ m
-≤-dec-≃ {n} {m} n≤m with ℕI.case (ℕ≤.diff n≤m)
+≤-dec-≃ {n} {m} n≤m with ℕI.case (ℕ≤.≤-diff n≤m)
 ... | ℕI.case-zero d≃0 = ∨-introᴸ (zero-diff n≤m d≃0)
 ... | ℕI.case-step (ℕI.pred-intro d′ d≃sd′) = ∨-introᴿ n≄m
   where
     n≄m = λ n≃m →
       let n+d≃n+0 =
             begin
-              n + ℕ≤.diff n≤m
+              n + ℕ≤.≤-diff n≤m
             ≃⟨ ℕ≤.≤-elim-diff n≤m ⟩
               m
             ≃˘⟨ n≃m ⟩
@@ -78,7 +78,7 @@ s≤-from-< {n} {m} n<m =
         ≃⟨ AA.fnOpCommSwap ⟩
           n + step pd
         ≃˘⟨ AA.subst₂ d≃spd ⟩
-          n + ℕ≤.diff n≤m
+          n + ℕ≤.≤-diff n≤m
         ≃⟨ ℕ≤.≤-elim-diff n≤m ⟩
           m
         ∎
@@ -90,9 +90,9 @@ s≤-from-< {n} {m} n<m =
       n≄m = λ n≃m →
         let n+sd≃n+0 =
               begin
-                n + step (ℕ≤.diff sn≤m)
+                n + step (ℕ≤.≤-diff sn≤m)
               ≃˘⟨ AA.fnOpCommSwap ⟩
-                step n + ℕ≤.diff sn≤m
+                step n + ℕ≤.≤-diff sn≤m
               ≃⟨ ℕ≤.≤-elim-diff sn≤m ⟩
                 m
               ≃˘⟨ n≃m ⟩

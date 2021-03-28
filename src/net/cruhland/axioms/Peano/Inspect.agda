@@ -13,7 +13,7 @@ module net.cruhland.axioms.Peano.Inspect (PB : PeanoBase) where
   import net.cruhland.axioms.Peano.Literals PB as ℕLit
 
   non-zero-positivity : Positivity 0
-  non-zero-positivity = record { Positive = Pos ; nonzero = id }
+  non-zero-positivity = record { Positive = Pos ; pos≄0 = id }
     where
       Pos = _≄ 0
 

@@ -8,6 +8,6 @@ record Positivity {A : Set} {{_ : Eq A}} (zero : A) : Set₁ where
   field
     Positive : A → Set
     {{substitutive}} : AA.Substitutive₁ Positive _≃_ _⟨→⟩_
-    nonzero : ∀ {a} → Positive a → a ≄ zero
+    pos≄0 : ∀ {a} → Positive a → a ≄ zero
 
-open Positivity {{...}} public using (nonzero; Positive)
+open Positivity {{...}} public using (pos≄0; Positive)

@@ -20,4 +20,4 @@ open import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual PB PS PA public
 
 greater-zero-positivity : Positivity 0
 greater-zero-positivity =
-  record { Positive = _> 0 ; nonzero = Eq.sym ∘ _<_.n≄m }
+  record { Positive = _> 0 ; pos≄0 = Eq.sym ∘ _<_.n≄m }

@@ -41,8 +41,8 @@ instance
     where
       ≤-antisym : {n m : ℕ} → n ≤ m → m ≤ n → n ≃ m
       ≤-antisym {n} {m} n≤m m≤n =
-        let a = ℕ≤.diff n≤m
-            b = ℕ≤.diff m≤n
+        let a = ℕ≤.≤-diff n≤m
+            b = ℕ≤.≤-diff m≤n
             n+a≃m = ℕ≤.≤-elim-diff n≤m
             m+b≃n = ℕ≤.≤-elim-diff m≤n
             n+a+b≃n+0 =
@@ -69,7 +69,7 @@ instance
     where
       ≤-substᴸ : {n₁ n₂ m : ℕ} → n₁ ≃ n₂ → n₁ ≤ m → n₂ ≤ m
       ≤-substᴸ {n₁} {n₂} {m} n₁≃n₂ n₁≤m =
-        let d = ℕ≤.diff n₁≤m
+        let d = ℕ≤.≤-diff n₁≤m
             n₁+d≃m = ℕ≤.≤-elim-diff n₁≤m
             n₂+d≃m =
               begin
@@ -86,7 +86,7 @@ instance
     where
       ≤-substᴿ : {n₁ n₂ m : ℕ} → n₁ ≃ n₂ → m ≤ n₁ → m ≤ n₂
       ≤-substᴿ n₁≃n₂ m≤n₁ =
-        let d = ℕ≤.diff m≤n₁
+        let d = ℕ≤.≤-diff m≤n₁
             m+d≃n₁ = ℕ≤.≤-elim-diff m≤n₁
          in ℕ≤.≤-intro-diff (Eq.trans m+d≃n₁ n₁≃n₂)
 
@@ -98,7 +98,7 @@ instance
     where
       ≤-inject : {n m : ℕ} → step n ≤ step m → n ≤ m
       ≤-inject {n} {m} sn≤sm =
-        let d = ℕ≤.diff sn≤sm
+        let d = ℕ≤.≤-diff sn≤sm
             sn+d≃sm = ℕ≤.≤-elim-diff sn≤sm
             s[n+d]≃sm =
               begin
@@ -115,7 +115,7 @@ instance
     where
       ≤-subst-+ᴸ : {n₁ n₂ m : ℕ} → n₁ ≤ n₂ → n₁ + m ≤ n₂ + m
       ≤-subst-+ᴸ {n₁} {n₂} {m} n₁≤n₂ =
-        let d = ℕ≤.diff n₁≤n₂
+        let d = ℕ≤.≤-diff n₁≤n₂
             n₁+d≃n₂ = ℕ≤.≤-elim-diff n₁≤n₂
             n₁+m+d≃n₂+m =
               begin
@@ -139,7 +139,7 @@ instance
     where
       ≤-cancelᴸ : {n₁ n₂ m : ℕ} → m + n₁ ≤ m + n₂ → n₁ ≤ n₂
       ≤-cancelᴸ m+n₁≤m+n₂ =
-        let d = ℕ≤.diff m+n₁≤m+n₂
+        let d = ℕ≤.≤-diff m+n₁≤m+n₂
             m+n₁+d≃m+n₂ = ℕ≤.≤-elim-diff m+n₁≤m+n₂
             m+[n₁+d]≃m+n₂ = Eq.trans (Eq.sym AA.assoc) m+n₁+d≃m+n₂
          in ℕ≤.≤-intro-diff (AA.cancel m+[n₁+d]≃m+n₂)
@@ -160,6 +160,14 @@ n≤sn = ℕ≤.≤-widenᴿ Eq.refl
 ≤-widenᴸ : {n m : ℕ} → step n ≤ m → n ≤ m
 ≤-widenᴸ = AA.inject ∘ ℕ≤.≤-widenᴿ
 
+intro-diff-id :
+  {n m d : ℕ} (n+d≃m : n + d ≃ m) → ℕ≤.≤-diff (ℕ≤.≤-intro-diff n+d≃m) ≃ d
+intro-diff-id n+d≃m =
+  let n≤m = ℕ≤.≤-intro-diff n+d≃m
+      n+d[n≤m]≃m = ℕ≤.≤-elim-diff n≤m
+      n+d[n≤m]≃n+d = Eq.trans n+d[n≤m]≃m (Eq.sym n+d≃m)
+   in AA.cancel n+d[n≤m]≃n+d
+
 _≤?_ : (n m : ℕ) → Dec (n ≤ m)
 _≤?_ n m = ℕ.ind P P0 Ps n m
   where
@@ -172,7 +180,7 @@ _≤?_ n m = ℕ.ind P P0 Ps n m
       where
         sk≰y : step k ≰ y
         sk≰y sk≤y =
-          let d = ℕ≤.diff sk≤y
+          let d = ℕ≤.≤-diff sk≤y
               sk+d≃y = ℕ≤.≤-elim-diff sk≤y
               s[k+d]≃0 =
                 begin

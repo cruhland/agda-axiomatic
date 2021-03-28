@@ -325,7 +325,7 @@ instance
               ≃⟨ ab≃0 ⟩
                 0
               ∎
-         in ∨-introᴿ (b≃0 (Sign.nonzero pos-n) nb≃0)
+         in ∨-introᴿ (b≃0 (Sign.pos≄0 pos-n) nb≃0)
       *-either-zero {a} {b} ab≃0
           | AA.1st record { n = n ; pos = pos-n ; x≃-n = a≃0—n } =
         let nb≃0 =
@@ -344,4 +344,4 @@ instance
               ≃⟨⟩
                 0
               ∎
-         in ∨-introᴿ (b≃0 (Sign.nonzero pos-n) nb≃0)
+         in ∨-introᴿ (b≃0 (Sign.pos≄0 pos-n) nb≃0)

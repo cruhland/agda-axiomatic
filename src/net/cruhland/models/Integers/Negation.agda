@@ -112,7 +112,7 @@ record Negative (x : ℤ) : Set where
 
 pos-nonzero : ∀ {a} → Positive a → a ≄ 0
 pos-nonzero (record { n = n ; pos = pos-n ; x≃n = a≃n }) a≃0 =
-  Sign.nonzero pos-n (AA.inject (trans (sym a≃n) a≃0))
+  Sign.pos≄0 pos-n (AA.inject (trans (sym a≃n) a≃0))
 
 instance
   Positive-substitutive : AA.Substitutive₁ Positive _≃_ _⟨→⟩_
@@ -180,11 +180,11 @@ trichotomy x@(x⁺ — x⁻) = record { at-least-one = one≤ ; at-most-one = on
             ≃⟨ AA.comm ⟩
               x⁻ + 0
             ∎
-       in contra (AA.cancel x⁻+n≃x⁻+0) (Sign.nonzero pos-n)
+       in contra (AA.cancel x⁻+n≃x⁻+0) (Sign.pos≄0 pos-n)
     one≮ (AA.1∧2
             record { n = n ; pos = pos-n ; x≃-n = ≃ᶻ-intro x⁺+n≃x⁻ }
             (≃ᶻ-intro x⁺+0≃x⁻)) =
-      contra (AA.cancel (trans x⁺+n≃x⁻ (sym x⁺+0≃x⁻))) (Sign.nonzero pos-n)
+      contra (AA.cancel (trans x⁺+n≃x⁻ (sym x⁺+0≃x⁻))) (Sign.pos≄0 pos-n)
     one≮ (AA.1∧3
             record { n = n₂ ; pos = pos-n₂ ; x≃-n = ≃ᶻ-intro x⁺+n₂≃0+x⁻ }
             record { n = n₁ ; pos = pos-n₁ ; x≃n = ≃ᶻ-intro x⁺+0≃n₁+x⁻ }) =
@@ -202,5 +202,5 @@ trichotomy x@(x⁺ — x⁻) = record { at-least-one = one≤ ; at-most-one = on
             ≃˘⟨ x⁺+0≃n₁+x⁻ ⟩
               x⁺ + 0
             ∎
-          n₂+n₁≄0 = Sign.nonzero (ℕ.+-positive pos-n₂)
+          n₂+n₁≄0 = Sign.pos≄0 (ℕ.+-positive pos-n₂)
        in contra (AA.cancel x⁺+[n₂+n₁]≃x⁺+0) n₂+n₁≄0

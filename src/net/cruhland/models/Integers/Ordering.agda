@@ -78,7 +78,7 @@ pos→< {x} {y} record { n = n ; pos = pos-n ; x≃n = y-x≃n } =
     <-intro (≤-intro n (ℤ-.≃ᴸ-subᴿ-toᴸ y-x≃n)) x≄y
   where
     x≄y : x ≄ y
-    x≄y x≃y = contra (AA.inject n≃0) (Sign.nonzero pos-n)
+    x≄y x≃y = contra (AA.inject n≃0) (Sign.pos≄0 pos-n)
       where
         n≃0 =
           begin
