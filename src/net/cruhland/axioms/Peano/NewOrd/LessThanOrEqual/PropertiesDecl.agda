@@ -18,7 +18,7 @@ module net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.PropertiesDecl
 
 open PeanoBase PB using (ℕ; step)
 
-record LteProperties : Set where
+record LteProperties : Set₁ where
   field
     {{≤-transitive}} : Eq.Transitive _≤_
     {{≤-antisymmetric}} : AA.Antisymmetric _≤_
@@ -28,4 +28,5 @@ record LteProperties : Set where
     n≤sn : {n : ℕ} → n ≤ step n
     ≤-widenᴸ : {n m : ℕ} → step n ≤ m → n ≤ m
 
-    {{≤-substitutive-+₂²}} : AA.Substitutive₂² _+_ _≤_ _≤_
+    {{≤-substitutive-+}} : AA.Substitutive₂² _+_ _≤_ _≤_
+    {{≤-cancellative-+}} : AA.Cancellative² _+_ _≤_

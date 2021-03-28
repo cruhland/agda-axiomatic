@@ -129,8 +129,25 @@ instance
   ≤-substitutive-+ᴿ = AA.substitutiveᴿ-from-substitutiveᴸ
     where instance +-swappable = AA.swappable-from-commutative
 
-  ≤-substitutive-+₂² : AA.Substitutive₂² _+_ _≤_ _≤_
-  ≤-substitutive-+₂² = AA.substitutive₂²
+  ≤-substitutive-+ : AA.Substitutive₂² _+_ _≤_ _≤_
+  ≤-substitutive-+ = AA.substitutive₂²
+
+  ≤-cancellative-+ᴸ : AA.Cancellative AA.handᴸ _+_ _≤_
+  ≤-cancellative-+ᴸ = AA.cancellative λ {n₁ n₂ m} → ≤-cancelᴸ
+    where
+      ≤-cancelᴸ : {n₁ n₂ m : ℕ} → m + n₁ ≤ m + n₂ → n₁ ≤ n₂
+      ≤-cancelᴸ m+n₁≤m+n₂ =
+        let d = ℕ≤.diff m+n₁≤m+n₂
+            m+n₁+d≃m+n₂ = ℕ≤.≤-elim-diff m+n₁≤m+n₂
+            m+[n₁+d]≃m+n₂ = Eq.trans (Eq.sym AA.assoc) m+n₁+d≃m+n₂
+         in ℕ≤.≤-intro-diff (AA.cancel m+[n₁+d]≃m+n₂)
+
+  ≤-cancellative-+ᴿ : AA.Cancellative AA.handᴿ _+_ _≤_
+  ≤-cancellative-+ᴿ = AA.cancellativeᴿ-from-cancellativeᴸ
+    where instance +-swap = AA.swappable-from-commutative
+
+  ≤-cancellative-+ : AA.Cancellative² _+_ _≤_
+  ≤-cancellative-+ = AA.cancellative²
 
 n≤sn : {n : ℕ} → n ≤ step n
 n≤sn = ℕ≤.≤-widenᴿ Eq.refl

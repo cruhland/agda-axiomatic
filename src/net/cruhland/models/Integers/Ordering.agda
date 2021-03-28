@@ -154,7 +154,7 @@ instance
         ∎
 
   *-cancellativeᴿ : AA.Cancellative AA.handᴿ _*_ _≃_
-  *-cancellativeᴿ = AA.cancellativeᴿ-from-cancellativeᴸ {A = ℤ}
+  *-cancellativeᴿ = AA.cancelᴿ-from-cancelᴸ-comm {A = ℤ}
 
   *-cancellative² : AA.Cancellative² _*_ _≃_
   *-cancellative² = AA.cancellative² {A = ℤ}

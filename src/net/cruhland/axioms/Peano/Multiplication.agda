@@ -260,7 +260,7 @@ record Multiplication
            in contra (sym ab≃ac) ac≄ab
 
     *-cancellativeᴿ : AA.Cancellative AA.handᴿ _*_ _≃_
-    *-cancellativeᴿ = AA.cancellativeᴿ-from-cancellativeᴸ
+    *-cancellativeᴿ = AA.cancelᴿ-from-cancelᴸ-comm
 
     *-cancellative² : AA.Cancellative² _*_ _≃_
     *-cancellative² = AA.cancellative²

@@ -1,15 +1,17 @@
 module net.cruhland.axioms.AbstractAlgebra.Injective where
 
-open import net.cruhland.axioms.Eq using (_≃_; _≄_; Eq)
+open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_; Eq)
 open import net.cruhland.models.Function using
-  (_∘_; ConstrainableFn; flip; toImpFn)
+  (_∘_; _⟨→⟩_; ConstrainableFn; flip; toImpFn)
 
 open import net.cruhland.axioms.AbstractAlgebra.Base using
   (forHand; Hand; handᴸ; handᴿ)
 open import net.cruhland.axioms.AbstractAlgebra.Substitutive using
-  (Substitutive₁; substitutive₁; with-comm)
+  (Substitutive₁; substitutive₁; Substitutive₂; swappable-from-commutative
+  ; module EqProperties
+  )
 open import net.cruhland.axioms.AbstractAlgebra.Swappable using
-  (Commutative)
+  (Commutative; Swappable; with-swap)
 
 record Injective
     {A B : Set} (f : A → B) (_~_ : A → A → Set) (_≈_ : B → B → Set) : Set where
@@ -52,11 +54,21 @@ cancellative {hand} {_⊙_ = _⊙_} {_~_} {{cf}} f =
     cancelPrf {a} {b₁} = toImpFn f {a} {b₁}
 
 cancellativeᴿ-from-cancellativeᴸ :
-  {A : Set} {_⊙_ : A → A → A} {{_ : Eq A}} {{_ : Commutative _⊙_}}
-    {{c : Cancellative handᴸ _⊙_ _≃_}} → Cancellative handᴿ _⊙_ _≃_
+  {A : Set} {_⊙_ : A → A → A} {_~_ : A → A → Set} {{_ : Eq A}}
+  {{_ : Eq.Reflexive _~_}} {{_ : Eq.Transitive _~_}} {{_ : Swappable _⊙_ _~_}}
+  {{_ : Substitutive₂ handᴿ _~_ _≃_ _⟨→⟩_}} {{c : Cancellative handᴸ _⊙_ _~_}} →
+  Cancellative handᴿ _⊙_ _~_
 cancellativeᴿ-from-cancellativeᴸ {{c = c}} =
   let open Cancellative c using (C)
-   in record { C = C ; cancel = λ {a} {{_ : C a}} → cancel ∘ with-comm }
+   in record { C = C ; cancel = λ {a} {{_ : C a}} → cancel ∘ with-swap }
+
+cancelᴿ-from-cancelᴸ-comm :
+  {A : Set} {_⊙_ : A → A → A} {{_ : Eq A}} {{_ : Commutative _⊙_}}
+  {{c : Cancellative handᴸ _⊙_ _≃_}} → Cancellative handᴿ _⊙_ _≃_
+cancelᴿ-from-cancelᴸ-comm = cancellativeᴿ-from-cancellativeᴸ
+  where
+    instance ⊙-swap = swappable-from-commutative
+    instance ≃-substᴿ = EqProperties.≃-substitutiveᴿ
 
 record Cancellative²
     {A : Set} (_⊙_ : A → A → A) (_~_ : A → A → Set) : Set₁ where
