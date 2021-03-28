@@ -9,6 +9,7 @@ open import net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.BaseDecl using
   (LteBase)
 open import net.cruhland.axioms.Peano.Sign using (Sign)
 open import net.cruhland.models.Function using (_⟨→⟩_)
+open import net.cruhland.models.Logic using (Dec)
 
 module net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.PropertiesDecl
   (PB : PeanoBase)
@@ -23,6 +24,8 @@ record LteProperties : Set₁ where
     {{≤-transitive}} : Eq.Transitive _≤_
     {{≤-antisymmetric}} : AA.Antisymmetric _≤_
     {{≤-substitutive-≃}} : AA.Substitutive₂² _≤_ _≃_ _⟨→⟩_
+    ≤-intro-≃ : {n m : ℕ} → n ≃ m → n ≤ m
+    _≤?_ : (n m : ℕ) → Dec (n ≤ m)
 
     {{≤-injective-step}} : AA.Injective step _≤_ _≤_
     n≤sn : {n : ℕ} → n ≤ step n

@@ -1,7 +1,7 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq as Eq using (_≃_)
 open Eq.≃-Reasoning
-open import net.cruhland.axioms.NewOrd using (_≤_)
+open import net.cruhland.axioms.NewOrd using (_≤_; _≰_)
 open import net.cruhland.axioms.Operators using (_+_)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
@@ -11,7 +11,8 @@ open import net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.BaseDecl using
 open import net.cruhland.axioms.Peano.Sign using (Sign)
 open import net.cruhland.models.Function using (_∘_; _⟨→⟩_)
 open import net.cruhland.models.Literals
-open import net.cruhland.models.Logic using (∧-intro)
+open import net.cruhland.models.Logic using
+  (∧-intro; contra; Dec; dec-map; no; yes)
 
 module net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.PropertiesImplBase
   (PB : PeanoBase)
@@ -21,6 +22,7 @@ module net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.PropertiesImplBase
 
 private module ℕ+ = Addition PA
 private open module ℕ = PeanoBase PB using (ℕ; step)
+import net.cruhland.axioms.Peano.Inspect PB as ℕI
 import net.cruhland.axioms.Peano.Literals PB as ℕL
 private module ℕ≤ = LteBase LTEB
 
@@ -149,8 +151,41 @@ instance
   ≤-cancellative-+ : AA.Cancellative² _+_ _≤_
   ≤-cancellative-+ = AA.cancellative²
 
+≤-intro-≃ : {n m : ℕ} → n ≃ m → n ≤ m
+≤-intro-≃ n≃m = AA.subst₂ n≃m Eq.refl
+
 n≤sn : {n : ℕ} → n ≤ step n
 n≤sn = ℕ≤.≤-widenᴿ Eq.refl
 
 ≤-widenᴸ : {n m : ℕ} → step n ≤ m → n ≤ m
 ≤-widenᴸ = AA.inject ∘ ℕ≤.≤-widenᴿ
+
+_≤?_ : (n m : ℕ) → Dec (n ≤ m)
+_≤?_ n m = ℕ.ind P P0 Ps n m
+  where
+    P = λ x → ∀ y → Dec (x ≤ y)
+    P0 = λ y → yes ℕ≤.≤-zeroᴸ
+
+    Ps : ℕ.step-case P
+    Ps {k} k≤?y y with ℕI.case y
+    ... | ℕI.case-zero y≃0 = no sk≰y
+      where
+        sk≰y : step k ≰ y
+        sk≰y sk≤y =
+          let d = ℕ≤.diff sk≤y
+              sk+d≃y = ℕ≤.≤-elim-diff sk≤y
+              s[k+d]≃0 =
+                begin
+                  step (k + d)
+                ≃⟨ AA.fnOpComm ⟩
+                  step k + d
+                ≃⟨ sk+d≃y ⟩
+                  y
+                ≃⟨ y≃0 ⟩
+                  0
+                ∎
+           in contra s[k+d]≃0 ℕ.step≄zero
+    ... | ℕI.case-step (ℕI.pred-intro j y≃sj) =
+      let k≤j→sk≤y = AA.subst₂ (Eq.sym y≃sj) ∘ AA.subst₁
+          sk≤y→k≤j = AA.inject ∘ AA.subst₂ y≃sj
+       in dec-map k≤j→sk≤y sk≤y→k≤j (k≤?y j)
