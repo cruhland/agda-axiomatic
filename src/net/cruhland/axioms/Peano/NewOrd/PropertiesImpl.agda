@@ -32,21 +32,9 @@ private module ℕ< = LtBase LTB
 private module ℕ≤ = LteBase LTEB
 private module ℕ≤P = LteProperties LTEP
 
-zero-diff : {n m : ℕ} (n≤m : n ≤ m) → ℕ≤.≤-diff n≤m ≃ 0 → n ≃ m
-zero-diff {n} {m} n≤m d≃0 =
-  begin
-    n
-  ≃˘⟨ AA.ident ⟩
-    n + 0
-  ≃˘⟨ AA.subst₂ d≃0 ⟩
-    n + ℕ≤.≤-diff n≤m
-  ≃⟨ ℕ≤.≤-elim-diff n≤m ⟩
-    m
-  ∎
-
 ≤-dec-≃ : {n m : ℕ} → n ≤ m → n ≃ m ∨ n ≄ m
 ≤-dec-≃ {n} {m} n≤m with ℕI.case (ℕ≤.≤-diff n≤m)
-... | ℕI.case-zero d≃0 = ∨-introᴸ (zero-diff n≤m d≃0)
+... | ℕI.case-zero d≃0 = ∨-introᴸ (ℕ≤P.zero-diff n≤m d≃0)
 ... | ℕI.case-step (ℕI.pred-intro d′ d≃sd′) = ∨-introᴿ n≄m
   where
     n≄m = λ n≃m →
@@ -70,7 +58,7 @@ s≤-from-< : {n m : ℕ} → n < m → step n ≤ m
 s≤-from-< {n} {m} n<m =
   let n≤m = ℕ<.<-elim-≤ n<m
       n≄m = ℕ<.<-elim-≄ n<m
-      d≄0 = λ d≃0 → contra (zero-diff n≤m d≃0) n≄m
+      d≄0 = λ d≃0 → contra (ℕ≤P.zero-diff n≤m d≃0) n≄m
       ℕI.pred-intro pd d≃spd = ℕI.pred d≄0
       sn+pd≃m =
         begin

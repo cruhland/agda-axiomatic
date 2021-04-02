@@ -1,5 +1,3 @@
-module net.cruhland.axioms.Peano.Sign where
-
 open import net.cruhland.axioms.Cast using (_As_; _as_; cast)
 open import net.cruhland.axioms.Eq using (_≄_)
 open import net.cruhland.axioms.Peano.Base
@@ -8,13 +6,12 @@ import net.cruhland.axioms.Peano.Literals as Literals
 open import net.cruhland.axioms.Sign using (Positive; Positivity)
 open import net.cruhland.models.Literals
 
-record Sign (PB : PeanoBase) : Set₁ where
-  open PeanoBase PB using (ℕ)
-  private module ℕLit = Literals PB
+module net.cruhland.axioms.Peano.Sign (PB : PeanoBase) where
 
+open PeanoBase PB using (ℕ)
+private module ℕLit = Literals PB
+
+record Sign : Set₁ where
   field
     {{positivity}} : Positivity 0
-    {{from-n≄0}} : {n : ℕ} → (n ≄ 0) As Positive n
-
-  mkPositive : {A : Set} {n : ℕ} {{_ : A As Positive n}} → A → Positive n
-  mkPositive = cast
+    Pos-intro-≄0 : {n : ℕ} → n ≄ 0 → Positive n

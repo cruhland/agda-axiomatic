@@ -160,6 +160,18 @@ n≤sn = ℕ≤.≤-widenᴿ Eq.refl
 ≤-widenᴸ : {n m : ℕ} → step n ≤ m → n ≤ m
 ≤-widenᴸ = AA.inject ∘ ℕ≤.≤-widenᴿ
 
+zero-diff : {n m : ℕ} (n≤m : n ≤ m) → ℕ≤.≤-diff n≤m ≃ 0 → n ≃ m
+zero-diff {n} {m} n≤m d[n≤m]≃0 =
+  begin
+    n
+  ≃˘⟨ AA.ident ⟩
+    n + 0
+  ≃˘⟨ AA.subst₂ d[n≤m]≃0 ⟩
+    n + ℕ≤.≤-diff n≤m
+  ≃⟨ ℕ≤.≤-elim-diff n≤m ⟩
+    m
+  ∎
+
 intro-diff-id :
   {n m d : ℕ} (n+d≃m : n + d ≃ m) → ℕ≤.≤-diff (ℕ≤.≤-intro-diff n+d≃m) ≃ d
 intro-diff-id n+d≃m =

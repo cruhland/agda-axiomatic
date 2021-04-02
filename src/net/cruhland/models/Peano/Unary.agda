@@ -56,11 +56,8 @@ module inspect = Inspect base
 instance
   default-positivity = inspect.non-zero-positivity
 
-  from-n≄0 : {n : ℕ} → (n ≢ 0) As Positive n
-  from-n≄0 = As-intro id
-
 sign : Sign base
-sign = record {}
+sign = record { Pos-intro-≄0 = id }
 
 instance
   plus : Op.Plus ℕ

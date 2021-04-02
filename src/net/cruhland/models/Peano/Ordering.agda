@@ -1,6 +1,8 @@
 open import net.cruhland.axioms.Peano.NewOrd.LessThan.BaseDecl using (LtBase)
 import net.cruhland.axioms.Peano.NewOrd.LessThan.BaseImplNeq
   as LtBaseImplNeq
+import net.cruhland.axioms.Peano.NewOrd.LessThan.BaseImplPosDiff
+  as LtBaseImplPosDiff
 open import net.cruhland.axioms.Peano.NewOrd.LessThan.PropertiesDecl
   using (LtProperties)
 import net.cruhland.axioms.Peano.NewOrd.LessThan.PropertiesImplBase
@@ -36,8 +38,16 @@ lteProperties : LteProperties U.base U.sign U.addition lteBase
 lteProperties =
   record { LtePropertiesImplBase U.base U.sign U.addition lteBase }
 
+ltBaseImplNeq : LtBase U.base U.sign U.addition lteBase
+ltBaseImplNeq =
+  record { LtBaseImplNeq U.base U.sign U.addition lteBase lteProperties }
+
+ltBaseImplPosDiff : LtBase U.base U.sign U.addition lteBase
+ltBaseImplPosDiff =
+  record { LtBaseImplPosDiff U.base U.sign U.addition lteBase lteProperties }
+
 ltBase : LtBase U.base U.sign U.addition lteBase
-ltBase = record { LtBaseImplNeq U.base U.sign U.addition lteBase lteProperties }
+ltBase = ltBaseImplNeq
 
 ltProperties : LtProperties U.base U.sign U.addition lteBase ltBase
 ltProperties =

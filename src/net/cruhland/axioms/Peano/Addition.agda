@@ -21,8 +21,8 @@ open import net.cruhland.models.Logic using
 record Addition (PB : PeanoBase) (PS : ℕSign PB) : Set where
   open PeanoBase PB using (ℕ; ind; step; step-case; step≄zero; zero)
   open PeanoInspect PB using (case; case-zero; case-step; decEq; pred-intro)
-  private module ℕLit = PeanoLiterals PB
-  open ℕSign PS using (mkPositive)
+  private module ℕL = PeanoLiterals PB
+  private module ℕS = ℕSign PS
 
   field
     {{plus}} : Op.Plus ℕ
@@ -219,10 +219,11 @@ record Addition (PB : PeanoBase) (PS : ℕSign PB) : Set where
       P0 = AA.subst₁ (sym AA.ident) pos-a
 
       Ps : step-case P
-      Ps {k} _ = mkPositive λ a+sk≃0 → step≄zero (trans AA.fnOpComm a+sk≃0)
+      Ps {k} _ =
+        ℕS.Pos-intro-≄0 λ a+sk≃0 → step≄zero (trans AA.fnOpComm a+sk≃0)
 
   +-nonzero : {x y : ℕ} → x ≄ 0 → x + y ≄ 0
-  +-nonzero = Sign.pos≄0 ∘ +-positive ∘ mkPositive
+  +-nonzero = Sign.pos≄0 ∘ +-positive ∘ ℕS.Pos-intro-≄0
 
   +-both-zero : {a b : ℕ} → a + b ≃ 0 → a ≃ 0 ∧ b ≃ 0
   +-both-zero {a} {b} a+b≃0 =
