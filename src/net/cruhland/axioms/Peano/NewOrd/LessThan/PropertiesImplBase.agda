@@ -1,5 +1,5 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
-import net.cruhland.axioms.Eq as Eq
+open import net.cruhland.axioms.Eq as Eq using (_≃_)
 open import net.cruhland.axioms.NewOrd using (_<_; _≮_)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
@@ -10,6 +10,7 @@ open import net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.BaseDecl using
 import net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.PropertiesImplBase
   as LteProps
 open import net.cruhland.axioms.Peano.Sign using (Sign)
+open import net.cruhland.models.Function using (_⟨→⟩_)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using (∧-intro; contra)
 
@@ -42,6 +43,31 @@ instance
             d[n≤m]+d[m≤k]≃d[n≤k] = Eq.sym (ℕ≤P.diff-trans n≤m m≤k)
             pos[d[n≤k]] = AA.subst₁ d[n≤m]+d[m≤k]≃d[n≤k] pos[d[n≤m]+d[m≤k]]
          in ℕ<.<-intro-≤pd n≤k pos[d[n≤k]]
+
+  <-substitutive-≃ᴸ : AA.Substitutive₂ AA.handᴸ _<_ _≃_ _⟨→⟩_
+  <-substitutive-≃ᴸ = AA.substitutive₂ <-substᴸ
+    where
+      <-substᴸ : {n₁ n₂ m : ℕ} → n₁ ≃ n₂ → n₁ < m → n₂ < m
+      <-substᴸ n₁≃n₂ n₁<m =
+        let n₁≤m = ℕ<.<-elim-≤ n₁<m
+            n₂≤m = AA.subst₂ n₁≃n₂ n₁≤m
+            n₁≄m = ℕ<.<-elim-≄ n₁<m
+            n₂≄m = AA.substᴸ n₁≃n₂ n₁≄m
+         in ℕ<.<-intro-≤≄ n₂≤m n₂≄m
+
+  <-substitutive-≃ᴿ : AA.Substitutive₂ AA.handᴿ _<_ _≃_ _⟨→⟩_
+  <-substitutive-≃ᴿ = AA.substitutive₂ <-substᴿ
+    where
+      <-substᴿ : {n₁ n₂ m : ℕ} → n₁ ≃ n₂ → m < n₁ → m < n₂
+      <-substᴿ n₁≃n₂ m<n₁ =
+        let m≤n₁ = ℕ<.<-elim-≤ m<n₁
+            m≤n₂ = AA.subst₂ n₁≃n₂ m≤n₁
+            m≄n₁ = ℕ<.<-elim-≄ m<n₁
+            m≄n₂ = AA.substᴿ n₁≃n₂ m≄n₁
+         in ℕ<.<-intro-≤≄ m≤n₂ m≄n₂
+
+  <-substitutive-≃ : AA.Substitutive₂² _<_ _≃_ _⟨→⟩_
+  <-substitutive-≃ = AA.substitutive₂²
 
 n<sn : {n : ℕ} → n < step n
 n<sn = ℕ<.<-intro-≤≄ ℕ≤P.n≤sn ℕ+.n≄sn
