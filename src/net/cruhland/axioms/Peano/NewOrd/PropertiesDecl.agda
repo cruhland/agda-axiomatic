@@ -1,5 +1,6 @@
+import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq using (_≃_; _≄_)
-open import net.cruhland.axioms.NewOrd using (_≤_; _<_)
+open import net.cruhland.axioms.NewOrd using (_≤_; _<_; _>_)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
@@ -24,3 +25,4 @@ record OrderingProperties : Set where
     ≤-split : {n m : ℕ} → n ≤ m → n < m ∨ n ≃ m
     s≤-from-< : {n m : ℕ} → n < m → step n ≤ m
     <-from-s≤ : {n m : ℕ} → step n ≤ m → n < m
+    order-trichotomy : {n m : ℕ} → AA.ExactlyOneOfThree (n < m) (n ≃ m) (n > m)

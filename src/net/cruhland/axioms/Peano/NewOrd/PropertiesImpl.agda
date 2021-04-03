@@ -1,12 +1,14 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_)
 open Eq.≃-Reasoning
-open import net.cruhland.axioms.NewOrd using (_≤_; _<_)
+open import net.cruhland.axioms.NewOrd using (_≤_; _<_; _>_)
 open import net.cruhland.axioms.Operators using (_+_)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
 open import net.cruhland.axioms.Peano.NewOrd.LessThan.BaseDecl using (LtBase)
+open import net.cruhland.axioms.Peano.NewOrd.LessThan.PropertiesDecl
+  using (LtProperties)
 open import net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.BaseDecl
   using (LteBase)
 open import net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.PropertiesDecl
@@ -14,7 +16,7 @@ open import net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.PropertiesDecl
 open import net.cruhland.axioms.Peano.Sign using (Sign)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using
-  (_∨_; ∨-comm; ∨-introᴸ; ∨-introᴿ; ∨-mapᴿ; contra)
+  (_∨_; ∨-comm; ∨-introᴸ; ∨-introᴿ; ∨-mapᴿ; ¬_; contra)
 
 module net.cruhland.axioms.Peano.NewOrd.PropertiesImpl
   (PB : PeanoBase)
@@ -22,7 +24,9 @@ module net.cruhland.axioms.Peano.NewOrd.PropertiesImpl
   (PA : Addition PB PS)
   (LTEB : LteBase PB PS PA)
   (LTEP : LteProperties PB PS PA LTEB)
-  (LTB : LtBase PB PS PA LTEB) where
+  (LTB : LtBase PB PS PA LTEB)
+  (LTP : LtProperties PB PS PA LTEB LTB)
+  where
 
 private module ℕ+ = Addition PA
 private open module ℕ = PeanoBase PB using (ℕ; step)
@@ -31,6 +35,7 @@ import net.cruhland.axioms.Peano.Literals PB as ℕL
 private module ℕ< = LtBase LTB
 private module ℕ≤ = LteBase LTEB
 private module ℕ≤P = LteProperties LTEP
+private module ℕ<P = LtProperties LTP
 
 ≤-dec-≃ : {n m : ℕ} → n ≤ m → n ≃ m ∨ n ≄ m
 ≤-dec-≃ {n} {m} n≤m with ℕI.case (ℕ≤.≤-diff n≤m)
@@ -90,3 +95,40 @@ s≤-from-< {n} {m} n<m =
               ∎
          in contra (AA.cancel n+sd≃n+0) ℕ.step≄zero
    in ℕ<.<-intro-≤≄ n≤m n≄m
+
+order-trichotomy : {n m : ℕ} → AA.ExactlyOneOfThree (n < m) (n ≃ m) (n > m)
+order-trichotomy = record { at-least-one = 1of3 ; at-most-one = ¬2of3 }
+  where
+    1of3 : {n m : ℕ} → AA.OneOfThree (n < m) (n ≃ m) (n > m)
+    1of3 {n} {m} = ℕ.ind P P0 Ps n
+      where
+        P = λ x → AA.OneOfThree (x < m) (x ≃ m) (x > m)
+
+        P0 : P 0
+        P0 with ℕI.case m
+        ... | ℕI.case-zero m≃0 =
+            AA.2nd (Eq.sym m≃0)
+        ... | ℕI.case-step (ℕI.pred-intro p m≃sp) =
+            AA.1st (ℕ<.<-intro-≤≄ ℕ≤.≤-zeroᴸ 0≄m)
+          where 0≄m = λ 0≃m → ℕ.step≄zero (Eq.sym (Eq.trans 0≃m m≃sp))
+
+        Ps : ℕ.step-case P
+        Ps {k} (AA.1st k<m) with ≤-split (s≤-from-< k<m)
+        ... | ∨-introᴸ sk<m = AA.1st sk<m
+        ... | ∨-introᴿ sk≃m = AA.2nd sk≃m
+        Ps {k} (AA.2nd k≃m) =
+          let sm≃sk = AA.subst₁ (Eq.sym k≃m)
+           in AA.3rd (<-from-s≤ (ℕ≤P.≤-intro-≃ sm≃sk))
+        Ps (AA.3rd k>m) =
+          AA.3rd (Eq.trans k>m ℕ<P.n<sn)
+
+    ¬2of3 : {n m : ℕ} → ¬ AA.TwoOfThree (n < m) (n ≃ m) (n > m)
+    ¬2of3 (AA.1∧2 n<m n≃m) =
+      contra n≃m (ℕ<.<-elim-≄ n<m)
+    ¬2of3 (AA.1∧3 n<m m<n) =
+      let n≤m = ℕ<.<-elim-≤ n<m
+          m≤n = ℕ<.<-elim-≤ m<n
+          n≄m = ℕ<.<-elim-≄ n<m
+       in contra (AA.antisym n≤m m≤n) n≄m
+    ¬2of3 (AA.2∧3 n≃m m<n) =
+      contra (Eq.sym n≃m) (ℕ<.<-elim-≄ m<n)

@@ -54,7 +54,9 @@ ltProperties =
   record { LtPropertiesImplBase U.base U.sign U.addition lteBase ltBase }
 
 module PD = PropertiesDecl U.base U.sign U.addition lteBase ltBase
+module PI =
+  PropertiesImpl
+    U.base U.sign U.addition lteBase lteProperties ltBase ltProperties
 
 orderingProperties : PD.OrderingProperties
-orderingProperties = record
-  { PropertiesImpl U.base U.sign U.addition lteBase lteProperties ltBase }
+orderingProperties = record { PI }
