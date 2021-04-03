@@ -108,7 +108,7 @@ record Negative (x : ℤ) : Set where
     x≃-n : x ≃ - (n as ℤ)
 
 1-Positive : Positive 1
-1-Positive = record { n = 1 ; pos = ℕ.mkPositive ℕ.step≄zero ; x≃n = refl }
+1-Positive = record { n = 1 ; pos = ℕ.Pos-intro-≄0 ℕ.step≄zero ; x≃n = refl }
 
 pos-nonzero : ∀ {a} → Positive a → a ≄ 0
 pos-nonzero (record { n = n ; pos = pos-n ; x≃n = a≃n }) a≃0 =
@@ -145,7 +145,7 @@ trichotomy x@(x⁺ — x⁻) = record { at-least-one = one≤ ; at-most-one = on
               ≃˘⟨ AA.ident ⟩
                 0 + x⁻
               ∎
-            pos-n = ℕ.mkPositive n≄0
+            pos-n = ℕ.Pos-intro-≄0 n≄0
          in AA.1st (record { n = n ; pos = pos-n ; x≃-n = ≃ᶻ-intro x⁺+n≃0+x⁻ })
     one≤ | AA.2nd x⁺≃x⁻ =
       AA.2nd (≃ᶻ-intro (trans AA.ident (trans x⁺≃x⁻ (sym AA.ident))))
@@ -161,7 +161,7 @@ trichotomy x@(x⁺ — x⁻) = record { at-least-one = one≤ ; at-most-one = on
             ≃⟨ AA.comm ⟩
               n + x⁻
             ∎
-          pos-n = ℕ.mkPositive n≄0
+          pos-n = ℕ.Pos-intro-≄0 n≄0
        in AA.3rd (record { n = n ; pos = pos-n ; x≃n = ≃ᶻ-intro x⁺—x⁻≃n })
 
     one≮ : ¬ AA.TwoOfThree (Negative x) (x ≃ 0) (Positive x)

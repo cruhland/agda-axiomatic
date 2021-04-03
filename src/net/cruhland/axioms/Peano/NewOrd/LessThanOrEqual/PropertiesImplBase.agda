@@ -30,11 +30,12 @@ instance
   ≤-transitive : Eq.Transitive _≤_
   ≤-transitive = Eq.transitive ≤-trans
     where
-      ≤-trans : {n m p : ℕ} → n ≤ m → m ≤ p → n ≤ p
-      ≤-trans n≤m m≤p =
+      ≤-trans : {n m k : ℕ} → n ≤ m → m ≤ k → n ≤ k
+      ≤-trans n≤m m≤k =
         let n+a≃m = ℕ≤.≤-elim-diff n≤m
-            m+b≃p = ℕ≤.≤-elim-diff m≤p
-         in ℕ≤.≤-intro-diff (AA.a[bc]-chain n+a≃m m+b≃p)
+            m+b≃k = ℕ≤.≤-elim-diff m≤k
+            n+[a+b]≃k = AA.a[bc]-chain n+a≃m m+b≃k
+         in ℕ≤.≤-intro-diff n+[a+b]≃k
 
   ≤-antisymmetric : AA.Antisymmetric _≤_
   ≤-antisymmetric = AA.antisymmetric ≤-antisym
@@ -209,3 +210,8 @@ _≤?_ n m = ℕ.ind P P0 Ps n m
       let k≤j→sk≤y = AA.subst₂ (Eq.sym y≃sj) ∘ AA.subst₁
           sk≤y→k≤j = AA.inject ∘ AA.subst₂ y≃sj
        in dec-map k≤j→sk≤y sk≤y→k≤j (k≤?y j)
+
+diff-trans :
+  {n m k : ℕ} (n≤m : n ≤ m) (m≤k : m ≤ k) →
+  ℕ≤.≤-diff (Eq.trans n≤m m≤k) ≃ ℕ≤.≤-diff n≤m + ℕ≤.≤-diff m≤k
+diff-trans n≤m m≤k = intro-diff-id _

@@ -1,3 +1,4 @@
+import net.cruhland.axioms.Eq as Eq
 open import net.cruhland.axioms.NewOrd using (_<_; _≮_; LessThan)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
@@ -20,5 +21,6 @@ import net.cruhland.axioms.Peano.Literals PB as ℕL
 
 record LtProperties : Set where
   field
+    {{<-transitive}} : Eq.Transitive _<_
     n<sn : {n : ℕ} → n < step n
     n≮0 : {n : ℕ} → n ≮ 0

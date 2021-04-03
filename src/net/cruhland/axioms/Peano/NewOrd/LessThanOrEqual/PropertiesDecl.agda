@@ -39,3 +39,6 @@ record LteProperties : Set₁ where
     {{≤-cancellative-+}} : AA.Cancellative² _+_ _≤_
     intro-diff-id :
       {n m d : ℕ} (n+d≃m : n + d ≃ m) → ℕ≤.≤-diff (ℕ≤.≤-intro-diff n+d≃m) ≃ d
+    diff-trans :
+      {n m k : ℕ} (n≤m : n ≤ m) (m≤k : m ≤ k) →
+      ℕ≤.≤-diff (Eq.trans n≤m m≤k) ≃ ℕ≤.≤-diff n≤m + ℕ≤.≤-diff m≤k

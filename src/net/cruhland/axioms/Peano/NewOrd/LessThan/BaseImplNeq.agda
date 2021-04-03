@@ -56,6 +56,10 @@ instance
 <-diff : {n m : ℕ} → n < m → ℕ
 <-diff n<m = ℕ≤.≤-diff (<-elim-≤ n<m)
 
+<-diff-from-≤-diff :
+  {n m : ℕ} (n<m : n < m) → <-diff n<m ≃ ℕ≤.≤-diff (<-elim-≤ n<m)
+<-diff-from-≤-diff n<m = Eq.refl
+
 <-intro-diff : {n m d : ℕ} → Positive d → n + d ≃ m → n < m
 <-intro-diff pd n+d≃m =
   let n≤m = ℕ≤.≤-intro-diff n+d≃m

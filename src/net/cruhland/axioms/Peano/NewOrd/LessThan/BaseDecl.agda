@@ -31,5 +31,7 @@ record LtBase : Set₁ where
 
     <-diff : {n m : ℕ} → n < m → ℕ
     <-diff-pos : {n m : ℕ} (n<m : n < m) → Positive (<-diff n<m)
+    <-diff-from-≤-diff :
+      {n m : ℕ} (n<m : n < m) → <-diff n<m ≃ ℕ≤.≤-diff (<-elim-≤ n<m)
     <-intro-diff : {n m d : ℕ} → Positive d → n + d ≃ m → n < m
     <-elim-diff : {n m : ℕ} (n<m : n < m) → n + <-diff n<m ≃ m
