@@ -14,9 +14,10 @@ open import net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.BaseDecl
 open import net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.PropertiesDecl
   using (LteProperties)
 open import net.cruhland.axioms.Peano.Sign using (Sign)
+open import net.cruhland.models.Function using (_∘_)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using
-  (_∨_; ∨-comm; ∨-introᴸ; ∨-introᴿ; ∨-mapᴿ; ¬_; contra)
+  (_∨_; ∨-comm; ∨-introᴸ; ∨-introᴿ; ∨-mapᴸ; ∨-mapᴿ; ¬_; contra; Dec; dec-map)
 
 module net.cruhland.axioms.Peano.NewOrd.PropertiesImpl
   (PB : PeanoBase)
@@ -34,7 +35,7 @@ import net.cruhland.axioms.Peano.Inspect PB as ℕI
 import net.cruhland.axioms.Peano.Literals PB as ℕL
 private module ℕ< = LtBase LTB
 private module ℕ≤ = LteBase LTEB
-private module ℕ≤P = LteProperties LTEP
+private open module ℕ≤P = LteProperties LTEP using (_≤?_)
 private module ℕ<P = LtProperties LTP
 
 ≤-dec-≃ : {n m : ℕ} → n ≤ m → n ≃ m ∨ n ≄ m
@@ -132,3 +133,29 @@ order-trichotomy = record { at-least-one = 1of3 ; at-most-one = ¬2of3 }
        in contra (AA.antisym n≤m m≤n) n≄m
     ¬2of3 (AA.2∧3 n≃m m<n) =
       contra (Eq.sym n≃m) (ℕ<.<-elim-≄ m<n)
+
+≤s-split : ∀ {n m} → n ≤ step m → n ≤ m ∨ n ≃ step m
+≤s-split {n} {m} n≤sm =
+  ∨-mapᴸ (AA.inject ∘ s≤-from-<) (≤-split n≤sm)
+
+<s-split : ∀ {n m} → n < step m → n < m ∨ n ≃ m
+<s-split {n} {m} = ≤-split ∘ AA.inject ∘ s≤-from-<
+
+_<?_ : ∀ n m → Dec (n < m)
+n <? m = dec-map <-from-s≤ s≤-from-< (step n ≤? m)
+
+strong-ind :
+  (P : ℕ → Set) (b : ℕ) →
+  (∀ m → b ≤ m → (∀ k → b ≤ k → k < m → P k) → P m) → ∀ n → b ≤ n → P n
+strong-ind P b Pm n b≤n = Pm n b≤n (ℕ.ind Q Q0 Qs n)
+  where
+    Q = λ x → ∀ j → b ≤ j → j < x → P j
+    Q0 = λ j b≤j j<0 → contra j<0 ℕ<P.n≮0
+
+    Q-subst : ∀ {x₁ x₂} → x₁ ≃ x₂ → Q x₁ → Q x₂
+    Q-subst x₁≃x₂ Qx₁ j b≤j j<x₂ = Qx₁ j b≤j (AA.subst₂ (Eq.sym x₁≃x₂) j<x₂)
+
+    Qs : ℕ.step-case Q
+    Qs Qk j b≤j j<sk with <s-split j<sk
+    ... | ∨-introᴸ j<k = Qk j b≤j j<k
+    ... | ∨-introᴿ j≃k = Pm j b≤j (Q-subst (Eq.sym j≃k) Qk)
