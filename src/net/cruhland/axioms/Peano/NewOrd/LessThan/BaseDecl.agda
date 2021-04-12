@@ -5,8 +5,7 @@ open import net.cruhland.axioms.Operators using (_+_)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
-open import net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.BaseDecl using
-  (LteBase)
+import net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.BaseDecl as LteBaseDecl
 open import net.cruhland.axioms.Peano.Sign using (Sign)
 open import net.cruhland.axioms.Sign using (Positive)
 
@@ -14,12 +13,14 @@ module net.cruhland.axioms.Peano.NewOrd.LessThan.BaseDecl
   (PB : PeanoBase)
   (PS : Sign PB)
   (PA : Addition PB PS)
-  (LTEB : LteBase PB PS PA) where
+  where
 
 open PeanoBase PB using (ℕ)
-private module ℕ≤ = LteBase LTEB
+open LteBaseDecl PB PS PA using (LteBase)
 
-record LtBase : Set₁ where
+record LtBase (LTEB : LteBase) : Set₁ where
+  private module ℕ≤ = LteBase LTEB
+
   field
     {{lessThan}} : LessThan ℕ
 

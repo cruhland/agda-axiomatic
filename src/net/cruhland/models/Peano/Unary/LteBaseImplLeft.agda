@@ -1,4 +1,4 @@
-module net.cruhland.models.Peano.LteBaseImplLeft where
+module net.cruhland.models.Peano.Unary.LteBaseImplLeft where
 
 open import Data.Nat
   using (ℕ; s≤s; z≤n; zero) renaming (_≤_ to _≤ᴸ_; suc to step)
@@ -9,7 +9,7 @@ import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq as Eq using (_≃_)
 open import net.cruhland.axioms.NewOrd using (_≤_; LessThanOrEqual)
 open import net.cruhland.axioms.Operators using (_+_)
-import net.cruhland.models.Peano.Unary
+import net.cruhland.models.Peano.Unary.Base
 
 instance
   lessThanOrEqual : LessThanOrEqual ℕ

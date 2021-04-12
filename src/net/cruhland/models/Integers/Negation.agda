@@ -13,8 +13,7 @@ open import net.cruhland.models.Logic using (⊤; ¬_; contra)
 
 module net.cruhland.models.Integers.Negation (PA : PeanoArithmetic) where
 
-private module ℕ = PeanoArithmetic PA
-open ℕ using (_<⁺_; _>⁺_; ℕ)
+private open module ℕ = PeanoArithmetic PA using (ℕ)
 import net.cruhland.models.Integers.Addition PA as ℤ+
 open import net.cruhland.models.Integers.Base PA as ℤ using (_—_; ℤ)
 open import net.cruhland.models.Integers.Equality PA as ℤ≃ using (≃ᶻ-intro)
@@ -136,7 +135,9 @@ trichotomy x@(x⁺ — x⁻) = record { at-least-one = one≤ ; at-most-one = on
     one≤ : AA.OneOfThree (Negative x) (x ≃ 0) (Positive x)
     one≤ with AA.ExactlyOneOfThree.at-least-one (ℕ.order-trichotomy {x⁺} {x⁻})
     one≤ | AA.1st x⁺<x⁻ =
-        let ℕ.<⁺-intro (ℕ.≤-intro n x⁺+n≃x⁻) n≄0 = x⁺<x⁻ as x⁺ <⁺ x⁻
+        let n = ℕ.<-diff x⁺<x⁻
+            x⁺+n≃x⁻ = ℕ.<-elim-diff x⁺<x⁻
+            pos-n = ℕ.<-diff-pos x⁺<x⁻
             x⁺+n≃0+x⁻ =
               begin
                 x⁺ + n
@@ -145,12 +146,13 @@ trichotomy x@(x⁺ — x⁻) = record { at-least-one = one≤ ; at-most-one = on
               ≃˘⟨ AA.ident ⟩
                 0 + x⁻
               ∎
-            pos-n = ℕ.Pos-intro-≄0 n≄0
          in AA.1st (record { n = n ; pos = pos-n ; x≃-n = ≃ᶻ-intro x⁺+n≃0+x⁻ })
     one≤ | AA.2nd x⁺≃x⁻ =
       AA.2nd (≃ᶻ-intro (trans AA.ident (trans x⁺≃x⁻ (sym AA.ident))))
     one≤ | AA.3rd x⁺>x⁻ =
-      let ℕ.<⁺-intro (ℕ.≤-intro n x⁻+n≃x⁺) n≄0 = x⁺>x⁻ as x⁺ >⁺ x⁻
+      let n = ℕ.<-diff x⁺>x⁻
+          x⁻+n≃x⁺ = ℕ.<-elim-diff x⁺>x⁻
+          pos-n = ℕ.<-diff-pos x⁺>x⁻
           x⁺—x⁻≃n =
             begin
               x⁺ + 0
@@ -161,7 +163,6 @@ trichotomy x@(x⁺ — x⁻) = record { at-least-one = one≤ ; at-most-one = on
             ≃⟨ AA.comm ⟩
               n + x⁻
             ∎
-          pos-n = ℕ.Pos-intro-≄0 n≄0
        in AA.3rd (record { n = n ; pos = pos-n ; x≃n = ≃ᶻ-intro x⁺—x⁻≃n })
 
     one≮ : ¬ AA.TwoOfThree (Negative x) (x ≃ 0) (Positive x)

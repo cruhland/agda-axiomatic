@@ -1,4 +1,4 @@
-module net.cruhland.models.Peano.LteBaseImplRight where
+module net.cruhland.models.Peano.Unary.LteBaseImplRight where
 
 open import Data.Nat using (ℕ; zero) renaming (suc to step)
 open import Relation.Binary.PropositionalEquality using (refl)
@@ -8,9 +8,9 @@ open Eq.≃-Reasoning
 open import net.cruhland.axioms.NewOrd using (_≤_; LessThanOrEqual)
 open import net.cruhland.axioms.Operators using (_+_)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
-import net.cruhland.models.Peano.Unary as U
+import net.cruhland.models.Peano.Unary.Base as UB
 
-module ℕ+ = Addition U.addition
+module ℕ+ = Addition UB.addition
 
 data _≤ᴿ_ (n : ℕ) : ℕ → Set where
   ≤-refl : n ≤ᴿ n

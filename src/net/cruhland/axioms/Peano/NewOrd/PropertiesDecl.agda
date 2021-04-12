@@ -4,9 +4,8 @@ open import net.cruhland.axioms.NewOrd using (_≤_; _<_; _>_)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
-open import net.cruhland.axioms.Peano.NewOrd.LessThan.BaseDecl using (LtBase)
-open import net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.BaseDecl using
-  (LteBase)
+import net.cruhland.axioms.Peano.NewOrd.LessThan.BaseDecl as LtBaseDecl
+import net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.BaseDecl as LteBaseDecl
 open import net.cruhland.axioms.Peano.Sign using (Sign)
 open import net.cruhland.models.Logic using (_∨_; Dec)
 
@@ -14,12 +13,13 @@ module net.cruhland.axioms.Peano.NewOrd.PropertiesDecl
   (PB : PeanoBase)
   (PS : Sign PB)
   (PA : Addition PB PS)
-  (LTEB : LteBase PB PS PA)
-  (LTB : LtBase PB PS PA LTEB) where
+  where
 
 open PeanoBase PB using (ℕ; step)
+open LtBaseDecl PB PS PA using (LtBase)
+open LteBaseDecl PB PS PA using (LteBase)
 
-record OrderingProperties : Set₁ where
+record OrderingProperties (LTEB : LteBase) (LTB : LtBase LTEB) : Set₁ where
   field
     ≤-dec-≃ : {n m : ℕ} → n ≤ m → n ≃ m ∨ n ≄ m
     ≤-split : {n m : ℕ} → n ≤ m → n < m ∨ n ≃ m

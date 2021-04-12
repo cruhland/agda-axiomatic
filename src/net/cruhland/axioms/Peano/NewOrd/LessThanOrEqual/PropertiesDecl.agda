@@ -5,8 +5,7 @@ open import net.cruhland.axioms.Operators using (_+_)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
-open import net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.BaseDecl using
-  (LteBase)
+import net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.BaseDecl as LteBaseDecl
 open import net.cruhland.axioms.Peano.Sign using (Sign)
 open import net.cruhland.models.Function using (_⟨→⟩_)
 open import net.cruhland.models.Literals
@@ -16,13 +15,15 @@ module net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.PropertiesDecl
   (PB : PeanoBase)
   (PS : Sign PB)
   (PA : Addition PB PS)
-  (LTEB : LteBase PB PS PA) where
+  where
 
 open PeanoBase PB using (ℕ; step)
 import net.cruhland.axioms.Peano.Literals PB as ℕL
-private module ℕ≤ = LteBase LTEB
+open LteBaseDecl PB PS PA using (LteBase)
 
-record LteProperties : Set₁ where
+record LteProperties (LTEB : LteBase) : Set₁ where
+  private module ℕ≤ = LteBase LTEB
+
   field
     {{≤-transitive}} : Eq.Transitive _≤_
     {{≤-antisymmetric}} : AA.Antisymmetric _≤_

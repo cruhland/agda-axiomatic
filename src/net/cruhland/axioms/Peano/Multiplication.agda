@@ -1,36 +1,39 @@
 module net.cruhland.axioms.Peano.Multiplication where
 
 open import Relation.Nullary.Decidable using (False)
+import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.DecEq using (_≃?_; ≄-derive)
-open import net.cruhland.axioms.Eq using
-  (_≃_; _≄_; sym; trans; module ≃-Reasoning)
-open ≃-Reasoning
-import net.cruhland.axioms.AbstractAlgebra as AA
-import net.cruhland.axioms.Operators as Op
-open Op using (_+_; _*_)
-open import net.cruhland.axioms.Peano.Addition
-  using () renaming (Addition to PeanoAddition)
+open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_)
+open Eq.≃-Reasoning
+open import net.cruhland.axioms.NewOrd using (_<_)
+open import net.cruhland.axioms.Operators as Op using (_+_; _*_)
+open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
 import net.cruhland.axioms.Peano.Inspect as PeanoInspect
 import net.cruhland.axioms.Peano.Literals as Literals
-import net.cruhland.axioms.Peano.Ordering as PeanoOrdering
-open import net.cruhland.axioms.Peano.Sign using (Sign)
-import net.cruhland.models.Function
+open import net.cruhland.axioms.Peano.NewOrd using (Ordering)
+open import net.cruhland.axioms.Peano.Sign using () renaming (Sign to ℕSign)
+open import net.cruhland.axioms.Sign as Sign using (Positive)
+open import net.cruhland.models.Function using (it)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using
   (_∧_; ∧-elimᴿ; ∧-intro; _∨_; ∨-introᴸ; ∨-introᴿ; contra)
 
 record Multiplication
-    (PB : PeanoBase) (PS : Sign PB) (PA : PeanoAddition PB PS) : Set where
-  private module ℕ+ = PeanoAddition PA
+    (PB : PeanoBase)
+    (PS : ℕSign PB)
+    (PA : Addition PB PS)
+    (PO : Ordering PB PS PA)
+    : Set where
+  private module ℕ+ = Addition PA
   open PeanoBase PB using (ℕ; ind; step; step-case; zero)
   private module Inspect = PeanoInspect PB
   open Inspect using (case; case-step; case-zero; pred-intro)
   private module ℕLit = Literals PB
-  private module ℕ≤ = PeanoOrdering PB PS PA
-  open ℕ≤ using (_<_; _<⁺_; ≤-intro; <-intro; <⁺-intro)
+  private module ℕOrd = Ordering PO
+  private module ℕS = ℕSign PS
 
   field
     {{star}} : Op.Star ℕ
@@ -84,7 +87,7 @@ record Multiplication
           k * step m + step m
         ≃⟨ AA.subst₂ Pk ⟩
           k * m + k + step m
-        ≃⟨ AA.substᴿ-with-assoc (trans AA.comm AA.fnOpCommSwap) ⟩
+        ≃⟨ AA.substᴿ-with-assoc (Eq.trans AA.comm AA.fnOpCommSwap) ⟩
           k * m + m + step k
         ≃˘⟨ AA.subst₂ *-stepᴸ ⟩
           step k * m + step k
@@ -98,7 +101,7 @@ record Multiplication
         *-comm {n} {m} = ind P P0 Ps n
           where
             P = λ x → x * m ≃ m * x
-            P0 = trans AA.absorb (sym AA.absorb)
+            P0 = Eq.trans AA.absorb (Eq.sym AA.absorb)
 
             Ps : step-case P
             Ps {k} Pk =
@@ -151,6 +154,15 @@ record Multiplication
 
             m≃0 = ∧-elimᴿ (ℕ+.+-both-zero p*m+m≃0)
 
+    *-preserves-Positive : AA.Preserves Positive _*_
+    *-preserves-Positive = AA.preserves *-pres-pos
+      where
+        *-pres-pos : {n m : ℕ} → Positive n → Positive m → Positive (n * m)
+        *-pres-pos pos[n] pos[m] =
+          let n≄0 = Sign.pos≄0 pos[n]
+              m≄0 = Sign.pos≄0 pos[m]
+           in ℕS.Pos-intro-≄0 (AA.nonzero-prod n≄0 m≄0)
+
     *-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _*_ _≃_ _≃_
     *-substitutiveᴿ = AA.substᴿ-from-substᴸ-comm
 
@@ -198,7 +210,7 @@ record Multiplication
     *-associative = record { assoc = *-assoc }
       where
         *-assoc : ∀ {a b c} → (a * b) * c ≃ a * (b * c)
-        *-assoc {a} {b} {c} = sym (ind P P0 Ps b)
+        *-assoc {a} {b} {c} = Eq.sym (ind P P0 Ps b)
           where
             P = λ x → a * (x * c) ≃ (a * x) * c
             P0 =
@@ -230,34 +242,39 @@ record Multiplication
                 (a * step k) * c
               ∎
 
-  *-preserves-<ᴿ : ∀ {a b c} → a < b → c ≄ 0 → a * c < b * c
-  *-preserves-<ᴿ {a} {b} {c} a<b c≄0 =
-    let <⁺-intro a≤b@(≤-intro d a+d≃b) d≄0 = a<b as a <⁺ b
-        ac+dc≃bc = trans (sym AA.distrib) (AA.subst₂ a+d≃b)
-        dc≄0 = AA.nonzero-prod d≄0 c≄0
-     in <⁺-intro (≤-intro (d * c) ac+dc≃bc) dc≄0 as a * c < b * c
+  *-preserves-<ᴿ : {a b c : ℕ} → a < b → Positive c → a * c < b * c
+  *-preserves-<ᴿ {a} {b} {c} a<b pos[c] =
+    let a+d≃b = ℕOrd.<-elim-diff a<b
+        pos[d] = ℕOrd.<-diff-pos a<b
+        ac+dc≃bc = Eq.trans (Eq.sym AA.distrib) (AA.subst₂ a+d≃b)
+        pos[dc] = AA.pres pos[d] pos[c]
+        ac≤bc = ℕOrd.≤-intro-diff ac+dc≃bc
+        pos[d[ac≤bc]] = AA.subst₁ (Eq.sym (ℕOrd.intro-diff-id ac+dc≃bc)) pos[dc]
+     in ℕOrd.<-intro-≤pd ac≤bc pos[d[ac≤bc]]
 
-  *-preserves-<ᴸ : ∀ {a b c} → b < c → a ≄ 0 → a * b < a * c
-  *-preserves-<ᴸ {a} {b} {c} b<c a≄0 =
-    AA.subst₁ {f = _< a * c} AA.comm (AA.subst₁ AA.comm (*-preserves-<ᴿ b<c a≄0))
+  *-preserves-<ᴸ : {a b c : ℕ} → b < c → Positive a → a * b < a * c
+  *-preserves-<ᴸ {a} {b} {c} b<c pos[a] =
+    AA.substᴸ AA.comm (AA.substᴿ AA.comm (*-preserves-<ᴿ b<c pos[a]))
 
   instance
     *-cancellativeᴸ : AA.Cancellative AA.handᴸ _*_ _≃_
     *-cancellativeᴸ = AA.cancellative λ a {{_ : C a}} {b c} → *-cancelᴸ
       where
-        C = λ a → False (a ≃? 0)
+        C = Positive
 
-        *-cancelᴸ : ∀ {a b c} {{_ : C a}} → a * b ≃ a * c → b ≃ c
+        *-cancelᴸ : {a b c : ℕ} {{_ : C a}} → a * b ≃ a * c → b ≃ c
         *-cancelᴸ ab≃ac with
-          AA.ExactlyOneOfThree.at-least-one ℕ≤.order-trichotomy
+          AA.ExactlyOneOfThree.at-least-one ℕOrd.order-trichotomy
         ... | AA.1st b<c =
-          let <-intro _ ab≄ac = *-preserves-<ᴸ b<c ≄-derive
+          let ab<ac = *-preserves-<ᴸ b<c it
+              ab≄ac = ℕOrd.<-elim-≄ ab<ac
            in contra ab≃ac ab≄ac
         ... | AA.2nd b≃c =
           b≃c
         ... | AA.3rd b>c =
-          let <-intro _ ac≄ab = *-preserves-<ᴸ b>c ≄-derive
-           in contra (sym ab≃ac) ac≄ab
+          let ac<ab = *-preserves-<ᴸ b>c it
+              ac≄ab = ℕOrd.<-elim-≄ ac<ab
+           in contra (Eq.sym ab≃ac) ac≄ab
 
     *-cancellativeᴿ : AA.Cancellative AA.handᴿ _*_ _≃_
     *-cancellativeᴿ = AA.cancelᴿ-from-cancelᴸ-comm

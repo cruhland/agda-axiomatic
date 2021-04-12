@@ -283,8 +283,8 @@ instance
   zero-product : AA.ZeroProduct _*_
   zero-product = AA.zeroProduct 0 *-either-zero
     where
-      b≃0 : ∀ {b} {n : ℕ} → n ≄ 0 → (n as ℤ) * b ≃ 0 → b ≃ 0
-      b≃0 {b⁺ — b⁻} {n} n≄0 (≃ᶻ-intro nb⁺+0b⁻+0≃0+[nb⁻+0b⁺]) =
+      b≃0 : ∀ {b} {n : ℕ} → Sign.Positive n → (n as ℤ) * b ≃ 0 → b ≃ 0
+      b≃0 {b⁺ — b⁻} {n} pos[n] (≃ᶻ-intro nb⁺+0b⁻+0≃0+[nb⁻+0b⁺]) =
         let nb⁺≃nb⁻ =
               begin
                 n * b⁺
@@ -303,7 +303,7 @@ instance
               ≃⟨ AA.ident ⟩
                 n * b⁻
               ∎
-            instance n≄ⁱ0 = fromWitnessFalse n≄0
+            instance n⁺ = pos[n]
             b⁺≃b⁻ = AA.cancel nb⁺≃nb⁻
             b⁺+0≃0+b⁻ = trans AA.ident (trans b⁺≃b⁻ (sym AA.ident))
          in ≃ᶻ-intro b⁺+0≃0+b⁻
@@ -325,7 +325,7 @@ instance
               ≃⟨ ab≃0 ⟩
                 0
               ∎
-         in ∨-introᴿ (b≃0 (Sign.pos≄0 pos-n) nb≃0)
+         in ∨-introᴿ (b≃0 pos-n nb≃0)
       *-either-zero {a} {b} ab≃0
           | AA.1st record { n = n ; pos = pos-n ; x≃-n = a≃0—n } =
         let nb≃0 =
@@ -344,4 +344,4 @@ instance
               ≃⟨⟩
                 0
               ∎
-         in ∨-introᴿ (b≃0 (Sign.pos≄0 pos-n) nb≃0)
+         in ∨-introᴿ (b≃0 pos-n nb≃0)

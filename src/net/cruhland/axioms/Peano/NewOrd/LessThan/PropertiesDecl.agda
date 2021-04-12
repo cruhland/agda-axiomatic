@@ -4,9 +4,8 @@ open import net.cruhland.axioms.NewOrd using (_<_; _≮_; LessThan)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
-open import net.cruhland.axioms.Peano.NewOrd.LessThan.BaseDecl using (LtBase)
-open import net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.BaseDecl using
-  (LteBase)
+import net.cruhland.axioms.Peano.NewOrd.LessThan.BaseDecl as LtBaseDecl
+import net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.BaseDecl as LteBaseDecl
 open import net.cruhland.axioms.Peano.Sign using (Sign)
 open import net.cruhland.models.Function using (_⟨→⟩_)
 open import net.cruhland.models.Literals
@@ -15,13 +14,14 @@ module net.cruhland.axioms.Peano.NewOrd.LessThan.PropertiesDecl
   (PB : PeanoBase)
   (PS : Sign PB)
   (PA : Addition PB PS)
-  (LTEB : LteBase PB PS PA)
-  (LTB : LtBase PB PS PA LTEB) where
+  where
 
 open PeanoBase PB using (ℕ; step)
 import net.cruhland.axioms.Peano.Literals PB as ℕL
+open LtBaseDecl PB PS PA using (LtBase)
+open LteBaseDecl PB PS PA using (LteBase)
 
-record LtProperties : Set where
+record LtProperties (LTEB : LteBase) (LTB : LtBase LTEB) : Set where
   field
     {{<-transitive}} : Eq.Transitive _<_
     {{<-substitutive-≃}} : AA.Substitutive₂² _<_ _≃_ _⟨→⟩_
