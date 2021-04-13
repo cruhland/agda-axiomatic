@@ -5,7 +5,7 @@ open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
 open import net.cruhland.axioms.Peano.Sign using (Sign)
 
-module net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.AddDecl
+module net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.AddDecl
   (PB : PeanoBase) (PS : Sign PB) (PA : Addition PB PS) where
 
 open PeanoBase PB using (ℕ)

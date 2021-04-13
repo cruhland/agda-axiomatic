@@ -1,19 +1,19 @@
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
-import net.cruhland.axioms.Peano.NewOrd.LessThan.BaseDecl
+import net.cruhland.axioms.Peano.Ordering.LessThan.BaseDecl
   as LtBaseDecl
-import net.cruhland.axioms.Peano.NewOrd.LessThan.PropertiesDecl
+import net.cruhland.axioms.Peano.Ordering.LessThan.PropertiesDecl
   as LtPropertiesDecl
-import net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.BaseDecl
+import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.BaseDecl
   as LteBaseDecl
-import net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.PropertiesDecl
+import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.PropertiesDecl
   as LtePropertiesDecl
-import net.cruhland.axioms.Peano.NewOrd.PropertiesDecl
+import net.cruhland.axioms.Peano.Ordering.PropertiesDecl
   as OrderingPropertiesDecl
 open import net.cruhland.axioms.Peano.Sign using (Sign)
 
-module net.cruhland.axioms.Peano.NewOrd
+module net.cruhland.axioms.Peano.Ordering
   (PB : PeanoBase) (PS : Sign PB) (PA : Addition PB PS) where
 
 open LtBaseDecl PB PS PA using (LtBase)

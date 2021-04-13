@@ -1,4 +1,4 @@
-module net.cruhland.axioms.NewOrd where
+module net.cruhland.axioms.Ordering where
 
 open import net.cruhland.models.Function using (flip)
 open import net.cruhland.models.Logic using (¬_)

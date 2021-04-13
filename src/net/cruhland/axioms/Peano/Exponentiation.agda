@@ -6,7 +6,7 @@ open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
 open import net.cruhland.axioms.Peano.Multiplication using (Multiplication)
-open import net.cruhland.axioms.Peano.NewOrd using (Ordering)
+open import net.cruhland.axioms.Peano.Ordering using (Ordering)
 open import net.cruhland.axioms.Peano.Sign using (Sign)
 
 record Exponentiation

@@ -1,13 +1,13 @@
-open import net.cruhland.axioms.NewOrd using (_≤_)
+open import net.cruhland.axioms.Ordering using (_≤_)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
-open import net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.BaseDecl using
+open import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.BaseDecl using
   (LteBase)
 open import net.cruhland.axioms.Peano.Sign using () renaming (Sign to ℕSign)
 open import net.cruhland.axioms.Sign using (Positive)
 
-module net.cruhland.axioms.Peano.NewOrd.LessThan.PosDiffDecl
+module net.cruhland.axioms.Peano.Ordering.LessThan.PosDiffDecl
   (PB : PeanoBase)
   (PS : ℕSign PB)
   (PA : Addition PB PS)

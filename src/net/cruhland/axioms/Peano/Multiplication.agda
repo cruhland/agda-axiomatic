@@ -6,14 +6,14 @@ open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.DecEq using (_≃?_; ≄-derive)
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_)
 open Eq.≃-Reasoning
-open import net.cruhland.axioms.NewOrd using (_<_)
+open import net.cruhland.axioms.Ordering using (_<_)
 open import net.cruhland.axioms.Operators as Op using (_+_; _*_)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
 import net.cruhland.axioms.Peano.Inspect as PeanoInspect
 import net.cruhland.axioms.Peano.Literals as Literals
-open import net.cruhland.axioms.Peano.NewOrd using (Ordering)
+open import net.cruhland.axioms.Peano.Ordering using (Ordering)
 open import net.cruhland.axioms.Peano.Sign using () renaming (Sign to ℕSign)
 open import net.cruhland.axioms.Sign as Sign using (Positive)
 open import net.cruhland.models.Function using (it)

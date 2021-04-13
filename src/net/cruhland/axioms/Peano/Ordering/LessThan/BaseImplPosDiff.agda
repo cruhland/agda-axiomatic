@@ -2,21 +2,21 @@ import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.DecEq using (_≃?_)
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_)
 open Eq.≃-Reasoning
-open import net.cruhland.axioms.NewOrd using (_≤_; _<_; LessThan)
+open import net.cruhland.axioms.Ordering using (_≤_; _<_; LessThan)
 open import net.cruhland.axioms.Operators using (_+_)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
-open import net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.BaseDecl
+open import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.BaseDecl
   using (LteBase)
-open import net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.PropertiesDecl
+open import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.PropertiesDecl
   using (LteProperties)
 open import net.cruhland.axioms.Peano.Sign using () renaming (Sign to ℕSign)
 open import net.cruhland.axioms.Sign as Sign using (Positive)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using (contra; no; yes)
 
-module net.cruhland.axioms.Peano.NewOrd.LessThan.BaseImplPosDiff
+module net.cruhland.axioms.Peano.Ordering.LessThan.BaseImplPosDiff
   (PB : PeanoBase)
   (PS : ℕSign PB)
   (PA : Addition PB PS)
@@ -31,7 +31,8 @@ import net.cruhland.axioms.Peano.Literals PB as ℕL
 private module ℕ≤ = LteBase LTEB
 private module ℕ≤P = LteProperties LTEP
 private module ℕS = ℕSign PS
-import net.cruhland.axioms.Peano.NewOrd.LessThan.PosDiffDecl PB PS PA LTEB as PD
+import net.cruhland.axioms.Peano.Ordering.LessThan.PosDiffDecl PB PS PA LTEB
+  as PD
 
 instance
   lessThan : LessThan ℕ

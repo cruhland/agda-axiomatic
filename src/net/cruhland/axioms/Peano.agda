@@ -6,7 +6,7 @@ open import net.cruhland.axioms.Peano.Exponentiation using (Exponentiation)
 import net.cruhland.axioms.Peano.Inspect as Inspect
 import net.cruhland.axioms.Peano.Literals as Literals
 open import net.cruhland.axioms.Peano.Multiplication using (Multiplication)
-open import net.cruhland.axioms.Peano.NewOrd using (Ordering)
+open import net.cruhland.axioms.Peano.Ordering using (Ordering)
 open import net.cruhland.axioms.Peano.Sign using (Sign)
 
 -- Bundle all child modules together for convenience

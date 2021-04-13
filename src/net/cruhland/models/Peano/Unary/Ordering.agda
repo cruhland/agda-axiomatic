@@ -1,23 +1,23 @@
-import net.cruhland.axioms.Peano.NewOrd as NewOrd
-open import net.cruhland.axioms.Peano.NewOrd.LessThan.BaseDecl using (LtBase)
-import net.cruhland.axioms.Peano.NewOrd.LessThan.BaseImplNeq
+import net.cruhland.axioms.Peano.Ordering as Ordering
+open import net.cruhland.axioms.Peano.Ordering.LessThan.BaseDecl using (LtBase)
+import net.cruhland.axioms.Peano.Ordering.LessThan.BaseImplNeq
   as LtBaseImplNeq
-import net.cruhland.axioms.Peano.NewOrd.LessThan.BaseImplPosDiff
+import net.cruhland.axioms.Peano.Ordering.LessThan.BaseImplPosDiff
   as LtBaseImplPosDiff
-open import net.cruhland.axioms.Peano.NewOrd.LessThan.PropertiesDecl
+open import net.cruhland.axioms.Peano.Ordering.LessThan.PropertiesDecl
   using (LtProperties)
-import net.cruhland.axioms.Peano.NewOrd.LessThan.PropertiesImplBase
+import net.cruhland.axioms.Peano.Ordering.LessThan.PropertiesImplBase
   as LtPropertiesImplBase
-open import net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.BaseDecl
+open import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.BaseDecl
   using (LteBase)
-import net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.BaseImplAdd
+import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.BaseImplAdd
   as LteBaseImplAdd
-open import net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.PropertiesDecl
+open import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.PropertiesDecl
   using (LteProperties)
-import net.cruhland.axioms.Peano.NewOrd.LessThanOrEqual.PropertiesImplBase
+import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.PropertiesImplBase
   as LtePropertiesImplBase
-open import net.cruhland.axioms.Peano.NewOrd.PropertiesDecl as PropertiesDecl
-import net.cruhland.axioms.Peano.NewOrd.PropertiesImpl as PropertiesImpl
+open import net.cruhland.axioms.Peano.Ordering.PropertiesDecl as PropertiesDecl
+import net.cruhland.axioms.Peano.Ordering.PropertiesImpl as PropertiesImpl
 import net.cruhland.models.Peano.Unary.Base as UB
 import net.cruhland.models.Peano.Unary.LteBaseImplLeft as LteBaseImplLeft
 import net.cruhland.models.Peano.Unary.LteBaseImplRight as LteBaseImplRight
@@ -62,7 +62,7 @@ module PI =
 orderingProperties : PD.OrderingProperties lteBase ltBase
 orderingProperties = record { PI }
 
-module NO = NewOrd UB.base UB.sign UB.addition
+module NO = Ordering UB.base UB.sign UB.addition
 
 ordering : NO.Ordering
 ordering = record
