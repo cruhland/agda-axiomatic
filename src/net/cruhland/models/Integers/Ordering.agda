@@ -6,7 +6,7 @@ open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Operators using (_+_; _*_; -_; _-_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
-import net.cruhland.axioms.Sign as Sign
+open import net.cruhland.axioms.Sign using (Positive; Positivity; pos≄0)
 open import net.cruhland.models.Function using (flip)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using
@@ -19,9 +19,10 @@ open ℕ using (ℕ)
 import net.cruhland.models.Integers.Addition PA as ℤ+
 open import net.cruhland.models.Integers.Base PA as ℤ using (ℤ)
 import net.cruhland.models.Integers.Equality PA as ℤ≃
-import net.cruhland.models.Integers.Literals PA as ℤLit
+import net.cruhland.models.Integers.Literals PA as ℤL
 import net.cruhland.models.Integers.Multiplication PA as ℤ*
 import net.cruhland.models.Integers.Negation PA as ℤ-
+import net.cruhland.models.Integers.Sign PA as ℤS
 
 infix 4 _≤_
 record _≤_ (n m : ℤ) : Set where
@@ -73,29 +74,36 @@ _>_ = flip _<_
         b
       ∎
 
-pos→< : ∀ {x y} → ℤ-.Positive (y - x) → x < y
-pos→< {x} {y} record { n = n ; pos = pos-n ; x≃n = y-x≃n } =
-    <-intro (≤-intro n (ℤ-.≃ᴸ-subᴿ-toᴸ y-x≃n)) x≄y
-  where
-    x≄y : x ≄ y
-    x≄y x≃y = contra (AA.inject n≃0) (Sign.pos≄0 pos-n)
-      where
-        n≃0 =
-          begin
-            (n as ℤ)
-          ≃˘⟨ y-x≃n ⟩
-            y - x
-          ≃⟨ ℤ-.sub-substᴿ x≃y ⟩
-            y - y
-          ≃⟨ AA.invᴿ ⟩
-            0
-          ∎
+private
+  instance
+    -- TODO: Don't need this after factoring out Decls
+    positivity : Positivity 0
+    positivity = ℤS.positivity
+
+pos→< : ∀ {x y} → Positive (y - x) → x < y
+pos→< {x} {y} pos[y-x] = -- record { n = n ; pos = pos-n ; x≃n = y-x≃n } =
+    let n = ℤS.pos-ℕ pos[y-x]
+        pos-n = ℤS.pos-ℕ-pos pos[y-x]
+        y-x≃n = Eq.sym (ℤS.pos-ℕ-eq pos[y-x])
+        x≄y = λ x≃y →
+          let n≃0 =
+                begin
+                  (n as ℤ)
+                ≃˘⟨ y-x≃n ⟩
+                  y - x
+                ≃⟨ ℤ-.sub-substᴿ x≃y ⟩
+                  y - y
+                ≃⟨ AA.invᴿ ⟩
+                  0
+                ∎
+           in contra (AA.inject n≃0) (pos≄0 pos-n)
+     in <-intro (≤-intro n (ℤ-.≃ᴸ-subᴿ-toᴸ y-x≃n)) x≄y
 
 order-trichotomy : ∀ a b → AA.ExactlyOneOfThree (a < b) (a ≃ b) (a > b)
 order-trichotomy a b = record { at-least-one = 1≤ ; at-most-one = ≤1 }
   where
     1≤ : AA.OneOfThree (a < b) (a ≃ b) (a > b)
-    1≤ with AA.ExactlyOneOfThree.at-least-one (ℤ-.trichotomy (b - a))
+    1≤ with AA.ExactlyOneOfThree.at-least-one (ℤS.trichotomy (b - a))
     1≤ | AA.2nd b-a≃0 =
       AA.2nd (Eq.sym (Eq.trans (ℤ-.≃ᴸ-subᴿ-toᴸ b-a≃0) AA.ident))
     1≤ | AA.3rd b-a>0 =

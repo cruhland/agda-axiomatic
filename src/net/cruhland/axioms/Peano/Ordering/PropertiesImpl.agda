@@ -97,11 +97,11 @@ s≤-from-< {n} {m} n<m =
          in contra (AA.cancel n+sd≃n+0) ℕ.step≄zero
    in ℕ<.<-intro-≤≄ n≤m n≄m
 
-order-trichotomy : {n m : ℕ} → AA.ExactlyOneOfThree (n < m) (n ≃ m) (n > m)
-order-trichotomy = record { at-least-one = 1of3 ; at-most-one = ¬2of3 }
+order-trichotomy : (n m : ℕ) → AA.ExactlyOneOfThree (n < m) (n ≃ m) (n > m)
+order-trichotomy n m = record { at-least-one = 1of3 ; at-most-one = ¬2of3 }
   where
-    1of3 : {n m : ℕ} → AA.OneOfThree (n < m) (n ≃ m) (n > m)
-    1of3 {n} {m} = ℕ.ind P P0 Ps n
+    1of3 : AA.OneOfThree (n < m) (n ≃ m) (n > m)
+    1of3 = ℕ.ind P P0 Ps n
       where
         P = λ x → AA.OneOfThree (x < m) (x ≃ m) (x > m)
 
@@ -123,7 +123,7 @@ order-trichotomy = record { at-least-one = 1of3 ; at-most-one = ¬2of3 }
         Ps (AA.3rd k>m) =
           AA.3rd (Eq.trans k>m ℕ<P.n<sn)
 
-    ¬2of3 : {n m : ℕ} → ¬ AA.TwoOfThree (n < m) (n ≃ m) (n > m)
+    ¬2of3 : ¬ AA.TwoOfThree (n < m) (n ≃ m) (n > m)
     ¬2of3 (AA.1∧2 n<m n≃m) =
       contra n≃m (ℕ<.<-elim-≄ n<m)
     ¬2of3 (AA.1∧3 n<m m<n) =

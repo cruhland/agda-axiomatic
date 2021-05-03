@@ -1,12 +1,13 @@
 open import Relation.Nullary.Decidable using (fromWitnessFalse)
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_)
-open import net.cruhland.axioms.Eq using
-  (_≃_; _≄_; sym; trans; module ≃-Reasoning)
+open import net.cruhland.axioms.Eq
+  using (_≃_; _≄_; sym; trans; module ≃-Reasoning)
 open ≃-Reasoning
 open import net.cruhland.axioms.Operators as Op using (_+_; _*_; -_; _-_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
-import net.cruhland.axioms.Sign as Sign
+open import net.cruhland.axioms.Sign
+  using (Negative; Negativity; Positive; Positivity)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using (_∨_; ∨-introᴸ; ∨-introᴿ)
 
@@ -19,8 +20,16 @@ open import net.cruhland.models.Integers.Base PA as ℤ using (_—_; ℤ)
 open import net.cruhland.models.Integers.Equality PA as ℤ≃ using (≃ᶻ-intro)
 import net.cruhland.models.Integers.Literals PA as ℤLit
 open import net.cruhland.models.Integers.Negation PA as ℤ-
+import net.cruhland.models.Integers.Sign PA as ℤS
 
 instance
+  -- TODO: Avoid explicit re-declaration of instances
+  private negativity : Negativity 0
+  negativity = ℤS.negativity
+
+  private positivity : Positivity 0
+  positivity = ℤS.positivity
+
   star : Op.Star ℤ
   star = record { _*_ = _*₀_ }
     where
@@ -264,84 +273,103 @@ neg-sub-swap {a} {b} =
     b - a
   ∎
 
-sub-sign-swap : ∀ {a b} → Negative (a - b) → Positive (b - a)
-sub-sign-swap {a} {b} record { n = n ; pos = n≄0 ; x≃-n = a-b≃-n } =
-    record { n = n ; pos = n≄0 ; x≃n = b-a≃n }
-  where
-    b-a≃n =
-      begin
-        b - a
-      ≃˘⟨ neg-sub-swap {a} ⟩
-        - (a - b)
-      ≃⟨ AA.subst₁ a-b≃-n ⟩
-        - - (n as ℤ)
-      ≃⟨ neg-involutive {n as ℤ} ⟩
-        (n as ℤ)
-      ∎
+sub-sign-swap : {a b : ℤ} → Negative (a - b) → Positive (b - a)
+sub-sign-swap a⁺+b⁻<a⁻+b⁺ = AA.substᴸ AA.comm (AA.substᴿ AA.comm a⁺+b⁻<a⁻+b⁺)
 
 instance
   zero-product : AA.ZeroProduct _*_
   zero-product = AA.zeroProduct 0 *-either-zero
     where
-      b≃0 : ∀ {b} {n : ℕ} → Sign.Positive n → (n as ℤ) * b ≃ 0 → b ≃ 0
-      b≃0 {b⁺ — b⁻} {n} pos[n] (≃ᶻ-intro nb⁺+0b⁻+0≃0+[nb⁻+0b⁺]) =
-        let nb⁺≃nb⁻ =
+      *-either-zero : {a b : ℤ} → a * b ≃ 0 → a ≃ 0 ∨ b ≃ 0
+      *-either-zero
+          a@{a⁺ — a⁻} b@{b⁺ — b⁻} (≃ᶻ-intro [a⁺b⁺+a⁻b⁻]+0≃0+[a⁺b⁻+a⁻b⁺])
+            with AA.ExactlyOneOfThree.at-least-one (ℤS.trichotomy a)
+      ... | AA.1st a⁺<a⁻ =
+        let n = ℕ.<-diff a⁺<a⁻
+            instance pos[n] = ℕ.<-diff-pos a⁺<a⁻
+            a⁺+n≃a⁻ = ℕ.<-elim-diff a⁺<a⁻
+            a⁺[b⁺+b⁻]+nb⁻≃a⁺[b⁺+b⁻]+nb⁺ =
               begin
-                n * b⁺
+                a⁺ * (b⁺ + b⁻) + n * b⁻
+              ≃⟨ AA.subst₂ AA.distrib ⟩
+                a⁺ * b⁺ + a⁺ * b⁻ + n * b⁻
+              ≃⟨ AA.assoc ⟩
+                a⁺ * b⁺ + (a⁺ * b⁻ + n * b⁻)
+              ≃˘⟨ AA.subst₂ AA.distrib ⟩
+                a⁺ * b⁺ + (a⁺ + n) * b⁻
+              ≃⟨ AA.subst₂ (AA.subst₂ a⁺+n≃a⁻) ⟩
+                a⁺ * b⁺ + a⁻ * b⁻
               ≃˘⟨ AA.ident ⟩
-                n * b⁺ + 0
-              ≃˘⟨ AA.subst₂ AA.absorb ⟩
-                n * b⁺ + 0 * b⁻
+                a⁺ * b⁺ + a⁻ * b⁻ + 0
+              ≃⟨ [a⁺b⁺+a⁻b⁻]+0≃0+[a⁺b⁻+a⁻b⁺] ⟩
+                0 + (a⁺ * b⁻ + a⁻ * b⁺)
+              ≃⟨ AA.ident ⟩
+                a⁺ * b⁻ + a⁻ * b⁺
+              ≃˘⟨ AA.subst₂ (AA.subst₂ a⁺+n≃a⁻) ⟩
+                a⁺ * b⁻ + (a⁺ + n) * b⁺
+              ≃⟨ AA.subst₂ AA.distrib ⟩
+                a⁺ * b⁻ + (a⁺ * b⁺ + n * b⁺)
+              ≃˘⟨ AA.assoc ⟩
+                (a⁺ * b⁻ + a⁺ * b⁺) + n * b⁺
+              ≃⟨ AA.subst₂ AA.comm ⟩
+                (a⁺ * b⁺ + a⁺ * b⁻) + n * b⁺
+              ≃˘⟨ AA.subst₂ AA.distrib ⟩
+                a⁺ * (b⁺ + b⁻) + n * b⁺
+              ∎
+            nb⁻≃nb⁺ = AA.cancel a⁺[b⁺+b⁻]+nb⁻≃a⁺[b⁺+b⁻]+nb⁺
+            b⁺+0≃0+b⁻ =
+              begin
+                b⁺ + 0
+              ≃˘⟨ AA.subst₂ (AA.cancel nb⁻≃nb⁺) ⟩
+                b⁻ + 0
+              ≃⟨ AA.comm ⟩
+                0 + b⁻
+              ∎
+         in ∨-introᴿ (≃ᶻ-intro b⁺+0≃0+b⁻)
+      ... | AA.2nd a≃0 = ∨-introᴸ a≃0
+      ... | AA.3rd a⁻<a⁺ =
+        let n = ℕ.<-diff a⁻<a⁺
+            instance pos[n] = ℕ.<-diff-pos a⁻<a⁺
+            a⁻+n≃a⁺ = ℕ.<-elim-diff a⁻<a⁺
+            a⁻[b⁻+b⁺]+nb⁺≃a⁻[b⁻+b⁺]+nb⁻ =
+              begin
+                a⁻ * (b⁻ + b⁺) + n * b⁺
+              ≃⟨ AA.subst₂ AA.distrib ⟩
+                (a⁻ * b⁻ + a⁻ * b⁺) + n * b⁺
+              ≃⟨ AA.assoc ⟩
+                a⁻ * b⁻ + (a⁻ * b⁺ + n * b⁺)
+              ≃⟨ AA.comm ⟩
+                (a⁻ * b⁺ + n * b⁺) + a⁻ * b⁻
+              ≃˘⟨ AA.subst₂ AA.distrib ⟩
+                (a⁻ + n) * b⁺ + a⁻ * b⁻
+              ≃⟨ AA.subst₂ (AA.subst₂ a⁻+n≃a⁺) ⟩
+                a⁺ * b⁺ + a⁻ * b⁻
               ≃˘⟨ AA.ident ⟩
-                n * b⁺ + 0 * b⁻ + 0
-              ≃⟨ nb⁺+0b⁻+0≃0+[nb⁻+0b⁺] ⟩
-                0 + (n * b⁻ + 0 * b⁺)
+                a⁺ * b⁺ + a⁻ * b⁻ + 0
+              ≃⟨ [a⁺b⁺+a⁻b⁻]+0≃0+[a⁺b⁻+a⁻b⁺] ⟩
+                0 + (a⁺ * b⁻ + a⁻ * b⁺)
               ≃⟨ AA.ident ⟩
-                n * b⁻ + 0 * b⁺
-              ≃⟨ AA.subst₂ AA.absorb ⟩
-                n * b⁻ + 0
-              ≃⟨ AA.ident ⟩
-                n * b⁻
+                a⁺ * b⁻ + a⁻ * b⁺
+              ≃˘⟨ AA.subst₂ (AA.subst₂ a⁻+n≃a⁺) ⟩
+                (a⁻ + n) * b⁻ + a⁻ * b⁺
+              ≃⟨ AA.subst₂ AA.distrib ⟩
+                (a⁻ * b⁻ + n * b⁻) + a⁻ * b⁺
+              ≃⟨ AA.assoc ⟩
+                a⁻ * b⁻ + (n * b⁻ + a⁻ * b⁺)
+              ≃⟨ AA.subst₂ AA.comm ⟩
+                a⁻ * b⁻ + (a⁻ * b⁺ + n * b⁻)
+              ≃˘⟨ AA.assoc ⟩
+                (a⁻ * b⁻ + a⁻ * b⁺) + n * b⁻
+              ≃˘⟨ AA.subst₂ AA.distrib ⟩
+                a⁻ * (b⁻ + b⁺) + n * b⁻
               ∎
-            instance n⁺ = pos[n]
-            b⁺≃b⁻ = AA.cancel nb⁺≃nb⁻
-            b⁺+0≃0+b⁻ = trans AA.ident (trans b⁺≃b⁻ (sym AA.ident))
-         in ≃ᶻ-intro b⁺+0≃0+b⁻
-
-      *-either-zero : ∀ {a b} → a * b ≃ 0 → a ≃ 0 ∨ b ≃ 0
-      *-either-zero {a} {b} ab≃0 with
-        AA.ExactlyOneOfThree.at-least-one (trichotomy a)
-      *-either-zero {a} {b} ab≃0 | AA.2nd a≃0 =
-        ∨-introᴸ a≃0
-      *-either-zero {a} {b} ab≃0
-          | AA.3rd record { n = n ; pos = pos-n ; x≃n = a≃n—0 } =
-        let nb≃0 =
+            nb⁺≃nb⁻ = AA.cancel a⁻[b⁻+b⁺]+nb⁺≃a⁻[b⁻+b⁺]+nb⁻
+            b⁺+0≃0+b⁻ =
               begin
-                (n as ℤ) * b
-              ≃⟨⟩
-                n — 0 * b
-              ≃˘⟨ AA.subst₂ a≃n—0 ⟩
-                a * b
-              ≃⟨ ab≃0 ⟩
-                0
+                b⁺ + 0
+              ≃⟨ AA.subst₂ (AA.cancel nb⁺≃nb⁻) ⟩
+                b⁻ + 0
+              ≃⟨ AA.comm ⟩
+                0 + b⁻
               ∎
-         in ∨-introᴿ (b≃0 pos-n nb≃0)
-      *-either-zero {a} {b} ab≃0
-          | AA.1st record { n = n ; pos = pos-n ; x≃-n = a≃0—n } =
-        let nb≃0 =
-              begin
-                (n as ℤ) * b
-              ≃⟨⟩
-                n — 0 * b
-              ≃⟨⟩
-                - 0 — n * b
-              ≃˘⟨ AA.subst₂ (AA.subst₁ a≃0—n) ⟩
-                - a * b
-              ≃˘⟨ AA.fnOpComm ⟩
-                - (a * b)
-              ≃⟨ AA.subst₁ ab≃0 ⟩
-                - 0
-              ≃⟨⟩
-                0
-              ∎
-         in ∨-introᴿ (b≃0 pos-n nb≃0)
+         in ∨-introᴿ (≃ᶻ-intro b⁺+0≃0+b⁻)

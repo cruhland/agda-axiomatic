@@ -263,8 +263,8 @@ record Multiplication
         C = Positive
 
         *-cancelᴸ : {a b c : ℕ} {{_ : C a}} → a * b ≃ a * c → b ≃ c
-        *-cancelᴸ ab≃ac with
-          AA.ExactlyOneOfThree.at-least-one ℕOrd.order-trichotomy
+        *-cancelᴸ {a} {b} {c} ab≃ac with
+          AA.ExactlyOneOfThree.at-least-one (ℕOrd.order-trichotomy b c)
         ... | AA.1st b<c =
           let ab<ac = *-preserves-<ᴸ b<c it
               ab≄ac = ℕOrd.<-elim-≄ ab<ac

@@ -10,3 +10,4 @@ open import net.cruhland.models.Integers.Literals PA public
 open import net.cruhland.models.Integers.Multiplication PA public
 open import net.cruhland.models.Integers.Negation PA public
 open import net.cruhland.models.Integers.Ordering PA public
+open import net.cruhland.models.Integers.Sign PA public

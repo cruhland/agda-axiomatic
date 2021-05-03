@@ -11,3 +11,11 @@ record Positivity {A : Set} {{_ : Eq A}} (zero : A) : Set₁ where
     pos≄0 : ∀ {a} → Positive a → a ≄ zero
 
 open Positivity {{...}} public using (pos≄0; Positive)
+
+record Negativity {A : Set} {{_ : Eq A}} (zero : A) : Set₁ where
+  field
+    Negative : A → Set
+    {{substitutive}} : AA.Substitutive₁ Negative _≃_ _⟨→⟩_
+    neg≄0 : ∀ {a} → Negative a → a ≄ zero
+
+open Negativity {{...}} public using (neg≄0; Negative)

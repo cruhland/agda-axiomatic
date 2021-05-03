@@ -6,6 +6,7 @@ open ≃-Reasoning
 open import net.cruhland.axioms.Operators using (_+_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.models.Function using (_∘_)
+open import net.cruhland.models.Literals
 -- Needed for instance of ⊤
 open import net.cruhland.models.Logic using ()
 
@@ -14,6 +15,7 @@ module net.cruhland.models.Integers.Equality (PA : PeanoArithmetic) where
 private module ℕ = PeanoArithmetic PA
 open ℕ using (ℕ)
 open import net.cruhland.models.Integers.Base PA as Base using (_—_; ℤ)
+import net.cruhland.models.Integers.Literals PA as ℤL
 
 record _≃ᶻ_ (a b : ℤ) : Set where
   constructor ≃ᶻ-intro
@@ -78,3 +80,17 @@ instance
 
   ℤ-substitutive₂² : AA.Substitutive₂² _—_ _≃_ _≃_
   ℤ-substitutive₂² = record {}
+
+≃-zero : {x : ℤ} → ℤ.pos x ≃ ℤ.neg x → x ≃ 0
+≃-zero {x⁺ — x⁻} x⁺≃x⁻ =
+  let x⁺+0≃0+x⁻ =
+        begin
+          x⁺ + 0
+        ≃⟨ AA.ident ⟩
+          x⁺
+        ≃⟨ x⁺≃x⁻ ⟩
+          x⁻
+        ≃˘⟨ AA.ident ⟩
+          0 + x⁻
+        ∎
+   in ≃ᶻ-intro x⁺+0≃0+x⁻

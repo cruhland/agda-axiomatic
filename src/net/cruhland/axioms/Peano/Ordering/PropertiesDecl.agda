@@ -26,7 +26,7 @@ record OrderingProperties (LTEB : LteBase) (LTB : LtBase LTEB) : Set₁ where
     ≤-split : {n m : ℕ} → n ≤ m → n < m ∨ n ≃ m
     s≤-from-< : {n m : ℕ} → n < m → step n ≤ m
     <-from-s≤ : {n m : ℕ} → step n ≤ m → n < m
-    order-trichotomy : {n m : ℕ} → AA.ExactlyOneOfThree (n < m) (n ≃ m) (n > m)
+    order-trichotomy : (n m : ℕ) → AA.ExactlyOneOfThree (n < m) (n ≃ m) (n > m)
     ≤s-split : {n m : ℕ} → n ≤ step m → n ≤ m ∨ n ≃ step m
     <s-split : {n m : ℕ} → n < step m → n < m ∨ n ≃ m
 
