@@ -8,9 +8,9 @@ open import net.cruhland.axioms.Peano.Base
 import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.BaseDecl
   as LteBaseDecl
 open import net.cruhland.axioms.Peano.Sign using (Sign)
-open import net.cruhland.models.Function using (_⟨→⟩_)
+open import net.cruhland.models.Function using (_⟨→⟩_; const)
 open import net.cruhland.models.Literals
-open import net.cruhland.models.Logic using (Dec)
+open import net.cruhland.models.Logic using (⊤; Dec)
 
 module net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.PropertiesDecl
   (PB : PeanoBase)
@@ -38,7 +38,7 @@ record LteProperties (LTEB : LteBase) : Set₁ where
     ≤-widenᴸ : {n m : ℕ} → step n ≤ m → n ≤ m
 
     {{≤-substitutive-+}} : AA.Substitutive₂² _+_ _≤_ _≤_
-    {{≤-cancellative-+}} : AA.Cancellative² _+_ _≤_
+    {{≤-cancellative-+}} : AA.IsCancellative² _+_ _≤_ (const ⊤)
     intro-diff-id :
       {n m d : ℕ} (n+d≃m : n + d ≃ m) → ℕ≤.≤-diff (ℕ≤.≤-intro-diff n+d≃m) ≃ d
     diff-trans :

@@ -1,5 +1,6 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq as Eq using (_≃_)
+open import net.cruhland.axioms.Operators using (_+_)
 open import net.cruhland.axioms.Ordering using (_<_; _≮_; LessThan)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
@@ -26,5 +27,7 @@ record LtProperties (LTEB : LteBase) (LTB : LtBase LTEB) : Set where
   field
     {{<-transitive}} : Eq.Transitive _<_
     {{<-substitutive-≃}} : AA.Substitutive₂² _<_ _≃_ _⟨→⟩_
+    {{<-substitutive-+}} : AA.Substitutive₂² _+_ _<_ _<_
+    <-compatible-+ : {n₁ n₂ m₁ m₂ : ℕ} → n₁ < n₂ → m₁ < m₂ → n₁ + m₁ < n₂ + m₂
     n<sn : {n : ℕ} → n < step n
     n≮0 : {n : ℕ} → n ≮ 0

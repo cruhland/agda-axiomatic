@@ -33,6 +33,15 @@ CancellativeProperty hand _⊙_ _~_ a =
   let _<⊙>_ = forHand hand _⊙_
    in ∀ {b₁ b₂} → (a <⊙> b₁) ~ (a <⊙> b₂) → b₁ ~ b₂
 
+record IsCancellative
+    (hand : Hand) {A : Set} (_⊙_ : A → A → A) (_~_ : A → A → Set) (C : A → Set)
+    : Set where
+  constructor isCancellative
+  field
+    isCancel : ∀ {a} {{_ : C a}} → CancellativeProperty hand _⊙_ _~_ a
+
+open IsCancellative {{...}} public using (isCancel)
+
 record Cancellative
     (hand : Hand) {A : Set} (_⊙_ : A → A → A) (_~_ : A → A → Set) : Set₁ where
   field
@@ -53,10 +62,15 @@ cancellative {hand} {_⊙_ = _⊙_} {_~_} {{cf}} f =
     cancelPrf : ∀ {a} {{_ : C a}} → CancellativeProperty hand _⊙_ _~_ a
     cancelPrf {a} {b₁} = toImpFn f {a} {b₁}
 
+isCancellativeᴿ-from-isCancellativeᴸ :
+  {A : Set} {_⊙_ : A → A → A} {_~_ : A → A → Set} {C : A → Set}
+  {{_ : Eq.Transitive _~_}} {{_ : Swappable _⊙_ _~_}}
+  {{_ : IsCancellative handᴸ _⊙_ _~_ C}} → IsCancellative handᴿ _⊙_ _~_ C
+isCancellativeᴿ-from-isCancellativeᴸ = isCancellative (isCancel ∘ with-swap)
+
 cancellativeᴿ-from-cancellativeᴸ :
-  {A : Set} {_⊙_ : A → A → A} {_~_ : A → A → Set} {{_ : Eq A}}
-  {{_ : Eq.Reflexive _~_}} {{_ : Eq.Transitive _~_}} {{_ : Swappable _⊙_ _~_}}
-  {{_ : Substitutive₂ handᴿ _~_ _≃_ _⟨→⟩_}} {{c : Cancellative handᴸ _⊙_ _~_}} →
+  {A : Set} {_⊙_ : A → A → A} {_~_ : A → A → Set} {{_ : Eq.Transitive _~_}}
+  {{_ : Swappable _⊙_ _~_}} {{c : Cancellative handᴸ _⊙_ _~_}} →
   Cancellative handᴿ _⊙_ _~_
 cancellativeᴿ-from-cancellativeᴸ {{c = c}} =
   let open Cancellative c using (C)
@@ -69,6 +83,13 @@ cancelᴿ-from-cancelᴸ-comm = cancellativeᴿ-from-cancellativeᴸ
   where
     instance ⊙-swap = swappable-from-commutative
     instance ≃-substᴿ = EqProperties.≃-substitutiveᴿ
+
+record IsCancellative²
+    {A : Set} (_⊙_ : A → A → A) (_~_ : A → A → Set) (C : A → Set) : Set where
+  constructor isCancellative²
+  field
+    {{isCancellativeᴸ}} : IsCancellative handᴸ _⊙_ _~_ C
+    {{isCancellativeᴿ}} : IsCancellative handᴿ _⊙_ _~_ C
 
 record Cancellative²
     {A : Set} (_⊙_ : A → A → A) (_~_ : A → A → Set) : Set₁ where

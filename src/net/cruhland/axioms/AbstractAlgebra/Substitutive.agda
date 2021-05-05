@@ -167,3 +167,10 @@ substᴿ-from-substᴸ-comm = substitutiveᴿ-from-substitutiveᴸ
   where
     instance ⊙-swap = swappable-from-commutative
     instance ≃-substᴿ = EqProperties.≃-substitutiveᴿ
+
+substᴿ-from-substᴸ-comm₂ :
+  {A : Set} {_⊙_ : A → A → A} {_~_ : A → A → Set} {{_ : Eq A}}
+  {{_ : Commutative _⊙_}} {{_ : Substitutive₂² _~_ _≃_ _⟨→⟩_}}
+  {{_ : Substitutive₂ handᴸ _⊙_ _~_ _~_}} → Substitutive₂ handᴿ _⊙_ _~_ _~_
+substᴿ-from-substᴸ-comm₂ =
+  substitutive₂ λ a₁~a₂ → substᴸ comm (substᴿ comm (subst₂ a₁~a₂))

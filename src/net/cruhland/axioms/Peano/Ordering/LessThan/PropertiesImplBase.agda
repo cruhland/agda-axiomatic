@@ -1,5 +1,6 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq as Eq using (_≃_)
+open import net.cruhland.axioms.Operators using (_+_)
 open import net.cruhland.axioms.Ordering using (_<_; _≮_)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
@@ -68,6 +69,29 @@ instance
 
   <-substitutive-≃ : AA.Substitutive₂² _<_ _≃_ _⟨→⟩_
   <-substitutive-≃ = AA.substitutive₂²
+
+  <-substitutive-+ᴸ : AA.Substitutive₂ AA.handᴸ _+_ _<_ _<_
+  <-substitutive-+ᴸ = AA.substitutive₂ <-substᴸ
+    where
+      <-substᴸ : {a₁ a₂ b : ℕ} → a₁ < a₂ → a₁ + b < a₂ + b
+      <-substᴸ a₁<a₂ =
+        let a₁≤a₂ = ℕ<.<-elim-≤ a₁<a₂
+            a₁≄a₂ = ℕ<.<-elim-≄ a₁<a₂
+            a₁+b≤a₂+b = AA.subst₂ a₁≤a₂
+            a₁+b≄a₂+b = λ a₁+b≃a₂+b → contra (AA.cancel a₁+b≃a₂+b) a₁≄a₂
+         in ℕ<.<-intro-≤≄ a₁+b≤a₂+b a₁+b≄a₂+b
+
+  <-substitutive-+ᴿ : AA.Substitutive₂ AA.handᴿ _+_ _<_ _<_
+  <-substitutive-+ᴿ = AA.substᴿ-from-substᴸ-comm₂
+
+  <-substitutive-+ : AA.Substitutive₂² _+_ _<_ _<_
+  <-substitutive-+ = AA.substitutive₂²
+
+<-compatible-+ : {n₁ n₂ m₁ m₂ : ℕ} → n₁ < n₂ → m₁ < m₂ → n₁ + m₁ < n₂ + m₂
+<-compatible-+ n₁<n₂ m₁<m₂ =
+  let n₁+m₁<n₂+m₁ = AA.subst₂ n₁<n₂
+      n₂+m₁<n₂+m₂ = AA.subst₂ m₁<m₂
+   in Eq.trans n₁+m₁<n₂+m₁ n₂+m₁<n₂+m₂
 
 n<sn : {n : ℕ} → n < step n
 n<sn = ℕ<.<-intro-≤≄ ℕ≤P.n≤sn ℕ+.n≄sn

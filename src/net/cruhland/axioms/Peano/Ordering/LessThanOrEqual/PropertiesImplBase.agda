@@ -9,10 +9,10 @@ open import net.cruhland.axioms.Peano.Base
 open import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.BaseDecl using
   (LteBase)
 open import net.cruhland.axioms.Peano.Sign using (Sign)
-open import net.cruhland.models.Function using (_∘_; _⟨→⟩_)
+open import net.cruhland.models.Function using (_∘_; _⟨→⟩_; const)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using
-  (∧-intro; contra; Dec; dec-map; no; yes)
+  (⊤; ∧-intro; contra; Dec; dec-map; no; yes)
 
 module net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.PropertiesImplBase
   (PB : PeanoBase)
@@ -135,8 +135,8 @@ instance
   ≤-substitutive-+ : AA.Substitutive₂² _+_ _≤_ _≤_
   ≤-substitutive-+ = AA.substitutive₂²
 
-  ≤-cancellative-+ᴸ : AA.Cancellative AA.handᴸ _+_ _≤_
-  ≤-cancellative-+ᴸ = AA.cancellative λ {n₁ n₂ m} → ≤-cancelᴸ
+  ≤-cancellative-+ᴸ : AA.IsCancellative AA.handᴸ _+_ _≤_ (const ⊤)
+  ≤-cancellative-+ᴸ = AA.isCancellative ≤-cancelᴸ
     where
       ≤-cancelᴸ : {n₁ n₂ m : ℕ} → m + n₁ ≤ m + n₂ → n₁ ≤ n₂
       ≤-cancelᴸ m+n₁≤m+n₂ =
@@ -145,12 +145,12 @@ instance
             m+[n₁+d]≃m+n₂ = Eq.trans (Eq.sym AA.assoc) m+n₁+d≃m+n₂
          in ℕ≤.≤-intro-diff (AA.cancel m+[n₁+d]≃m+n₂)
 
-  ≤-cancellative-+ᴿ : AA.Cancellative AA.handᴿ _+_ _≤_
-  ≤-cancellative-+ᴿ = AA.cancellativeᴿ-from-cancellativeᴸ
+  ≤-cancellative-+ᴿ : AA.IsCancellative AA.handᴿ _+_ _≤_ (const ⊤)
+  ≤-cancellative-+ᴿ = AA.isCancellativeᴿ-from-isCancellativeᴸ
     where instance +-swap = AA.swappable-from-commutative
 
-  ≤-cancellative-+ : AA.Cancellative² _+_ _≤_
-  ≤-cancellative-+ = AA.cancellative²
+  ≤-cancellative-+ : AA.IsCancellative² _+_ _≤_ (const ⊤)
+  ≤-cancellative-+ = AA.isCancellative²
 
 ≤-intro-≃ : {n m : ℕ} → n ≃ m → n ≤ m
 ≤-intro-≃ n≃m = AA.subst₂ n≃m Eq.refl
