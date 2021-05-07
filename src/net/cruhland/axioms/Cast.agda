@@ -1,6 +1,7 @@
 module net.cruhland.axioms.Cast where
 
 open import Level using (_⊔_)
+open import net.cruhland.models.Function using (id)
 
 record _As_ {α β} (A : Set α) (B : Set β) : Set (α ⊔ β) where
   constructor As-intro
@@ -24,3 +25,7 @@ delegate₂ :
     {{_ : A₁ As A₂}} {{_ : B₁ As B₂}} {{_ : C₂ As C₁}} →
       A₁ → B₁ → C₁
 delegate₂ {C₁ = C₁} {A₂} {B₂} f a₁ b₁ = f (a₁ as A₂) (b₁ as B₂) as C₁
+
+instance
+  id-cast : {A : Set} → A As A
+  id-cast = As-intro id
