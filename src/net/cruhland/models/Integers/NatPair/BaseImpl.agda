@@ -1,9 +1,10 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
-open import net.cruhland.axioms.Cast as Cast using (_As_)
+open import net.cruhland.axioms.Cast as Cast using (_As_; _as_)
 open import net.cruhland.axioms.Eq as Eq using (_≃_; Eq)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Operators using (_+_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
+open import net.cruhland.models.Function using (_∘_)
 open import net.cruhland.models.Literals
 
 module net.cruhland.models.Integers.NatPair.BaseImpl
@@ -55,5 +56,43 @@ instance
   eq : Eq ℤ
   eq = Eq.equivalence _≃₀_
 
+  ℤ-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _—_ _≃_ _≃_
+  ℤ-substitutiveᴸ = AA.substitutive₂ (≃₀-intro ∘ AA.subst₂)
+
+  ℤ-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _—_ _≃_ _≃_
+  ℤ-substitutiveᴿ = AA.substitutive₂ (≃₀-intro ∘ AA.subst₂ ∘ Eq.sym)
+
+  ℤ-substitutive₂² : AA.Substitutive₂² _—_ _≃_ _≃_
+  ℤ-substitutive₂² = AA.substitutive₂²
+
+  ℤ-cancellativeᴸ : AA.Cancellative AA.handᴸ _—_ _≃_ _≃_
+  ℤ-cancellativeᴸ = AA.cancellative λ {p n₁ n₂} → Eq.sym ∘ AA.cancel ∘ _≃₀_.elim
+
+  ℤ-cancellativeᴿ : AA.Cancellative AA.handᴿ _—_ _≃_ _≃_
+  ℤ-cancellativeᴿ = AA.cancellative λ {p n₁ n₂} → AA.cancel ∘ _≃₀_.elim
+
+  ℤ-cancellative² : AA.Cancellative² _—_ _≃_ _≃_
+  ℤ-cancellative² = AA.cancellative²
+
   from-ℕ : ℕ As ℤ
   from-ℕ = Cast.As-intro (_— 0)
+
+  from-ℕ-substitutive₁ : AA.Substitutive₁ (_as ℤ) _≃_ _≃_
+  from-ℕ-substitutive₁ = AA.substitutive₁ {A = ℕ} AA.subst₂
+
+  from-ℕ-injective : AA.Injective (_as ℤ) _≃_ _≃_
+  from-ℕ-injective = AA.injective {A = ℕ} AA.cancel
+
+≃-zero : ∀ {x} → ℤ.pos x ≃ ℤ.neg x → x ≃ 0
+≃-zero {x⁺ — x⁻} x⁺≃x⁻ =
+  let x⁺+0≃0+x⁻ =
+        begin
+          x⁺ + 0
+        ≃⟨ AA.ident ⟩
+          x⁺
+        ≃⟨ x⁺≃x⁻ ⟩
+          x⁻
+        ≃˘⟨ AA.ident ⟩
+          0 + x⁻
+        ∎
+   in ≃₀-intro x⁺+0≃0+x⁻

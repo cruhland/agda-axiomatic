@@ -18,7 +18,6 @@ open ℕ using (ℕ)
 import net.cruhland.models.Integers.Addition PA as ℤ+
 open import net.cruhland.models.Integers.Base PA as ℤ using (_—_; ℤ)
 open import net.cruhland.models.Integers.Equality PA as ℤ≃ using (≃ᶻ-intro)
-import net.cruhland.models.Integers.Literals PA as ℤLit
 open import net.cruhland.models.Integers.Negation PA as ℤ-
 import net.cruhland.models.Integers.Sign PA as ℤS
 

@@ -144,7 +144,7 @@ record Addition (PB : PeanoBase) (PS : ℕSign PB) : Set where
                 step k + (m + p)
               ∎
 
-    +-cancellativeᴸ : AA.Cancellative AA.handᴸ _+_ _≃_
+    +-cancellativeᴸ : AA.Cancellative AA.handᴸ _+_ _≃_ _≃_
     +-cancellativeᴸ = AA.cancellative λ {n m p} → +-cancelᴸ
       where
         +-cancelᴸ : ∀ {n m p} → n + m ≃ n + p → m ≃ p
@@ -178,10 +178,10 @@ record Addition (PB : PeanoBase) (PS : ℕSign PB) : Set where
                     step (k + p)
                   ∎
 
-    +-cancellativeᴿ : AA.Cancellative AA.handᴿ _+_ _≃_
+    +-cancellativeᴿ : AA.Cancellative AA.handᴿ _+_ _≃_ _≃_
     +-cancellativeᴿ = AA.cancelᴿ-from-cancelᴸ-comm
 
-    +-cancellative² : AA.Cancellative² _+_ _≃_
+    +-cancellative² : AA.Cancellative² _+_ _≃_ _≃_
     +-cancellative² = AA.cancellative²
 
   sn≃n+1 : ∀ {n} → step n ≃ n + 1

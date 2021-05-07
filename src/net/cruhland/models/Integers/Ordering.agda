@@ -1,6 +1,6 @@
 open import Relation.Nullary.Decidable using (False)
 import net.cruhland.axioms.AbstractAlgebra as AA
-open import net.cruhland.axioms.Cast using (_as_)
+open import net.cruhland.axioms.Cast using (_as_; _value_)
 open import net.cruhland.axioms.DecEq using (_≃?_; DecEq; ≄-derive)
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_)
 open Eq.≃-Reasoning
@@ -14,12 +14,10 @@ open import net.cruhland.models.Logic using
 
 module net.cruhland.models.Integers.Ordering (PA : PeanoArithmetic) where
 
-private module ℕ = PeanoArithmetic PA
-open ℕ using (ℕ)
+private open module ℕ = PeanoArithmetic PA using (ℕ)
 import net.cruhland.models.Integers.Addition PA as ℤ+
 open import net.cruhland.models.Integers.Base PA as ℤ using (ℤ)
 import net.cruhland.models.Integers.Equality PA as ℤ≃
-import net.cruhland.models.Integers.Literals PA as ℤL
 import net.cruhland.models.Integers.Multiplication PA as ℤ*
 import net.cruhland.models.Integers.Negation PA as ℤ-
 import net.cruhland.models.Integers.Sign PA as ℤS
@@ -69,7 +67,7 @@ _>_ = flip _<_
       ≃⟨ a≃b+n₂ ⟩
         b + (n₂ as ℤ)
       ≃⟨ AA.substᴿ (AA.subst₁ n₂≃0) ⟩
-        b + (0 as ℤ)
+        b + ((ℕ value 0) as ℤ)
       ≃⟨ AA.ident ⟩
         b
       ∎
@@ -126,7 +124,7 @@ instance
       a ≃?₀ b | AA.2nd a≃b = yes a≃b
       a ≃?₀ b | AA.3rd (<-intro b≤a b≄a) = no (Eq.sym b≄a)
 
-  *-cancellativeᴸ : AA.Cancellative AA.handᴸ _*_ _≃_
+  *-cancellativeᴸ : AA.Cancellative AA.handᴸ _*_ _≃_ _≃_
   *-cancellativeᴸ = AA.cancellative λ a {{_ : C a}} {b c} → *-cancelᴸ
     where
       C = λ a → False (a ≃? 0)
@@ -161,8 +159,8 @@ instance
           c
         ∎
 
-  *-cancellativeᴿ : AA.Cancellative AA.handᴿ _*_ _≃_
+  *-cancellativeᴿ : AA.Cancellative AA.handᴿ _*_ _≃_ _≃_
   *-cancellativeᴿ = AA.cancelᴿ-from-cancelᴸ-comm {A = ℤ}
 
-  *-cancellative² : AA.Cancellative² _*_ _≃_
+  *-cancellative² : AA.Cancellative² _*_ _≃_ _≃_
   *-cancellative² = AA.cancellative² {A = ℤ}

@@ -11,11 +11,11 @@ open import net.cruhland.models.Logic using (⊤)
 
 module net.cruhland.models.Rationals.Negation (PA : PeanoArithmetic) where
 
+private module ℕ = PeanoArithmetic PA
 open import net.cruhland.models.Integers PA as ℤ using (ℤ)
 import net.cruhland.models.Rationals.Addition PA as ℚ+
 open import net.cruhland.models.Rationals.Base PA as ℚ using (_//_~_; ℚ)
 open import net.cruhland.models.Rationals.Equality PA as ℚ≃ using (≃₀-intro)
-import net.cruhland.models.Rationals.Literals PA as ℚLit
 
 instance
   dashᴸ : Op.Dashᴸ ℚ
@@ -29,7 +29,7 @@ instance
 
   negative : FromNeg.Negative ℚ
   negative =
-    record { Constraint = const ⊤ ; fromNeg = λ n → - Literals.fromNat n }
+    record { Constraint = const ⊤ ; fromNeg = λ n → - (n as ℚ) }
 
   neg-substitutive₁ : AA.Substitutive₁ -_ _≃_ _≃_
   neg-substitutive₁ = AA.substitutive₁ neg-subst

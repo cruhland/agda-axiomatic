@@ -257,7 +257,7 @@ record Multiplication
     AA.substᴸ AA.comm (AA.substᴿ AA.comm (*-preserves-<ᴿ b<c pos[a]))
 
   instance
-    *-cancellativeᴸ : AA.Cancellative AA.handᴸ _*_ _≃_
+    *-cancellativeᴸ : AA.Cancellative AA.handᴸ _*_ _≃_ _≃_
     *-cancellativeᴸ = AA.cancellative λ a {{_ : C a}} {b c} → *-cancelᴸ
       where
         C = Positive
@@ -276,8 +276,8 @@ record Multiplication
               ac≄ab = ℕOrd.<-elim-≄ ac<ab
            in contra (Eq.sym ab≃ac) ac≄ab
 
-    *-cancellativeᴿ : AA.Cancellative AA.handᴿ _*_ _≃_
+    *-cancellativeᴿ : AA.Cancellative AA.handᴿ _*_ _≃_ _≃_
     *-cancellativeᴿ = AA.cancelᴿ-from-cancelᴸ-comm
 
-    *-cancellative² : AA.Cancellative² _*_ _≃_
+    *-cancellative² : AA.Cancellative² _*_ _≃_ _≃_
     *-cancellative² = AA.cancellative²

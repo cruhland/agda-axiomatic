@@ -9,11 +9,10 @@ open import net.cruhland.models.Literals
 
 module net.cruhland.models.Rationals.Addition (PA : PeanoArithmetic) where
 
-import net.cruhland.models.Integers PA as ℤ
-open ℤ using (ℤ)
+private module ℕ = PeanoArithmetic PA
+open import net.cruhland.models.Integers PA as ℤ using (ℤ)
 open import net.cruhland.models.Rationals.Base PA as ℚ using (_//_~_; ℚ)
 open import net.cruhland.models.Rationals.Equality PA as ℚ≃ using (≃₀-intro)
-import net.cruhland.models.Rationals.Literals PA as ℚLit
 
 instance
   plus : Op.Plus ℚ

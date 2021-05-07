@@ -16,7 +16,6 @@ module net.cruhland.models.Integers.Sign.BaseImplLt (PA : PeanoArithmetic) where
 private open module ℕ = PeanoArithmetic PA using (ℕ)
 open import net.cruhland.models.Integers.Base PA as ℤ using (_—_; ℤ)
 import net.cruhland.models.Integers.Equality PA as ℤ≃
-import net.cruhland.models.Integers.Literals PA as ℤL
 import net.cruhland.models.Integers.Negation PA as ℤ-
 
 Pos : ℤ → Set

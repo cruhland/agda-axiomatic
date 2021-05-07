@@ -9,10 +9,10 @@ open import net.cruhland.models.Literals
 
 module net.cruhland.models.Rationals.Reciprocal (PA : PeanoArithmetic) where
 
+private module ℕ = PeanoArithmetic PA
 import net.cruhland.models.Integers PA as ℤ
 open import net.cruhland.models.Rationals.Base PA as ℚ using (_//_~_; ℚ)
 open import net.cruhland.models.Rationals.Equality PA as ℚ≃ using (≃₀-intro)
-import net.cruhland.models.Rationals.Literals PA as ℚLit
 import net.cruhland.models.Rationals.Multiplication PA as ℚ*
 
 _⁻¹ : {q : ℚ} → q ≄ 0 → ℚ

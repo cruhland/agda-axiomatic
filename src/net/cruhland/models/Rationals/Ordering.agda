@@ -6,10 +6,10 @@ open import net.cruhland.models.Literals
 
 module net.cruhland.models.Rationals.Ordering (PA : PeanoArithmetic) where
 
+private module ℕ = PeanoArithmetic PA
 import net.cruhland.models.Integers PA as ℤ
 open import net.cruhland.models.Rationals.Base PA as ℚ using (ℚ)
 import net.cruhland.models.Rationals.Equality PA as ℚ≃
-import net.cruhland.models.Rationals.Literals PA as ℚL
 import net.cruhland.models.Rationals.Negation PA as ℚ-
 
 private

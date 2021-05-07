@@ -9,10 +9,9 @@ open import net.cruhland.models.Literals
 
 module net.cruhland.models.Integers.Sign.BaseDecl (PA : PeanoArithmetic) where
 
-open PeanoArithmetic PA using (ℕ)
-open import net.cruhland.models.Integers.Base PA as ℤ using (ℤ)
+private open module ℕ = PeanoArithmetic PA using (ℕ)
+open import net.cruhland.models.Integers.Base PA as ℤ using (ℤ; from-ℕ)
 import net.cruhland.models.Integers.Equality PA as ℤ≃
-import net.cruhland.models.Integers.Literals PA as ℤL
 import net.cruhland.models.Integers.Negation PA as ℤ-
 
 record SignBase : Set₁ where

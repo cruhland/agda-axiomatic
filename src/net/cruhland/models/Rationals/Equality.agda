@@ -15,7 +15,6 @@ module net.cruhland.models.Rationals.Equality (PA : PeanoArithmetic) where
 private module ℕ = PeanoArithmetic PA
 open import net.cruhland.models.Integers PA as ℤ using (ℤ)
 open import net.cruhland.models.Rationals.Base PA as ℚ using (_//_~_; ℚ)
-import net.cruhland.models.Rationals.Literals PA as ℚLit
 
 infix 4 _≃₀_
 record _≃₀_ (p q : ℚ) : Set where

@@ -17,7 +17,6 @@ private open module ℕ = PeanoArithmetic PA using (ℕ)
 import net.cruhland.models.Integers.Addition PA as ℤ+
 open import net.cruhland.models.Integers.Base PA as ℤ using (_—_; ℤ)
 open import net.cruhland.models.Integers.Equality PA as ℤ≃ using (≃ᶻ-intro)
-import net.cruhland.models.Integers.Literals PA as ℤLit
 
 instance
   neg-dash : Op.Dashᴸ ℤ

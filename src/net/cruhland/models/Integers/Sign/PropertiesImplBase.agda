@@ -12,9 +12,8 @@ module net.cruhland.models.Integers.Sign.PropertiesImplBase
     (PA : PeanoArithmetic) (SB : SignBase PA) where
 
 private module ℕ = PeanoArithmetic PA
-open import net.cruhland.models.Integers.Base PA using (_—_; ℤ)
+open import net.cruhland.models.Integers.Base PA as ℤ using (_—_; ℤ)
 import net.cruhland.models.Integers.Equality PA as ℤ≃
-import net.cruhland.models.Integers.Literals PA as ℤL
 import net.cruhland.models.Integers.Negation PA as ℤ-
 private module ℤS = SignBase SB
 

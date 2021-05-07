@@ -8,9 +8,9 @@ open import net.cruhland.models.Literals
 module net.cruhland.models.Integers.Sign.PropertiesDecl
     (PA : PeanoArithmetic) where
 
-open import net.cruhland.models.Integers.Base PA using (ℤ)
+private module ℕ = PeanoArithmetic PA
+open import net.cruhland.models.Integers.Base PA as ℤ using (ℤ)
 import net.cruhland.models.Integers.Equality PA as ℤ≃
-import net.cruhland.models.Integers.Literals PA as ℤL
 import net.cruhland.models.Integers.Negation PA as ℤ-
 open import net.cruhland.models.Integers.Sign.BaseDecl PA using (SignBase)
 

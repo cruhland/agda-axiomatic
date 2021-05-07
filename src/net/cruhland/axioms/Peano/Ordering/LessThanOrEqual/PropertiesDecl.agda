@@ -38,7 +38,7 @@ record LteProperties (LTEB : LteBase) : Set₁ where
     ≤-widenᴸ : {n m : ℕ} → step n ≤ m → n ≤ m
 
     {{≤-substitutive-+}} : AA.Substitutive₂² _+_ _≤_ _≤_
-    {{≤-cancellative-+}} : AA.IsCancellative² _+_ _≤_ (const ⊤)
+    {{≤-cancellative-+}} : AA.IsCancellative² _+_ _≤_ _≤_ (const ⊤)
     intro-diff-id :
       {n m d : ℕ} (n+d≃m : n + d ≃ m) → ℕ≤.≤-diff (ℕ≤.≤-intro-diff n+d≃m) ≃ d
     diff-trans :
