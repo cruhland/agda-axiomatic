@@ -3,13 +3,17 @@ open import net.cruhland.axioms.Eq as Eq using (_≃_)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Operators as Op using (_+_; -_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
+import net.cruhland.models.Function
+import net.cruhland.models.Integers.NatPair.AdditionImpl as AdditionImpl
 import net.cruhland.models.Integers.NatPair.BaseImpl as BaseImpl
+open import net.cruhland.models.Literals
 
 module net.cruhland.models.Integers.NatPair.NegationImpl
   (PA : PeanoArithmetic) where
 
 private module ℕ = PeanoArithmetic PA
 private open module ℤ = BaseImpl PA using (_—_; ℤ; ≃₀-intro)
+private module ℤ+ = AdditionImpl PA
 
 instance
   neg-dash : Op.Dashᴸ ℤ
@@ -32,3 +36,24 @@ instance
             ≃⟨ AA.comm ⟩
               b⁻ + a⁺
             ∎
+
+  neg-inverseᴸ : AA.Inverse AA.handᴸ -_
+  neg-inverseᴸ = AA.inverse neg-invᴸ
+    where
+      neg-invᴸ : {x : ℤ} → - x + x ≃ 0
+      neg-invᴸ {x⁺ — x⁻} = ≃₀-intro [x⁻+x⁺]+0≃0+[x⁺+x⁻]
+        where
+          [x⁻+x⁺]+0≃0+[x⁺+x⁻] =
+            begin
+              (x⁻ + x⁺) + 0
+            ≃⟨ AA.comm ⟩
+              0 + (x⁻ + x⁺)
+            ≃⟨ AA.subst₂ AA.comm ⟩
+              0 + (x⁺ + x⁻)
+            ∎
+
+  neg-inverseᴿ : AA.Inverse AA.handᴿ -_
+  neg-inverseᴿ = AA.inverseᴿ-from-inverseᴸ
+
+  neg-inverse : AA.Inverse² -_
+  neg-inverse = AA.inverse²

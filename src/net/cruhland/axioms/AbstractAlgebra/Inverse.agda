@@ -27,4 +27,10 @@ open Inverse {{...}} public using (inv)
 invᴸ = inv {handᴸ}
 invᴿ = inv {handᴿ}
 
+record Inverse² {A F : Set} {{_ : Eq A}} (f : F) : Set₁ where
+  constructor inverse²
+  field
+    {{inverseᴸ}} : Inverse handᴸ f
+    {{inverseᴿ}} : Inverse handᴿ f
+
 -- TODO Equivalence for switching handedness and flip _⊙_

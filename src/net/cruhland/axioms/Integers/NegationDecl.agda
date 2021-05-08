@@ -12,12 +12,13 @@ module net.cruhland.axioms.Integers.NegationDecl (PA : PeanoArithmetic) where
 private module ℕ = PeanoArithmetic PA
 open import net.cruhland.axioms.Integers.BaseDecl PA using (Base)
 
-record Negation (ZB : Base) : Set where
+record Negation (ZB : Base) : Set₁ where
   private open module ℤ = Base ZB using (ℤ)
 
   field
     {{neg-dash}} : Op.Dashᴸ ℤ
     {{neg-substitutive}} : AA.Substitutive₁ -_ _≃_ _≃_
+    {{neg-inverse}} : AA.Inverse² {A = ℤ} -_
 
   instance
     neg-literal : FromNeg.Negative ℤ
