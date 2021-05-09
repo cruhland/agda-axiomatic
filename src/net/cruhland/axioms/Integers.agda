@@ -10,7 +10,7 @@ record Integers : Set₁ where
   field
     ZB : Base
     Z+ : Addition ZB
-    Z- : Negation ZB
+    Z- : Negation ZB Z+
 
   open Addition Z+ public
   open Base ZB public

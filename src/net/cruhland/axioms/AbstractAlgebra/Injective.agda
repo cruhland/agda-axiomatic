@@ -55,15 +55,13 @@ record Cancellative
 open Cancellative {{...}} public using (cancel)
 
 cancellative :
-  {hand : Hand} {A B F : Set}
+  {hand : Hand} {A B F : Set} {C : A → Set}
   {_⊙_ : A → A → B} {_~_ : A → A → Set} {_≈_ : B → B → Set}
-  {{cf : ConstrainableFn F (CancellativeProperty hand _⊙_ _~_ _≈_)}} → F →
+  {{cf : ConstrainableFn F C (CancellativeProperty hand _⊙_ _~_ _≈_)}} → F →
   Cancellative hand _⊙_ _~_ _≈_
-cancellative {hand} {_⊙_ = _⊙_} {_~_} {_≈_} {{cf}} f =
+cancellative {hand} {C = C} {_⊙_ = _⊙_} {_~_} {_≈_} {{cf}} f =
     record { C = C ; cancel = cancelPrf }
   where
-    open ConstrainableFn cf using (C)
-
     cancelPrf : ∀ {a} {{_ : C a}} → CancellativeProperty hand _⊙_ _~_ _≈_ a
     cancelPrf {a} {b₁} = toImpFn f {a} {b₁}
 

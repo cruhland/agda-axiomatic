@@ -9,7 +9,7 @@ import net.cruhland.models.Integers.NatPair.BaseImpl as BaseImpl
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using (⊤)
 
-module net.cruhland.models.Integers.NatPair.NegationImpl
+module net.cruhland.models.Integers.NatPair.Negation.BaseImpl
   (PA : PeanoArithmetic) where
 
 private module ℕ = PeanoArithmetic PA

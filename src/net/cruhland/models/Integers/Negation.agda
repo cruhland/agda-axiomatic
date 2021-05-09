@@ -7,7 +7,7 @@ open ≃-Reasoning
 open import net.cruhland.axioms.Operators as Op using (_+_; -_; _-_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 import net.cruhland.axioms.Sign as Sign
-open import net.cruhland.models.Function using (_∘_; _⟨→⟩_)
+open import net.cruhland.models.Function using (_∘_; _⟨→⟩_; const)
 open import net.cruhland.models.Literals as Literals
 open import net.cruhland.models.Logic using (⊤; ¬_; contra)
 
@@ -44,7 +44,7 @@ instance
               a₂⁻ + a₁⁺
             ∎
 
-  +-inverseᴸ : AA.Inverse AA.handᴸ λ x → - x
+  +-inverseᴸ : AA.Inverse AA.handᴸ (λ x → - x) (const ⊤) _+_ 0
   +-inverseᴸ = AA.inverse +-invᴸ
     where
       +-invᴸ : {x : ℤ} → - x + x ≃ 0
@@ -59,7 +59,7 @@ instance
               0 + (x⁺ + x⁻)
             ∎
 
-  +-inverseᴿ : AA.Inverse AA.handᴿ λ x → - x
+  +-inverseᴿ : AA.Inverse AA.handᴿ (λ x → - x) (const ⊤) _+_ 0
   +-inverseᴿ = AA.inverseᴿ-from-inverseᴸ
 
 neg-involutive : {a : ℤ} → - (- a) ≃ a

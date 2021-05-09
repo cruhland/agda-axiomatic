@@ -1,25 +1,28 @@
-import Agda.Builtin.FromNeg as FromNeg
-import net.cruhland.axioms.AbstractAlgebra as AA
-open import net.cruhland.axioms.Cast using (_as_)
-open import net.cruhland.axioms.Eq using (_≃_)
-open import net.cruhland.axioms.Operators as Op using (-_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
-open import net.cruhland.models.Function using (const)
-open import net.cruhland.models.Logic using (⊤)
 
 module net.cruhland.axioms.Integers.NegationDecl (PA : PeanoArithmetic) where
 
-private module ℕ = PeanoArithmetic PA
+open import net.cruhland.axioms.Integers.AdditionDecl PA using (Addition)
 open import net.cruhland.axioms.Integers.BaseDecl PA using (Base)
+import net.cruhland.axioms.Integers.Negation.BaseDecl PA as BaseDecl
+import net.cruhland.axioms.Integers.Negation.PropertiesDecl PA as PropertiesDecl
 
-record Negation (ZB : Base) : Set₁ where
-  private open module ℤ = Base ZB using (ℤ)
+record Negation (ZB : Base) (Z+ : Addition ZB) : Set₁ where
+  open BaseDecl ZB Z+ using (NegationBase)
+  open PropertiesDecl ZB Z+ using (NegationProperties)
 
   field
-    {{neg-dash}} : Op.Dashᴸ ℤ
-    {{neg-substitutive}} : AA.Substitutive₁ -_ _≃_ _≃_
-    {{neg-inverse}} : AA.Inverse² {A = ℤ} -_
+    NB : NegationBase
+    NP : NegationProperties NB
 
-  instance
-    neg-literal : FromNeg.Negative ℤ
-    neg-literal = record { Constraint = const ⊤ ; fromNeg = λ n → - (n as ℤ) }
+  open NegationBase NB public
+  open NegationProperties NP public
+
+-- Confirm that all impls conform to their decls
+module _ (ZB : Base) (Z+ : Addition ZB) where
+  open PropertiesDecl ZB Z+ using (NegationProperties)
+  import net.cruhland.axioms.Integers.Negation.PropertiesImplBase PA ZB Z+
+    as PropertiesImplBase
+
+  propertiesImplBase : ∀ NB → NegationProperties NB
+  propertiesImplBase NB = record { PropertiesImplBase NB }

@@ -8,6 +8,7 @@ open import net.cruhland.axioms.Operators as Op using (_+_; _*_; -_; _-_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.axioms.Sign
   using (Negative; Negativity; Positive; Positivity)
+import net.cruhland.models.Function
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using (_∨_; ∨-introᴸ; ∨-introᴿ)
 

@@ -23,28 +23,29 @@ toImp : {A : Set} {B : A → Set} → ((a : A) → B a) → {a : A} → B a
 toImp f {a} = f a
 
 record ConstrainableFn
-    {β} (F : Set) {A : Set} (B : A → Set β) : Set (β ⊔ sℓ 0ℓ) where
+    {β} (F : Set) {A : Set} (C : A → Set) (B : A → Set β) : Set β where
   constructor constrainableFn
   field
-    {C} : A → Set
     toExpFn : F → (a : A) {{_ : C a}} → B a
     toImpFn : F → {a : A} {{_ : C a}} → B a
 
 open ConstrainableFn {{...}} public using (toExpFn; toImpFn)
 
 instance
-  plainExpFn : {A : Set} {B : A → Set} → ConstrainableFn ((a : A) → B a) B
+  plainExpFn :
+    {A : Set} {B : A → Set} → ConstrainableFn ((a : A) → B a) (const ⊤) B
   plainExpFn =
     constrainableFn addDummyConstraintExp (toImp ∘ addDummyConstraintExp)
 
-  plainImpFn : {A : Set} {B : A → Set} → ConstrainableFn ({a : A} → B a) B
+  plainImpFn : {A : Set} {B : A → Set} →
+    ConstrainableFn ({a : A} → B a) (const ⊤) B
   plainImpFn =
     constrainableFn (toExp ∘ addDummyConstraintImp) addDummyConstraintImp
 
   constrainedExpFn :
-    {A : Set} {B C : A → Set} → ConstrainableFn ((a : A) {{_ : C a}} → B a) B
+    {A : Set} {B C : A → Set} → ConstrainableFn ((a : A) {{_ : C a}} → B a) C B
   constrainedExpFn = constrainableFn id toImp
 
   constrainedImpFn :
-    {A : Set} {B C : A → Set} → ConstrainableFn ({a : A} {{_ : C a}} → B a) B
+    {A : Set} {B C : A → Set} → ConstrainableFn ({a : A} {{_ : C a}} → B a) C B
   constrainedImpFn = constrainableFn toExp id

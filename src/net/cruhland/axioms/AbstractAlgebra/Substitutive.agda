@@ -27,14 +27,13 @@ record Substitutive₁
 open Substitutive₁ {{...}} public using (subst₁)
 
 record Substitutiveᶜ
-    {β} {A F : Set} {B : A → Set β}
-      (fn : F) (_~_ : A → A → Set) (_≈_ : ∀ {a₁ a₂} → B a₁ → B a₂ → Set)
-        : Set (β ⊔ sℓ 0ℓ) where
+    {β} {A F : Set} {B : A → Set β} (fn : F) (C : A → Set) (_~_ : A → A → Set)
+    (_≈_ : ∀ {a₁ a₂} → B a₁ → B a₂ → Set)
+    : Set β where
   constructor substitutiveᶜ
   field
-    {{cf}} : ConstrainableFn F B
+    {{cf}} : ConstrainableFn F C B
 
-  open ConstrainableFn cf using (C)
   f = toExpFn fn
 
   field

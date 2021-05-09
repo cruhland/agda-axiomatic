@@ -26,14 +26,11 @@ identityᴿ-from-identityᴸ :
       Identity handᴿ _⊙_ e
 identityᴿ-from-identityᴸ = identity (Eq.trans comm ident)
 
-record Identity₂ {A : Set} {{_ : Eq A}} (_⊙_ : A → A → A) : Set where
+record Identity₂ {A : Set} {{_ : Eq A}} (_⊙_ : A → A → A) (e : A) : Set where
   constructor identity₂
   field
-    {id₂-elem} : A
-    {{identityᴸ}} : Identity handᴸ _⊙_ id₂-elem
-    {{identityᴿ}} : Identity handᴿ _⊙_ id₂-elem
-
-open Identity₂ {{...}} public using (id₂-elem)
+    {{identityᴸ}} : Identity handᴸ _⊙_ e
+    {{identityᴿ}} : Identity handᴿ _⊙_ e
 
 record Absorptive
     (hand : Hand) {A : Set} {{_ : Eq A}} (_⊙_ : A → A → A) (z : A) : Set where
@@ -55,16 +52,14 @@ absorptiveᴿ-from-absorptiveᴸ = absorptive (Eq.trans comm absorb)
 
 {--- Equivalences ---}
 
-module _ {A : Set} {_⊙_ : A → A → A} {{_ : Eq A}} where
+module _ {A : Set} {_⊙_ : A → A → A} {e : A} {{_ : Eq A}} where
 
-  identityᴸ-flip :
-    ∀ {e} {{_ : Identity handᴿ _⊙_ e}} → Identity handᴸ (flip _⊙_) e
+  identityᴸ-flip : {{_ : Identity handᴿ _⊙_ e}} → Identity handᴸ (flip _⊙_) e
   identityᴸ-flip = identity ident
 
-  identityᴿ-flip :
-    ∀ {e} {{_ : Identity handᴸ _⊙_ e}} → Identity handᴿ (flip _⊙_) e
+  identityᴿ-flip : {{_ : Identity handᴸ _⊙_ e}} → Identity handᴿ (flip _⊙_) e
   identityᴿ-flip = identity ident
 
-  identity₂-flip : {{_ : Identity₂ _⊙_}} → Identity₂ (flip _⊙_)
+  identity₂-flip : {{_ : Identity₂ _⊙_ e}} → Identity₂ (flip _⊙_) e
   identity₂-flip =
     identity₂ {{identityᴸ = identityᴸ-flip}} {{identityᴿ = identityᴿ-flip}}

@@ -40,18 +40,21 @@ _/′_ : (p q : ℚ) {{_ : q ≄ⁱ 0}} → ℚ
 p /′ q = p * q ⁻¹′
 
 instance
-  recip-substitutiveᶜ : AA.Substitutiveᶜ _⁻¹′ _≃_ _≃_
+  recip-substitutiveᶜ : AA.Substitutiveᶜ _⁻¹′ (_≄ⁱ 0) _≃_ _≃_
   recip-substitutiveᶜ = record { substᶜ = recip-substᶜ }
     where
       recip-substᶜ :
         ∀ {q₁ q₂} {{c₁ : q₁ ≄ⁱ 0}} {{c₂ : q₂ ≄ⁱ 0}} → q₁ ≃ q₂ → q₁ ⁻¹′ ≃ q₂ ⁻¹′
       recip-substᶜ = ≃₀-intro ∘ AA.with-comm ∘ sym ∘ ℚ≃._≃₀_.elim
 
-  recip′-inverseᴸ : AA.Inverse AA.handᴸ _⁻¹′
+  recip′-inverseᴸ : AA.Inverse AA.handᴸ _⁻¹′ (_≄ⁱ 0) _*_ 1
   recip′-inverseᴸ = AA.inverse recip-invᴸ
     where
       recip-invᴸ : ∀ {q} {{_ : q ≄ⁱ 0}} → q ⁻¹′ * q ≃ 1
       recip-invᴸ {q↑ // q↓ ~ _} = ℚ≃.q≃1 AA.comm
 
-  recip′-inverseᴿ : AA.Inverse AA.handᴿ _⁻¹′
+  recip′-inverseᴿ : AA.Inverse AA.handᴿ _⁻¹′ (_≄ⁱ 0) _*_ 1
   recip′-inverseᴿ = AA.inverseᴿ-from-inverseᴸ
+
+  recip′-inverse² : AA.Inverse² _⁻¹′ (_≄ⁱ 0) _*_ 1
+  recip′-inverse² = AA.inverse²

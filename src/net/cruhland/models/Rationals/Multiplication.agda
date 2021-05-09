@@ -110,7 +110,7 @@ instance
   *-identityᴿ : AA.Identity AA.handᴿ _*_ 1
   *-identityᴿ = AA.identityᴿ-from-identityᴸ {A = ℚ}
 
-  *-identity₂ : AA.Identity₂ _*_
+  *-identity₂ : AA.Identity₂ _*_ 1
   *-identity₂ = AA.identity₂ {A = ℚ}
 
   *-distributive-+ᴸ : AA.Distributive AA.handᴸ _*_ _+_

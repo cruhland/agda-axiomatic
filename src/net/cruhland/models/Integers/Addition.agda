@@ -101,5 +101,5 @@ instance
   +-identityᴿ : AA.Identity AA.handᴿ _+_ 0
   +-identityᴿ = AA.identityᴿ-from-identityᴸ {A = ℤ}
 
-  +-identity₂ : AA.Identity₂ _+_
+  +-identity₂ : AA.Identity₂ _+_ 0
   +-identity₂ = AA.identity₂ {A = ℤ}

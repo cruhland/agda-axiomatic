@@ -52,7 +52,7 @@ instance
   neg-compatible-ℤ : AA.Compatible₁ (_as ℚ) -_
   neg-compatible-ℤ = AA.compatible₁ {A = ℤ} -_ (≃₀-intro refl)
 
-  +-inverseᴸ : AA.Inverse AA.handᴸ -_
+  +-inverseᴸ : AA.Inverse AA.handᴸ -_ (const ⊤) _+_ 0
   +-inverseᴸ = AA.inverse +-invᴸ
     where
       +-invᴸ : {p : ℚ} → (- p) + p ≃ 0
@@ -71,5 +71,8 @@ instance
               0
             ∎
 
-  +-inverseᴿ : AA.Inverse AA.handᴿ -_
+  +-inverseᴿ : AA.Inverse AA.handᴿ -_ (const ⊤) _+_ 0
   +-inverseᴿ = AA.inverseᴿ-from-inverseᴸ {A = ℚ}
+
+  +-inverse² : AA.Inverse² -_ (const ⊤) _+_ 0
+  +-inverse² = AA.inverse² {A = ℚ}
