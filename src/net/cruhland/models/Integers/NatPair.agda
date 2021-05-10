@@ -12,7 +12,6 @@ open import net.cruhland.axioms.Integers.Negation.PropertiesDecl PA
 open import net.cruhland.axioms.Integers.NegationDecl PA using (Negation)
 import net.cruhland.models.Integers.NatPair.AdditionImpl PA as AdditionImpl
 import net.cruhland.models.Integers.NatPair.BaseImpl PA as BaseImpl
-import net.cruhland.models.Integers.NatPair.NegationImpl PA as NegationImpl
 import net.cruhland.models.Integers.NatPair.Negation.BaseImpl PA
   as NegationBaseImpl
 import net.cruhland.models.Integers.NatPair.Negation.PropertiesImpl PA

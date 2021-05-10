@@ -80,15 +80,13 @@ sub-substᴿ = AA.subst₂ ∘ AA.subst₁
   begin
     a
   ≃˘⟨ AA.ident ⟩
-    a + 0
+    0 + a
   ≃˘⟨ AA.subst₂ AA.invᴿ ⟩
-    a + (b - b)
+    (b - b) + a
+  ≃⟨ AA.assoc ⟩
+    b + (- b + a)
   ≃⟨ AA.subst₂ AA.comm ⟩
-    a + (- b + b)
-  ≃˘⟨ AA.assoc ⟩
-    a - b + b
+    b + (a - b)
   ≃⟨ AA.subst₂ a-b≃c ⟩
-    c + b
-  ≃⟨ AA.comm ⟩
     b + c
   ∎

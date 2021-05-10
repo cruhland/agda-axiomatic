@@ -56,8 +56,8 @@ instance
   +-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _+_ _≃_ _≃_
   +-substitutiveᴿ = AA.substᴿ-from-substᴸ-comm {A = ℤ}
 
-  +-substitutive₂² : AA.Substitutive₂² _+_ _≃_ _≃_
-  +-substitutive₂² = AA.substitutive₂² {A = ℤ}
+  +-substitutive : AA.Substitutive₂² _+_ _≃_ _≃_
+  +-substitutive = AA.substitutive₂² {A = ℤ}
 
   +-associative : AA.Associative _+_
   +-associative = record { assoc = +-assoc }
