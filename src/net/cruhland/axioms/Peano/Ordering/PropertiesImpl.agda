@@ -98,7 +98,7 @@ s≤-from-< {n} {m} n<m =
    in ℕ<.<-intro-≤≄ n≤m n≄m
 
 order-trichotomy : (n m : ℕ) → AA.ExactlyOneOfThree (n < m) (n ≃ m) (n > m)
-order-trichotomy n m = record { at-least-one = 1of3 ; at-most-one = ¬2of3 }
+order-trichotomy n m = AA.exactlyOneOfThree 1of3 ¬2of3
   where
     1of3 : AA.OneOfThree (n < m) (n ≃ m) (n > m)
     1of3 = ℕ.ind P P0 Ps n
@@ -124,19 +124,12 @@ order-trichotomy n m = record { at-least-one = 1of3 ; at-most-one = ¬2of3 }
           AA.3rd (Eq.trans k>m ℕ<P.n<sn)
 
     ¬2of3 : ¬ AA.TwoOfThree (n < m) (n ≃ m) (n > m)
-    ¬2of3 (AA.1∧2 n<m n≃m) =
-      contra n≃m (ℕ<.<-elim-≄ n<m)
-    ¬2of3 (AA.1∧3 n<m m<n) =
-      let n≤m = ℕ<.<-elim-≤ n<m
-          m≤n = ℕ<.<-elim-≤ m<n
-          n≄m = ℕ<.<-elim-≄ n<m
-       in contra (AA.antisym n≤m m≤n) n≄m
-    ¬2of3 (AA.2∧3 n≃m m<n) =
-      contra (Eq.sym n≃m) (ℕ<.<-elim-≄ m<n)
+    ¬2of3 (AA.1∧2 n<m n≃m) = contra n≃m (ℕ<.<-elim-≄ n<m)
+    ¬2of3 (AA.1∧3 n<m m<n) = ℕ<P.<-asymmetric n<m m<n
+    ¬2of3 (AA.2∧3 n≃m m<n) = contra (Eq.sym n≃m) (ℕ<.<-elim-≄ m<n)
 
 ≤s-split : ∀ {n m} → n ≤ step m → n ≤ m ∨ n ≃ step m
-≤s-split {n} {m} n≤sm =
-  ∨-mapᴸ (AA.inject ∘ s≤-from-<) (≤-split n≤sm)
+≤s-split {n} {m} n≤sm = ∨-mapᴸ (AA.inject ∘ s≤-from-<) (≤-split n≤sm)
 
 <s-split : ∀ {n m} → n < step m → n < m ∨ n ≃ m
 <s-split {n} {m} = ≤-split ∘ AA.inject ∘ s≤-from-<

@@ -9,8 +9,10 @@ import net.cruhland.axioms.Peano.Ordering.LessThan.BaseDecl as LtBaseDecl
 import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.BaseDecl
   as LteBaseDecl
 open import net.cruhland.axioms.Peano.Sign using (Sign)
+open import net.cruhland.axioms.Sign using (Positive)
 open import net.cruhland.models.Function using (_⟨→⟩_)
 open import net.cruhland.models.Literals
+open import net.cruhland.models.Logic using (⊥)
 
 module net.cruhland.axioms.Peano.Ordering.LessThan.PropertiesDecl
   (PB : PeanoBase)
@@ -31,3 +33,5 @@ record LtProperties (LTEB : LteBase) (LTB : LtBase LTEB) : Set where
     <-compatible-+ : {n₁ n₂ m₁ m₂ : ℕ} → n₁ < n₂ → m₁ < m₂ → n₁ + m₁ < n₂ + m₂
     n<sn : {n : ℕ} → n < step n
     n≮0 : {n : ℕ} → n ≮ 0
+    <-from-pos : {n : ℕ} → Positive n → 0 < n
+    <-asymmetric : {n m : ℕ} → n < m → m < n → ⊥

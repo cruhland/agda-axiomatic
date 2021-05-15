@@ -43,6 +43,16 @@ neg-involutive {a} =
     a
   ∎
 
+neg-zero : - 0 ≃ 0
+neg-zero =
+  begin
+    - 0
+  ≃˘⟨ AA.ident ⟩
+    - 0 + 0
+  ≃⟨ AA.inv ⟩
+    0
+  ∎
+
 instance
   sub-dash : Op.Dash₂ ℤ
   sub-dash = Op.subtraction
