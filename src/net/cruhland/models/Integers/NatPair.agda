@@ -5,6 +5,8 @@ module net.cruhland.models.Integers.NatPair (PA : PeanoArithmetic) where
 open import net.cruhland.axioms.Integers PA using (Integers)
 open import net.cruhland.axioms.Integers.AdditionDecl PA using (Addition)
 open import net.cruhland.axioms.Integers.BaseDecl PA using (Base)
+open import net.cruhland.axioms.Integers.MultiplicationDecl PA
+  using (Multiplication)
 open import net.cruhland.axioms.Integers.Negation.BaseDecl PA
   using (NegationBase)
 open import net.cruhland.axioms.Integers.Negation.PropertiesDecl PA
@@ -18,6 +20,8 @@ import net.cruhland.axioms.Integers.Sign.PropertiesImplBase PA
 open import net.cruhland.axioms.Integers.SignDecl PA using (Sign)
 import net.cruhland.models.Integers.NatPair.AdditionImpl PA as AdditionImpl
 import net.cruhland.models.Integers.NatPair.BaseImpl PA as BaseImpl
+import net.cruhland.models.Integers.NatPair.MultiplicationImpl PA
+  as MultiplicationImpl
 import net.cruhland.models.Integers.NatPair.Negation.BaseImpl PA
   as NegationBaseImpl
 import net.cruhland.models.Integers.NatPair.Negation.PropertiesImpl PA
@@ -57,5 +61,14 @@ signProperties =
 sign : Sign base addition negation
 sign = record { SB = signBase ; SP = signProperties }
 
+multiplication : Multiplication base
+multiplication = record { MultiplicationImpl }
+
 integers : Integers
-integers = record { ZB = base ; Z+ = addition ; Z- = negation ; ZS = sign }
+integers = record
+  { ZB = base
+  ; Z+ = addition
+  ; Z- = negation
+  ; ZS = sign
+  ; Z* = multiplication
+  }
