@@ -28,8 +28,8 @@ open LteBaseDecl PB PS PA using (LteBase)
 record LtProperties (LTEB : LteBase) (LTB : LtBase LTEB) : Set where
   field
     {{<-transitive}} : Eq.Transitive _<_
-    {{<-substitutive-≃}} : AA.Substitutive₂² _<_ _≃_ _⟨→⟩_
-    {{<-substitutive-+}} : AA.Substitutive₂² _+_ _<_ _<_
+    {{<-substitutive-≃}} : AA.Substitutive² _<_ _≃_ _⟨→⟩_
+    {{<-substitutive-+}} : AA.Substitutive² _+_ _<_ _<_
     <-compatible-+ : {n₁ n₂ m₁ m₂ : ℕ} → n₁ < n₂ → m₁ < m₂ → n₁ + m₁ < n₂ + m₂
     n<sn : {n : ℕ} → n < step n
     n≮0 : {n : ℕ} → n ≮ 0

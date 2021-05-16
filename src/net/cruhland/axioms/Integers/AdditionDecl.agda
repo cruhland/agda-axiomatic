@@ -15,8 +15,8 @@ record Addition (ZB : Base) : Set where
 
   field
     {{plus}} : Plus ℤ
-    {{+-substitutive}} : AA.Substitutive₂² {A = ℤ} _+_ _≃_ _≃_
+    {{+-substitutive}} : AA.Substitutive² {A = ℤ} _+_ _≃_ _≃_
     {{+-commutative}} : AA.Commutative {A = ℤ} _+_
     {{+-associative}} : AA.Associative {A = ℤ} _+_
-    {{+-identity₂}} : AA.Identity₂ {A = ℤ} _+_ 0
+    {{+-identity}} : AA.Identity² {A = ℤ} _+_ 0
     {{+-compatible-ℕ}} : AA.Compatible₂ {A = ℕ} (_as ℤ) _+_

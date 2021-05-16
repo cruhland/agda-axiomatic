@@ -1,4 +1,5 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
+open import net.cruhland.axioms.Eq using (_≃_)
 open import net.cruhland.axioms.Operators using (_*_; Star)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 
@@ -12,4 +13,5 @@ record Multiplication (ZB : Base) : Set where
 
   field
     {{star}} : Star ℤ
+    {{*-substitutive}} : AA.Substitutive² {A = ℤ} _*_ _≃_ _≃_
     {{*-commutative}} : AA.Commutative {A = ℤ} _*_

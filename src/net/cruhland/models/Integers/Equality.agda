@@ -77,8 +77,8 @@ instance
       ℤ-substᴿ : ∀ {n₁ n₂ m} → n₁ ≃ n₂ → m — n₁ ≃ m — n₂
       ℤ-substᴿ n₁≃n₂ = ≃ᶻ-intro (AA.subst₂ (sym n₁≃n₂))
 
-  ℤ-substitutive₂² : AA.Substitutive₂² _—_ _≃_ _≃_
-  ℤ-substitutive₂² = record {}
+  ℤ-substitutive : AA.Substitutive² _—_ _≃_ _≃_
+  ℤ-substitutive = AA.substitutive²
 
 ≃-zero : {x : ℤ} → ℤ.pos x ≃ ℤ.neg x → x ≃ 0
 ≃-zero {x⁺ — x⁻} x⁺≃x⁻ =

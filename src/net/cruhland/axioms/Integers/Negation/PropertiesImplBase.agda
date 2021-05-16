@@ -62,7 +62,7 @@ instance
     where
       sub-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ - b ≃ a₂ - b
       sub-substᴸ =
-        AA.subst₂ {{r = AA.Substitutive₂².substitutiveᴸ ℤ+.+-substitutive}}
+        AA.subst₂ {{r = AA.Substitutive².substitutiveᴸ ℤ+.+-substitutive}}
 
   sub-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _-_ _≃_ _≃_
   sub-substitutiveᴿ = AA.substitutive₂ sub-substᴿ
@@ -70,8 +70,8 @@ instance
       sub-substᴿ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → b - a₁ ≃ b - a₂
       sub-substᴿ = AA.subst₂ ∘ AA.subst₁
 
-  sub-substitutive : AA.Substitutive₂² _-_ _≃_ _≃_
-  sub-substitutive = AA.substitutive₂²
+  sub-substitutive : AA.Substitutive² _-_ _≃_ _≃_
+  sub-substitutive = AA.substitutive²
 
 ≃ᴸ-subᴿ-toᴸ : {a b c : ℤ} → a - b ≃ c → a ≃ b + c
 ≃ᴸ-subᴿ-toᴸ {a} {b} {c} a-b≃c =

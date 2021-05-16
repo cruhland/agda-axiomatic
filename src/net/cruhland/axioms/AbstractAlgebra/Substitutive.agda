@@ -62,11 +62,11 @@ substitutiveᴿ-from-substitutiveᴸ :
       {{_ : Substitutive₂ handᴸ _⊙_ _~_ _≈_}} → Substitutive₂ handᴿ _⊙_ _~_ _≈_
 substitutiveᴿ-from-substitutiveᴸ = substitutive₂ (with-swap ∘ subst₂)
 
-record Substitutive₂²
+record Substitutive²
     {α β χ δ} {A : Set α} {B : Set β}
       (_⊙_ : A → A → B) (_~_ : A → A → Set χ) (_≈_ : B → B → Set δ)
         : Set (α ⊔ χ ⊔ δ) where
-  constructor substitutive₂²
+  constructor substitutive²
   field
     {{substitutiveᴸ}} : Substitutive₂ handᴸ _⊙_ _~_ _≈_
     {{substitutiveᴿ}} : Substitutive₂ handᴿ _⊙_ _~_ _≈_
@@ -83,7 +83,7 @@ module _ {β} {A : Set} {B : Set β} {_⊙_ : A → A → B} {{_ : Eq B}} where
 
 [a≃b][c≃d] :
   {A B : Set} {_⊙_ : A → A → B}
-    {{_ : Eq A}} {{_ : Eq B}} {{_ : Substitutive₂² _⊙_ _≃_ _≃_}} →
+    {{_ : Eq A}} {{_ : Eq B}} {{_ : Substitutive² _⊙_ _≃_ _≃_}} →
       ∀ {a b c d} → a ≃ b → c ≃ d → a ⊙ c ≃ b ⊙ d
 [a≃b][c≃d] {A} {B} {_⊙_} {a} {b} {c} {d} a≃b c≃d =
   begin
@@ -127,8 +127,8 @@ module EqProperties {α} {A : Set α} {{_ : Eq A}} where
       instance ≃-swappable = swappable-from-symmetric
       instance ≃-substᴸ = ≃-substitutiveᴸ
 
-  ≃-substitutive₂² : Substitutive₂² _≃_ _≃_ _⟨→⟩_
-  ≃-substitutive₂² = substitutive₂²
+  ≃-substitutive² : Substitutive² _≃_ _≃_ _⟨→⟩_
+  ≃-substitutive² = substitutive²
     where
       instance ≃-substᴸ = ≃-substitutiveᴸ
       instance ≃-substᴿ = ≃-substitutiveᴿ
@@ -147,8 +147,8 @@ module _ {A : Set} {{_ : Eq A}} where
       where
         instance ≄-swappable = swappable-from-symmetric
 
-    ≄-substitutive₂² : Substitutive₂² _≄_ _≃_ _⟨→⟩_
-    ≄-substitutive₂² = substitutive₂²
+    ≄-substitutive² : Substitutive² _≄_ _≃_ _⟨→⟩_
+    ≄-substitutive² = substitutive²
 
 with-comm :
   {A : Set} {_⊙_ : A → A → A} {{_ : Eq A}} {{_ : Commutative _⊙_}} →
@@ -169,7 +169,7 @@ substᴿ-from-substᴸ-comm = substitutiveᴿ-from-substitutiveᴸ
 
 substᴿ-from-substᴸ-comm₂ :
   {A : Set} {_⊙_ : A → A → A} {_~_ : A → A → Set} {{_ : Eq A}}
-  {{_ : Commutative _⊙_}} {{_ : Substitutive₂² _~_ _≃_ _⟨→⟩_}}
+  {{_ : Commutative _⊙_}} {{_ : Substitutive² _~_ _≃_ _⟨→⟩_}}
   {{_ : Substitutive₂ handᴸ _⊙_ _~_ _~_}} → Substitutive₂ handᴿ _⊙_ _~_ _~_
 substᴿ-from-substᴸ-comm₂ =
   substitutive₂ λ a₁~a₂ → substᴸ comm (substᴿ comm (subst₂ a₁~a₂))

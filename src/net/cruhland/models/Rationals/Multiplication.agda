@@ -66,8 +66,8 @@ instance
   *-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _*_ _≃_ _≃_
   *-substitutiveᴿ = AA.substᴿ-from-substᴸ-comm {A = ℚ}
 
-  *-substitutive₂ : AA.Substitutive₂² _*_ _≃_ _≃_
-  *-substitutive₂ = AA.substitutive₂² {A = ℚ}
+  *-substitutive : AA.Substitutive² _*_ _≃_ _≃_
+  *-substitutive = AA.substitutive² {A = ℚ}
 
   *-compatible-ℤ : AA.Compatible₂ (_as ℚ) _*_
   *-compatible-ℤ = AA.compatible₂ {A = ℤ} _*_ *-compat-ℤ
@@ -110,8 +110,8 @@ instance
   *-identityᴿ : AA.Identity AA.handᴿ _*_ 1
   *-identityᴿ = AA.identityᴿ-from-identityᴸ {A = ℚ}
 
-  *-identity₂ : AA.Identity₂ _*_ 1
-  *-identity₂ = AA.identity₂ {A = ℚ}
+  *-identity : AA.Identity² _*_ 1
+  *-identity = AA.identity² {A = ℚ}
 
   *-distributive-+ᴸ : AA.Distributive AA.handᴸ _*_ _+_
   *-distributive-+ᴸ = AA.distributive *-distrib-+ᴸ

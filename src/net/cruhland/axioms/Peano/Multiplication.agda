@@ -166,8 +166,8 @@ record Multiplication
     *-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _*_ _≃_ _≃_
     *-substitutiveᴿ = AA.substᴿ-from-substᴸ-comm
 
-    *-substitutive₂² : AA.Substitutive₂² _*_ _≃_ _≃_
-    *-substitutive₂² = AA.substitutive₂²
+    *-substitutive : AA.Substitutive² _*_ _≃_ _≃_
+    *-substitutive = AA.substitutive²
 
     *-distributive-+ᴸ : AA.Distributive AA.handᴸ _*_ _+_
     *-distributive-+ᴸ = AA.distributive *-distrib-+ᴸ

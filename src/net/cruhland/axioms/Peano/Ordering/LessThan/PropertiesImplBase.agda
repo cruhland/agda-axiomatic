@@ -68,8 +68,8 @@ instance
             m≄n₂ = AA.substᴿ n₁≃n₂ m≄n₁
          in ℕ<.<-intro-≤≄ m≤n₂ m≄n₂
 
-  <-substitutive-≃ : AA.Substitutive₂² _<_ _≃_ _⟨→⟩_
-  <-substitutive-≃ = AA.substitutive₂²
+  <-substitutive-≃ : AA.Substitutive² _<_ _≃_ _⟨→⟩_
+  <-substitutive-≃ = AA.substitutive²
 
   <-substitutive-+ᴸ : AA.Substitutive₂ AA.handᴸ _+_ _<_ _<_
   <-substitutive-+ᴸ = AA.substitutive₂ <-substᴸ
@@ -85,8 +85,8 @@ instance
   <-substitutive-+ᴿ : AA.Substitutive₂ AA.handᴿ _+_ _<_ _<_
   <-substitutive-+ᴿ = AA.substᴿ-from-substᴸ-comm₂
 
-  <-substitutive-+ : AA.Substitutive₂² _+_ _<_ _<_
-  <-substitutive-+ = AA.substitutive₂²
+  <-substitutive-+ : AA.Substitutive² _+_ _<_ _<_
+  <-substitutive-+ = AA.substitutive²
 
 <-compatible-+ : {n₁ n₂ m₁ m₂ : ℕ} → n₁ < n₂ → m₁ < m₂ → n₁ + m₁ < n₂ + m₂
 <-compatible-+ n₁<n₂ m₁<m₂ =

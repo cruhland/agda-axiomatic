@@ -110,8 +110,8 @@ record Addition (PB : PeanoBase) (PS : ℕSign PB) : Set where
     +-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _+_ _≃_ _≃_
     +-substitutiveᴿ = AA.substᴿ-from-substᴸ-comm
 
-    +-substitutive₂² : AA.Substitutive₂² _+_ _≃_ _≃_
-    +-substitutive₂² = AA.substitutive₂²
+    +-substitutive : AA.Substitutive² _+_ _≃_ _≃_
+    +-substitutive = AA.substitutive²
 
     +-associative : AA.Associative _+_
     +-associative = record { assoc = +-assoc }

@@ -26,8 +26,8 @@ identityᴿ-from-identityᴸ :
       Identity handᴿ _⊙_ e
 identityᴿ-from-identityᴸ = identity (Eq.trans comm ident)
 
-record Identity₂ {A : Set} {{_ : Eq A}} (_⊙_ : A → A → A) (e : A) : Set where
-  constructor identity₂
+record Identity² {A : Set} {{_ : Eq A}} (_⊙_ : A → A → A) (e : A) : Set where
+  constructor identity²
   field
     {{identityᴸ}} : Identity handᴸ _⊙_ e
     {{identityᴿ}} : Identity handᴿ _⊙_ e
@@ -60,6 +60,6 @@ module _ {A : Set} {_⊙_ : A → A → A} {e : A} {{_ : Eq A}} where
   identityᴿ-flip : {{_ : Identity handᴸ _⊙_ e}} → Identity handᴿ (flip _⊙_) e
   identityᴿ-flip = identity ident
 
-  identity₂-flip : {{_ : Identity₂ _⊙_ e}} → Identity₂ (flip _⊙_) e
-  identity₂-flip =
-    identity₂ {{identityᴸ = identityᴸ-flip}} {{identityᴿ = identityᴿ-flip}}
+  identity²-flip : {{_ : Identity² _⊙_ e}} → Identity² (flip _⊙_) e
+  identity²-flip =
+    identity² {{identityᴸ = identityᴸ-flip}} {{identityᴿ = identityᴿ-flip}}

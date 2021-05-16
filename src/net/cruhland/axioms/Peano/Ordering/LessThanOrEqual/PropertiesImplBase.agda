@@ -91,8 +91,8 @@ instance
             m+d≃n₁ = ℕ≤.≤-elim-diff m≤n₁
          in ℕ≤.≤-intro-diff (Eq.trans m+d≃n₁ n₁≃n₂)
 
-  ≤-substitutive-≃ : AA.Substitutive₂² _≤_ _≃_ _⟨→⟩_
-  ≤-substitutive-≃ = AA.substitutive₂²
+  ≤-substitutive-≃ : AA.Substitutive² _≤_ _≃_ _⟨→⟩_
+  ≤-substitutive-≃ = AA.substitutive²
 
   ≤-injective-step : AA.Injective step _≤_ _≤_
   ≤-injective-step = AA.injective ≤-inject
@@ -132,8 +132,8 @@ instance
   ≤-substitutive-+ᴿ = AA.substitutiveᴿ-from-substitutiveᴸ
     where instance +-swappable = AA.swappable-from-commutative
 
-  ≤-substitutive-+ : AA.Substitutive₂² _+_ _≤_ _≤_
-  ≤-substitutive-+ = AA.substitutive₂²
+  ≤-substitutive-+ : AA.Substitutive² _+_ _≤_ _≤_
+  ≤-substitutive-+ = AA.substitutive²
 
   ≤-cancellative-+ᴸ : AA.IsCancellative AA.handᴸ _+_ _≤_ _≤_ (const ⊤)
   ≤-cancellative-+ᴸ = AA.isCancellative ≤-cancelᴸ

@@ -5,11 +5,11 @@ open import net.cruhland.models.Function using (ConstrainableFn; const; toExpFn)
 
 open import net.cruhland.axioms.AbstractAlgebra.Base
   using (forHand; Hand; handᴸ; handᴿ)
-open import net.cruhland.axioms.AbstractAlgebra.Reductive using (Identity₂)
+open import net.cruhland.axioms.AbstractAlgebra.Reductive using (Identity²)
 
 record Inverse
     (hand : Hand) {A F : Set} (f : F) (C : A → Set) (_⊙_ : A → A → A) (e : A)
-    {{_ : Eq A}} {{_ : ConstrainableFn F C (const A)}} {{_ : Identity₂ _⊙_ e}}
+    {{_ : Eq A}} {{_ : ConstrainableFn F C (const A)}} {{_ : Identity² _⊙_ e}}
     : Set₁ where
   constructor inverse
   invert = toExpFn f
@@ -25,7 +25,7 @@ invᴿ = inv {handᴿ}
 
 record Inverse²
     {A F : Set} (f : F) (C : A → Set) (_⊙_ : A → A → A) (e : A) {{_ : Eq A}}
-    {{_ : ConstrainableFn F C (const A)}} {{_ : Identity₂ _⊙_ e}}
+    {{_ : ConstrainableFn F C (const A)}} {{_ : Identity² _⊙_ e}}
     : Set₁ where
   constructor inverse²
   field

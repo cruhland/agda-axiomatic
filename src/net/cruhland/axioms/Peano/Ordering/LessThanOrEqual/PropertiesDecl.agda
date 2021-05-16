@@ -28,7 +28,7 @@ record LteProperties (LTEB : LteBase) : Set₁ where
   field
     {{≤-transitive}} : Eq.Transitive _≤_
     {{≤-antisymmetric}} : AA.Antisymmetric _≤_
-    {{≤-substitutive-≃}} : AA.Substitutive₂² _≤_ _≃_ _⟨→⟩_
+    {{≤-substitutive-≃}} : AA.Substitutive² _≤_ _≃_ _⟨→⟩_
     ≤-intro-≃ : {n m : ℕ} → n ≃ m → n ≤ m
     zero-diff : {n m : ℕ} (n≤m : n ≤ m) → ℕ≤.≤-diff n≤m ≃ 0 → n ≃ m
     _≤?_ : (n m : ℕ) → Dec (n ≤ m)
@@ -37,7 +37,7 @@ record LteProperties (LTEB : LteBase) : Set₁ where
     n≤sn : {n : ℕ} → n ≤ step n
     ≤-widenᴸ : {n m : ℕ} → step n ≤ m → n ≤ m
 
-    {{≤-substitutive-+}} : AA.Substitutive₂² _+_ _≤_ _≤_
+    {{≤-substitutive-+}} : AA.Substitutive² _+_ _≤_ _≤_
     {{≤-cancellative-+}} : AA.IsCancellative² _+_ _≤_ _≤_ (const ⊤)
     intro-diff-id :
       {n m d : ℕ} (n+d≃m : n + d ≃ m) → ℕ≤.≤-diff (ℕ≤.≤-intro-diff n+d≃m) ≃ d

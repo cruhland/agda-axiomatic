@@ -38,3 +38,42 @@ instance
                 (b⁺ * a⁺ + b⁻ * a⁻) + (a⁺ * b⁻ + a⁻ * b⁺)
               ∎
          in ≃₀-intro ab≃ba
+
+  *-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _*_ _≃_ _≃_
+  *-substitutiveᴸ = AA.substitutive₂ *-substᴸ
+    where
+      *-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ * b ≃ a₂ * b
+      *-substᴸ {a₁⁺ — a₁⁻} {a₂⁺ — a₂⁻} {b⁺ — b⁻} (≃₀-intro a₁⁺a₂⁻≃a₂⁺a₁⁻) =
+          ≃₀-intro [a₁⁺b⁺+a₁⁻b⁻]+[a₂⁺b⁻+a₂⁻b⁺]≃[a₂⁺b⁺+a₂⁻b⁻]+[a₁⁺b⁻+a₁⁻b⁺]
+        where
+          rearr :
+            ∀ {u v w x y z} →
+              (w * u + x * v) + (y * v + z * u) ≃
+                (w + z) * u + (y + x) * v
+          rearr {u} {v} {w} {x} {y} {z} =
+            begin
+              (w * u + x * v) + (y * v + z * u)
+            ≃⟨ AA.perm-adcb ⟩
+              (w * u + z * u) + (y * v + x * v)
+            ≃˘⟨ AA.distrib-twoᴿ ⟩
+              (w + z) * u + (y + x) * v
+            ∎
+
+          [a₁⁺b⁺+a₁⁻b⁻]+[a₂⁺b⁻+a₂⁻b⁺]≃[a₂⁺b⁺+a₂⁻b⁻]+[a₁⁺b⁻+a₁⁻b⁺] =
+            begin
+              (a₁⁺ * b⁺ + a₁⁻ * b⁻) + (a₂⁺ * b⁻ + a₂⁻ * b⁺)
+            ≃⟨ rearr {w = a₁⁺} {y = a₂⁺} ⟩
+              (a₁⁺ + a₂⁻) * b⁺ + (a₂⁺ + a₁⁻) * b⁻
+            ≃⟨ AA.subst₂ (AA.subst₂ a₁⁺a₂⁻≃a₂⁺a₁⁻) ⟩
+              (a₂⁺ + a₁⁻) * b⁺ + (a₂⁺ + a₁⁻) * b⁻
+            ≃˘⟨ AA.subst₂ (AA.subst₂ a₁⁺a₂⁻≃a₂⁺a₁⁻) ⟩
+              (a₂⁺ + a₁⁻) * b⁺ + (a₁⁺ + a₂⁻) * b⁻
+            ≃˘⟨ rearr {w = a₂⁺} {y = a₁⁺} ⟩
+              (a₂⁺ * b⁺ + a₂⁻ * b⁻) + (a₁⁺ * b⁻ + a₁⁻ * b⁺)
+            ∎
+
+  *-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _*_ _≃_ _≃_
+  *-substitutiveᴿ = AA.substᴿ-from-substᴸ-comm {A = ℤ}
+
+  *-substitutive : AA.Substitutive² _*_ _≃_ _≃_
+  *-substitutive = AA.substitutive² {A = ℤ}

@@ -62,8 +62,8 @@ instance
   ℤ-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _—_ _≃_ _≃_
   ℤ-substitutiveᴿ = AA.substitutive₂ (≃₀-intro ∘ AA.subst₂ ∘ Eq.sym)
 
-  ℤ-substitutive₂² : AA.Substitutive₂² _—_ _≃_ _≃_
-  ℤ-substitutive₂² = AA.substitutive₂²
+  ℤ-substitutive : AA.Substitutive² _—_ _≃_ _≃_
+  ℤ-substitutive = AA.substitutive²
 
   ℤ-cancellativeᴸ : AA.Cancellative AA.handᴸ _—_ _≃_ _≃_
   ℤ-cancellativeᴸ = AA.cancellative λ {p n₁ n₂} → Eq.sym ∘ AA.cancel ∘ _≃₀_.elim
@@ -71,8 +71,8 @@ instance
   ℤ-cancellativeᴿ : AA.Cancellative AA.handᴿ _—_ _≃_ _≃_
   ℤ-cancellativeᴿ = AA.cancellative λ {p n₁ n₂} → AA.cancel ∘ _≃₀_.elim
 
-  ℤ-cancellative² : AA.Cancellative² _—_ _≃_ _≃_
-  ℤ-cancellative² = AA.cancellative²
+  ℤ-cancellative : AA.Cancellative² _—_ _≃_ _≃_
+  ℤ-cancellative = AA.cancellative²
 
   from-ℕ : ℕ As ℤ
   from-ℕ = Cast.As-intro (_— 0)

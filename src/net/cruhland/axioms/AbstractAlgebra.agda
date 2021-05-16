@@ -45,7 +45,7 @@ record ExactlyOneOfThree (A B C : Set) : Set where
 
 distributiveᴿ-from-distributiveᴸ :
   {A : Set} {_⊙_ _⊕_ : A → A → A}
-    {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Substitutive₂² _⊕_ _≃_ _≃_}}
+    {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Substitutive² _⊕_ _≃_ _≃_}}
       {{_ : Distributive handᴸ _⊙_ _⊕_}} → Distributive handᴿ _⊙_ _⊕_
 distributiveᴿ-from-distributiveᴸ {A} {_⊙_} {_⊕_} = distributive distribᴿ₀
   where
@@ -65,7 +65,7 @@ distributiveᴿ-from-distributiveᴸ {A} {_⊙_} {_⊕_} = distributive distrib�
 
 inverseᴿ-from-inverseᴸ :
   {A F : Set} {f : F} {C : A → Set} {_⊙_ : A → A → A} {e : A} {{_ : Eq A}}
-  {{_ : ConstrainableFn F C (const A)}} {{_ : Identity₂ _⊙_ e}}
+  {{_ : ConstrainableFn F C (const A)}} {{_ : Identity² _⊙_ e}}
   {{_ : Inverse handᴸ f C _⊙_ e}} {{_ : Commutative _⊙_}} →
   Inverse handᴿ f C _⊙_ e
 inverseᴿ-from-inverseᴸ = inverse (Eq.trans comm inv)
@@ -85,14 +85,14 @@ inverseᴿ-from-inverseᴸ = inverse (Eq.trans comm inv)
 
 swap-middle :
   {A : Set} {_⊙_ : A → A → A}
-    {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Substitutive₂² _⊙_ _≃_ _≃_}} →
+    {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Substitutive² _⊙_ _≃_ _≃_}} →
       ∀ {a b c d} → a ⊙ ((b ⊙ c) ⊙ d) ≃ a ⊙ ((c ⊙ b) ⊙ d)
 swap-middle = subst₂ (subst₂ comm)
 
 transpose :
   {A : Set} {_⊙_ : A → A → A}
     {{_ : Eq A}} {{_ : Associative _⊙_}} {{_ : Commutative _⊙_}}
-    {{_ : Substitutive₂² _⊙_ _≃_ _≃_}} →
+    {{_ : Substitutive² _⊙_ _≃_ _≃_}} →
       ∀ {w x y z} → (w ⊙ x) ⊙ (y ⊙ z) ≃ (w ⊙ y) ⊙ (x ⊙ z)
 transpose {A} {_⊙_} {w} {x} {y} {z} =
   begin
@@ -108,7 +108,7 @@ transpose {A} {_⊙_} {w} {x} {y} {z} =
 perm-adcb :
   {A : Set} {_⊙_ : A → A → A}
     {{_ : Eq A}} {{_ : Associative _⊙_}} {{_ : Commutative _⊙_}}
-    {{_ : Substitutive₂² _⊙_ _≃_ _≃_}} →
+    {{_ : Substitutive² _⊙_ _≃_ _≃_}} →
       ∀ {a b c d} → (a ⊙ d) ⊙ (c ⊙ b) ≃ (a ⊙ b) ⊙ (c ⊙ d)
 perm-adcb {A} {_⊙_} {a} {b} {c} {d} =
   begin
@@ -123,7 +123,7 @@ perm-adcb {A} {_⊙_} {a} {b} {c} {d} =
 
 distrib-twoᴸ :
   {A : Set} {_⊙_ _⊕_ : A → A → A} {{_ : Eq A}}
-    {{_ : Distributive handᴸ _⊙_ _⊕_}} {{_ : Substitutive₂² _⊕_ _≃_ _≃_}} →
+    {{_ : Distributive handᴸ _⊙_ _⊕_}} {{_ : Substitutive² _⊕_ _≃_ _≃_}} →
       ∀ {a b c d e f} →
         (a ⊙ (b ⊕ c)) ⊕ (d ⊙ (e ⊕ f)) ≃
           ((a ⊙ b) ⊕ (a ⊙ c)) ⊕ ((d ⊙ e) ⊕ (d ⊙ f))
@@ -138,7 +138,7 @@ distrib-twoᴸ {A} {_⊙_} {_⊕_} {a} {b} {c} {d} {e} {f} =
 
 distrib-twoᴿ :
   {A : Set} {_⊙_ _⊕_ : A → A → A} {{_ : Eq A}}
-    {{_ : Distributive handᴿ _⊙_ _⊕_}} {{_ : Substitutive₂² _⊕_ _≃_ _≃_}} →
+    {{_ : Distributive handᴿ _⊙_ _⊕_}} {{_ : Substitutive² _⊕_ _≃_ _≃_}} →
       ∀ {a b c d e f} →
         ((a ⊕ b) ⊙ c) ⊕ ((d ⊕ e) ⊙ f) ≃
           ((a ⊙ c) ⊕ (b ⊙ c)) ⊕ ((d ⊙ f) ⊕ (e ⊙ f))
@@ -216,7 +216,7 @@ idᴿ→eq {A} {_⊙_} {a} {b} {d} {e} ad≃b d≃e =
 
 assoc-four :
   {A : Set} {_⊙_ _⊕_ : A → A → A}
-    {{_ : Eq A}} {{_ : Associative _⊙_}} {{_ : Substitutive₂² _⊕_ _≃_ _≃_}} →
+    {{_ : Eq A}} {{_ : Associative _⊙_}} {{_ : Substitutive² _⊕_ _≃_ _≃_}} →
       ∀ {a₁ a₂ a₃ b₁ b₂ b₃ c₁ c₂ c₃ d₁ d₂ d₃} →
         (((a₁ ⊙ a₂) ⊙ a₃) ⊕ ((b₁ ⊙ b₂) ⊙ b₃)) ⊕
           (((c₁ ⊙ c₂) ⊙ c₃) ⊕ ((d₁ ⊙ d₂) ⊙ d₃))
@@ -245,7 +245,7 @@ assoc-four
 refactor :
   {A : Set} {_⊙_ _⊕_ : A → A → A}
     {{eq : Eq A}} {{_ : Associative _⊙_}} {{_ : Associative _⊕_}}
-    {{_ : Commutative _⊕_}} {{_ : Substitutive₂² _⊕_ _≃_ _≃_}}
+    {{_ : Commutative _⊕_}} {{_ : Substitutive² _⊕_ _≃_ _≃_}}
     {{_ : Distributive handᴸ _⊙_ _⊕_}} {{_ : Distributive handᴿ _⊙_ _⊕_}} →
       ∀ {b₁ b₂ a₁ a₂ a₃ a₄} →
         (((a₁ ⊙ a₃) ⊕ (a₂ ⊙ a₄)) ⊙ b₁) ⊕ (((a₁ ⊙ a₄) ⊕ (a₂ ⊙ a₃)) ⊙ b₂) ≃

@@ -94,8 +94,8 @@ instance
   *-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _*_ _≃_ _≃_
   *-substitutiveᴿ = AA.substᴿ-from-substᴸ-comm {A = ℤ}
 
-  *-substitutive₂² : AA.Substitutive₂² _*_ _≃_ _≃_
-  *-substitutive₂² = AA.substitutive₂² {A = ℤ}
+  *-substitutive : AA.Substitutive² _*_ _≃_ _≃_
+  *-substitutive = AA.substitutive² {A = ℤ}
 
   *-compatible-ℕ : AA.Compatible₂ (_as ℤ) _*_
   *-compatible-ℕ = AA.compatible₂ {A = ℕ} _*_ *-compat-ℕ
