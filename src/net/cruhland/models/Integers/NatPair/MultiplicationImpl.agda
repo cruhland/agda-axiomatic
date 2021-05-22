@@ -1,14 +1,16 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
+open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq as Eq using (_≃_)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Operators as Op using (_+_; _*_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
+open import net.cruhland.models.Literals
 
 module net.cruhland.models.Integers.NatPair.MultiplicationImpl
   (PA : PeanoArithmetic) where
 
-private module ℕ = PeanoArithmetic PA
-open import net.cruhland.models.Integers.NatPair.BaseImpl PA as ℤ
+private open module ℕ = PeanoArithmetic PA using (ℕ)
+open import net.cruhland.models.Integers.NatPair.BaseImpl PA as ℤB
   using (_—_; ℤ; ≃₀-intro)
 
 instance
@@ -77,3 +79,32 @@ instance
 
   *-substitutive : AA.Substitutive² _*_ _≃_ _≃_
   *-substitutive = AA.substitutive² {A = ℤ}
+
+  *-compatible-ℕ : AA.Compatible₂ (_as ℤ) _*_
+  *-compatible-ℕ = AA.compatible₂ {A = ℕ} _*_ *-compat-ℕ
+    where
+      *-compat-ℕ : {n m : ℕ} → (n * m as ℤ) ≃ (n as ℤ) * (m as ℤ)
+      *-compat-ℕ {n} {m} =
+        let nm+n0+0m≃nm+00+0 =
+              begin
+                n * m + (n * 0 + 0 * m)
+              ≃⟨ AA.subst₂ (AA.subst₂ AA.absorb) ⟩
+                n * m + (0 + 0 * m)
+              ≃˘⟨ AA.subst₂ (AA.subst₂ AA.absorbᴿ) ⟩
+                n * m + (0 * 0 + 0 * m)
+              ≃⟨ AA.subst₂ (AA.subst₂ AA.absorb) ⟩
+                n * m + (0 * 0 + 0)
+              ≃˘⟨ AA.assoc ⟩
+                n * m + 0 * 0 + 0
+              ∎
+         in begin
+              (n * m as ℤ)
+            ≃⟨⟩
+              (n * m) — 0
+            ≃⟨ ≃₀-intro nm+n0+0m≃nm+00+0 ⟩
+              (n * m + 0 * 0) — (n * 0 + 0 * m)
+            ≃⟨⟩
+              n — 0 * m — 0
+            ≃⟨⟩
+              (n as ℤ) * (m as ℤ)
+            ∎
