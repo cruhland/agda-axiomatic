@@ -1,11 +1,12 @@
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
-import net.cruhland.models.Integers.NatPair.Negation.BaseImpl as BaseImpl
-import net.cruhland.models.Integers.NatPair.Negation.PropertiesImpl
-  as PropertiesImpl
 
 module net.cruhland.models.Integers.NatPair.NegationImpl
   (PA : PeanoArithmetic) where
 
+import net.cruhland.models.Integers.NatPair.Negation.BaseImpl PA as BaseImpl
+import net.cruhland.models.Integers.NatPair.Negation.PropertiesImpl PA
+  as PropertiesImpl
+
 -- Re-export contents of child modules
-open BaseImpl PA public
-open PropertiesImpl PA public
+open BaseImpl public
+open PropertiesImpl public

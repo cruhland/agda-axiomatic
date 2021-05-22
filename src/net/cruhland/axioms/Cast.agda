@@ -10,6 +10,8 @@ record _As_ {α β} (A : Set α) (B : Set β) : Set (α ⊔ β) where
 
 open _As_ {{...}} public using (cast)
 
+{-# DISPLAY _As_.cast _ x = cast x #-}
+
 infixl 0 _as_
 _as_ : ∀ {α β} {A : Set α} → A → (B : Set β) {{_ : A As B}} → B
 x as B = cast x
@@ -25,7 +27,3 @@ delegate₂ :
     {{_ : A₁ As A₂}} {{_ : B₁ As B₂}} {{_ : C₂ As C₁}} →
       A₁ → B₁ → C₁
 delegate₂ {C₁ = C₁} {A₂} {B₂} f a₁ b₁ = f (a₁ as A₂) (b₁ as B₂) as C₁
-
-instance
-  id-cast : {A : Set} → A As A
-  id-cast = As-intro id

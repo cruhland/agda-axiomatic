@@ -34,3 +34,9 @@ instance
 
   from-ℕ : ℕ As ℚ
   from-ℕ = Cast.via ℤ
+
+  from-Nat : Nat As ℚ
+  from-Nat = Cast.via ℕ
+
+  from-literal : FromLiteral ℚ
+  from-literal = literal-from-cast

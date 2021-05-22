@@ -11,7 +11,9 @@ module net.cruhland.models.Integers.NatPair.AdditionImpl
   (PA : PeanoArithmetic) where
 
 private open module ℕ = PeanoArithmetic PA using (ℕ)
-private open module ℤ = BaseImpl PA using (_—_; ℤ; ≃₀-intro)
+open import net.cruhland.models.Integers.NatPair.BaseImpl PA as ℤB
+  using (_—_; ℤ; ≃₀-intro)
+import net.cruhland.models.Integers.NatPair.PropertiesImpl PA as ℤP
 
 instance
   plus : Op.Plus ℤ

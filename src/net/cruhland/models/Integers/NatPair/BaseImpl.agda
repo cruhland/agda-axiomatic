@@ -82,29 +82,3 @@ instance
 
   from-ℕ-injective : AA.Injective (_as ℤ) _≃_ _≃_
   from-ℕ-injective = AA.injective {A = ℕ} AA.cancel
-
-zero-from-balanced : ∀ {x} → ℤ.pos x ≃ ℤ.neg x → x ≃ 0
-zero-from-balanced {x⁺ — x⁻} x⁺≃x⁻ =
-  let x⁺+0≃0+x⁻ =
-        begin
-          x⁺ + 0
-        ≃⟨ AA.ident ⟩
-          x⁺
-        ≃⟨ x⁺≃x⁻ ⟩
-          x⁻
-        ≃˘⟨ AA.ident ⟩
-          0 + x⁻
-        ∎
-   in ≃₀-intro x⁺+0≃0+x⁻
-
-balanced-from-zero : ∀ {x} → x ≃ 0 → ℤ.pos x ≃ ℤ.neg x
-balanced-from-zero {x⁺ — x⁻} (≃₀-intro x⁺+0≃0+x⁻) =
-  begin
-    x⁺
-  ≃˘⟨ AA.ident ⟩
-    x⁺ + 0
-  ≃⟨ x⁺+0≃0+x⁻ ⟩
-    0 + x⁻
-  ≃⟨ AA.ident ⟩
-    x⁻
-  ∎

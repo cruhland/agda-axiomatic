@@ -4,8 +4,6 @@ open Eq.≃-Reasoning
 open import net.cruhland.axioms.Operators as Op using (_+_; -_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.models.Function using (const)
-import net.cruhland.models.Integers.NatPair.AdditionImpl as AdditionImpl
-import net.cruhland.models.Integers.NatPair.BaseImpl as BaseImpl
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using (⊤)
 
@@ -13,8 +11,10 @@ module net.cruhland.models.Integers.NatPair.Negation.BaseImpl
   (PA : PeanoArithmetic) where
 
 private module ℕ = PeanoArithmetic PA
-private open module ℤ = BaseImpl PA using (_—_; ℤ; ≃₀-intro)
-private module ℤ+ = AdditionImpl PA
+import net.cruhland.models.Integers.NatPair.AdditionImpl PA as ℤ+
+open import net.cruhland.models.Integers.NatPair.BaseImpl PA as ℤB
+  using (_—_; ℤ; ≃₀-intro)
+import net.cruhland.models.Integers.NatPair.PropertiesImpl PA as ℤP
 
 instance
   neg-dash : Op.Dashᴸ ℤ

@@ -12,6 +12,8 @@ record Positivity {A : Set} {{_ : Eq A}} (zero : A) : Set₁ where
 
 open Positivity {{...}} public using (pos≄0; Positive)
 
+{-# DISPLAY Positivity.Positive _ x = Positive x #-}
+
 record Negativity {A : Set} {{_ : Eq A}} (zero : A) : Set₁ where
   field
     Negative : A → Set

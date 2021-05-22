@@ -9,8 +9,9 @@ module net.cruhland.axioms.Integers.AdditionDecl (PA : PeanoArithmetic) where
 
 private open module ℕ = PeanoArithmetic PA using (ℕ)
 open import net.cruhland.axioms.Integers.BaseDecl PA using (Base)
+open import net.cruhland.axioms.Integers.PropertiesDecl PA using (Properties)
 
-record Addition (ZB : Base) : Set where
+record Addition (ZB : Base) (ZP : Properties ZB) : Set where
   open Base ZB using (ℤ)
 
   field

@@ -11,13 +11,14 @@ open import net.cruhland.models.Function using (_⟨→⟩_)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using (¬_; contra)
 
-module net.cruhland.models.Integers.NatPair.SignBaseImplLt
+module net.cruhland.models.Integers.NatPair.Sign.BaseImplLt
   (PA : PeanoArithmetic) where
 
 private open module ℕ = PeanoArithmetic PA using (ℕ)
-open import net.cruhland.models.Integers.NatPair.BaseImpl PA as ℤ
+open import net.cruhland.models.Integers.NatPair.BaseImpl PA as ℤB
   using (_—_; ℤ; ≃₀-intro)
 import net.cruhland.models.Integers.NatPair.NegationImpl PA as ℤ-
+import net.cruhland.models.Integers.NatPair.PropertiesImpl PA as ℤP
 
 Pos : ℤ → Set
 Pos (a⁺ — a⁻) = a⁻ < a⁺
@@ -27,13 +28,13 @@ Neg (a⁺ — a⁻) = a⁺ < a⁻
 
 Pos≄0 : ∀ {a} → Pos a → a ≄ 0
 Pos≄0 {a⁺ — a⁻} a⁻<a⁺ a≃0 =
-  let a⁻≃a⁺ = Eq.sym (ℤ.balanced-from-zero a≃0)
+  let a⁻≃a⁺ = Eq.sym (ℤP.balanced-from-zero a≃0)
       a⁻≄a⁺ = ℕ.<-elim-≄ a⁻<a⁺
    in contra a⁻≃a⁺ a⁻≄a⁺
 
 Neg≄0 : ∀ {a} → Neg a → a ≄ 0
 Neg≄0 {a⁺ — a⁻} a⁺<a⁻ a≃0 =
-  let a⁺≃a⁻ = ℤ.balanced-from-zero a≃0
+  let a⁺≃a⁻ = ℤP.balanced-from-zero a≃0
       a⁺≄a⁻ = ℕ.<-elim-≄ a⁺<a⁻
    in contra a⁺≃a⁻ a⁺≄a⁻
 
@@ -109,7 +110,7 @@ trichotomy a@(a⁺ — a⁻) = AA.exactlyOneOfThree 1of3 ¬2of3
     1of3 : AA.OneOfThree (Negative a) (a ≃ 0) (Positive a)
     1of3 with AA.ExactlyOneOfThree.at-least-one (ℕ.order-trichotomy a⁺ a⁻)
     1of3 | AA.1st a⁺<a⁻ = AA.1st a⁺<a⁻
-    1of3 | AA.2nd a⁺≃a⁻ = AA.2nd (ℤ.zero-from-balanced a⁺≃a⁻)
+    1of3 | AA.2nd a⁺≃a⁻ = AA.2nd (ℤP.zero-from-balanced a⁺≃a⁻)
     1of3 | AA.3rd a⁻<a⁺ = AA.3rd a⁻<a⁺
 
     ¬2of3 : ¬ AA.TwoOfThree (Negative a) (a ≃ 0) (Positive a)

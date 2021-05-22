@@ -5,6 +5,7 @@ open import net.cruhland.axioms.Eq as Eq using (_≃_)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Integers.AdditionDecl using (Addition)
 open import net.cruhland.axioms.Integers.BaseDecl using (Base)
+open import net.cruhland.axioms.Integers.PropertiesDecl using (Properties)
 open import net.cruhland.axioms.Integers.Negation.BaseDecl using (NegationBase)
 open import net.cruhland.axioms.Operators as Op using (_+_; -_; _-_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
@@ -15,8 +16,9 @@ open import net.cruhland.models.Logic using (⊤)
 module net.cruhland.axioms.Integers.Negation.PropertiesImplBase
   (PA : PeanoArithmetic)
   (ZB : Base PA)
-  (Z+ : Addition PA ZB)
-  (NB : NegationBase PA ZB Z+)
+  (ZP : Properties PA ZB)
+  (Z+ : Addition PA ZB ZP)
+  (NB : NegationBase PA ZB ZP Z+)
   where
 
 private module ℕ = PeanoArithmetic PA
@@ -25,7 +27,7 @@ open Base ZB using (ℤ)
 
 instance
   neg-literal : FromNeg.Negative ℤ
-  neg-literal = record { Constraint = const ⊤ ; fromNeg = λ n → - (n as ℤ) }
+  neg-literal = record { Constraint = const ⊤ ; fromNeg = λ n → - (fromNat n) }
 
 neg-involutive : {a : ℤ} → - (- a) ≃ a
 neg-involutive {a} =
