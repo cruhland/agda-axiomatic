@@ -24,29 +24,55 @@ instance
   *-commutative = AA.commutative *-comm
     where
       *-comm : {a b : ℤ} → a * b ≃ b * a
-      *-comm {a⁺ — a⁻} {b⁺ — b⁻} =
-        let ab≃ba =
-              begin
-                (a⁺ * b⁺ + a⁻ * b⁻) + (b⁺ * a⁻ + b⁻ * a⁺)
-              ≃⟨ AA.subst₂ (AA.subst₂ AA.comm) ⟩
-                (b⁺ * a⁺ + a⁻ * b⁻) + (b⁺ * a⁻ + b⁻ * a⁺)
-              ≃⟨ AA.subst₂ (AA.subst₂ AA.comm) ⟩
-                (b⁺ * a⁺ + b⁻ * a⁻) + (b⁺ * a⁻ + b⁻ * a⁺)
-              ≃⟨ AA.subst₂ AA.comm ⟩
-                (b⁺ * a⁺ + b⁻ * a⁻) + (b⁻ * a⁺ + b⁺ * a⁻)
-              ≃⟨ AA.subst₂ (AA.subst₂ AA.comm) ⟩
-                (b⁺ * a⁺ + b⁻ * a⁻) + (a⁺ * b⁻ + b⁺ * a⁻)
-              ≃⟨ AA.subst₂ (AA.subst₂ AA.comm) ⟩
-                (b⁺ * a⁺ + b⁻ * a⁻) + (a⁺ * b⁻ + a⁻ * b⁺)
-              ∎
-         in ≃₀-intro ab≃ba
+      *-comm a@{a⁺ — a⁻} b@{b⁺ — b⁻} =
+          begin
+            a * b
+          ≃⟨⟩
+            (a⁺ — a⁻) * (b⁺ — b⁻)
+          ≃⟨⟩
+            (a⁺ * b⁺ + a⁻ * b⁻) — (a⁺ * b⁻ + a⁻ * b⁺)
+          ≃⟨ ≃₀-intro componentEq ⟩
+            (b⁺ * a⁺ + b⁻ * a⁻) — (b⁺ * a⁻ + b⁻ * a⁺)
+          ≃⟨⟩
+            (b⁺ — b⁻) * (a⁺ — a⁻)
+          ≃⟨⟩
+            b * a
+          ∎
+        where
+          componentEq =
+            begin
+              (a⁺ * b⁺ + a⁻ * b⁻) + (b⁺ * a⁻ + b⁻ * a⁺)
+            ≃⟨ AA.subst₂ (AA.subst₂ AA.comm) ⟩
+              (b⁺ * a⁺ + a⁻ * b⁻) + (b⁺ * a⁻ + b⁻ * a⁺)
+            ≃⟨ AA.subst₂ (AA.subst₂ AA.comm) ⟩
+              (b⁺ * a⁺ + b⁻ * a⁻) + (b⁺ * a⁻ + b⁻ * a⁺)
+            ≃⟨ AA.subst₂ AA.comm ⟩
+              (b⁺ * a⁺ + b⁻ * a⁻) + (b⁻ * a⁺ + b⁺ * a⁻)
+            ≃⟨ AA.subst₂ (AA.subst₂ AA.comm) ⟩
+              (b⁺ * a⁺ + b⁻ * a⁻) + (a⁺ * b⁻ + b⁺ * a⁻)
+            ≃⟨ AA.subst₂ (AA.subst₂ AA.comm) ⟩
+              (b⁺ * a⁺ + b⁻ * a⁻) + (a⁺ * b⁻ + a⁻ * b⁺)
+            ∎
 
   *-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _*_ _≃_ _≃_
   *-substitutiveᴸ = AA.substitutive₂ *-substᴸ
     where
       *-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ * b ≃ a₂ * b
-      *-substᴸ {a₁⁺ — a₁⁻} {a₂⁺ — a₂⁻} {b⁺ — b⁻} (≃₀-intro a₁⁺a₂⁻≃a₂⁺a₁⁻) =
-          ≃₀-intro [a₁⁺b⁺+a₁⁻b⁻]+[a₂⁺b⁻+a₂⁻b⁺]≃[a₂⁺b⁺+a₂⁻b⁻]+[a₁⁺b⁻+a₁⁻b⁺]
+      *-substᴸ
+        a₁@{a₁⁺ — a₁⁻} a₂@{a₂⁺ — a₂⁻} b@{b⁺ — b⁻} (≃₀-intro a₁⁺a₂⁻≃a₂⁺a₁⁻) =
+          begin
+            a₁ * b
+          ≃⟨⟩
+            (a₁⁺ — a₁⁻) * (b⁺ — b⁻)
+          ≃⟨⟩
+            (a₁⁺ * b⁺ + a₁⁻ * b⁻) — (a₁⁺ * b⁻ + a₁⁻ * b⁺)
+          ≃⟨ ≃₀-intro componentEq ⟩
+            (a₂⁺ * b⁺ + a₂⁻ * b⁻) — (a₂⁺ * b⁻ + a₂⁻ * b⁺)
+          ≃⟨⟩
+            (a₂⁺ — a₂⁻) * (b⁺ — b⁻)
+          ≃⟨⟩
+            a₂ * b
+          ∎
         where
           rearr :
             ∀ {u v w x y z} →
@@ -61,7 +87,7 @@ instance
               (w + z) * u + (y + x) * v
             ∎
 
-          [a₁⁺b⁺+a₁⁻b⁻]+[a₂⁺b⁻+a₂⁻b⁺]≃[a₂⁺b⁺+a₂⁻b⁻]+[a₁⁺b⁻+a₁⁻b⁺] =
+          componentEq =
             begin
               (a₁⁺ * b⁺ + a₁⁻ * b⁻) + (a₂⁺ * b⁻ + a₂⁻ * b⁺)
             ≃⟨ rearr {w = a₁⁺} {y = a₂⁺} ⟩
@@ -85,26 +111,27 @@ instance
     where
       *-compat-ℕ : {n m : ℕ} → (n * m as ℤ) ≃ (n as ℤ) * (m as ℤ)
       *-compat-ℕ {n} {m} =
-        let nm+n0+0m≃nm+00+0 =
-              begin
-                n * m + (n * 0 + 0 * m)
-              ≃⟨ AA.subst₂ (AA.subst₂ AA.absorb) ⟩
-                n * m + (0 + 0 * m)
-              ≃˘⟨ AA.subst₂ (AA.subst₂ AA.absorbᴿ) ⟩
-                n * m + (0 * 0 + 0 * m)
-              ≃⟨ AA.subst₂ (AA.subst₂ AA.absorb) ⟩
-                n * m + (0 * 0 + 0)
-              ≃˘⟨ AA.assoc ⟩
-                n * m + 0 * 0 + 0
-              ∎
-         in begin
-              (n * m as ℤ)
-            ≃⟨⟩
-              (n * m) — 0
-            ≃⟨ ≃₀-intro nm+n0+0m≃nm+00+0 ⟩
-              (n * m + 0 * 0) — (n * 0 + 0 * m)
-            ≃⟨⟩
-              n — 0 * m — 0
-            ≃⟨⟩
-              (n as ℤ) * (m as ℤ)
+          begin
+            (n * m as ℤ)
+          ≃⟨⟩
+            (n * m) — 0
+          ≃⟨ ≃₀-intro componentEq ⟩
+            (n * m + 0 * 0) — (n * 0 + 0 * m)
+          ≃⟨⟩
+            n — 0 * m — 0
+          ≃⟨⟩
+            (n as ℤ) * (m as ℤ)
+          ∎
+        where
+          componentEq =
+            begin
+              n * m + (n * 0 + 0 * m)
+            ≃⟨ AA.subst₂ (AA.subst₂ AA.absorb) ⟩
+              n * m + (0 + 0 * m)
+            ≃˘⟨ AA.subst₂ (AA.subst₂ AA.absorbᴿ) ⟩
+              n * m + (0 * 0 + 0 * m)
+            ≃⟨ AA.subst₂ (AA.subst₂ AA.absorb) ⟩
+              n * m + (0 * 0 + 0)
+            ≃˘⟨ AA.assoc ⟩
+              n * m + 0 * 0 + 0
             ∎
