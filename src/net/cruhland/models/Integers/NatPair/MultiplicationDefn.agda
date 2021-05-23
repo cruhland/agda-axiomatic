@@ -7,6 +7,7 @@ open import net.cruhland.axioms.Integers.MultiplicationDecl PA
   using (Multiplication)
 open import net.cruhland.models.Integers.NatPair.BaseDefn PA using (ZB)
 import net.cruhland.models.Integers.NatPair.MultiplicationImpl PA as Z*
+open import net.cruhland.models.Integers.NatPair.PropertiesDefn PA using (ZP)
 
-Z* : Multiplication ZB
+Z* : Multiplication ZB ZP
 Z* = record { Z* }

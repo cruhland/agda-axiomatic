@@ -44,6 +44,8 @@ record Eq (A : Set α) : Set (sℓ α) where
 
 open Eq {{...}} public
 
+{-# DISPLAY Eq._≃_ _ x y = x ≃ y #-}
+
 module _ {{eq : Eq A}} where
 
   instance

@@ -8,6 +8,8 @@ record Plus (A : Set) : Set where
 
 open Plus {{...}} public
 
+{-# DISPLAY Plus._+_ _ a b = a + b #-}
+
 record Star (A : Set) : Set where
   constructor star
   infixl 7 _*_
