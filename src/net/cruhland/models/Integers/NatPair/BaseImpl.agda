@@ -65,11 +65,13 @@ instance
   ℤ-substitutive : AA.Substitutive² _—_ _≃_ _≃_
   ℤ-substitutive = AA.substitutive²
 
-  ℤ-cancellativeᴸ : AA.Cancellative AA.handᴸ _—_ _≃_ _≃_
-  ℤ-cancellativeᴸ = AA.cancellative λ {p n₁ n₂} → Eq.sym ∘ AA.cancel ∘ _≃₀_.elim
+  private
+    ℤ-cancellativeᴸ : AA.Cancellative AA.handᴸ _—_ _≃_ _≃_
+    ℤ-cancellativeᴸ =
+      AA.cancellative λ {p n₁ n₂} → Eq.sym ∘ AA.cancel ∘ _≃₀_.elim
 
-  ℤ-cancellativeᴿ : AA.Cancellative AA.handᴿ _—_ _≃_ _≃_
-  ℤ-cancellativeᴿ = AA.cancellative λ {p n₁ n₂} → AA.cancel ∘ _≃₀_.elim
+    ℤ-cancellativeᴿ : AA.Cancellative AA.handᴿ _—_ _≃_ _≃_
+    ℤ-cancellativeᴿ = AA.cancellative λ {p n₁ n₂} → AA.cancel ∘ _≃₀_.elim
 
   ℤ-cancellative : AA.Cancellative² _—_ _≃_ _≃_
   ℤ-cancellative = AA.cancellative²

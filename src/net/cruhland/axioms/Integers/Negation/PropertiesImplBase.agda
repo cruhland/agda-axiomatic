@@ -59,18 +59,19 @@ instance
   sub-dash : Op.Dash₂ ℤ
   sub-dash = Op.subtraction
 
-  sub-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _-_ _≃_ _≃_
-  sub-substitutiveᴸ = AA.substitutive₂ sub-substᴸ
-    where
-      sub-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ - b ≃ a₂ - b
-      sub-substᴸ =
-        AA.subst₂ {{r = AA.Substitutive².substitutiveᴸ ℤ+.+-substitutive}}
+  private
+    sub-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _-_ _≃_ _≃_
+    sub-substitutiveᴸ = AA.substitutive₂ sub-substᴸ
+      where
+        sub-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ - b ≃ a₂ - b
+        sub-substᴸ =
+          AA.subst₂ {{r = AA.Substitutive².substitutiveᴸ ℤ+.+-substitutive}}
 
-  sub-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _-_ _≃_ _≃_
-  sub-substitutiveᴿ = AA.substitutive₂ sub-substᴿ
-    where
-      sub-substᴿ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → b - a₁ ≃ b - a₂
-      sub-substᴿ = AA.subst₂ ∘ AA.subst₁
+    sub-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _-_ _≃_ _≃_
+    sub-substitutiveᴿ = AA.substitutive₂ sub-substᴿ
+      where
+        sub-substᴿ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → b - a₁ ≃ b - a₂
+        sub-substᴿ = AA.subst₂ ∘ AA.subst₁
 
   sub-substitutive : AA.Substitutive² _-_ _≃_ _≃_
   sub-substitutive = AA.substitutive²
@@ -81,7 +82,7 @@ instance
     a
   ≃˘⟨ AA.ident ⟩
     0 + a
-  ≃˘⟨ AA.subst₂ AA.invᴿ ⟩
+  ≃˘⟨ AA.subst₂ AA.inv ⟩
     (b - b) + a
   ≃⟨ AA.assoc ⟩
     b + (- b + a)

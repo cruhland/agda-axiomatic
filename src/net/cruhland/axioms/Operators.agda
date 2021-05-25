@@ -18,6 +18,8 @@ record Star (A : Set) : Set where
 
 open Star {{...}} public
 
+{-# DISPLAY Star._*_ _ a b = a * b #-}
+
 record Dashᴸ (A : Set) : Set where
   constructor dashᴸ
   infix 8 -_

@@ -90,6 +90,12 @@ open Distributive {{...}} public using (distrib)
 distribᴸ = distrib {handᴸ}
 distribᴿ = distrib {handᴿ}
 
+record Distributive² {A : Set} {{_ : Eq A}} (_⊙_ _⊕_ : A → A → A) : Set where
+  constructor distributive²
+  field
+    {{distributiveᴸ}} : Distributive handᴸ _⊙_ _⊕_
+    {{distributiveᴿ}} : Distributive handᴿ _⊙_ _⊕_
+
 record ZeroProduct {A : Set} {{_ : Eq A}} (_⊙_ : A → A → A) : Set where
   constructor zeroProduct
   field

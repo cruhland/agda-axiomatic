@@ -10,16 +10,17 @@ module net.cruhland.models.Integers.NatPair.MultiplicationImpl
   (PA : PeanoArithmetic) where
 
 private open module ℕ = PeanoArithmetic PA using (ℕ)
+import net.cruhland.models.Integers.NatPair.AdditionImpl PA as ℤ+
 open import net.cruhland.models.Integers.NatPair.BaseImpl PA as ℤB
   using (_—_; ℤ; ≃₀-intro)
 import net.cruhland.models.Integers.NatPair.PropertiesImpl PA as ℤP
 
+_*₀_ : ℤ → ℤ → ℤ
+(a⁺ — a⁻) *₀ (b⁺ — b⁻) = (a⁺ * b⁺ + a⁻ * b⁻) — (a⁺ * b⁻ + a⁻ * b⁺)
+
 instance
   star : Op.Star ℤ
   star = Op.star _*₀_
-    where
-      _*₀_ : ℤ → ℤ → ℤ
-      (a⁺ — a⁻) *₀ (b⁺ — b⁻) = (a⁺ * b⁺ + a⁻ * b⁻) — (a⁺ * b⁻ + a⁻ * b⁺)
 
   *-commutative : AA.Commutative _*_
   *-commutative = AA.commutative *-comm
@@ -161,3 +162,52 @@ instance
 
   *-identity : AA.Identity² _*_ 1
   *-identity = AA.identity² {A = ℤ}
+
+  private
+    *-distributiveᴸ : AA.Distributive AA.handᴸ _*_ _+_
+    *-distributiveᴸ = AA.distributive *-distribᴸ
+      where
+        *-distribᴸ : {a b c : ℤ} → a * (b + c) ≃ a * b + a * c
+        *-distribᴸ a@{a⁺ — a⁻} b@{b⁺ — b⁻} c@{c⁺ — c⁻} =
+            begin
+              a * (b + c)
+            ≃⟨⟩
+              (a⁺ — a⁻) * ((b⁺ — b⁻) + (c⁺ — c⁻))
+            ≃⟨⟩
+              (a⁺ — a⁻) * ((b⁺ + c⁺) — (b⁻ + c⁻))
+            ≃⟨⟩
+              (a⁺ * (b⁺ + c⁺) + a⁻ * (b⁻ + c⁻)) —
+                (a⁺ * (b⁻ + c⁻) + a⁻ * (b⁺ + c⁺))
+            ≃⟨ AA.subst₂ refactor ⟩
+              ((a⁺ * b⁺ + a⁻ * b⁻) + (a⁺ * c⁺ + a⁻ * c⁻)) —
+                (a⁺ * (b⁻ + c⁻) + a⁻ * (b⁺ + c⁺))
+            ≃⟨ AA.subst₂ refactor ⟩
+              ((a⁺ * b⁺ + a⁻ * b⁻) + (a⁺ * c⁺ + a⁻ * c⁻)) —
+                ((a⁺ * b⁻ + a⁻ * b⁺) + (a⁺ * c⁻ + a⁻ * c⁺))
+            ≃⟨⟩
+              ((a⁺ * b⁺ + a⁻ * b⁻) — (a⁺ * b⁻ + a⁻ * b⁺)) +
+                ((a⁺ * c⁺ + a⁻ * c⁻) — (a⁺ * c⁻ + a⁻ * c⁺))
+            ≃⟨⟩
+              (a⁺ — a⁻) * (b⁺ — b⁻) + (a⁺ — a⁻) * (c⁺ — c⁻)
+            ≃⟨⟩
+              a * b + a * c
+            ∎
+          where
+            refactor :
+              {b₁ b₂ a₁ a₂ a₃ a₄ : ℕ} →
+                b₁ * (a₁ + a₃) + b₂ * (a₂ + a₄) ≃
+                  (b₁ * a₁ + b₂ * a₂) + (b₁ * a₃ + b₂ * a₄)
+            refactor {b₁} {b₂} {a₁} {a₂} {a₃} {a₄} =
+              begin
+                b₁ * (a₁ + a₃) + b₂ * (a₂ + a₄)
+              ≃⟨ AA.distrib-twoᴸ ⟩
+                (b₁ * a₁ + b₁ * a₃) + (b₂ * a₂ + b₂ * a₄)
+              ≃⟨ AA.transpose ⟩
+                (b₁ * a₁ + b₂ * a₂) + (b₁ * a₃ + b₂ * a₄)
+              ∎
+
+    *-distributiveᴿ : AA.Distributive AA.handᴿ _*_ _+_
+    *-distributiveᴿ = AA.distributiveᴿ-from-distributiveᴸ {A = ℤ}
+
+  *-distributive : AA.Distributive² _*_ _+_
+  *-distributive = AA.distributive² {A = ℤ}

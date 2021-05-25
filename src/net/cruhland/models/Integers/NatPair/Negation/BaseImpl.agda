@@ -38,23 +38,24 @@ instance
               b⁻ + a⁺
             ∎
 
-  neg-inverseᴸ : AA.Inverse AA.handᴸ -_ (const ⊤) _+_ 0
-  neg-inverseᴸ = AA.inverse neg-invᴸ
-    where
-      neg-invᴸ : {x : ℤ} → - x + x ≃ 0
-      neg-invᴸ {x⁺ — x⁻} = ≃₀-intro [x⁻+x⁺]+0≃0+[x⁺+x⁻]
-        where
-          [x⁻+x⁺]+0≃0+[x⁺+x⁻] =
-            begin
-              (x⁻ + x⁺) + 0
-            ≃⟨ AA.comm ⟩
-              0 + (x⁻ + x⁺)
-            ≃⟨ AA.subst₂ AA.comm ⟩
-              0 + (x⁺ + x⁻)
-            ∎
+  private
+    neg-inverseᴸ : AA.Inverse AA.handᴸ -_ (const ⊤) _+_ 0
+    neg-inverseᴸ = AA.inverse neg-invᴸ
+      where
+        neg-invᴸ : {x : ℤ} → - x + x ≃ 0
+        neg-invᴸ {x⁺ — x⁻} = ≃₀-intro [x⁻+x⁺]+0≃0+[x⁺+x⁻]
+          where
+            [x⁻+x⁺]+0≃0+[x⁺+x⁻] =
+              begin
+                (x⁻ + x⁺) + 0
+              ≃⟨ AA.comm ⟩
+                0 + (x⁻ + x⁺)
+              ≃⟨ AA.subst₂ AA.comm ⟩
+                0 + (x⁺ + x⁻)
+              ∎
 
-  neg-inverseᴿ : AA.Inverse AA.handᴿ -_ (const ⊤) _+_ 0
-  neg-inverseᴿ = AA.inverseᴿ-from-inverseᴸ
+    neg-inverseᴿ : AA.Inverse AA.handᴿ -_ (const ⊤) _+_ 0
+    neg-inverseᴿ = AA.inverseᴿ-from-inverseᴸ
 
   neg-inverse : AA.Inverse² -_ (const ⊤) _+_ 0
   neg-inverse = AA.inverse²
