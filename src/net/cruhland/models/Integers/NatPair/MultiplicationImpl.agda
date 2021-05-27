@@ -211,3 +211,31 @@ instance
 
   *-distributive : AA.Distributive² _*_ _+_
   *-distributive = AA.distributive² {A = ℤ}
+
+  *-associative : AA.Associative _*_
+  *-associative = AA.associative *-assoc
+    where
+      *-assoc : {a b c : ℤ} → (a * b) * c ≃ a * (b * c)
+      *-assoc a@{a⁺ — a⁻} b@{b⁺ — b⁻} c@{c⁺ — c⁻} =
+        begin
+          (a * b) * c
+        ≃⟨⟩
+          ((a⁺ — a⁻) * (b⁺ — b⁻)) * (c⁺ — c⁻)
+        ≃⟨⟩
+          ((a⁺ * b⁺ + a⁻ * b⁻) — (a⁺ * b⁻ + a⁻ * b⁺)) * (c⁺ — c⁻)
+        ≃⟨⟩
+          ((a⁺ * b⁺ + a⁻ * b⁻) * c⁺ + (a⁺ * b⁻ + a⁻ * b⁺) * c⁻) —
+            ((a⁺ * b⁺ + a⁻ * b⁻) * c⁻ + (a⁺ * b⁻ + a⁻ * b⁺) * c⁺)
+        ≃⟨ AA.subst₂ AA.refactor ⟩
+          (a⁺ * (b⁺ * c⁺ + b⁻ * c⁻) + a⁻ * (b⁺ * c⁻ + b⁻ * c⁺)) —
+            ((a⁺ * b⁺ + a⁻ * b⁻) * c⁻ + (a⁺ * b⁻ + a⁻ * b⁺) * c⁺)
+        ≃⟨ AA.subst₂ AA.refactor ⟩
+          (a⁺ * (b⁺ * c⁺ + b⁻ * c⁻) + a⁻ * (b⁺ * c⁻ + b⁻ * c⁺)) —
+            (a⁺ * (b⁺ * c⁻ + b⁻ * c⁺) + a⁻ * (b⁺ * c⁺ + b⁻ * c⁻))
+        ≃⟨⟩
+          (a⁺ — a⁻) * ((b⁺ * c⁺ + b⁻ * c⁻) — (b⁺ * c⁻ + b⁻ * c⁺))
+        ≃⟨⟩
+          (a⁺ — a⁻) * ((b⁺ — b⁻) * (c⁺ — c⁻))
+        ≃⟨⟩
+          a * (b * c)
+        ∎

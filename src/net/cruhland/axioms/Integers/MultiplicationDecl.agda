@@ -9,10 +9,12 @@ module net.cruhland.axioms.Integers.MultiplicationDecl
   (PA : PeanoArithmetic) where
 
 open PeanoArithmetic PA using (ℕ)
+open import net.cruhland.axioms.Integers.AdditionDecl PA using (Addition)
 open import net.cruhland.axioms.Integers.BaseDecl PA using (Base)
 open import net.cruhland.axioms.Integers.PropertiesDecl PA using (Properties)
 
-record Multiplication (ZB : Base) (ZP : Properties ZB) : Set where
+record Multiplication
+    (ZB : Base) (ZP : Properties ZB) (Z+ : Addition ZB ZP) : Set where
   open Base ZB using (ℤ)
 
   field
@@ -21,4 +23,5 @@ record Multiplication (ZB : Base) (ZP : Properties ZB) : Set where
     {{*-commutative}} : AA.Commutative {A = ℤ} _*_
     {{*-compatible-ℕ}} : AA.Compatible₂ {A = ℕ} (_as ℤ) _*_
     {{*-identity}} : AA.Identity² _*_ 1
-    {{*-distributive}} : AA.Distributive² _*_ _+_
+    {{*-distributive}} : AA.Distributive² {A = ℤ} _*_ _+_
+    {{*-associative}} : AA.Associative {A = ℤ} _*_
