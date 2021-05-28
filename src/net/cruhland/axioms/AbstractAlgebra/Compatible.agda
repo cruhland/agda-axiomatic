@@ -65,18 +65,25 @@ open Compatible₂ {{...}} public using (compat₂)
 
 record FnOpCommutative
     (hand : Hand) {A : Set} {{_ : Eq A}} (f : A → A) (_⊙_ : A → A → A)
-      : Set where
- constructor fnOpCommutative
- field
-   fnOpComm : ∀ {a b} → f (a ⊙ b) ≃ handRec (f a ⊙ b) (a ⊙ f b) hand
+    : Set where
+  constructor fnOpCommutative
+  field
+    fnOpComm : ∀ {a b} → f (a ⊙ b) ≃ handRec (f a ⊙ b) (a ⊙ f b) hand
 
 open FnOpCommutative {{...}} public using (fnOpComm)
 
 fnOpCommSwap :
   {A : Set} {f : A → A} {_⊙_ : A → A → A} {{_ : Eq A}}
-    {{_ : FnOpCommutative handᴸ f _⊙_}} {{_ : FnOpCommutative handᴿ f _⊙_}} →
-      ∀ {a b} → f a ⊙ b ≃ a ⊙ f b
+  {{_ : FnOpCommutative handᴸ f _⊙_}} {{_ : FnOpCommutative handᴿ f _⊙_}} →
+  ∀ {a b} → f a ⊙ b ≃ a ⊙ f b
 fnOpCommSwap = Eq.trans (Eq.sym fnOpComm) fnOpComm
+
+record FnOpCommutative²
+    {A : Set} {{_ : Eq A}} (f : A → A) (_⊙_ : A → A → A) : Set where
+  constructor fnOpCommutative²
+  field
+    {{fnOpCommutativeᴸ}} : FnOpCommutative handᴸ f _⊙_
+    {{fnOpCommutativeᴿ}} : FnOpCommutative handᴿ f _⊙_
 
 record Distributive
     (hand : Hand) {A : Set} {{_ : Eq A}} (_⊙_ _⊕_ : A → A → A) : Set where

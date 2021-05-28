@@ -2,7 +2,7 @@ import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq as Eq using (_≃_)
 open Eq.≃-Reasoning
-open import net.cruhland.axioms.Operators as Op using (_+_; _*_)
+open import net.cruhland.axioms.Operators as Op using (_+_; -_; _*_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.models.Literals
 
@@ -13,6 +13,7 @@ private open module ℕ = PeanoArithmetic PA using (ℕ)
 import net.cruhland.models.Integers.NatPair.AdditionImpl PA as ℤ+
 open import net.cruhland.models.Integers.NatPair.BaseImpl PA as ℤB
   using (_—_; ℤ; ≃₀-intro)
+import net.cruhland.models.Integers.NatPair.NegationImpl PA as ℤ-
 import net.cruhland.models.Integers.NatPair.PropertiesImpl PA as ℤP
 
 _*₀_ : ℤ → ℤ → ℤ
@@ -239,3 +240,35 @@ instance
         ≃⟨⟩
           a * (b * c)
         ∎
+
+  private
+    *-comm-with-negᴸ : AA.FnOpCommutative AA.handᴸ -_ _*_
+    *-comm-with-negᴸ = AA.fnOpCommutative *-negᴸ
+      where
+        *-negᴸ : {a b : ℤ} → - (a * b) ≃ - a * b
+        *-negᴸ a@{a⁺ — a⁻} b@{b⁺ — b⁻} =
+          begin
+            - (a * b)
+          ≃⟨⟩
+            - ((a⁺ — a⁻) * (b⁺ — b⁻))
+          ≃⟨⟩
+            - ((a⁺ * b⁺ + a⁻ * b⁻) — (a⁺ * b⁻ + a⁻ * b⁺))
+          ≃⟨⟩
+            (a⁺ * b⁻ + a⁻ * b⁺) — (a⁺ * b⁺ + a⁻ * b⁻)
+          ≃⟨ AA.subst₂ AA.comm ⟩
+            (a⁻ * b⁺ + a⁺ * b⁻) — (a⁺ * b⁺ + a⁻ * b⁻)
+          ≃⟨ AA.subst₂ AA.comm ⟩
+            (a⁻ * b⁺ + a⁺ * b⁻) — (a⁻ * b⁻ + a⁺ * b⁺)
+          ≃⟨⟩
+            (a⁻ — a⁺) * (b⁺ — b⁻)
+          ≃⟨⟩
+            - (a⁺ — a⁻) * (b⁺ — b⁻)
+          ≃⟨⟩
+            - a * b
+          ∎
+
+    *-comm-with-negᴿ : AA.FnOpCommutative AA.handᴿ -_ _*_
+    *-comm-with-negᴿ = AA.fnOpCommutativeᴿ-from-fnOpCommutativeᴸ
+
+  *-comm-with-neg : AA.FnOpCommutative² -_ _*_
+  *-comm-with-neg = AA.fnOpCommutative²

@@ -8,7 +8,8 @@ open import net.cruhland.axioms.Integers.MultiplicationDecl PA
 open import net.cruhland.models.Integers.NatPair.AdditionDefn PA using (Z+)
 open import net.cruhland.models.Integers.NatPair.BaseDefn PA using (ZB)
 import net.cruhland.models.Integers.NatPair.MultiplicationImpl PA as Z*
+open import net.cruhland.models.Integers.NatPair.NegationDefn PA using (Z-)
 open import net.cruhland.models.Integers.NatPair.PropertiesDefn PA using (ZP)
 
-Z* : Multiplication ZB ZP Z+
+Z* : Multiplication ZB ZP Z+ Z-
 Z* = record { Z* }
