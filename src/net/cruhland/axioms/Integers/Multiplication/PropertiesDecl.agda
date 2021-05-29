@@ -6,7 +6,7 @@ open import net.cruhland.axioms.Integers.NegationDecl using (Negation)
 open import net.cruhland.axioms.Integers.PropertiesDecl using (Properties)
 open import net.cruhland.axioms.Operators using (-_; _-_; _*_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
-import net.cruhland.models.Literals
+open import net.cruhland.models.Literals
 
 module net.cruhland.axioms.Integers.Multiplication.PropertiesDecl
   (PA : PeanoArithmetic)
@@ -24,4 +24,5 @@ record MultiplicationProperties (MB : MultiplicationBase) : Set where
   field
     neg-mult : {a : ℤ} → -1 * a ≃ - a
 
+    {{*-absorptive}} : AA.Absorptive² _*_ 0
     {{*-distributive-sub}} : AA.Distributive² _*_ _-_

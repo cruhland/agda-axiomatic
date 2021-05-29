@@ -50,6 +50,12 @@ absorptiveᴿ-from-absorptiveᴸ :
       Absorptive handᴿ _⊙_ z
 absorptiveᴿ-from-absorptiveᴸ = absorptive (Eq.trans comm absorb)
 
+record Absorptive² {A : Set} {{_ : Eq A}} (_⊙_ : A → A → A) (z : A) : Set where
+  constructor absorptive²
+  field
+    {{absorptiveᴸ}} : Absorptive handᴸ _⊙_ z
+    {{absorptiveᴿ}} : Absorptive handᴿ _⊙_ z
+
 {--- Equivalences ---}
 
 module _ {A : Set} {_⊙_ : A → A → A} {e : A} {{_ : Eq A}} where
