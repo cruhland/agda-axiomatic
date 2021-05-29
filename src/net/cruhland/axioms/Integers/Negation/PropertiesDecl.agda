@@ -1,4 +1,3 @@
-import Agda.Builtin.FromNeg as FromNeg
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq using (_≃_)
 open import net.cruhland.axioms.Integers.AdditionDecl using (Addition)
@@ -22,7 +21,10 @@ open import net.cruhland.axioms.Integers.Negation.BaseDecl PA ZB ZP Z+
 
 record NegationProperties (NB : NegationBase) : Set₁ where
   field
-    {{neg-literal}} : FromNeg.Negative ℤ
+    {{neg-literal}} : FromNegLiteral ℤ
+    neg-literal≃nat-literal :
+      (n : Nat) → fromNegLiteral n ≃ - (fromNatLiteral n)
+
     neg-involutive : {a : ℤ} → - (- a) ≃ a
     neg-zero : - 0 ≃ 0
 

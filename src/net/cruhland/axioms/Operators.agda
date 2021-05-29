@@ -28,6 +28,8 @@ record Dashᴸ (A : Set) : Set where
 
 open Dashᴸ {{...}} public
 
+{-# DISPLAY Dashᴸ.-_ _ a = - a #-}
+
 record Dash₂ (A : Set) : Set where
   constructor dash₂
   infixl 6 _-_

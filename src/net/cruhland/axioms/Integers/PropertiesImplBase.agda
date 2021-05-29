@@ -14,8 +14,8 @@ instance
   from-Nat : Nat As ℤ
   from-Nat = Cast.via ℕ
 
-  from-literal : FromLiteral ℤ
-  from-literal = literal-from-cast
+  nat-literal : FromNatLiteral ℤ
+  nat-literal = nat-literal-from-cast
 
-casts≃fromNat : ∀ n → (n as ℕ as ℤ) ≃ fromNat n
-casts≃fromNat n = Eq.refl
+casts≃fromNatLiteral : ∀ n → (n as ℕ as ℤ) ≃ fromNatLiteral n
+casts≃fromNatLiteral n = Eq.refl

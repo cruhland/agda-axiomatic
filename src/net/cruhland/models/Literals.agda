@@ -9,18 +9,31 @@ module net.cruhland.models.Literals where
 open import Agda.Builtin.Nat public using (Nat)
 open import net.cruhland.models.Logic public using (⊤-intro)
 
-record FromLiteral_~_ (A : Set) (C : Nat → Set) : Set where
-  constructor FromLiteral-intro
+record FromNatLiteral_~_ (A : Set) (C : Nat → Set) : Set where
+  constructor FromNatLiteral-intro
   field
-    fromNat : ∀ n → {{_ : C n}} → A
+    fromNatLiteral : ∀ n → {{_ : C n}} → A
 
-open FromLiteral_~_ {{...}} public using (fromNat)
+open FromNatLiteral_~_ {{...}} public using (fromNatLiteral)
 
-{-# BUILTIN FROMNAT fromNat #-}
-{-# DISPLAY FromLiteral_~_.fromNat _ n = fromNat n #-}
+{-# BUILTIN FROMNAT fromNatLiteral #-}
+{-# DISPLAY FromNatLiteral_~_.fromNatLiteral _ n = fromNatLiteral n #-}
 
-FromLiteral : Set → Set
-FromLiteral A = FromLiteral A ~ const ⊤
+FromNatLiteral : Set → Set
+FromNatLiteral A = FromNatLiteral A ~ const ⊤
 
-literal-from-cast : {A : Set} {{_ : Nat As A}} → FromLiteral A
-literal-from-cast {A} = FromLiteral-intro (_as A)
+nat-literal-from-cast : {A : Set} {{_ : Nat As A}} → FromNatLiteral A
+nat-literal-from-cast {A} = FromNatLiteral-intro (_as A)
+
+record FromNegLiteral_~_ (A : Set) (C : Nat → Set) : Set where
+  constructor FromNegLiteral-intro
+  field
+    fromNegLiteral : ∀ n → {{_ : C n}} → A
+
+open FromNegLiteral_~_ {{...}} public using (fromNegLiteral)
+
+{-# BUILTIN FROMNEG fromNegLiteral #-}
+{-# DISPLAY FromNegLiteral_~_.fromNegLiteral _ n = fromNegLiteral n #-}
+
+FromNegLiteral : Set → Set
+FromNegLiteral A = FromNegLiteral A ~ const ⊤

@@ -22,11 +22,12 @@ open Base ZB using (ℤ)
 private module ℤP = Properties ZP
 private module ℤSB = SignBase SB
 
-fromNat-preserves-pos :
-  (n : Nat) → Positive {A = ℕ} (fromNat n) → Positive {A = ℤ} (fromNat n)
-fromNat-preserves-pos n pos[n] =
+fromNatLiteral-preserves-pos :
+  (n : Nat) → Positive {A = ℕ} (fromNatLiteral n) →
+  Positive {A = ℤ} (fromNatLiteral n)
+fromNatLiteral-preserves-pos n pos[n] =
   let pos[a] = ℤSB.from-ℕ-preserves-pos pos[n]
-   in AA.subst₁ (ℤP.casts≃fromNat _) pos[a]
+   in AA.subst₁ (ℤP.casts≃fromNatLiteral n) pos[a]
 
 1-Positive : Positive 1
-1-Positive = fromNat-preserves-pos _ (ℕ.Pos-intro-≄0 ℕ.step≄zero)
+1-Positive = fromNatLiteral-preserves-pos 1 (ℕ.Pos-intro-≄0 ℕ.step≄zero)

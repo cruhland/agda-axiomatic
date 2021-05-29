@@ -4,9 +4,9 @@ module net.cruhland.axioms.Integers.NegationDecl (PA : PeanoArithmetic) where
 
 open import net.cruhland.axioms.Integers.AdditionDecl PA using (Addition)
 open import net.cruhland.axioms.Integers.BaseDecl PA using (Base)
-open import net.cruhland.axioms.Integers.PropertiesDecl PA using (Properties)
 import net.cruhland.axioms.Integers.Negation.BaseDecl PA as BaseDecl
 import net.cruhland.axioms.Integers.Negation.PropertiesDecl PA as PropertiesDecl
+open import net.cruhland.axioms.Integers.PropertiesDecl PA using (Properties)
 
 record Negation
     (ZB : Base) (ZP : Properties ZB) (Z+ : Addition ZB ZP) : Set₁ where

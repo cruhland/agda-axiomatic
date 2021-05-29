@@ -15,5 +15,8 @@ module net.cruhland.axioms.Peano.Literals (PB : PeanoBase) where
         from-Nat₀ Nat.zero = zero
         from-Nat₀ (Nat.suc n) = step (from-Nat₀ n)
 
-    from-literal : FromLiteral ℕ
-    from-literal = literal-from-cast
+    nat-literal : FromNatLiteral Nat
+    nat-literal = FromNatLiteral-intro (λ n → n)
+
+    from-literal : FromNatLiteral ℕ
+    from-literal = nat-literal-from-cast

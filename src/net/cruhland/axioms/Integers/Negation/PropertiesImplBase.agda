@@ -1,12 +1,11 @@
-import Agda.Builtin.FromNeg as FromNeg
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq as Eq using (_≃_)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Integers.AdditionDecl using (Addition)
 open import net.cruhland.axioms.Integers.BaseDecl using (Base)
-open import net.cruhland.axioms.Integers.PropertiesDecl using (Properties)
 open import net.cruhland.axioms.Integers.Negation.BaseDecl using (NegationBase)
+open import net.cruhland.axioms.Integers.PropertiesDecl using (Properties)
 open import net.cruhland.axioms.Operators as Op using (_+_; -_; _-_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.models.Function using (_∘_; const)
@@ -26,8 +25,11 @@ private module ℤ+ = Addition Z+
 open Base ZB using (ℤ)
 
 instance
-  neg-literal : FromNeg.Negative ℤ
-  neg-literal = record { Constraint = const ⊤ ; fromNeg = λ n → - (fromNat n) }
+  neg-literal : FromNegLiteral ℤ
+  neg-literal = FromNegLiteral-intro (λ n → - (fromNatLiteral n))
+
+neg-literal≃nat-literal : (n : Nat) → fromNegLiteral n ≃ - (fromNatLiteral n)
+neg-literal≃nat-literal n = Eq.refl
 
 neg-involutive : {a : ℤ} → - (- a) ≃ a
 neg-involutive {a} =

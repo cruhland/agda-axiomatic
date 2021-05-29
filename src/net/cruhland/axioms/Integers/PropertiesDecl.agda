@@ -12,5 +12,5 @@ record Properties (ZB : Base) : Set where
   open Base ZB using (ℤ)
 
   field
-    {{from-literal}} : FromLiteral ℤ
-    casts≃fromNat : ∀ n → (n as ℕ as ℤ) ≃ fromNat n
+    {{nat-literal}} : FromNatLiteral ℤ
+    casts≃fromNatLiteral : ∀ n → (n as ℕ as ℤ) ≃ fromNatLiteral n

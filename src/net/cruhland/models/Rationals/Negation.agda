@@ -1,4 +1,3 @@
-import Agda.Builtin.FromNeg as FromNeg
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq using (_≃_; refl; module ≃-Reasoning)
@@ -27,9 +26,8 @@ instance
   dash₂ : Op.Dash₂ ℚ
   dash₂ = Op.subtraction
 
-  negative : FromNeg.Negative ℚ
-  negative =
-    record { Constraint = const ⊤ ; fromNeg = λ n → - (n as ℚ) }
+  negative : FromNegLiteral ℚ
+  negative = FromNegLiteral-intro (λ n → - (n as ℚ))
 
   neg-substitutive₁ : AA.Substitutive₁ -_ _≃_ _≃_
   neg-substitutive₁ = AA.substitutive₁ neg-subst

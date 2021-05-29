@@ -1,9 +1,4 @@
-import net.cruhland.axioms.AbstractAlgebra as AA
-open import net.cruhland.axioms.Cast using (_as_)
-open import net.cruhland.axioms.Eq using (_≃_)
-open import net.cruhland.axioms.Operators using (_+_; -_; _*_; Star)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
-open import net.cruhland.models.Literals
 
 module net.cruhland.axioms.Integers.MultiplicationDecl
   (PA : PeanoArithmetic) where
@@ -11,6 +6,9 @@ module net.cruhland.axioms.Integers.MultiplicationDecl
 open PeanoArithmetic PA using (ℕ)
 open import net.cruhland.axioms.Integers.AdditionDecl PA using (Addition)
 open import net.cruhland.axioms.Integers.BaseDecl PA using (Base)
+import net.cruhland.axioms.Integers.Multiplication.BaseDecl PA as BaseDecl
+import net.cruhland.axioms.Integers.Multiplication.PropertiesDecl PA
+  as PropertiesDecl
 open import net.cruhland.axioms.Integers.NegationDecl PA using (Negation)
 open import net.cruhland.axioms.Integers.PropertiesDecl PA using (Properties)
 
@@ -20,15 +18,16 @@ record Multiplication
     (Z+ : Addition ZB ZP)
     (Z- : Negation ZB ZP Z+)
     : Set where
-  open Base ZB using (ℤ)
+  open BaseDecl ZB ZP Z+ Z- using (MultiplicationBase)
+  open PropertiesDecl ZB ZP Z+ Z- using (MultiplicationProperties)
 
   field
-    {{star}} : Star ℤ
-    {{*-substitutive}} : AA.Substitutive² {A = ℤ} _*_ _≃_ _≃_
-    {{*-commutative}} : AA.Commutative {A = ℤ} _*_
-    {{*-compatible-ℕ}} : AA.Compatible₂ {A = ℕ} (_as ℤ) _*_
-    {{*-identity}} : AA.Identity² _*_ 1
-    {{*-associative}} : AA.Associative {A = ℤ} _*_
+    MB : MultiplicationBase
+    MP : MultiplicationProperties MB
 
-    {{*-distributive}} : AA.Distributive² {A = ℤ} _*_ _+_
-    {{*-comm-with-neg}} : AA.FnOpCommutative² -_ _*_
+  open MultiplicationBase MB public
+  open MultiplicationProperties MP public
+
+-- Confirm that all impls conform to their decls
+module _ where
+  import net.cruhland.axioms.Integers.Multiplication.PropertiesDefnBase

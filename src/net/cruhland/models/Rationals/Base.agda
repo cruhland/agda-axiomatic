@@ -38,5 +38,5 @@ instance
   from-Nat : Nat As ℚ
   from-Nat = Cast.via ℕ
 
-  from-literal : FromLiteral ℚ
-  from-literal = literal-from-cast
+  from-literal : FromNatLiteral ℚ
+  from-literal = nat-literal-from-cast

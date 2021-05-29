@@ -21,6 +21,8 @@ open import net.cruhland.axioms.Integers.Sign.BaseDecl PA ZB ZP Z+ Z-
 
 record SignProperties (SB : SignBase) : Set where
   field
-    fromNat-preserves-pos :
-      ∀ n → Positive {A = ℕ} (fromNat n) → Positive {A = ℤ} (fromNat n)
+    fromNatLiteral-preserves-pos :
+      ∀ n → Positive {A = ℕ} (fromNatLiteral n) →
+      Positive {A = ℤ} (fromNatLiteral n)
+
     1-Positive : Positive {A = ℤ} 1

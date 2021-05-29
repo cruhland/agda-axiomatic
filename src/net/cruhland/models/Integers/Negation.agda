@@ -1,4 +1,3 @@
-import Agda.Builtin.FromNeg as FromNeg
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq using
@@ -22,9 +21,8 @@ instance
   neg-dash : Op.Dashᴸ ℤ
   neg-dash = record { -_ = λ { (a — b) → b — a } }
 
-  negative : FromNeg.Negative ℤ
-  negative =
-    record { Constraint = λ _ → ⊤ ; fromNeg = λ n → - Literals.fromNat n }
+  negative : FromNegLiteral ℤ
+  negative = FromNegLiteral-intro (λ n → - Literals.fromNatLiteral n)
 
   neg-substitutive : AA.Substitutive₁ -_ _≃_ _≃_
   neg-substitutive = AA.substitutive₁ neg-subst
