@@ -7,7 +7,7 @@ open import net.cruhland.axioms.Integers.Multiplication.BaseDecl
   using (MultiplicationBase)
 open import net.cruhland.axioms.Integers.NegationDecl using (Negation)
 open import net.cruhland.axioms.Integers.PropertiesDecl using (Properties)
-open import net.cruhland.axioms.Operators using (-_; _*_)
+open import net.cruhland.axioms.Operators using (_+_; -_; _-_; _*_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.models.Literals
 
@@ -36,3 +36,28 @@ neg-mult {a} =
   ≃⟨ AA.subst₁ AA.ident ⟩
     - a
   ∎
+
+instance
+  private
+    *-distributive-subᴸ : AA.Distributive AA.handᴸ _*_ _-_
+    *-distributive-subᴸ = AA.distributive *-distrib-subᴸ
+      where
+        *-distrib-subᴸ : {a b c : ℤ} → c * (a - b) ≃ c * a - c * b
+        *-distrib-subᴸ {a} {b} {c} =
+          begin
+            c * (a - b)
+          ≃⟨ AA.subst₂ ℤ-.sub-defn ⟩
+            c * (a + (- b))
+          ≃⟨ AA.distrib ⟩
+            c * a + c * (- b)
+          ≃˘⟨ AA.subst₂ AA.fnOpComm ⟩
+            c * a + (- (c * b))
+          ≃˘⟨ ℤ-.sub-defn ⟩
+            c * a - c * b
+          ∎
+
+    *-distributive-subᴿ : AA.Distributive AA.handᴿ _*_ _-_
+    *-distributive-subᴿ = AA.distributiveᴿ-from-distributiveᴸ
+
+  *-distributive-sub : AA.Distributive² _*_ _-_
+  *-distributive-sub = AA.distributive²

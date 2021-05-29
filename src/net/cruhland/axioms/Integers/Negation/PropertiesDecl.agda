@@ -29,5 +29,6 @@ record NegationProperties (NB : NegationBase) : Set₁ where
     neg-zero : - 0 ≃ 0
 
     {{sub-dash}} : Op.Dash₂ ℤ
+    sub-defn : {a b : ℤ} → a - b ≃ a + (- b)
     {{sub-substitutive}} : AA.Substitutive² _-_ _≃_ _≃_
     ≃ᴸ-subᴿ-toᴸ : {a b c : ℤ} → a - b ≃ c → a ≃ b + c

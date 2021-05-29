@@ -38,6 +38,8 @@ record Dash₂ (A : Set) : Set where
 
 open Dash₂ {{...}} public
 
+{-# DISPLAY Dash₂._-_ _ a b = a - b #-}
+
 subtraction : {A : Set} {{_ : Plus A}} {{_ : Dashᴸ A}} → Dash₂ A
 subtraction = dash₂ λ x y → x + - y
 
