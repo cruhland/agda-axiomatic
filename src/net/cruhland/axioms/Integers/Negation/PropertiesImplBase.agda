@@ -100,13 +100,16 @@ instance
   sub-substitutive : AA.Substitutive² _-_ _≃_ _≃_
   sub-substitutive = AA.substitutive²
 
+sub-same≃zero : {a : ℤ} → a - a ≃ 0
+sub-same≃zero = AA.inv
+
 ≃ᴸ-subᴿ-toᴸ : {a b c : ℤ} → a - b ≃ c → a ≃ b + c
 ≃ᴸ-subᴿ-toᴸ {a} {b} {c} a-b≃c =
   begin
     a
   ≃˘⟨ AA.ident ⟩
     0 + a
-  ≃˘⟨ AA.subst₂ AA.inv ⟩
+  ≃˘⟨ AA.subst₂ sub-same≃zero ⟩
     (b - b) + a
   ≃⟨ AA.assoc ⟩
     b + (- b + a)

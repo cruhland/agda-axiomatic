@@ -40,30 +40,6 @@ neg-mult {a} =
 
 instance
   private
-    *-absorptiveᴸ : AA.Absorptive AA.handᴸ _*_ 0
-    *-absorptiveᴸ = AA.absorptive *-absorbᴸ
-      where
-        *-absorbᴸ : {a : ℤ} → 0 * a ≃ 0
-        *-absorbᴸ {a} =
-          begin
-            0 * a
-          ≃˘⟨ AA.subst₂ AA.inv ⟩
-            (1 + (- 1)) * a
-          ≃⟨ AA.distrib ⟩
-            1 * a + (- 1) * a
-          ≃˘⟨ AA.subst₂ AA.fnOpComm ⟩
-            1 * a + (- (1 * a))
-          ≃⟨ AA.inv ⟩
-            0
-          ∎
-
-    *-absorptiveᴿ : AA.Absorptive AA.handᴿ _*_ 0
-    *-absorptiveᴿ = AA.absorptiveᴿ-from-absorptiveᴸ {A = ℤ}
-
-  *-absorptive : AA.Absorptive² _*_ 0
-  *-absorptive = AA.absorptive² {A = ℤ}
-
-  private
     *-distributive-subᴸ : AA.Distributive AA.handᴸ _*_ _-_
     *-distributive-subᴸ = AA.distributive *-distrib-subᴸ
       where
@@ -86,3 +62,25 @@ instance
 
   *-distributive-sub : AA.Distributive² _*_ _-_
   *-distributive-sub = AA.distributive²
+
+  private
+    *-absorptiveᴸ : AA.Absorptive AA.handᴸ _*_ 0
+    *-absorptiveᴸ = AA.absorptive *-absorbᴸ
+      where
+        *-absorbᴸ : {a : ℤ} → 0 * a ≃ 0
+        *-absorbᴸ {a} =
+          begin
+            0 * a
+          ≃˘⟨ AA.subst₂ ℤ-.sub-same≃zero ⟩
+            (1 - 1) * a
+          ≃⟨ AA.distrib ⟩
+            1 * a - 1 * a
+          ≃⟨ ℤ-.sub-same≃zero ⟩
+            0
+          ∎
+
+    *-absorptiveᴿ : AA.Absorptive AA.handᴿ _*_ 0
+    *-absorptiveᴿ = AA.absorptiveᴿ-from-absorptiveᴸ {A = ℤ}
+
+  *-absorptive : AA.Absorptive² _*_ 0
+  *-absorptive = AA.absorptive² {A = ℤ}
