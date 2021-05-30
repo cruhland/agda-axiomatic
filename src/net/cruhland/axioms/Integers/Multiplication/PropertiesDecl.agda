@@ -4,7 +4,7 @@ open import net.cruhland.axioms.Integers.AdditionDecl using (Addition)
 open import net.cruhland.axioms.Integers.BaseDecl using (Base)
 open import net.cruhland.axioms.Integers.NegationDecl using (Negation)
 open import net.cruhland.axioms.Integers.PropertiesDecl using (Properties)
-open import net.cruhland.axioms.Operators using (-_; _-_; _*_)
+open import net.cruhland.axioms.Operators using (_+_; -_; _-_; _*_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.models.Literals
 
@@ -22,7 +22,9 @@ open import net.cruhland.axioms.Integers.Multiplication.BaseDecl PA ZB ZP Z+ Z-
 
 record MultiplicationProperties (MB : MultiplicationBase) : Set where
   field
-    neg-mult : {a : ℤ} → -1 * a ≃ - a
-
     {{*-absorptive}} : AA.Absorptive² _*_ 0
     {{*-distributive-sub}} : AA.Distributive² _*_ _-_
+    {{neg-compatible-+}} : AA.IsCompatible₂ -_ _+_ _+_ _≃_
+
+    neg-mult : {a : ℤ} → -1 * a ≃ - a
+    neg-sub-swap : {a b : ℤ} → - (a - b) ≃ b - a

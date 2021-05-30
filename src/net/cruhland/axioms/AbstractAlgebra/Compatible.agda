@@ -18,16 +18,6 @@ private
 
   open IsCompatible₁ {{...}} using (isCompat₁)
 
-  record IsCompatible₂
-      {β} {A : Set} {B : Set β}
-        (f : A → B) (_⊙_ : A → A → A) (_⊕_ : B → B → B) (_~_ : B → B → Set)
-          : Set where
-    constructor isCompatible₂
-    field
-      isCompat₂ : ∀ {a b} → (f (a ⊙ b)) ~ (f a ⊕ f b)
-
-  open IsCompatible₂ {{...}} using (isCompat₂)
-
   record Semicompatible₂
       (hand : Hand) {A B : Set}
         (f : A → B) (_⊙_ : A → A → A) (_~_ : B → B → Set) : Set where
@@ -53,6 +43,16 @@ record Preserves {A : Set} (P : A → Set) (_⊙_ : A → A → A) : Set where
     pres : ∀ {a b} → P a → P b → P (a ⊙ b)
 
 open Preserves {{...}} public using (pres)
+
+record IsCompatible₂
+    {β} {A : Set} {B : Set β}
+    (f : A → B) (_⊙_ : A → A → A) (_⊕_ : B → B → B) (_~_ : B → B → Set)
+    : Set where
+  constructor isCompatible₂
+  field
+    isCompat₂ : ∀ {a b} → (f (a ⊙ b)) ~ (f a ⊕ f b)
+
+open IsCompatible₂ {{...}} public using (isCompat₂)
 
 record Compatible₂
     {A B : Set} {{_ : Eq B}} (f : A → B) (_⊙_ : A → A → A) : Set where

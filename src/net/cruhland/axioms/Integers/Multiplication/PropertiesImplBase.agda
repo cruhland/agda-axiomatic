@@ -84,3 +84,36 @@ instance
 
   *-absorptive : AA.Absorptive² _*_ 0
   *-absorptive = AA.absorptive² {A = ℤ}
+
+  neg-compatible-+ : AA.IsCompatible₂ -_ _+_ _+_ _≃_
+  neg-compatible-+ = AA.isCompatible₂ neg-compat-+
+    where
+      neg-compat-+ : {a b : ℤ} → - (a + b) ≃ (- a) + (- b)
+      neg-compat-+ {a} {b} =
+        begin
+          - (a + b)
+        ≃˘⟨ neg-mult ⟩
+          -1 * (a + b)
+        ≃⟨ AA.distrib ⟩
+          -1 * a + -1 * b
+        ≃⟨ AA.subst₂ neg-mult ⟩
+          (- a) + -1 * b
+        ≃⟨ AA.subst₂ neg-mult ⟩
+          (- a) + (- b)
+        ∎
+
+neg-sub-swap : {a b : ℤ} → - (a - b) ≃ b - a
+neg-sub-swap {a} {b} =
+  begin
+    - (a - b)
+  ≃⟨ AA.subst₁ ℤ-.sub-defn ⟩
+    - (a + (- b))
+  ≃⟨ AA.isCompat₂ ⟩
+    (- a) + (- (- b))
+  ≃⟨ AA.subst₂ ℤ-.neg-involutive ⟩
+    (- a) + b
+  ≃⟨ AA.comm ⟩
+    b + (- a)
+  ≃˘⟨ ℤ-.sub-defn ⟩
+    b - a
+  ∎
