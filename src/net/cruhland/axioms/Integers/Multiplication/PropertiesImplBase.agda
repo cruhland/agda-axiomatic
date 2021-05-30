@@ -7,8 +7,10 @@ open import net.cruhland.axioms.Integers.Multiplication.BaseDecl
   using (MultiplicationBase)
 open import net.cruhland.axioms.Integers.NegationDecl using (Negation)
 open import net.cruhland.axioms.Integers.PropertiesDecl using (Properties)
+open import net.cruhland.axioms.Integers.SignDecl using (Sign)
 open import net.cruhland.axioms.Operators using (_+_; -_; _-_; _*_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
+open import net.cruhland.axioms.Sign using (Negative; Positive)
 import net.cruhland.models.Function
 open import net.cruhland.models.Literals
 
@@ -18,6 +20,7 @@ module net.cruhland.axioms.Integers.Multiplication.PropertiesImplBase
   (ZP : Properties PA ZB)
   (Z+ : Addition PA ZB ZP)
   (Z- : Negation PA ZB ZP Z+)
+  (ZS : Sign PA ZB ZP Z+ Z-)
   (MB : MultiplicationBase PA ZB ZP Z+ Z-)
   where
 
@@ -25,6 +28,7 @@ private module ℕ = PeanoArithmetic PA
 open Base ZB using (ℤ)
 private module ℤ- = Negation Z-
 private module ℤP = Properties ZP
+private module ℤS = Sign ZS
 
 neg-mult : {a : ℤ} → -1 * a ≃ - a
 neg-mult {a} =
@@ -117,3 +121,8 @@ neg-sub-swap {a} {b} =
   ≃˘⟨ ℤ-.sub-defn ⟩
     b - a
   ∎
+
+sub-sign-swap : {a b : ℤ} → Negative (a - b) → Positive (b - a)
+sub-sign-swap neg[a-b] =
+  let pos[-[a-b]] = ℤS.neg-Negative neg[a-b]
+   in AA.subst₁ neg-sub-swap pos[-[a-b]]

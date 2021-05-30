@@ -11,9 +11,10 @@ import net.cruhland.models.Integers.NatPair.Multiplication.PropertiesImpl PA
   as MP
 open import net.cruhland.models.Integers.NatPair.NegationDefn PA using (Z-)
 open import net.cruhland.models.Integers.NatPair.PropertiesDefn PA using (ZP)
+open import net.cruhland.models.Integers.NatPair.SignDefn PA using (ZS)
 
 open import net.cruhland.axioms.Integers.Multiplication.PropertiesDecl
-  PA ZB ZP Z+ Z- using (MultiplicationProperties)
+  PA ZB ZP Z+ Z- ZS using (MultiplicationProperties)
 
 MP : MultiplicationProperties MB
 MP = record { MP }

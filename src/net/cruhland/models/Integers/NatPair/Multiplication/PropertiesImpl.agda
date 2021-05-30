@@ -9,7 +9,8 @@ open import net.cruhland.models.Integers.NatPair.Multiplication.BaseDefn PA
   using (MB)
 open import net.cruhland.models.Integers.NatPair.NegationDefn PA using (Z-)
 open import net.cruhland.models.Integers.NatPair.PropertiesDefn PA using (ZP)
+open import net.cruhland.models.Integers.NatPair.SignDefn PA using (ZS)
 
 -- Export everything from the default implementation
 open import net.cruhland.axioms.Integers.Multiplication.PropertiesImplBase
-  PA ZB ZP Z+ Z- MB public
+  PA ZB ZP Z+ Z- ZS MB public

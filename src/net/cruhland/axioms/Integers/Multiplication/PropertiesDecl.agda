@@ -4,8 +4,10 @@ open import net.cruhland.axioms.Integers.AdditionDecl using (Addition)
 open import net.cruhland.axioms.Integers.BaseDecl using (Base)
 open import net.cruhland.axioms.Integers.NegationDecl using (Negation)
 open import net.cruhland.axioms.Integers.PropertiesDecl using (Properties)
+open import net.cruhland.axioms.Integers.SignDecl using (Sign)
 open import net.cruhland.axioms.Operators using (_+_; -_; _-_; _*_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
+open import net.cruhland.axioms.Sign using (Negative; Positive)
 open import net.cruhland.models.Literals
 
 module net.cruhland.axioms.Integers.Multiplication.PropertiesDecl
@@ -14,6 +16,7 @@ module net.cruhland.axioms.Integers.Multiplication.PropertiesDecl
   (ZP : Properties PA ZB)
   (Z+ : Addition PA ZB ZP)
   (Z- : Negation PA ZB ZP Z+)
+  (ZS : Sign PA ZB ZP Z+ Z-)
   where
 
 open Base ZB using (ℤ)
@@ -28,3 +31,4 @@ record MultiplicationProperties (MB : MultiplicationBase) : Set where
 
     neg-mult : {a : ℤ} → -1 * a ≃ - a
     neg-sub-swap : {a b : ℤ} → - (a - b) ≃ b - a
+    sub-sign-swap : {a b : ℤ} → Negative (a - b) → Positive (b - a)

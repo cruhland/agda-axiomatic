@@ -11,15 +11,17 @@ import net.cruhland.axioms.Integers.Multiplication.PropertiesDecl PA
   as PropertiesDecl
 open import net.cruhland.axioms.Integers.NegationDecl PA using (Negation)
 open import net.cruhland.axioms.Integers.PropertiesDecl PA using (Properties)
+open import net.cruhland.axioms.Integers.SignDecl PA using (Sign)
 
 record Multiplication
     (ZB : Base)
     (ZP : Properties ZB)
     (Z+ : Addition ZB ZP)
     (Z- : Negation ZB ZP Z+)
+    (ZS : Sign ZB ZP Z+ Z-)
     : Set where
   open BaseDecl ZB ZP Z+ Z- using (MultiplicationBase)
-  open PropertiesDecl ZB ZP Z+ Z- using (MultiplicationProperties)
+  open PropertiesDecl ZB ZP Z+ Z- ZS using (MultiplicationProperties)
 
   field
     MB : MultiplicationBase
