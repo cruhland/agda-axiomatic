@@ -6,9 +6,7 @@ module net.cruhland.models.Integers.NatPair.NegationDefn
 open import net.cruhland.axioms.Integers.NegationDecl PA using (Negation)
 open import net.cruhland.models.Integers.NatPair.AdditionDefn PA using (Z+)
 open import net.cruhland.models.Integers.NatPair.BaseDefn PA using (ZB)
-open import net.cruhland.models.Integers.NatPair.Negation.BaseDefn PA using (NB)
-open import net.cruhland.models.Integers.NatPair.Negation.PropertiesDefn PA
-  using (NP)
+import net.cruhland.models.Integers.NatPair.NegationImpl PA as Z-
 
 Z- : Negation ZB Z+
-Z- = record { NB = NB ; NP = NP }
+Z- = record { Z- }
