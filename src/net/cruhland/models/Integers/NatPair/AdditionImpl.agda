@@ -13,7 +13,6 @@ module net.cruhland.models.Integers.NatPair.AdditionImpl
 private open module ℕ = PeanoArithmetic PA using (ℕ)
 open import net.cruhland.models.Integers.NatPair.BaseImpl PA as ℤB
   using (_—_; ℤ; ≃₀-intro)
-import net.cruhland.models.Integers.NatPair.PropertiesImpl PA as ℤP
 
 _+₀_ : ℤ → ℤ → ℤ
 (a⁺ — a⁻) +₀ (b⁺ — b⁻) = (a⁺ + b⁺) — (a⁻ + b⁻)

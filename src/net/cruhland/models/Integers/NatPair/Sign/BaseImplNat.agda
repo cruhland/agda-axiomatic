@@ -17,7 +17,6 @@ private open module ℕ = PeanoArithmetic PA using (ℕ)
 open import net.cruhland.models.Integers.NatPair.BaseImpl PA as ℤB
   using (_—_; ℤ; ≃₀-intro)
 import net.cruhland.models.Integers.NatPair.NegationImpl PA as ℤ-
-import net.cruhland.models.Integers.NatPair.PropertiesImpl PA as ℤP
 
 record _≃Posℕ (a : ℤ) : Set where
   constructor intro-Posℕ
@@ -118,7 +117,7 @@ trichotomy x@(x⁺ — x⁻) = AA.exactlyOneOfThree 1of3 ¬2of3
               x⁺ + d
             ∎
        in AA.1st (intro-neg-Posℕ pos[d] (≃₀-intro 0+x⁻≃x⁺+d))
-    1of3 | AA.2nd x⁺≃x⁻ = AA.2nd (ℤP.zero-from-balanced x⁺≃x⁻)
+    1of3 | AA.2nd x⁺≃x⁻ = AA.2nd (ℤB.zero-from-balanced x⁺≃x⁻)
     1of3 | AA.3rd x⁺>x⁻ =
       let d = ℕ.<-diff x⁺>x⁻
           pos[d] = ℕ.<-diff-pos x⁺>x⁻

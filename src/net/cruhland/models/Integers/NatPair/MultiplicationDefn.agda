@@ -12,8 +12,7 @@ open import net.cruhland.models.Integers.NatPair.Multiplication.BaseDefn PA
 open import net.cruhland.models.Integers.NatPair.Multiplication.PropertiesDefn
   PA using (MP)
 open import net.cruhland.models.Integers.NatPair.NegationDefn PA using (Z-)
-open import net.cruhland.models.Integers.NatPair.PropertiesDefn PA using (ZP)
 open import net.cruhland.models.Integers.NatPair.SignDefn PA using (ZS)
 
-Z* : Multiplication ZB ZP Z+ Z- ZS
+Z* : Multiplication ZB Z+ Z- ZS
 Z* = record { MB = MB ; MP = MP }

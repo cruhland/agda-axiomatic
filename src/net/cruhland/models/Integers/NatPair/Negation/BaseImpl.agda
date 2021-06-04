@@ -14,7 +14,6 @@ private module ℕ = PeanoArithmetic PA
 import net.cruhland.models.Integers.NatPair.AdditionImpl PA as ℤ+
 open import net.cruhland.models.Integers.NatPair.BaseImpl PA as ℤB
   using (_—_; ℤ; ≃₀-intro)
-import net.cruhland.models.Integers.NatPair.PropertiesImpl PA as ℤP
 
 instance
   neg-dash : Op.Dashᴸ ℤ

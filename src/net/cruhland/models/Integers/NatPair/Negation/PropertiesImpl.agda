@@ -11,10 +11,9 @@ open import net.cruhland.models.Integers.NatPair.BaseDefn PA using (ZB)
 open import net.cruhland.models.Integers.NatPair.BaseImpl PA as ℤ using (_—_; ℤ)
 open import net.cruhland.models.Integers.NatPair.Negation.BaseDefn PA using (NB)
 import net.cruhland.models.Integers.NatPair.Negation.BaseImpl PA as ℤ-
-open import net.cruhland.models.Integers.NatPair.PropertiesDefn PA using (ZP)
 
 -- Export everything not defined here from the default implementation
-import net.cruhland.axioms.Integers.Negation.PropertiesImplBase PA ZB ZP Z+ NB
+import net.cruhland.axioms.Integers.Negation.PropertiesImplBase PA ZB Z+ NB
   as PropertiesImplBase
   hiding (neg-involutive)
 open PropertiesImplBase public

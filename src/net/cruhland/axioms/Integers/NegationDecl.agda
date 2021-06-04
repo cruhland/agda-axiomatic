@@ -6,12 +6,11 @@ open import net.cruhland.axioms.Integers.AdditionDecl PA using (Addition)
 open import net.cruhland.axioms.Integers.BaseDecl PA using (Base)
 import net.cruhland.axioms.Integers.Negation.BaseDecl PA as BaseDecl
 import net.cruhland.axioms.Integers.Negation.PropertiesDecl PA as PropertiesDecl
-open import net.cruhland.axioms.Integers.PropertiesDecl PA using (Properties)
 
 record Negation
-    (ZB : Base) (ZP : Properties ZB) (Z+ : Addition ZB ZP) : Set₁ where
-  open BaseDecl ZB ZP Z+ using (NegationBase)
-  open PropertiesDecl ZB ZP Z+ using (NegationProperties)
+    (ZB : Base) (Z+ : Addition ZB) : Set₁ where
+  open BaseDecl ZB Z+ using (NegationBase)
+  open PropertiesDecl ZB Z+ using (NegationProperties)
 
   field
     NB : NegationBase

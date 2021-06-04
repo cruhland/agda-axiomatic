@@ -6,10 +6,9 @@ module net.cruhland.models.Integers.NatPair.Sign.PropertiesImpl
 open import net.cruhland.models.Integers.NatPair.AdditionDefn PA using (Z+)
 open import net.cruhland.models.Integers.NatPair.BaseDefn PA using (ZB)
 open import net.cruhland.models.Integers.NatPair.NegationDefn PA using (Z-)
-open import net.cruhland.models.Integers.NatPair.PropertiesDefn PA using (ZP)
 open import net.cruhland.models.Integers.NatPair.Sign.BaseDefn PA using (SB)
 
 -- Export everything from the default implementation
-import net.cruhland.axioms.Integers.Sign.PropertiesImplBase PA ZB ZP Z+ Z- SB
+import net.cruhland.axioms.Integers.Sign.PropertiesImplBase PA ZB Z+ Z- SB
   as PropertiesImplBase
 open PropertiesImplBase public

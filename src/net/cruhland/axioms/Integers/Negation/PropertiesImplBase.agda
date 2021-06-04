@@ -5,7 +5,6 @@ open Eq.≃-Reasoning
 open import net.cruhland.axioms.Integers.AdditionDecl using (Addition)
 open import net.cruhland.axioms.Integers.BaseDecl using (Base)
 open import net.cruhland.axioms.Integers.Negation.BaseDecl using (NegationBase)
-open import net.cruhland.axioms.Integers.PropertiesDecl using (Properties)
 open import net.cruhland.axioms.Operators as Op using (_+_; -_; _-_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.models.Function using (_∘_; const)
@@ -15,9 +14,8 @@ open import net.cruhland.models.Logic using (⊤)
 module net.cruhland.axioms.Integers.Negation.PropertiesImplBase
   (PA : PeanoArithmetic)
   (ZB : Base PA)
-  (ZP : Properties PA ZB)
-  (Z+ : Addition PA ZB ZP)
-  (NB : NegationBase PA ZB ZP Z+)
+  (Z+ : Addition PA ZB)
+  (NB : NegationBase PA ZB Z+)
   where
 
 private module ℕ = PeanoArithmetic PA

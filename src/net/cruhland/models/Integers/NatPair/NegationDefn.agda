@@ -9,7 +9,6 @@ open import net.cruhland.models.Integers.NatPair.BaseDefn PA using (ZB)
 open import net.cruhland.models.Integers.NatPair.Negation.BaseDefn PA using (NB)
 open import net.cruhland.models.Integers.NatPair.Negation.PropertiesDefn PA
   using (NP)
-open import net.cruhland.models.Integers.NatPair.PropertiesDefn PA using (ZP)
 
-Z- : Negation ZB ZP Z+
+Z- : Negation ZB Z+
 Z- = record { NB = NB ; NP = NP }

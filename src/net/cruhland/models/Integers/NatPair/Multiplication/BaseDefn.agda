@@ -9,7 +9,6 @@ open import net.cruhland.models.Integers.NatPair.AdditionDefn PA using (Z+)
 open import net.cruhland.models.Integers.NatPair.BaseDefn PA using (ZB)
 import net.cruhland.models.Integers.NatPair.Multiplication.BaseImpl PA as MB
 open import net.cruhland.models.Integers.NatPair.NegationDefn PA using (Z-)
-open import net.cruhland.models.Integers.NatPair.PropertiesDefn PA using (ZP)
 
-MB : MultiplicationBase ZB ZP Z+ Z-
+MB : MultiplicationBase ZB Z+ Z-
 MB = record { MB }

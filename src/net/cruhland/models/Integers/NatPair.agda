@@ -8,13 +8,11 @@ open import net.cruhland.models.Integers.NatPair.BaseDefn PA using (ZB)
 open import net.cruhland.models.Integers.NatPair.MultiplicationDefn PA
   using (Z*)
 open import net.cruhland.models.Integers.NatPair.NegationDefn PA using (Z-)
-open import net.cruhland.models.Integers.NatPair.PropertiesDefn PA using (ZP)
 open import net.cruhland.models.Integers.NatPair.SignDefn PA using (ZS)
 
 integers : Integers
 integers = record
   { ZB = ZB
-  ; ZP = ZP
   ; Z+ = Z+
   ; Z- = Z-
   ; ZS = ZS
