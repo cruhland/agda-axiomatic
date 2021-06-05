@@ -18,3 +18,7 @@ record Base : Set₁ where
 
     {{nat-literal}} : FromNatLiteral ℤ
     fromNatLiteral≃casts : ∀ n → fromNatLiteral n ≃ (n as ℕ as ℤ)
+
+-- Ensure that partial impls typecheck
+module _ where
+  import net.cruhland.axioms.Integers.BasePartialImpl

@@ -22,7 +22,3 @@ record Integers : Set₁ where
   open Multiplication Z* public
   open Negation Z- public
   open Sign ZS public
-
--- Ensure that partial impls typecheck
-module _ where
-  import net.cruhland.axioms.Integers.BaseImplLiterals

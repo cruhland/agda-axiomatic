@@ -86,8 +86,8 @@ instance
   from-ℕ-injective = AA.injective {A = ℕ} AA.cancel
 
 -- Pull in literals from the partial impl
-import net.cruhland.axioms.Integers.BaseImplLiterals PA as ZBL
-open ZBL.Literals (record { ℤ = ℤ }) public hiding (ℤ; eq; from-ℕ)
+import net.cruhland.axioms.Integers.BasePartialImpl PA as ZB
+open ZB.BaseProperties (record { ℤ = ℤ }) public hiding (ℤ; eq; from-ℕ)
 
 zero-from-balanced : ∀ {x} → ℤ.pos x ≃ ℤ.neg x → x ≃ 0
 zero-from-balanced {x⁺ — x⁻} x⁺≃x⁻ =

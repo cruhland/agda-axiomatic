@@ -10,10 +10,11 @@ open import net.cruhland.models.Function using (_⟨→⟩_)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using (¬_; contra)
 
-module net.cruhland.models.Integers.NatPair.Sign.BaseImplNat
+module net.cruhland.models.Integers.NatPair.SignImplNat
   (PA : PeanoArithmetic) where
 
 private open module ℕ = PeanoArithmetic PA using (ℕ)
+open import net.cruhland.models.Integers.NatPair.BaseDefn PA using (ZB)
 open import net.cruhland.models.Integers.NatPair.BaseImpl PA as ℤB
   using (_—_; ℤ; ≃₀-intro)
 import net.cruhland.models.Integers.NatPair.NegationImpl PA as ℤ-
@@ -164,3 +165,9 @@ trichotomy x@(x⁺ — x⁻) = AA.exactlyOneOfThree 1of3 ¬2of3
           x⁺<>x⁻ = AA.1∧3 x⁺<x⁻ x⁻<x⁺
           ¬x⁺<>x⁻ = AA.ExactlyOneOfThree.at-most-one x⁺<≃>x⁻
        in contra x⁺<>x⁻ ¬x⁺<>x⁻
+
+-- Include everything from the partial impl
+open import net.cruhland.axioms.Integers.SignPartialImpl PA ZB
+  using (SignProperties)
+open SignProperties (record { from-ℕ-preserves-pos = from-ℕ-preserves-pos })
+  public hiding (from-ℕ-preserves-pos; positivity)
