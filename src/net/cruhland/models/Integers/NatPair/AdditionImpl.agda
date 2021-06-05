@@ -25,26 +25,46 @@ instance
   +-commutative = AA.commutative +-comm
     where
       +-comm : {a b : ℤ} → a + b ≃ b + a
-      +-comm {a⁺ — a⁻} {b⁺ — b⁻} = ≃₀-intro eq′
-        where
-          eq′ =
-            begin
-              (a⁺ + b⁺) + (b⁻ + a⁻)
-            ≃⟨ AA.subst₂ AA.comm ⟩
-              (b⁺ + a⁺) + (b⁻ + a⁻)
-            ≃⟨ AA.subst₂ AA.comm ⟩
-              (b⁺ + a⁺) + (a⁻ + b⁻)
-            ∎
+      +-comm a@{a⁺ — a⁻} b@{b⁺ — b⁻} =
+        begin
+          a + b
+        ≃⟨⟩
+          (a⁺ — a⁻) + (b⁺ — b⁻)
+        ≃⟨⟩
+          (a⁺ + b⁺) — (a⁻ + b⁻)
+        ≃⟨ AA.subst₂ AA.comm ⟩
+          (b⁺ + a⁺) — (a⁻ + b⁻)
+        ≃⟨ AA.subst₂ AA.comm ⟩
+          (b⁺ + a⁺) — (b⁻ + a⁻)
+        ≃⟨⟩
+          (b⁺ — b⁻) + (a⁺ — a⁻)
+        ≃⟨⟩
+          b + a
+        ∎
 
   private
     +-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _+_ _≃_ _≃_
     +-substitutiveᴸ = AA.substitutive₂ +-substᴸ
       where
         +-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ + b ≃ a₂ + b
-        +-substᴸ {a₁⁺ — a₁⁻} {a₂⁺ — a₂⁻} {b⁺ — b⁻} (≃₀-intro a₁⁺+a₂⁻≃a₂⁺+a₁⁻) =
-            ≃₀-intro [a₁⁺+b⁺]+[a₂⁻+b⁻]≃[a₂⁺+b⁺]+[a₁⁻+b⁻]
+        +-substᴸ
+            a₁@{a₁⁺ — a₁⁻} a₂@{a₂⁺ — a₂⁻} b@{b⁺ — b⁻}
+            (≃₀-intro a₁⁺+a₂⁻≃a₂⁺+a₁⁻) =
+              begin
+                a₁ + b
+              ≃⟨⟩
+                (a₁⁺ — a₁⁻) + (b⁺ — b⁻)
+              ≃⟨⟩
+                (a₁⁺ + b⁺) — (a₁⁻ + b⁻)
+              ≃⟨ ≃₀-intro componentEq ⟩
+                (a₂⁺ + b⁺) — (a₂⁻ + b⁻)
+              ≃⟨⟩
+                (a₂⁺ — a₂⁻) + (b⁺ — b⁻)
+              ≃⟨⟩
+                a₂ + b
+              ∎
           where
-            [a₁⁺+b⁺]+[a₂⁻+b⁻]≃[a₂⁺+b⁺]+[a₁⁻+b⁻] =
+            componentEq =
               begin
                 (a₁⁺ + b⁺) + (a₂⁻ + b⁻)
               ≃⟨ AA.transpose ⟩
@@ -64,39 +84,62 @@ instance
   +-associative : AA.Associative _+_
   +-associative = record { assoc = +-assoc }
     where
-      +-assoc : {x y z : ℤ} → (x + y) + z ≃ x + (y + z)
-      +-assoc {x⁺ — x⁻} {y⁺ — y⁻} {z⁺ — z⁻} = ≃₀-intro eq′
-        where
-          eq′ =
-            begin
-              ((x⁺ + y⁺) + z⁺) + (x⁻ + (y⁻ + z⁻))
-            ≃⟨ AA.subst₂ AA.assoc ⟩
-              (x⁺ + (y⁺ + z⁺)) + (x⁻ + (y⁻ + z⁻))
-            ≃˘⟨ AA.subst₂ AA.assoc ⟩
-              (x⁺ + (y⁺ + z⁺)) + ((x⁻ + y⁻) + z⁻)
-            ∎
+      +-assoc : {a b c : ℤ} → (a + b) + c ≃ a + (b + c)
+      +-assoc a@{a⁺ — a⁻} b@{b⁺ — b⁻} c@{c⁺ — c⁻} =
+        begin
+          (a + b) + c
+        ≃⟨⟩
+          ((a⁺ — a⁻) + (b⁺ — b⁻)) + (c⁺ — c⁻)
+        ≃⟨⟩
+          ((a⁺ + b⁺) — (a⁻ + b⁻)) + (c⁺ — c⁻)
+        ≃⟨⟩
+          ((a⁺ + b⁺) + c⁺) — ((a⁻ + b⁻) + c⁻)
+        ≃⟨ AA.subst₂ AA.assoc ⟩
+          (a⁺ + (b⁺ + c⁺)) — ((a⁻ + b⁻) + c⁻)
+        ≃⟨ AA.subst₂ AA.assoc ⟩
+          (a⁺ + (b⁺ + c⁺)) — (a⁻ + (b⁻ + c⁻))
+        ≃⟨⟩
+          (a⁺ — a⁻) + ((b⁺ + c⁺) — (b⁻ + c⁻))
+        ≃⟨⟩
+          (a⁺ — a⁻) + ((b⁺ — b⁻) + (c⁺ — c⁻))
+        ≃⟨⟩
+          a + (b + c)
+        ∎
 
   +-compatible-ℕ : AA.Compatible₂ (_as ℤ) _+_
   +-compatible-ℕ = AA.compatible₂ {A = ℕ} _+_ +-compat-ℕ
     where
       +-compat-ℕ : {n m : ℕ} → (n + m as ℤ) ≃ (n as ℤ) + (m as ℤ)
-      +-compat-ℕ = ≃₀-intro (AA.subst₂ AA.identᴸ)
+      +-compat-ℕ {n} {m} =
+        begin
+          (n + m as ℤ)
+        ≃⟨⟩
+          (n + m) — 0
+        ≃˘⟨ AA.subst₂ AA.identᴸ ⟩
+          (n + m) — (0 + 0)
+        ≃⟨⟩
+          (n — 0) + (m — 0)
+        ≃⟨⟩
+          (n as ℤ) + (m as ℤ)
+        ∎
 
   private
     +-identityᴸ : AA.Identity AA.handᴸ _+_ 0
     +-identityᴸ = AA.identity +-identᴸ
       where
-        +-identᴸ : {x : ℤ} → 0 + x ≃ x
-        +-identᴸ {x⁺ — x⁻} = ≃₀-intro [0+x⁺]+x⁻≃x⁺+[0+x⁻]
-          where
-            [0+x⁺]+x⁻≃x⁺+[0+x⁻] =
-              begin
-                0 + x⁺ + x⁻
-              ≃⟨ AA.subst₂ AA.comm ⟩
-                x⁺ + 0 + x⁻
-              ≃⟨ AA.assoc ⟩
-                x⁺ + (0 + x⁻)
-              ∎
+        +-identᴸ : {a : ℤ} → 0 + a ≃ a
+        +-identᴸ a@{a⁺ — a⁻} =
+          begin
+            0 + a
+          ≃⟨⟩
+            (0 — 0) + (a⁺ — a⁻)
+          ≃⟨⟩
+            (0 + a⁺) — (0 + a⁻)
+          ≃⟨ AA.subst₂ AA.ident ⟩
+            a⁺ — (0 + a⁻)
+          ≃⟨ AA.subst₂ AA.ident ⟩
+            a
+          ∎
 
     +-identityᴿ : AA.Identity AA.handᴿ _+_ 0
     +-identityᴿ = AA.identityᴿ-from-identityᴸ {A = ℤ}
