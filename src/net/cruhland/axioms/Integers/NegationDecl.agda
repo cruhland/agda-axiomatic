@@ -17,6 +17,7 @@ record Negation (ZB : Base) (Z+ : Addition ZB) : Set₁ where
   field
     {{neg-dash}} : Op.Dashᴸ ℤ
     {{neg-substitutive}} : AA.Substitutive₁ -_ _≃_ _≃_
+    {{neg-injective}} : AA.Injective -_ _≃_ _≃_
     {{neg-inverse}} : AA.Inverse² {A = ℤ} -_ (const ⊤) _+_ 0
 
     {{neg-literal}} : FromNegLiteral ℤ
@@ -31,7 +32,3 @@ record Negation (ZB : Base) (Z+ : Addition ZB) : Set₁ where
     {{sub-substitutive}} : AA.Substitutive² _-_ _≃_ _≃_
     sub-same≃zero : {a : ℤ} → a - a ≃ 0
     ≃ᴸ-subᴿ-toᴸ : {a b c : ℤ} → a - b ≃ c → a ≃ b + c
-
--- Confirm that all partial impls typecheck
-module _ where
-  import net.cruhland.axioms.Integers.NegationPartialImpl

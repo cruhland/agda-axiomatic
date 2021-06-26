@@ -6,7 +6,7 @@ open import net.cruhland.axioms.Operators using (_+_; -_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.axioms.Sign
   using (Negative; Negativity; neg≄0; Positive; Positivity; pos≄0)
-open import net.cruhland.models.Function using (_⟨→⟩_)
+open import net.cruhland.models.Function using (_⟨→⟩_; id)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using (¬_; contra)
 
@@ -14,10 +14,15 @@ module net.cruhland.models.Integers.NatPair.SignImplNat
   (PA : PeanoArithmetic) where
 
 private open module ℕ = PeanoArithmetic PA using (ℕ)
+open import net.cruhland.models.Integers.NatPair.AdditionDefn PA using (Z+)
 open import net.cruhland.models.Integers.NatPair.BaseDefn PA using (ZB)
 open import net.cruhland.models.Integers.NatPair.BaseImpl PA as ℤB
   using (_—_; ℤ; ≃₀-intro)
+open import net.cruhland.models.Integers.NatPair.NegationDefn PA using (Z-)
 import net.cruhland.models.Integers.NatPair.NegationImpl PA as ℤ-
+
+import net.cruhland.axioms.Integers.SignDecl PA as SignDecl
+open SignDecl.SignPredefs ZB Z+ Z- using (_≃_[posℕ]; ≃posℕ-intro)
 
 record _≃Posℕ (a : ℤ) : Set where
   constructor intro-Posℕ
@@ -77,6 +82,18 @@ instance
 
   negativity : Negativity {A = ℤ} 0
   negativity = record { Negative = _≃-Posℕ ; neg≄0 = neg-Posℕ≄0 }
+
+posℕ-from-posℤ : {a : ℤ} → Positive a → a ≃ id [posℕ]
+posℕ-from-posℤ (intro-Posℕ pos[n] n≃a) = ≃posℕ-intro pos[n] (Eq.sym n≃a)
+
+posℕ-from-negℤ : {a : ℤ} → Negative a → a ≃ -_ [posℕ]
+posℕ-from-negℤ (intro-neg-Posℕ pos[n] -n≃a) = ≃posℕ-intro pos[n] (Eq.sym -n≃a)
+
+posℤ-from-posℕ : {a : ℤ} → a ≃ id [posℕ] → Positive a
+posℤ-from-posℕ (≃posℕ-intro pos[n] a≃n) = intro-Posℕ pos[n] (Eq.sym a≃n)
+
+negℤ-from-posℕ : {a : ℤ} → a ≃ -_ [posℕ] → Negative a
+negℤ-from-posℕ (≃posℕ-intro pos[n] a≃-n) = intro-neg-Posℕ pos[n] (Eq.sym a≃-n)
 
 from-ℕ-preserves-pos : {n : ℕ} → Positive n → Positive (n as ℤ)
 from-ℕ-preserves-pos pos[n] = intro-Posℕ pos[n] Eq.refl
@@ -167,7 +184,7 @@ trichotomy x@(x⁺ — x⁻) = AA.exactlyOneOfThree 1of3 ¬2of3
        in contra x⁺<>x⁻ ¬x⁺<>x⁻
 
 -- Include everything from the partial impl
-open import net.cruhland.axioms.Integers.SignPartialImpl PA ZB
+open import net.cruhland.axioms.Integers.SignPartialImpl PA ZB Z+ Z-
   using (SignProperties)
 open SignProperties (record { from-ℕ-preserves-pos = from-ℕ-preserves-pos })
   public hiding (from-ℕ-preserves-pos; positivity)

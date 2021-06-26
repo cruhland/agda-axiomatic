@@ -1,11 +1,13 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast as Cast using (_As_; _as_)
+open import net.cruhland.axioms.DecEq using (_≃?_; DecEq; DecEq-intro)
 open import net.cruhland.axioms.Eq as Eq using (_≃_; Eq)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Operators using (_+_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.models.Function using (_∘_)
 open import net.cruhland.models.Literals
+open import net.cruhland.models.Logic using (⊤; Dec; dec-map)
 
 module net.cruhland.models.Integers.NatPair.BaseImpl
   (PA : PeanoArithmetic) where
@@ -55,6 +57,12 @@ instance
 
   eq : Eq ℤ
   eq = Eq.equivalence _≃₀_
+
+  decEq : DecEq ℤ
+  decEq = DecEq-intro _≃₀?_
+    where
+      _≃₀?_ : (a b : ℤ) {{_ : ⊤}} → Dec (a ≃ b)
+      (a⁺ — a⁻) ≃₀? (b⁺ — b⁻) = dec-map ≃₀-intro _≃₀_.elim (a⁺ + b⁻ ≃? b⁺ + a⁻)
 
   ℤ-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _—_ _≃_ _≃_
   ℤ-substitutiveᴸ = AA.substitutive₂ (≃₀-intro ∘ AA.subst₂)

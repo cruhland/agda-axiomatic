@@ -22,3 +22,10 @@ record Integers : Set₁ where
   open Multiplication Z* public
   open Negation Z- public
   open Sign ZS public
+
+-- Confirm that all partial impls typecheck
+module _ where
+  import net.cruhland.axioms.Integers.BasePartialImpl
+  import net.cruhland.axioms.Integers.MultiplicationPartialImpl
+  import net.cruhland.axioms.Integers.NegationPartialImpl
+  import net.cruhland.axioms.Integers.SignPartialImpl

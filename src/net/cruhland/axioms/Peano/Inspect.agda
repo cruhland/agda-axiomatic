@@ -1,6 +1,6 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq using (_≃_; _≄_; refl; sym; trans)
-open import net.cruhland.axioms.DecEq using (DecEq)
+open import net.cruhland.axioms.DecEq using (DecEq; DecEq-intro)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
 open import net.cruhland.axioms.Sign using (Positivity)
@@ -52,7 +52,7 @@ module net.cruhland.axioms.Peano.Inspect (PB : PeanoBase) where
 
   instance
     decEq : DecEq ℕ
-    decEq = record { Constraint = λ _ _ → ⊤ ; _≃?_ = _≃?_ }
+    decEq = DecEq-intro _≃?_
       where
         _≃?_ : (n m : ℕ) {{_ : ⊤}} → Dec (n ≃ m)
         n ≃? m = ind P P0 Ps n m

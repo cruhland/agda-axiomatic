@@ -21,3 +21,5 @@ record Negativity {A : Set} {{_ : Eq A}} (zero : A) : Set₁ where
     neg≄0 : ∀ {a} → Negative a → a ≄ zero
 
 open Negativity {{...}} public using (neg≄0; Negative)
+
+{-# DISPLAY Negativity.Negative _ x = Negative x #-}

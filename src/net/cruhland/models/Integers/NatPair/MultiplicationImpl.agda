@@ -101,8 +101,8 @@ instance
   *-substitutive : AA.Substitutive² _*_ _≃_ _≃_
   *-substitutive = AA.substitutive² {A = ℤ}
 
-  *-compatible-ℕ : AA.Compatible₂ (_as ℤ) _*_
-  *-compatible-ℕ = AA.compatible₂ {A = ℕ} _*_ *-compat-ℕ
+  *-compatible-ℕ : AA.IsCompatible₂ (_as ℤ) _*_ _*_ _≃_
+  *-compatible-ℕ = AA.isCompatible₂ {A = ℕ} *-compat-ℕ
     where
       *-compat-ℕ : {n m : ℕ} → (n * m as ℤ) ≃ (n as ℤ) * (m as ℤ)
       *-compat-ℕ {n} {m} =
@@ -282,6 +282,6 @@ open import net.cruhland.axioms.Integers.MultiplicationPartialImpl
   PA ZB Z+ Z- ZS using (MultiplicationProperties)
 open MultiplicationProperties (record {}) public
   hiding
-    (*-comm-with-neg; *-commutative; *-distributive; *-identity; *-substitutive
-    ; star
+    (*-associative; *-comm-with-neg; *-commutative; *-compatible-ℕ
+    ; *-distributive; *-identity; *-substitutive; star
     )

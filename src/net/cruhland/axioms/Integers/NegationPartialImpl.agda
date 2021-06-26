@@ -44,6 +44,22 @@ record NegationProperties : Set₁ where
       a
     ∎
 
+  instance
+    neg-injective : AA.Injective -_ _≃_ _≃_
+    neg-injective = AA.injective neg-inject
+      where
+        neg-inject : {a₁ a₂ : ℤ} →  - a₁ ≃ - a₂ → a₁ ≃ a₂
+        neg-inject {a₁} {a₂} -a₁≃-a₂ =
+          begin
+            a₁
+          ≃˘⟨ neg-involutive ⟩
+            - (- a₁)
+          ≃⟨ AA.subst₁ -a₁≃-a₂ ⟩
+            - (- a₂)
+          ≃⟨ neg-involutive ⟩
+            a₂
+          ∎
+
   neg-zero : - 0 ≃ 0
   neg-zero =
     begin

@@ -1,7 +1,7 @@
 open import Relation.Nullary.Decidable using (False; fromWitnessFalse)
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_; _value_)
-open import net.cruhland.axioms.DecEq using (_≃?_; DecEq)
+open import net.cruhland.axioms.DecEq using (_≃?_; DecEq; DecEq-intro)
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_; Eq)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Operators using (_*_)
@@ -77,7 +77,7 @@ instance
   eq = Eq.equivalence _≃₀_
 
   decEq : DecEq ℚ
-  decEq = record { Constraint = λ _ _ → ⊤ ; _≃?_ = _≃?₀_ }
+  decEq = DecEq-intro _≃?₀_
     where
       _≃?₀_ : (x y : ℚ) {{_ : ⊤}} → Dec (x ≃ y)
       p ≃?₀ q = dec-map ≃₀-intro _≃₀_.elim ℤ≃?

@@ -1,7 +1,7 @@
 open import Relation.Nullary.Decidable using (False)
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_; _value_)
-open import net.cruhland.axioms.DecEq using (_≃?_; DecEq; ≄-derive)
+open import net.cruhland.axioms.DecEq using (_≃?_; DecEq; DecEq-intro; ≄-derive)
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Operators using (_+_; _*_; -_; _-_)
@@ -116,7 +116,7 @@ order-trichotomy a b = record { at-least-one = 1≤ ; at-most-one = ≤1 }
 
 instance
   decEq : DecEq ℤ
-  decEq = record { Constraint = λ _ _ → ⊤ ; _≃?_ = _≃?₀_ }
+  decEq = DecEq-intro _≃?₀_
     where
       _≃?₀_ : (a b : ℤ) {{_ : ⊤}} → Dec (a ≃ b)
       a ≃?₀ b with AA.ExactlyOneOfThree.at-least-one (order-trichotomy a b)
