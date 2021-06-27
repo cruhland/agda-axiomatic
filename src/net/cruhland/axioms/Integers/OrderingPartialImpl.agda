@@ -4,15 +4,17 @@ open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Integers.AdditionDecl using (Addition)
 open import net.cruhland.axioms.Integers.BaseDecl using (Base)
+open import net.cruhland.axioms.Integers.MultiplicationDecl
+  using (Multiplication)
 open import net.cruhland.axioms.Integers.NegationDecl using (Negation)
 open import net.cruhland.axioms.Integers.SignDecl using (Sign)
 open import net.cruhland.axioms.Operators using (_+_; -_; _-_)
-open import net.cruhland.axioms.Ordering as Ord using (_≤_; _<_)
+open import net.cruhland.axioms.Ordering as Ord using (_≤_; _<_; _>_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.axioms.Sign using (Positive; pos≄0)
 import net.cruhland.models.Function
 open import net.cruhland.models.Literals
-open import net.cruhland.models.Logic using (∧-intro; contra)
+open import net.cruhland.models.Logic using (∧-intro; contra; ¬_)
 
 module net.cruhland.axioms.Integers.OrderingPartialImpl
   (PA : PeanoArithmetic)
@@ -20,10 +22,12 @@ module net.cruhland.axioms.Integers.OrderingPartialImpl
   (Z+ : Addition PA ZB)
   (Z- : Negation PA ZB Z+)
   (ZS : Sign PA ZB Z+ Z-)
+  (Z* : Multiplication PA ZB Z+ Z- ZS)
   where
 
 private open module ℕ = PeanoArithmetic PA using (ℕ)
 private open module ℤB = Base ZB using (ℤ)
+private module ℤ* = Multiplication Z*
 private module ℤ- = Negation Z-
 private module ℤS = Sign ZS
 
@@ -109,3 +113,20 @@ instance
               ∎
          in contra (AA.inject d-as-ℤ≃0-as-ℤ) (pos≄0 pos[d])
    in Ord.<-from-≤≄ a≤b a≄b
+
+order-trichotomy : (a b : ℤ) → AA.ExactlyOneOfThree (a < b) (a ≃ b) (a > b)
+order-trichotomy a b = AA.exactlyOneOfThree 1of3 ¬2of3
+  where
+    1of3 : AA.OneOfThree (a < b) (a ≃ b) (a > b)
+    1of3 with AA.ExactlyOneOfThree.at-least-one (ℤS.trichotomy (b - a))
+    ... | AA.1st neg[b-a] = AA.3rd (<-from-pos (ℤ*.sub-sign-swap neg[b-a]))
+    ... | AA.2nd b-a≃0 = AA.2nd (Eq.sym (ℤ-.≃-from-zero-sub b-a≃0))
+    ... | AA.3rd pos[b-a] = AA.1st (<-from-pos pos[b-a])
+
+    ¬2of3 : ¬ AA.TwoOfThree (a < b) (a ≃ b) (a > b)
+    ¬2of3 (AA.1∧2 (<₀-intro a≤b a≄b) a≃b) =
+      contra a≃b a≄b
+    ¬2of3 (AA.1∧3 (<₀-intro a≤b a≄b) (<₀-intro b≤a b≄a)) =
+      contra (AA.antisym a≤b b≤a) a≄b
+    ¬2of3 (AA.2∧3 a≃b (<₀-intro b≤a b≄a)) =
+      contra a≃b (Eq.sym b≄a)

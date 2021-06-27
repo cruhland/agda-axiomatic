@@ -31,4 +31,5 @@ record Negation (ZB : Base) (Z+ : Addition ZB) : Set₁ where
     sub-defn : {a b : ℤ} → a - b ≃ a + (- b)
     {{sub-substitutive}} : AA.Substitutive² _-_ _≃_ _≃_
     sub-same≃zero : {a : ℤ} → a - a ≃ 0
+    ≃-from-zero-sub : {a b : ℤ} → a - b ≃ 0 → a ≃ b
     ≃ᴸ-subᴿ-toᴸ : {a b c : ℤ} → a - b ≃ c → a ≃ b + c

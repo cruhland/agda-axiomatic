@@ -132,3 +132,13 @@ record NegationProperties : Set₁ where
     ≃⟨ AA.subst₂ a-b≃c ⟩
       b + c
     ∎
+
+  ≃-from-zero-sub : {a b : ℤ} → a - b ≃ 0 → a ≃ b
+  ≃-from-zero-sub {a} {b} a-b≃0 =
+    begin
+      a
+    ≃⟨ ≃ᴸ-subᴿ-toᴸ a-b≃0 ⟩
+      b + 0
+    ≃⟨ AA.ident ⟩
+      b
+    ∎
