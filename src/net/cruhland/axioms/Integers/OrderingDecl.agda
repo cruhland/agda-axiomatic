@@ -1,4 +1,5 @@
-import net.cruhland.axioms.Ordering as Ord
+import net.cruhland.axioms.AbstractAlgebra as AA
+open import net.cruhland.axioms.Ordering as Ord using (_≤_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 
 module net.cruhland.axioms.Integers.OrderingDecl (PA : PeanoArithmetic) where
@@ -10,4 +11,6 @@ record Ordering (ZB : Base) : Set₁ where
 
   field
     {{lessThanOrEqual}} : Ord.LessThanOrEqual ℤ
+    {{≤-antisymmetric}} : AA.Antisymmetric {A = ℤ} _≤_
+
     {{lessThan}} : Ord.LessThan ℤ
