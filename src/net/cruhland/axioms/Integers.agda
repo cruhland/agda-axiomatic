@@ -31,6 +31,6 @@ module _ where
   import net.cruhland.axioms.Integers.BasePartialImpl
   import net.cruhland.axioms.Integers.MultiplicationPartialImpl
   import net.cruhland.axioms.Integers.NegationPartialImpl
-  import net.cruhland.axioms.Integers.OrderingPartialImpl
+  import net.cruhland.axioms.Integers.OrderingDefaultImpl
   import net.cruhland.axioms.Integers.SignPartialImpl
   import net.cruhland.axioms.Integers.SignPartialImplNat

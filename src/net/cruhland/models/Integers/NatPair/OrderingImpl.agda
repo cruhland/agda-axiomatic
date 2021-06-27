@@ -10,6 +10,6 @@ open import net.cruhland.models.Integers.NatPair.MultiplicationDefn PA
 open import net.cruhland.models.Integers.NatPair.NegationDefn PA using (Z-)
 open import net.cruhland.models.Integers.NatPair.SignDefn PA using (ZS)
 
--- Export all definitions from the partial impl
-open import net.cruhland.axioms.Integers.OrderingPartialImpl PA ZB Z+ Z- ZS Z*
+-- Export all definitions from the default impl
+open import net.cruhland.axioms.Integers.OrderingDefaultImpl PA ZB Z+ Z- ZS Z*
   public

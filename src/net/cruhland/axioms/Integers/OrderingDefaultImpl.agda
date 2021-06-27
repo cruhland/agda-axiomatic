@@ -16,7 +16,7 @@ import net.cruhland.models.Function
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using (∧-intro; contra; ¬_)
 
-module net.cruhland.axioms.Integers.OrderingPartialImpl
+module net.cruhland.axioms.Integers.OrderingDefaultImpl
   (PA : PeanoArithmetic)
   (ZB : Base PA)
   (Z+ : Addition PA ZB)
