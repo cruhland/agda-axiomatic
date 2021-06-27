@@ -83,5 +83,5 @@ x ≄ⁱ y = ¬ⁱ (x ≃ y)
 ≄ⁱ-intro : {x y : A} {{_ : Eq A}} → x ≄ y → x ≄ⁱ y
 ≄ⁱ-intro = ¬ⁱ-intro
 
-≄ⁱ-elim : {x y : A} {{_ : Eq A}} → x ≄ⁱ y → x ≄ y
-≄ⁱ-elim = ¬ⁱ_.elim
+≄ⁱ-elim : {x y : A} {{_ : Eq A}} {{neq : x ≄ⁱ y}} → x ≄ y
+≄ⁱ-elim {{neq = neq}} = ¬ⁱ_.elim neq

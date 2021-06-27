@@ -38,7 +38,7 @@ record Multiplication
     (Z+ : Addition ZB)
     (Z- : Negation ZB Z+)
     (ZS : Sign ZB Z+ Z-)
-    : Set where
+    : Set₁ where
   open Base ZB using (ℤ)
   open Sign ZS using (_≃±1)
   open MultiplicationPredefs ZB Z+ Z- ZS public
@@ -53,6 +53,7 @@ record Multiplication
     {{*-distributive}} : AA.Distributive² {A = ℤ} _*_ _+_
     {{*-comm-with-neg}} : AA.FnOpCommutative² -_ _*_
     {{*-absorptive}} : AA.Absorptive² _*_ 0
+    {{*-cancellative}} : AA.Cancellative² {A = ℤ} _*_ _≃_ _≃_
 
     {{*-preserves-≃±1}} : AA.Preserves _≃±1 _*_
     PosOrNeg-from-nonzero : {a : ℤ} → a ≄ 0 → PosOrNeg a
