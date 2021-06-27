@@ -6,6 +6,8 @@ module net.cruhland.models.Integers.NatPair.OrderingImpl
 open import net.cruhland.models.Integers.NatPair.AdditionDefn PA using (Z+)
 open import net.cruhland.models.Integers.NatPair.BaseDefn PA using (ZB)
 open import net.cruhland.models.Integers.NatPair.NegationDefn PA using (Z-)
+open import net.cruhland.models.Integers.NatPair.SignDefn PA using (ZS)
 
 -- Export all definitions from the partial impl
-open import net.cruhland.axioms.Integers.OrderingPartialImpl PA ZB Z+ Z- public
+open import net.cruhland.axioms.Integers.OrderingPartialImpl PA ZB Z+ Z- ZS
+  public
