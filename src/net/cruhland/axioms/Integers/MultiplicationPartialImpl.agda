@@ -210,17 +210,17 @@ record MultiplicationProperties : Set where
         where
           *-cancelᴸ : (a : ℤ) {{_ : a ≄ⁱ 0}} {b c : ℤ} → a * b ≃ a * c → b ≃ c
           *-cancelᴸ a {{a≄ⁱ0}} {b} {c} ab≃ac with
-            let a[b-c]≃0 =
-                  begin
-                    a * (b - c)
-                  ≃⟨ AA.distrib ⟩
-                    a * b - a * c
-                  ≃⟨ AA.subst₂ ab≃ac ⟩
-                    a * c - a * c
-                  ≃⟨ ℤ-.sub-same≃zero ⟩
-                    0
-                  ∎
-             in AA.zero-prod a[b-c]≃0
+            (let a[b-c]≃0 =
+                   begin
+                     a * (b - c)
+                   ≃⟨ AA.distrib ⟩
+                     a * b - a * c
+                   ≃⟨ AA.subst₂ ab≃ac ⟩
+                     a * c - a * c
+                   ≃⟨ ℤ-.sub-same≃zero ⟩
+                     0
+                   ∎
+              in AA.zero-prod a[b-c]≃0)
           ... | ∨-introᴸ a≃0 = contra a≃0 ≄ⁱ-elim
           ... | ∨-introᴿ b-c≃0 = ℤ-.≃-from-zero-sub b-c≃0
 

@@ -131,17 +131,17 @@ instance
 
       *-cancelᴸ : {a b c : ℤ} {{_ : C a}} → a * b ≃ a * c → b ≃ c
       *-cancelᴸ {a} {b} {c} ab≃ac with
-        let a[b-c]≃0 =
-              begin
-                a * (b - c)
-              ≃⟨ ℤ*.*-distrib-subᴸ ⟩
-                a * b - a * c
-              ≃⟨ ℤ-.sub-substᴸ ab≃ac ⟩
-                a * c - a * c
-              ≃⟨ AA.invᴿ ⟩
-                0
-              ∎
-         in AA.zero-prod a[b-c]≃0
+        (let a[b-c]≃0 =
+               begin
+                 a * (b - c)
+               ≃⟨ ℤ*.*-distrib-subᴸ ⟩
+                 a * b - a * c
+               ≃⟨ ℤ-.sub-substᴸ ab≃ac ⟩
+                 a * c - a * c
+               ≃⟨ AA.invᴿ ⟩
+                 0
+               ∎
+          in AA.zero-prod a[b-c]≃0)
       *-cancelᴸ {a} {b} {c} ab≃ac | ∨-introᴸ a≃0 =
         ⊥-elim (≄-derive a≃0)
       *-cancelᴸ {a} {b} {c} ab≃ac | ∨-introᴿ b-c≃0 =
