@@ -29,3 +29,4 @@ module _ where
   import net.cruhland.axioms.Integers.MultiplicationPartialImpl
   import net.cruhland.axioms.Integers.NegationPartialImpl
   import net.cruhland.axioms.Integers.SignPartialImpl
+  import net.cruhland.axioms.Integers.SignPartialImplNat
