@@ -106,8 +106,8 @@ instance
           a + (b + c)
         ∎
 
-  +-compatible-ℕ : AA.Compatible₂ (_as ℤ) _+_
-  +-compatible-ℕ = AA.compatible₂ {A = ℕ} _+_ +-compat-ℕ
+  +-compatible-ℕ : AA.Compatible₂ (_as ℤ) _+_ _+_ _≃_
+  +-compatible-ℕ = AA.compatible₂ {A = ℕ} +-compat-ℕ
     where
       +-compat-ℕ : {n m : ℕ} → (n + m as ℤ) ≃ (n as ℤ) + (m as ℤ)
       +-compat-ℕ {n} {m} =

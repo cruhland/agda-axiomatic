@@ -77,8 +77,8 @@ instance
               (x⁺ + (y⁺ + z⁺)) + ((x⁻ + y⁻) + z⁻)
             ∎
 
-  +-compatible-ℕ : AA.Compatible₂ (_as ℤ) _+_
-  +-compatible-ℕ = AA.compatible₂ {A = ℕ} _+_ +-compat-ℕ
+  +-compatible-ℕ : AA.Compatible₂ (_as ℤ) _+_ _+_ _≃_
+  +-compatible-ℕ = AA.compatible₂ {A = ℕ} +-compat-ℕ
     where
       +-compat-ℕ : {n m : ℕ} → (n + m as ℤ) ≃ (n as ℤ) + (m as ℤ)
       +-compat-ℕ = ≃ᶻ-intro (AA.subst₂ AA.identᴸ)

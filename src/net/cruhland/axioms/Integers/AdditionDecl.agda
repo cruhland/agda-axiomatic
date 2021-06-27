@@ -19,4 +19,4 @@ record Addition (ZB : Base) : Set where
     {{+-commutative}} : AA.Commutative {A = ℤ} _+_
     {{+-associative}} : AA.Associative {A = ℤ} _+_
     {{+-identity}} : AA.Identity² {A = ℤ} _+_ 0
-    {{+-compatible-ℕ}} : AA.Compatible₂ {A = ℕ} (_as ℤ) _+_
+    {{+-compatible-ℕ}} : AA.Compatible₂ {A = ℕ} (_as ℤ) _+_ _+_ _≃_

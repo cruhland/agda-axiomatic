@@ -35,7 +35,7 @@ record MultiplicationProperties : Set where
     {{*-substitutive}} : AA.Substitutive² {A = ℤ} _*_ _≃_ _≃_
     {{*-associative}} : AA.Associative {A = ℤ} _*_
     {{*-commutative}} : AA.Commutative {A = ℤ} _*_
-    {{*-compatible-ℕ}} : AA.IsCompatible₂ {A = ℕ} (_as ℤ) _*_ _*_ _≃_
+    {{*-compatible-ℕ}} : AA.Compatible₂ {A = ℕ} (_as ℤ) _*_ _*_ _≃_
     {{*-identity}} : AA.Identity² {A = ℤ} _*_ 1
 
     {{*-distributive}} : AA.Distributive² {A = ℤ} _*_ _+_
@@ -187,7 +187,7 @@ record MultiplicationProperties : Set where
             (sa * (na as ℤ)) * (sb * (nb as ℤ))
           ≃⟨ AA.transpose ⟩
             (sa * sb) * ((na as ℤ) * (nb as ℤ))
-          ≃˘⟨ AA.subst₂ AA.isCompat₂ ⟩
+          ≃˘⟨ AA.subst₂ AA.compat₂ ⟩
             (sa * sb) * (na * nb as ℤ)
           ∎
         ±ab = ℤ*.PosOrNeg-intro pos[na*nb] sa*sb≃±1 ab≃[sa*sb]*[na*nb]
@@ -204,8 +204,8 @@ record MultiplicationProperties : Set where
         ... | yes b≃0 = ∨-introᴿ b≃0
         ... | no b≄0 = contra ab≃0 (*-neither-zero a≄0 b≄0)
 
-    neg-compatible-+ : AA.IsCompatible₂ -_ _+_ _+_ _≃_
-    neg-compatible-+ = AA.isCompatible₂ neg-compat-+
+    neg-compatible-+ : AA.Compatible₂ -_ _+_ _+_ _≃_
+    neg-compatible-+ = AA.compatible₂ neg-compat-+
       where
         neg-compat-+ : {a b : ℤ} → - (a + b) ≃ (- a) + (- b)
         neg-compat-+ {a} {b} =
@@ -227,7 +227,7 @@ record MultiplicationProperties : Set where
       - (a - b)
     ≃⟨ AA.subst₁ ℤ-.sub-defn ⟩
       - (a + (- b))
-    ≃⟨ AA.isCompat₂ ⟩
+    ≃⟨ AA.compat₂ ⟩
       (- a) + (- (- b))
     ≃⟨ AA.subst₂ ℤ-.neg-involutive ⟩
       (- a) + b

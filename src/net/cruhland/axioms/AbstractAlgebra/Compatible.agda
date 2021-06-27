@@ -44,22 +44,13 @@ record Preserves {A : Set} (P : A → Set) (_⊙_ : A → A → A) : Set where
 
 open Preserves {{...}} public using (pres)
 
-record IsCompatible₂
+record Compatible₂
     {β} {A : Set} {B : Set β}
     (f : A → B) (_⊙_ : A → A → A) (_⊕_ : B → B → B) (_~_ : B → B → Set)
     : Set where
-  constructor isCompatible₂
-  field
-    isCompat₂ : ∀ {a b} → (f (a ⊙ b)) ~ (f a ⊕ f b)
-
-open IsCompatible₂ {{...}} public using (isCompat₂)
-
-record Compatible₂
-    {A B : Set} {{_ : Eq B}} (f : A → B) (_⊙_ : A → A → A) : Set where
   constructor compatible₂
   field
-    _⊕_ : B → B → B
-    compat₂ : ∀ {a b} → f (a ⊙ b) ≃ f a ⊕ f b
+    compat₂ : ∀ {a b} → (f (a ⊙ b)) ~ (f a ⊕ f b)
 
 open Compatible₂ {{...}} public using (compat₂)
 
@@ -136,28 +127,17 @@ module _
     {β} {A : Set} {B : Set β} {f : A → B}
       {_⊙_ : A → A → A} {_⊕_ : B → B → B} {_~_ : B → B → Set} where
 
-  isCompatible₁-from-isCompatible₂ :
-    {{_ : IsCompatible₂ f _⊙_ _⊕_ _~_}} →
+  isCompatible₁-from-compatible₂ :
+    {{_ : Compatible₂ f _⊙_ _⊕_ _~_}} →
       ∀ {b} → IsCompatible₁ f (_⊙ b) (_⊕ f b) _~_
-  isCompatible₁-from-isCompatible₂ = isCompatible₁ isCompat₂
+  isCompatible₁-from-compatible₂ = isCompatible₁ compat₂
 
-  isCompatible₂-from-isCompatible₁ :
+  compatible₂-from-isCompatible₁ :
     {{_ : ∀ {b} → IsCompatible₁ f (_⊙ b) (_⊕ f b) _~_}} →
-      IsCompatible₂ f _⊙_ _⊕_ _~_
-  isCompatible₂-from-isCompatible₁ = isCompatible₂ isCompat₁
+      Compatible₂ f _⊙_ _⊕_ _~_
+  compatible₂-from-isCompatible₁ = compatible₂ isCompat₁
 
 -- TODO Equivalences for Semicompatible₂ and Preserves
-
-module _ {A B : Set} {f : A → B} {_⊙_ : A → A → A} {{_ : Eq B}} where
-
-  isCompatible₂-from-compatible₂ :
-    {{r : Compatible₂ f _⊙_}} →
-      let open Compatible₂ r using (_⊕_) in IsCompatible₂ f _⊙_ _⊕_ _≃_
-  isCompatible₂-from-compatible₂ = isCompatible₂ compat₂
-
-  compatible₂-from-isCompatible₂ :
-    {_⊕_ : B → B → B} {{_ : IsCompatible₂ f _⊙_ _⊕_ _≃_}} → Compatible₂ f _⊙_
-  compatible₂-from-isCompatible₂ {_⊕_} = compatible₂ _⊕_ isCompat₂
 
 module _ {A : Set} {f : A → A} {_⊙_ : A → A → A} {{_ : Eq A}} where
 
@@ -183,34 +163,34 @@ module _ {A : Set} {f : A → A} {_⊙_ : A → A → A} {{_ : Eq A}} where
 
 module _ {A : Set} {_⊙_ _⊕_ : A → A → A} {{_ : Eq A}} where
 
-  isCompatible₂-from-distributiveᴸ :
+  compatible₂-from-distributiveᴸ :
     {{_ : Distributive handᴸ _⊙_ _⊕_}} →
-      ∀ {a} → IsCompatible₂ (a ⊙_) _⊕_ _⊕_ _≃_
-  isCompatible₂-from-distributiveᴸ {a} = isCompatible₂ distrib
+      ∀ {a} → Compatible₂ (a ⊙_) _⊕_ _⊕_ _≃_
+  compatible₂-from-distributiveᴸ {a} = compatible₂ distrib
 
-  distributiveᴸ-from-isCompatible₂ :
-    {{_ : ∀ {a} → IsCompatible₂ (a ⊙_) _⊕_ _⊕_ _≃_}} →
+  distributiveᴸ-from-compatible₂ :
+    {{_ : ∀ {a} → Compatible₂ (a ⊙_) _⊕_ _⊕_ _≃_}} →
       Distributive handᴸ _⊙_ _⊕_
-  distributiveᴸ-from-isCompatible₂ = distributive isCompat₂
+  distributiveᴸ-from-compatible₂ = distributive compat₂
 
-  isCompatible₂-from-distributiveᴿ :
+  compatible₂-from-distributiveᴿ :
     {{_ : Distributive handᴿ _⊙_ _⊕_}} →
-      ∀ {a} → IsCompatible₂ (_⊙ a) _⊕_ _⊕_ _≃_
-  isCompatible₂-from-distributiveᴿ {a} = isCompatible₂ distrib
+      ∀ {a} → Compatible₂ (_⊙ a) _⊕_ _⊕_ _≃_
+  compatible₂-from-distributiveᴿ {a} = compatible₂ distrib
 
-  distributiveᴿ-from-isCompatible₂ :
-    {{_ : ∀ {a} → IsCompatible₂ (_⊙ a) _⊕_ _⊕_ _≃_}} →
+  distributiveᴿ-from-compatible₂ :
+    {{_ : ∀ {a} → Compatible₂ (_⊙ a) _⊕_ _⊕_ _≃_}} →
       Distributive handᴿ _⊙_ _⊕_
-  distributiveᴿ-from-isCompatible₂ = distributive isCompat₂
+  distributiveᴿ-from-compatible₂ = distributive compat₂
 
 module _ {A : Set} {_⊙_ : A → A → A} {{_ : Eq A}} where
 
-  isCompatible₂-from-zero-product :
+  compatible₂-from-zero-product :
     {{r : ZeroProduct _⊙_}} →
-      let open ZeroProduct r using (z) in IsCompatible₂ (_≃ z) _⊙_ _∨_ _⟨→⟩_
-  isCompatible₂-from-zero-product = isCompatible₂ zero-prod
+      let open ZeroProduct r using (z) in Compatible₂ (_≃ z) _⊙_ _∨_ _⟨→⟩_
+  compatible₂-from-zero-product = compatible₂ zero-prod
 
-  zero-product-from-isCompatible₂ :
+  zero-product-from-compatible₂ :
     ∀ {z} {{_ : Absorptive handᴸ _⊙_ z}} {{_ : Absorptive handᴿ _⊙_ z}}
-      {{_ : IsCompatible₂ (_≃ z) _⊙_ _∨_ _⟨→⟩_}} → ZeroProduct _⊙_
-  zero-product-from-isCompatible₂ {z} = zeroProduct z isCompat₂
+      {{_ : Compatible₂ (_≃ z) _⊙_ _∨_ _⟨→⟩_}} → ZeroProduct _⊙_
+  zero-product-from-compatible₂ {z} = zeroProduct z compat₂

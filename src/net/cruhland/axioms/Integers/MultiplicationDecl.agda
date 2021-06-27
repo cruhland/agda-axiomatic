@@ -47,7 +47,7 @@ record Multiplication
     {{star}} : Op.Star ℤ
     {{*-substitutive}} : AA.Substitutive² {A = ℤ} _*_ _≃_ _≃_
     {{*-commutative}} : AA.Commutative {A = ℤ} _*_
-    {{*-compatible-ℕ}} : AA.IsCompatible₂ {A = ℕ} (_as ℤ) _*_ _*_ _≃_
+    {{*-compatible-ℕ}} : AA.Compatible₂ {A = ℕ} (_as ℤ) _*_ _*_ _≃_
     {{*-identity}} : AA.Identity² _*_ 1
     {{*-associative}} : AA.Associative {A = ℤ} _*_
     {{*-distributive}} : AA.Distributive² {A = ℤ} _*_ _+_
@@ -61,7 +61,7 @@ record Multiplication
     {{zero-product}} : AA.ZeroProduct {A = ℤ} _*_
 
     {{*-distributive-sub}} : AA.Distributive² _*_ _-_
-    {{neg-compatible-+}} : AA.IsCompatible₂ -_ _+_ _+_ _≃_
+    {{neg-compatible-+}} : AA.Compatible₂ -_ _+_ _+_ _≃_
 
     neg-mult : {a : ℤ} → -1 * a ≃ - a
     neg-sub-swap : {a b : ℤ} → - (a - b) ≃ b - a
