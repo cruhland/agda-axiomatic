@@ -114,6 +114,26 @@ instance
          in contra (AA.inject d-as-ℤ≃0-as-ℤ) (pos≄0 pos[d])
    in Ord.<-from-≤≄ a≤b a≄b
 
+pos-from-< : {a b : ℤ} → a < b → Positive (b - a)
+pos-from-< {a} {b} (<₀-intro (≤₀-intro {d} a+d≃b) a≄b) =
+  let d≄0 = λ d≃0 →
+        let a≃b =
+              begin
+                a
+              ≃˘⟨ AA.ident ⟩
+                a + 0
+              ≃⟨ AA.subst₂ (ℤB.fromNatLiteral≃casts 0) ⟩
+                a + (0 as ℕ as ℤ)
+              ≃˘⟨ AA.subst₂ (AA.subst₁ d≃0) ⟩
+                a + (d as ℤ)
+              ≃⟨ a+d≃b ⟩
+                b
+              ∎
+         in contra a≃b a≄b
+      pos[d] = ℕ.Pos-intro-≄0 d≄0
+      b-a≃d = ℤ-.≃ᴿ-+ᴸ-toᴿ (Eq.sym a+d≃b)
+   in ℤS.posℤ-from-posℕ (ℤS.≃posℕ-intro pos[d] b-a≃d)
+
 order-trichotomy : (a b : ℤ) → AA.ExactlyOneOfThree (a < b) (a ≃ b) (a > b)
 order-trichotomy a b = AA.exactlyOneOfThree 1of3 ¬2of3
   where

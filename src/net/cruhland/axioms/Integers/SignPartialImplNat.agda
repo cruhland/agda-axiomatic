@@ -5,7 +5,7 @@ open Eq.≃-Reasoning
 open import net.cruhland.axioms.Integers.AdditionDecl using (Addition)
 open import net.cruhland.axioms.Integers.BaseDecl using (Base)
 open import net.cruhland.axioms.Integers.NegationDecl using (Negation)
-open import net.cruhland.axioms.Operators using (-_)
+open import net.cruhland.axioms.Operators using (_+_; -_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.axioms.Sign
   using (Negative; Negativity; Positive; Positivity; pos≄0)
@@ -74,8 +74,8 @@ nonzero-from-≃neg[posℕ] {a} (≃posℕ-intro {n} pos[n] a≃-n) a≃0 =
    in contra (AA.inject n-as-ℤ≃0-as-ℤ) n≄0
 
 instance
-  neg-substitutive : AA.Substitutive₁ (_≃ -_ [posℕ]) _≃_ _⟨→⟩_
-  neg-substitutive = AA.substitutive₁ neg-subst
+  negative-substitutive : AA.Substitutive₁ (_≃ -_ [posℕ]) _≃_ _⟨→⟩_
+  negative-substitutive = AA.substitutive₁ neg-subst
     where
       neg-subst : ∀ {a b} → a ≃ b → a ≃ -_ [posℕ] → b ≃ -_ [posℕ]
       neg-subst a≃b (≃posℕ-intro pos[n] a≃n) =
@@ -116,6 +116,26 @@ neg-Negative {a} (≃posℕ-intro {n} pos[n] a≃-n) =
           (n as ℤ)
         ∎
    in ≃posℕ-intro pos[n] -a≃n
+
+instance
+  +-preserves-pos : AA.Preserves Positive _+_
+  +-preserves-pos = AA.preserves +-pres-pos
+    where
+      +-pres-pos : {a b : ℤ} → Positive a → Positive b → Positive (a + b)
+      +-pres-pos
+          {a} {b} (≃posℕ-intro {n} pos[n] a≃n) (≃posℕ-intro {m} pos[m] b≃m) =
+        let pos[n+m] = AA.pres pos[n] pos[m]
+            a+b≃n+m =
+              begin
+                a + b
+              ≃⟨ AA.subst₂ a≃n ⟩
+                (n as ℤ) + b
+              ≃⟨ AA.subst₂ b≃m ⟩
+                (n as ℤ) + (m as ℤ)
+              ≃˘⟨ AA.compat₂ ⟩
+                (n + m as ℤ)
+              ∎
+         in ≃posℕ-intro pos[n+m] a+b≃n+m
 
 -- Include everything from the common partial impl
 open import net.cruhland.axioms.Integers.SignPartialImpl PA ZB Z+ Z-

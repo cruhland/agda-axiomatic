@@ -1,7 +1,7 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_As_; _as_)
 open import net.cruhland.axioms.Eq using (_≃_; Eq)
-open import net.cruhland.axioms.Operators using (-_)
+open import net.cruhland.axioms.Operators using (_+_; -_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.axioms.Sign
   using (Negative; Negativity; Positive; Positivity)
@@ -47,6 +47,7 @@ record Sign (ZB : Base) (Z+ : Addition ZB) (Z- : Negation ZB Z+) : Set₁ where
     negℤ-from-posℕ : {a : ℤ} → a ≃ -_ [posℕ] → Negative a
 
     from-ℕ-preserves-pos : {n : ℕ} → Positive n → Positive (n as ℤ)
+    +-preserves-pos : AA.Preserves {A = ℤ} Positive _+_
     neg-Positive : {a : ℤ} → Positive a → Negative (- a)
     neg-Negative : {a : ℤ} → Negative a → Positive (- a)
     trichotomy :

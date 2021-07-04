@@ -2,19 +2,21 @@ import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq using (_≃_; refl; module ≃-Reasoning)
 open ≃-Reasoning
+open import net.cruhland.axioms.Integers using (Integers)
 open import net.cruhland.axioms.Operators as Op using (_+_; _*_; -_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.models.Function using (const)
 open import net.cruhland.models.Literals as Literals
 open import net.cruhland.models.Logic using (⊤)
 
-module net.cruhland.models.Rationals.Negation (PA : PeanoArithmetic) where
+module net.cruhland.models.Rationals.Negation
+  (PA : PeanoArithmetic) (Z : Integers PA) where
 
-private module ℕ = PeanoArithmetic PA
-open import net.cruhland.models.Integers PA as ℤ using (ℤ)
-import net.cruhland.models.Rationals.Addition PA as ℚ+
-open import net.cruhland.models.Rationals.Base PA as ℚ using (_//_~_; ℚ)
-open import net.cruhland.models.Rationals.Equality PA as ℚ≃ using (≃₀-intro)
+private open module ℕ = PeanoArithmetic PA using (ℕ)
+private open module ℤ = Integers Z using (ℤ)
+import net.cruhland.models.Rationals.Addition PA Z as ℚ+
+open import net.cruhland.models.Rationals.Base PA Z as ℚ using (_//_~_; ℚ)
+open import net.cruhland.models.Rationals.Equality PA Z as ℚ≃ using (≃₀-intro)
 
 instance
   dashᴸ : Op.Dashᴸ ℚ
@@ -74,3 +76,22 @@ instance
 
   +-inverse² : AA.Inverse² -_ (const ⊤) _+_ 0
   +-inverse² = AA.inverse² {A = ℚ}
+
+neg-literal≃neg-ℤ-literal//1 :
+  (n : Nat) → fromNegLiteral n ≃ (fromNegLiteral n // 1 ~ ℤ.1≄0)
+neg-literal≃neg-ℤ-literal//1 n =
+  begin
+    fromNegLiteral n
+  ≃⟨⟩
+    - (n as ℚ)
+  ≃⟨⟩
+    - (n as ℕ as ℤ as ℚ)
+  ≃˘⟨ AA.subst₁ {f = -_} (AA.subst₁ (ℤ.fromNatLiteral≃casts n)) ⟩
+    - ((fromNatLiteral n) as ℚ)
+  ≃⟨⟩
+    - (fromNatLiteral n // 1 ~ ℤ.1≄0)
+  ≃⟨⟩
+    (- fromNatLiteral n) // 1 ~ ℤ.1≄0
+  ≃˘⟨ ℚ≃.subst↑ ℤ.1≄0 (ℤ.neg-literal≃nat-literal n) ⟩
+    fromNegLiteral n // 1 ~ ℤ.1≄0
+  ∎

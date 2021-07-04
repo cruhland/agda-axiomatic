@@ -1,22 +1,18 @@
 open import net.cruhland.axioms.Eq using (_≃_)
+open import net.cruhland.axioms.Integers using (Integers)
 open import net.cruhland.axioms.Operators using (-_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 import net.cruhland.axioms.Sign as Sign
 open import net.cruhland.models.Literals
 
-module net.cruhland.models.Rationals.Ordering (PA : PeanoArithmetic) where
+module net.cruhland.models.Rationals.Ordering
+  (PA : PeanoArithmetic) (Z : Integers PA) where
 
 private module ℕ = PeanoArithmetic PA
-import net.cruhland.models.Integers PA as ℤ
-open import net.cruhland.models.Rationals.Base PA as ℚ using (ℚ)
-import net.cruhland.models.Rationals.Equality PA as ℚ≃
-import net.cruhland.models.Rationals.Negation PA as ℚ-
-
-private
-  instance
-    -- TODO: Remove this after factoring out Decls
-    ℤ-positivity : Sign.Positivity 0
-    ℤ-positivity = ℤ.positivity
+private module ℤ = Integers Z
+open import net.cruhland.models.Rationals.Base PA Z as ℚ using (ℚ)
+import net.cruhland.models.Rationals.Equality PA Z as ℚ≃
+import net.cruhland.models.Rationals.Negation PA Z as ℚ-
 
 record Positive (q : ℚ) : Set where
   field

@@ -24,4 +24,5 @@ record Ordering
     {{totalOrder}} : Ord.TotalOrder ℤ
     {{≤-antisymmetric}} : AA.Antisymmetric {A = ℤ} _≤_
     <-from-pos : {a b : ℤ} → Positive (b - a) → a < b
+    pos-from-< : {a b : ℤ} → a < b → Positive (b - a)
     order-trichotomy : (a b : ℤ) → AA.ExactlyOneOfThree (a < b) (a ≃ b) (a > b)

@@ -3,16 +3,16 @@ import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast as Cast using (_As_; As-intro)
 open import net.cruhland.axioms.DecEq using (_≃?_; ≄-derive)
 open import net.cruhland.axioms.Eq using (_≄_)
+open import net.cruhland.axioms.Integers using (Integers)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.models.Function using (_∘_)
 open import net.cruhland.models.Literals
 
-module net.cruhland.models.Rationals.Base (PA : PeanoArithmetic) where
+module net.cruhland.models.Rationals.Base
+  (PA : PeanoArithmetic) (Z : Integers PA) where
 
-private module ℕ = PeanoArithmetic PA
-open ℕ using (ℕ)
-import net.cruhland.models.Integers PA as ℤ
-open ℤ using (ℤ; ≃ᶻ-intro)
+private open module ℕ = PeanoArithmetic PA using (ℕ)
+private open module ℤ = Integers Z using (ℤ)
 
 infixl 8 _//_ _//_~_
 
@@ -26,7 +26,7 @@ _//_ : (n d : ℤ) {{_ : False (d ≃? 0)}} → ℚ
 n // d = n // d ~ ≄-derive
 
 _//1 : ℤ → ℚ
-a //1 = a // 1 ~ ℕ.step≄zero ∘ AA.inject
+a //1 = a // 1 ~ ℤ.1≄0
 
 instance
   from-ℤ : ℤ As ℚ

@@ -42,41 +42,40 @@ instance
           b + a
         ∎
 
-  private
-    +-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _+_ _≃_ _≃_
-    +-substitutiveᴸ = AA.substitutive₂ +-substᴸ
-      where
-        +-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ + b ≃ a₂ + b
-        +-substᴸ
-            a₁@{a₁⁺ — a₁⁻} a₂@{a₂⁺ — a₂⁻} b@{b⁺ — b⁻}
-            (≃₀-intro a₁⁺+a₂⁻≃a₂⁺+a₁⁻) =
-              begin
-                a₁ + b
-              ≃⟨⟩
-                (a₁⁺ — a₁⁻) + (b⁺ — b⁻)
-              ≃⟨⟩
-                (a₁⁺ + b⁺) — (a₁⁻ + b⁻)
-              ≃⟨ ≃₀-intro componentEq ⟩
-                (a₂⁺ + b⁺) — (a₂⁻ + b⁻)
-              ≃⟨⟩
-                (a₂⁺ — a₂⁻) + (b⁺ — b⁻)
-              ≃⟨⟩
-                a₂ + b
-              ∎
-          where
-            componentEq =
-              begin
-                (a₁⁺ + b⁺) + (a₂⁻ + b⁻)
-              ≃⟨ AA.transpose ⟩
-                (a₁⁺ + a₂⁻) + (b⁺ + b⁻)
-              ≃⟨ AA.subst₂ a₁⁺+a₂⁻≃a₂⁺+a₁⁻ ⟩
-                (a₂⁺ + a₁⁻) + (b⁺ + b⁻)
-              ≃⟨ AA.transpose ⟩
-                (a₂⁺ + b⁺) + (a₁⁻ + b⁻)
-              ∎
+  +-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _+_ _≃_ _≃_
+  +-substitutiveᴸ = AA.substitutive₂ +-substᴸ
+    where
+      +-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ + b ≃ a₂ + b
+      +-substᴸ
+          a₁@{a₁⁺ — a₁⁻} a₂@{a₂⁺ — a₂⁻} b@{b⁺ — b⁻}
+          (≃₀-intro a₁⁺+a₂⁻≃a₂⁺+a₁⁻) =
+            begin
+              a₁ + b
+            ≃⟨⟩
+              (a₁⁺ — a₁⁻) + (b⁺ — b⁻)
+            ≃⟨⟩
+              (a₁⁺ + b⁺) — (a₁⁻ + b⁻)
+            ≃⟨ ≃₀-intro componentEq ⟩
+              (a₂⁺ + b⁺) — (a₂⁻ + b⁻)
+            ≃⟨⟩
+              (a₂⁺ — a₂⁻) + (b⁺ — b⁻)
+            ≃⟨⟩
+              a₂ + b
+            ∎
+        where
+          componentEq =
+            begin
+              (a₁⁺ + b⁺) + (a₂⁻ + b⁻)
+            ≃⟨ AA.transpose ⟩
+              (a₁⁺ + a₂⁻) + (b⁺ + b⁻)
+            ≃⟨ AA.subst₂ a₁⁺+a₂⁻≃a₂⁺+a₁⁻ ⟩
+              (a₂⁺ + a₁⁻) + (b⁺ + b⁻)
+            ≃⟨ AA.transpose ⟩
+              (a₂⁺ + b⁺) + (a₁⁻ + b⁻)
+            ∎
 
-    +-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _+_ _≃_ _≃_
-    +-substitutiveᴿ = AA.substᴿ-from-substᴸ-comm {A = ℤ}
+  +-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _+_ _≃_ _≃_
+  +-substitutiveᴿ = AA.substᴿ-from-substᴸ-comm {A = ℤ}
 
   +-substitutive : AA.Substitutive² _+_ _≃_ _≃_
   +-substitutive = AA.substitutive² {A = ℤ}
@@ -123,26 +122,25 @@ instance
           (n as ℤ) + (m as ℤ)
         ∎
 
-  private
-    +-identityᴸ : AA.Identity AA.handᴸ _+_ 0
-    +-identityᴸ = AA.identity +-identᴸ
-      where
-        +-identᴸ : {a : ℤ} → 0 + a ≃ a
-        +-identᴸ a@{a⁺ — a⁻} =
-          begin
-            0 + a
-          ≃⟨⟩
-            (0 — 0) + (a⁺ — a⁻)
-          ≃⟨⟩
-            (0 + a⁺) — (0 + a⁻)
-          ≃⟨ AA.subst₂ AA.ident ⟩
-            a⁺ — (0 + a⁻)
-          ≃⟨ AA.subst₂ AA.ident ⟩
-            a
-          ∎
+  +-identityᴸ : AA.Identity AA.handᴸ _+_ 0
+  +-identityᴸ = AA.identity +-identᴸ
+    where
+      +-identᴸ : {a : ℤ} → 0 + a ≃ a
+      +-identᴸ a@{a⁺ — a⁻} =
+        begin
+          0 + a
+        ≃⟨⟩
+          (0 — 0) + (a⁺ — a⁻)
+        ≃⟨⟩
+          (0 + a⁺) — (0 + a⁻)
+        ≃⟨ AA.subst₂ AA.ident ⟩
+          a⁺ — (0 + a⁻)
+        ≃⟨ AA.subst₂ AA.ident ⟩
+          a
+        ∎
 
-    +-identityᴿ : AA.Identity AA.handᴿ _+_ 0
-    +-identityᴿ = AA.identityᴿ-from-identityᴸ {A = ℤ}
+  +-identityᴿ : AA.Identity AA.handᴿ _+_ 0
+  +-identityᴿ = AA.identityᴿ-from-identityᴸ {A = ℤ}
 
   +-identity : AA.Identity² _+_ 0
   +-identity = AA.identity² {A = ℤ}

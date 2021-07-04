@@ -2,17 +2,18 @@ import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq using (_≃_; _≄_; sym; module ≃-Reasoning)
 open ≃-Reasoning
-import net.cruhland.axioms.Operators as Op
-open Op using (_+_; _*_)
+open import net.cruhland.axioms.Integers using (Integers)
+open import net.cruhland.axioms.Operators as Op using (_+_; _*_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.models.Literals
 
-module net.cruhland.models.Rationals.Addition (PA : PeanoArithmetic) where
+module net.cruhland.models.Rationals.Addition
+  (PA : PeanoArithmetic) (Z : Integers PA) where
 
-private module ℕ = PeanoArithmetic PA
-open import net.cruhland.models.Integers PA as ℤ using (ℤ)
-open import net.cruhland.models.Rationals.Base PA as ℚ using (_//_~_; ℚ)
-open import net.cruhland.models.Rationals.Equality PA as ℚ≃ using (≃₀-intro)
+private open module ℕ = PeanoArithmetic PA using (ℕ)
+private open module ℤ = Integers Z using (ℤ)
+open import net.cruhland.models.Rationals.Base PA Z as ℚ using (_//_~_; ℚ)
+open import net.cruhland.models.Rationals.Equality PA Z as ℚ≃ using (≃₀-intro)
 
 instance
   plus : Op.Plus ℚ
@@ -131,20 +132,28 @@ instance
   +-identityᴸ = AA.identity +-identᴸ
     where
       +-identᴸ : {p : ℚ} → 0 + p ≃ p
-      +-identᴸ {p↑ // p↓ ~ _} = ≃₀-intro (AA.[a≃b][c≃d] ≃-numer ≃-denom)
-        where
-          ≃-numer =
-            begin
-              0 * p↓ + 1 * p↑
-            ≃⟨ AA.subst₂ AA.absorb ⟩
-              0 + 1 * p↑
-            ≃⟨ AA.ident ⟩
-              1 * p↑
-            ≃⟨ AA.ident ⟩
-              p↑
-            ∎
-
-          ≃-denom = sym AA.ident
+      +-identᴸ p@{p↑ // p↓ ~ p↓≄0} =
+        begin
+          0 + p
+        ≃⟨⟩
+          (0 as ℕ as ℤ as ℚ) + (p↑ // p↓ ~ p↓≄0)
+        ≃˘⟨ AA.subst₂ (AA.subst₁ (ℤ.fromNatLiteral≃casts 0)) ⟩
+          (0 as ℚ) + (p↑ // p↓ ~ p↓≄0)
+        ≃⟨⟩
+          (0 // 1 ~ ℤ.1≄0) + (p↑ // p↓ ~ p↓≄0)
+        ≃⟨⟩
+          (0 * p↓ + 1 * p↑) // 1 * p↓ ~ AA.nonzero-prod ℤ.1≄0 p↓≄0
+        ≃⟨ ℚ≃.subst↓ (AA.nonzero-prod ℤ.1≄0 p↓≄0) p↓≄0 AA.ident ⟩
+          (0 * p↓ + 1 * p↑) // p↓ ~ p↓≄0
+        ≃⟨ ℚ≃.subst↑ p↓≄0 (AA.subst₂ AA.absorb) ⟩
+          (0 + 1 * p↑) // p↓ ~ p↓≄0
+        ≃⟨ ℚ≃.subst↑ p↓≄0 AA.ident ⟩
+          (1 * p↑) // p↓ ~ p↓≄0
+        ≃⟨ ℚ≃.subst↑ p↓≄0 AA.ident ⟩
+          p↑ // p↓ ~ p↓≄0
+        ≃⟨⟩
+          p
+        ∎
 
   +-identityᴿ : AA.Identity AA.handᴿ _+_ 0
   +-identityᴿ = AA.identityᴿ-from-identityᴸ {A = ℚ}

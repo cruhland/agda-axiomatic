@@ -1,34 +1,27 @@
-open import Relation.Nullary.Decidable using (False; fromWitnessFalse)
 import net.cruhland.axioms.AbstractAlgebra as AA
-open import net.cruhland.axioms.Cast using (_as_; _value_)
+open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.DecEq using (_≃?_; DecEq; DecEq-intro)
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_; Eq)
 open Eq.≃-Reasoning
+open import net.cruhland.axioms.Integers using (Integers)
 open import net.cruhland.axioms.Operators using (_*_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.models.Function using (_∘_)
 open import net.cruhland.models.Literals
-open import net.cruhland.models.Logic using (⊤; ∨-forceᴸ; Dec; dec-map; yes; no)
+open import net.cruhland.models.Logic using (⊤; Dec; dec-map)
 
-module net.cruhland.models.Rationals.Equality (PA : PeanoArithmetic) where
+module net.cruhland.models.Rationals.Equality
+  (PA : PeanoArithmetic) (Z : Integers PA) where
 
-private module ℕ = PeanoArithmetic PA
-open import net.cruhland.models.Integers PA as ℤ using (ℤ)
-open import net.cruhland.models.Rationals.Base PA as ℚ using (_//_~_; ℚ)
+private open module ℕ = PeanoArithmetic PA using (ℕ)
+private open module ℤ = Integers Z using (ℤ)
+open import net.cruhland.models.Rationals.Base PA Z as ℚ using (_//_~_; ℚ)
 
 infix 4 _≃₀_
 record _≃₀_ (p q : ℚ) : Set where
   constructor ≃₀-intro
   field
     elim : ℚ.n p * ℚ.d q ≃ ℚ.n q * ℚ.d p
-
-private
-  1≄0 : (ℤ value 1) ≄ 0
-  1≄0 = ℕ.step≄zero ∘ AA.inject
-
-  instance
-    1≄ⁱ0 : False ((ℤ value 1) ≃? 0)
-    1≄ⁱ0 = fromWitnessFalse 1≄0
 
 instance
   ≃₀-reflexive : Eq.Reflexive _≃₀_
@@ -50,7 +43,7 @@ instance
           p↑r↓q↓≃r↑p↓q↓ =
             begin
               p↑ * r↓ * q↓
-            ≃⟨ AA.assoc {A = ℤ} {{eq = ℤ.eq}} {_⊙_ = _*_}⟩
+            ≃⟨ AA.assoc ⟩
               p↑ * (r↓ * q↓)
             ≃⟨ AA.subst₂ AA.comm ⟩
               p↑ * (q↓ * r↓)
@@ -69,7 +62,7 @@ instance
             ≃⟨ AA.subst₂ AA.comm  ⟩
               r↑ * p↓ * q↓
             ∎
-          instance q↓≄ⁱ0 = fromWitnessFalse q↓≄0
+          instance q↓≄ⁱ0 = Eq.≄ⁱ-intro q↓≄0
           p↑r↓≃r↑p↓ = AA.cancel p↑r↓q↓≃r↑p↓q↓
         in ≃₀-intro p↑r↓≃r↑p↓
 
@@ -90,28 +83,58 @@ instance
   from-ℤ-injective : AA.Injective (_as ℚ) _≃_ _≃_
   from-ℤ-injective = AA.injective {A = ℤ} (AA.cancel ∘ _≃₀_.elim)
 
-q≃0 : ∀ {q} → ℚ.n q ≃ 0 → q ≃ 0
-q≃0 {q} n≃0 = ≃₀-intro n1≃0d
+literal≃ℤ-literal//1 :
+  (n : Nat) → fromNatLiteral n ≃ (fromNatLiteral n) // 1 ~ ℤ.1≄0
+literal≃ℤ-literal//1 n =
+  begin
+    fromNatLiteral n
+  ≃⟨⟩
+    (n as ℕ as ℤ as ℚ)
+  ≃˘⟨ AA.subst₁ (ℤ.fromNatLiteral≃casts n) ⟩
+    ((fromNatLiteral n) as ℚ)
+  ≃⟨⟩
+    (fromNatLiteral n) // 1 ~ ℤ.1≄0
+  ∎
+
+q≃0 : {q : ℚ} → ℚ.n q ≃ 0 → q ≃ 0
+q≃0 q@{n // d ~ d≄0} n≃0 =
+    begin
+      q
+    ≃⟨⟩
+      n // d ~ d≄0
+    ≃⟨ ≃₀-intro componentEq ⟩
+      0 // 1 ~ ℤ.1≄0
+    ≃⟨⟩
+      (0 as ℚ)
+    ≃⟨ AA.subst₁ (ℤ.fromNatLiteral≃casts 0) ⟩
+      (0 as ℕ as ℤ as ℚ)
+    ≃⟨⟩
+      0
+    ∎
   where
-    n1≃0d =
+    componentEq =
       begin
-        (ℚ.n q) * 1
+        n * 1
       ≃⟨ AA.ident ⟩
-        ℚ.n q
+        n
       ≃⟨ n≃0 ⟩
         0
       ≃˘⟨ AA.absorb ⟩
-        0 * ℚ.d q
+        0 * d
       ∎
 
 q↑≃0 : ∀ {q} → q ≃ 0 → ℚ.n q ≃ 0
-q↑≃0 {q} (≃₀-intro n1≃0d) =
+q↑≃0 q@{n // d ~ d≄0} (≃₀-intro n1≃[0-as-ℕ-as-ℤ]d) =
   begin
     ℚ.n q
+  ≃⟨⟩
+    n
   ≃˘⟨ AA.ident ⟩
-    (ℚ.n q) * 1
-  ≃⟨ n1≃0d ⟩
-    0 * ℚ.d q
+    n * 1
+  ≃⟨ n1≃[0-as-ℕ-as-ℤ]d ⟩
+    (0 as ℕ as ℤ) * d
+  ≃˘⟨ AA.subst₂ (ℤ.fromNatLiteral≃casts 0) ⟩
+    0 * d
   ≃⟨ AA.absorb ⟩
     0
   ∎
@@ -127,16 +150,37 @@ subst↓ :
 subst↓ _ _ q↓₁≃q↓₂ = ≃₀-intro (AA.subst₂ (Eq.sym q↓₁≃q↓₂))
 
 q≃1 : ∀ {q} → ℚ.n q ≃ ℚ.d q → q ≃ 1
-q≃1 {q↑ // q↓ ~ _} q↑≃q↓ = ≃₀-intro q↑1≃1q↓
-  where
-    q↑1≃1q↓ =
-      begin
-        q↑ * 1
-      ≃⟨ AA.comm ⟩
-        1 * q↑
-      ≃⟨ AA.subst₂ q↑≃q↓ ⟩
-        1 * q↓
-      ∎
+q≃1 q@{q↑ // q↓ ~ q↓≄0} q↑≃q↓ =
+  begin
+    q
+  ≃⟨⟩
+    q↑ // q↓ ~ q↓≄0
+  ≃⟨ subst↑ q↓≄0 q↑≃q↓ ⟩
+    q↓ // q↓ ~ q↓≄0
+  ≃⟨ ≃₀-intro AA.comm ⟩
+    1 // 1 ~ ℤ.1≄0
+  ≃⟨⟩
+    (1 as ℚ)
+  ≃⟨ AA.subst₁ (ℤ.fromNatLiteral≃casts 1) ⟩
+    (1 as ℕ as ℤ as ℚ)
+  ≃⟨⟩
+    1
+  ∎
 
 q↑≃q↓ : ∀ {q} → q ≃ 1 → ℚ.n q ≃ ℚ.d q
-q↑≃q↓ (≃₀-intro q↑1≃1q↓) = AA.cancel (Eq.trans AA.comm q↑1≃1q↓)
+q↑≃q↓ q@{q↑ // q↓ ~ q↓≄0} (≃₀-intro q↑1≃[1-as-ℕ-as-ℤ]q↓) =
+  begin
+    ℚ.n q
+  ≃⟨⟩
+    q↑
+  ≃˘⟨ AA.ident ⟩
+    q↑ * 1
+  ≃⟨ q↑1≃[1-as-ℕ-as-ℤ]q↓ ⟩
+    (1 as ℕ as ℤ) * q↓
+  ≃˘⟨ AA.subst₂ (ℤ.fromNatLiteral≃casts 1) ⟩
+    1 * q↓
+  ≃⟨ AA.ident ⟩
+    q↓
+  ≃⟨⟩
+    ℚ.d q
+  ∎

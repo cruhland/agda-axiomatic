@@ -17,6 +17,7 @@ record LessThanOrEqual (A : Set) : Set₁ where
   _≱_ = flip _≰_
 
 open LessThanOrEqual {{...}} public using (_≤_; _≥_; _≰_; _≱_)
+{-# DISPLAY LessThanOrEqual._≤_ _ a b = a ≤ b #-}
 
 record LessThan (A : Set) : Set₁ where
   constructor lessThan
@@ -31,6 +32,7 @@ record LessThan (A : Set) : Set₁ where
   _≯_ = flip _≮_
 
 open LessThan {{...}} public using (_<_; _>_; _≮_; _≯_)
+{-# DISPLAY LessThan._<_ _ a b = a < b #-}
 
 record TotalOrder (A : Set) {{_ : Eq A}} : Set₁ where
   field

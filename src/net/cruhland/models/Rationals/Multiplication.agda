@@ -2,18 +2,20 @@ import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq using (_≃_; sym; module ≃-Reasoning)
 open ≃-Reasoning
+open import net.cruhland.axioms.Integers using (Integers)
 open import net.cruhland.axioms.Operators as Op using (_+_; _*_; -_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.models.Literals
 
-module net.cruhland.models.Rationals.Multiplication (PA : PeanoArithmetic) where
+module net.cruhland.models.Rationals.Multiplication
+  (PA : PeanoArithmetic) (Z : Integers PA) where
 
-private module ℕ = PeanoArithmetic PA
-open import net.cruhland.models.Integers PA as ℤ using (ℤ)
-import net.cruhland.models.Rationals.Addition PA as ℚ+
-open import net.cruhland.models.Rationals.Base PA as ℚ using (_//_~_; ℚ)
-open import net.cruhland.models.Rationals.Equality PA as ℚ≃ using (≃₀-intro)
-import net.cruhland.models.Rationals.Negation PA as ℚ-
+private open module ℕ = PeanoArithmetic PA using (ℕ)
+private open module ℤ = Integers Z using (ℤ)
+import net.cruhland.models.Rationals.Addition PA Z as ℚ+
+open import net.cruhland.models.Rationals.Base PA Z as ℚ using (_//_~_; ℚ)
+open import net.cruhland.models.Rationals.Equality PA Z as ℚ≃ using (≃₀-intro)
+import net.cruhland.models.Rationals.Negation PA Z as ℚ-
 
 instance
   star : Op.Star ℚ
@@ -22,9 +24,6 @@ instance
       _*₀_ : ℚ → ℚ → ℚ
       (p↑ // p↓ ~ p↓≄0) *₀ (q↑ // q↓ ~ q↓≄0) =
         (p↑ * q↑) // p↓ * q↓ ~ AA.nonzero-prod p↓≄0 q↓≄0
-
-neg-mult : {q : ℚ} → - q ≃ -1 * q
-neg-mult {q↑ // q↓ ~ _} = ≃₀-intro (AA.[a≃b][c≃d] ℤ.neg-mult AA.ident)
 
 instance
   *-commutative : AA.Commutative _*_
@@ -82,6 +81,27 @@ instance
       *-assoc {p↑ // p↓ ~ _} {q↑ // q↓ ~ _} {r↑ // r↓ ~ _} =
         ≃₀-intro (AA.[a≃b][c≃d] {_⊙_ = _*_} AA.assoc (sym AA.assoc))
 
+neg-mult : {q : ℚ} → - q ≃ -1 * q
+neg-mult q@{q↑ // q↓ ~ q↓≄0} =
+  begin
+    - q
+  ≃⟨⟩
+    - (q↑ // q↓ ~ q↓≄0)
+  ≃⟨⟩
+    (- q↑) // q↓ ~ q↓≄0
+  ≃˘⟨ ℚ≃.subst↑ q↓≄0 ℤ.neg-mult ⟩
+    (-1 * q↑) // q↓ ~ q↓≄0
+  ≃˘⟨ ℚ≃.subst↓ {q↓₁ = 1 * q↓} (AA.nonzero-prod ℤ.1≄0 q↓≄0) q↓≄0 AA.ident ⟩
+    (-1 * q↑) // 1 * q↓ ~ AA.nonzero-prod ℤ.1≄0 q↓≄0
+  ≃⟨⟩
+    (-1 // 1 ~ ℤ.1≄0) * (q↑ // q↓ ~ q↓≄0)
+  ≃˘⟨ AA.subst₂ (ℚ-.neg-literal≃neg-ℤ-literal//1 1) ⟩
+    -1 * (q↑ // q↓ ~ q↓≄0)
+  ≃⟨⟩
+    -1 * q
+  ∎
+
+instance
   *-fnOpCommutativeᴸ-neg : AA.FnOpCommutative AA.handᴸ -_ _*_
   *-fnOpCommutativeᴸ-neg = AA.fnOpCommutative *-commᴸ-neg
     where
@@ -104,8 +124,22 @@ instance
   *-identityᴸ = AA.identity *-identᴸ
     where
       *-identᴸ : {p : ℚ} → 1 * p ≃ p
-      *-identᴸ {p↑ // p↓ ~ _} =
-        ≃₀-intro (AA.[a≃b][c≃d] {_⊙_ = _*_} AA.ident (sym AA.ident))
+      *-identᴸ p@{p↑ // p↓ ~ p↓≄0} =
+        begin
+          1 * p
+        ≃⟨ AA.subst₂ (ℚ≃.literal≃ℤ-literal//1 1) ⟩
+          (1 // 1 ~ ℤ.1≄0) * p
+        ≃⟨⟩
+          (1 // 1 ~ ℤ.1≄0) * (p↑ // p↓ ~ p↓≄0)
+        ≃⟨⟩
+          (1 * p↑) // 1 * p↓ ~ AA.nonzero-prod ℤ.1≄0 p↓≄0
+        ≃⟨ ℚ≃.subst↓ (AA.nonzero-prod ℤ.1≄0 p↓≄0) p↓≄0 AA.ident ⟩
+          (1 * p↑) // p↓ ~ p↓≄0
+        ≃⟨ ℚ≃.subst↑ p↓≄0 AA.ident ⟩
+          p↑ // p↓ ~ p↓≄0
+        ≃⟨⟩
+          p
+        ∎
 
   *-identityᴿ : AA.Identity AA.handᴿ _*_ 1
   *-identityᴿ = AA.identityᴿ-from-identityᴸ {A = ℚ}

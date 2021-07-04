@@ -34,100 +34,63 @@ CancellativeProperty hand _⊙_ _~_ _≈_ x =
   let _<⊙>_ = forHand hand _⊙_
    in ∀ {y₁ y₂} → (x <⊙> y₁) ≈ (x <⊙> y₂) → y₁ ~ y₂
 
-record IsCancellative
+record Cancellative
     (hand : Hand) {A B : Set} (_⊙_ : A → A → B) (_~_ : A → A → Set)
     (_≈_ : B → B → Set) (C : A → Set)
     : Set where
-  constructor isCancellative
+  constructor cancellative
   field
-    isCancel : ∀ {a} {{_ : C a}} → CancellativeProperty hand _⊙_ _~_ _≈_ a
-
-open IsCancellative {{...}} public using (isCancel)
-
-record Cancellative
-    (hand : Hand) {A B : Set} (_⊙_ : A → A → B) (_~_ : A → A → Set)
-    (_≈_ : B → B → Set)
-    : Set₁ where
-  field
-    C : A → Set
     cancel : ∀ {a} {{_ : C a}} → CancellativeProperty hand _⊙_ _~_ _≈_ a
 
 open Cancellative {{...}} public using (cancel)
 
-cancellative :
-  {hand : Hand} {A B F : Set} {C : A → Set}
-  {_⊙_ : A → A → B} {_~_ : A → A → Set} {_≈_ : B → B → Set}
-  {{cf : ConstrainableFn F C (CancellativeProperty hand _⊙_ _~_ _≈_)}} → F →
-  Cancellative hand _⊙_ _~_ _≈_
-cancellative {hand} {C = C} {_⊙_ = _⊙_} {_~_} {_≈_} {{cf}} f =
-    record { C = C ; cancel = cancelPrf }
-  where
-    cancelPrf : ∀ {a} {{_ : C a}} → CancellativeProperty hand _⊙_ _~_ _≈_ a
-    cancelPrf {a} {b₁} = toImpFn f {a} {b₁}
-
-isCancellativeᴿ-from-isCancellativeᴸ :
-  {A B : Set} {_⊙_ : A → A → B} {_~_ : A → A → Set} {_≈_ : B → B → Set}
-  {C : A → Set} {{_ : Eq.Transitive _≈_}} {{_ : Swappable _⊙_ _≈_}}
-  {{_ : IsCancellative handᴸ _⊙_ _~_ _≈_ C}} →
-  IsCancellative handᴿ _⊙_ _~_ _≈_ C
-isCancellativeᴿ-from-isCancellativeᴸ = isCancellative (isCancel ∘ with-swap)
-
 cancellativeᴿ-from-cancellativeᴸ :
   {A B : Set} {_⊙_ : A → A → B} {_~_ : A → A → Set} {_≈_ : B → B → Set}
-  {{_ : Eq.Transitive _≈_}} {{_ : Swappable _⊙_ _≈_}}
-  {{c : Cancellative handᴸ _⊙_ _~_ _≈_}} → Cancellative handᴿ _⊙_ _~_ _≈_
-cancellativeᴿ-from-cancellativeᴸ {{c = c}} =
-  let open Cancellative c using (C)
-   in record { C = C ; cancel = λ {a} {{_ : C a}} → cancel ∘ with-swap }
+  {C : A → Set} {{_ : Eq.Transitive _≈_}} {{_ : Swappable _⊙_ _≈_}}
+  {{_ : Cancellative handᴸ _⊙_ _~_ _≈_ C}} →
+  Cancellative handᴿ _⊙_ _~_ _≈_ C
+cancellativeᴿ-from-cancellativeᴸ = cancellative (cancel ∘ with-swap)
 
 cancelᴿ-from-cancelᴸ-comm :
-  {A : Set} {_⊙_ : A → A → A} {{_ : Eq A}} {{_ : Commutative _⊙_}}
-  {{c : Cancellative handᴸ _⊙_ _≃_ _≃_}} → Cancellative handᴿ _⊙_ _≃_ _≃_
+  {A : Set} {_⊙_ : A → A → A} {C : A → Set} {{_ : Eq A}} {{_ : Commutative _⊙_}}
+  {{c : Cancellative handᴸ _⊙_ _≃_ _≃_ C}} → Cancellative handᴿ _⊙_ _≃_ _≃_ C
 cancelᴿ-from-cancelᴸ-comm = cancellativeᴿ-from-cancellativeᴸ
   where
     instance ⊙-swap = swappable-from-commutative
     instance ≃-substᴿ = EqProperties.≃-substitutiveᴿ
 
-record IsCancellative²
-    {A B : Set} (_⊙_ : A → A → B)  (_~_ : A → A → Set) (_≈_ : B → B → Set)
-    (C : A → Set)
-    : Set where
-  constructor isCancellative²
-  field
-    {{isCancellativeᴸ}} : IsCancellative handᴸ _⊙_ _~_ _≈_ C
-    {{isCancellativeᴿ}} : IsCancellative handᴿ _⊙_ _~_ _≈_ C
-
 record Cancellative²
-    {A B : Set} (_⊙_ : A → A → B)  (_~_ : A → A → Set) (_≈_ : B → B → Set)
-    : Set₁ where
+    {A B : Set}
+    (_⊙_ : A → A → B) (_~_ : A → A → Set) (_≈_ : B → B → Set) (C : A → Set)
+    : Set where
   constructor cancellative²
   field
-    {{cancellativeᴸ}} : Cancellative handᴸ _⊙_ _~_ _≈_
-    {{cancellativeᴿ}} : Cancellative handᴿ _⊙_ _~_ _≈_
+    {{cancellativeᴸ}} : Cancellative handᴸ _⊙_ _~_ _≈_ C
+    {{cancellativeᴿ}} : Cancellative handᴿ _⊙_ _~_ _≈_ C
 
 {--- Equivalences ---}
 
 module _
-    {A B : Set} {_⊙_ : A → A → B}  {_~_ : A → A → Set} {_≈_ : B → B → Set} where
+    {A B : Set} {C : A → Set} {_⊙_ : A → A → B}
+    {_~_ : A → A → Set} {_≈_ : B → B → Set}
+    where
 
   injective-from-cancellativeᴸ :
-    ∀ {a} {{c : Cancellative handᴸ _⊙_ _~_ _≈_}} {{_ : Cancellative.C c a}} →
-      Injective (a ⊙_) _~_ _≈_
+    ∀ {a} {{_ : Cancellative handᴸ _⊙_ _~_ _≈_ C}} {{_ : C a}} →
+    Injective (a ⊙_) _~_ _≈_
   injective-from-cancellativeᴸ = injective cancel
 
   cancellativeᴸ-from-injective :
-    (∀ a → Injective (a ⊙_) _~_ _≈_) → Cancellative handᴸ _⊙_ _~_ _≈_
+    (∀ a → Injective (a ⊙_) _~_ _≈_) → Cancellative handᴸ _⊙_ _~_ _≈_ C
   cancellativeᴸ-from-injective mkInjective =
     cancellative λ {a b₁ b₂} → inject {{r = mkInjective a}}
 
   cancellativeᴸ-flip :
-    {{c : Cancellative handᴸ _⊙_ _~_ _≈_}} →
-    Cancellative handᴿ (flip _⊙_) _~_ _≈_
+    {{c : Cancellative handᴸ _⊙_ _~_ _≈_ C}} →
+    Cancellative handᴿ (flip _⊙_) _~_ _≈_ C
   cancellativeᴸ-flip {{c}} = cancellative λ {a} {{_ : C a}} {b₁ b₂} → cancel
-    where open Cancellative c using (C)
 
   cancellativeᴿ-flip :
-    {{c : Cancellative handᴿ _⊙_ _~_ _≈_}} →
-    Cancellative handᴸ (flip _⊙_) _~_ _≈_
+    {{c : Cancellative handᴿ _⊙_ _~_ _≈_ C}} →
+    Cancellative handᴸ (flip _⊙_) _~_ _≈_ C
   cancellativeᴿ-flip {{c}} = cancellative λ {a} {{_ : C a}} {b₁ b₂} → cancel
-    where open Cancellative c using (C)

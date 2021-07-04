@@ -63,6 +63,9 @@ record Multiplication
                 0
               ∎
 
+    *-absorptive² : AA.Absorptive² _*_ 0
+    *-absorptive² = AA.absorptive²
+
   *-stepᴿ : ∀ {n m} → n * step m ≃ n * m + n
   *-stepᴿ {n} {m} = ind P P0 Ps n
     where
@@ -133,8 +136,8 @@ record Multiplication
     *-identityᴿ : AA.Identity AA.handᴿ _*_ 1
     *-identityᴿ = AA.identityᴿ-from-identityᴸ
 
-    zero-product : AA.ZeroProduct _*_
-    zero-product = AA.zeroProduct 0 *-either-zero
+    zero-product : AA.ZeroProduct 0 _*_
+    zero-product = AA.zeroProduct *-either-zero
       where
         *-either-zero : ∀ {n m} → n * m ≃ 0 → n ≃ 0 ∨ m ≃ 0
         *-either-zero {n} {m} n*m≃0 with case n
@@ -257,12 +260,10 @@ record Multiplication
     AA.substᴸ AA.comm (AA.substᴿ AA.comm (*-preserves-<ᴿ b<c pos[a]))
 
   instance
-    *-cancellativeᴸ : AA.Cancellative AA.handᴸ _*_ _≃_ _≃_
-    *-cancellativeᴸ = AA.cancellative λ a {{_ : C a}} {b c} → *-cancelᴸ
+    *-cancellativeᴸ : AA.Cancellative AA.handᴸ _*_ _≃_ _≃_ Positive
+    *-cancellativeᴸ = AA.cancellative *-cancelᴸ
       where
-        C = Positive
-
-        *-cancelᴸ : {a b c : ℕ} {{_ : C a}} → a * b ≃ a * c → b ≃ c
+        *-cancelᴸ : {a : ℕ} {{_ : Positive a}} {b c : ℕ} → a * b ≃ a * c → b ≃ c
         *-cancelᴸ {a} {b} {c} ab≃ac with
           AA.ExactlyOneOfThree.at-least-one (ℕOrd.order-trichotomy b c)
         ... | AA.1st b<c =
@@ -276,8 +277,8 @@ record Multiplication
               ac≄ab = ℕOrd.<-elim-≄ ac<ab
            in contra (Eq.sym ab≃ac) ac≄ab
 
-    *-cancellativeᴿ : AA.Cancellative AA.handᴿ _*_ _≃_ _≃_
+    *-cancellativeᴿ : AA.Cancellative AA.handᴿ _*_ _≃_ _≃_ Positive
     *-cancellativeᴿ = AA.cancelᴿ-from-cancelᴸ-comm
 
-    *-cancellative² : AA.Cancellative² _*_ _≃_ _≃_
+    *-cancellative² : AA.Cancellative² _*_ _≃_ _≃_ Positive
     *-cancellative² = AA.cancellative²

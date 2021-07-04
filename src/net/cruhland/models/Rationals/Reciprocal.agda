@@ -2,18 +2,20 @@ import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq using
   (_≃_; _≄_; _≄ⁱ_; ≄ⁱ-elim; sym; module ≃-Reasoning)
 open ≃-Reasoning
+open import net.cruhland.axioms.Integers using (Integers)
 open import net.cruhland.axioms.Operators using (_*_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.models.Function using (_∘_)
 open import net.cruhland.models.Literals
 
-module net.cruhland.models.Rationals.Reciprocal (PA : PeanoArithmetic) where
+module net.cruhland.models.Rationals.Reciprocal
+  (PA : PeanoArithmetic) (Z : Integers PA) where
 
 private module ℕ = PeanoArithmetic PA
-import net.cruhland.models.Integers PA as ℤ
-open import net.cruhland.models.Rationals.Base PA as ℚ using (_//_~_; ℚ)
-open import net.cruhland.models.Rationals.Equality PA as ℚ≃ using (≃₀-intro)
-import net.cruhland.models.Rationals.Multiplication PA as ℚ*
+private module ℤ = Integers Z
+open import net.cruhland.models.Rationals.Base PA Z as ℚ using (_//_~_; ℚ)
+open import net.cruhland.models.Rationals.Equality PA Z as ℚ≃ using (≃₀-intro)
+import net.cruhland.models.Rationals.Multiplication PA Z as ℚ*
 
 _⁻¹ : {q : ℚ} → q ≄ 0 → ℚ
 _⁻¹ {q↑ // q↓ ~ _} q≄0 = q↓ // q↑ ~ q≄0 ∘ ℚ≃.q≃0

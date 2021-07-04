@@ -55,26 +55,25 @@ record MultiplicationProperties : Set where
     ∎
 
   instance
-    private
-      *-distributive-subᴸ : AA.Distributive AA.handᴸ _*_ _-_
-      *-distributive-subᴸ = AA.distributive *-distrib-subᴸ
-        where
-          *-distrib-subᴸ : {a b c : ℤ} → c * (a - b) ≃ c * a - c * b
-          *-distrib-subᴸ {a} {b} {c} =
-            begin
-              c * (a - b)
-            ≃⟨ AA.subst₂ ℤ-.sub-defn ⟩
-              c * (a + (- b))
-            ≃⟨ AA.distrib ⟩
-              c * a + c * (- b)
-            ≃˘⟨ AA.subst₂ AA.fnOpComm ⟩
-              c * a + (- (c * b))
-            ≃˘⟨ ℤ-.sub-defn ⟩
-              c * a - c * b
-            ∎
+    *-distributive-subᴸ : AA.Distributive AA.handᴸ _*_ _-_
+    *-distributive-subᴸ = AA.distributive *-distrib-subᴸ
+      where
+        *-distrib-subᴸ : {a b c : ℤ} → c * (a - b) ≃ c * a - c * b
+        *-distrib-subᴸ {a} {b} {c} =
+          begin
+            c * (a - b)
+          ≃⟨ AA.subst₂ ℤ-.sub-defn ⟩
+            c * (a + (- b))
+          ≃⟨ AA.distrib ⟩
+            c * a + c * (- b)
+          ≃˘⟨ AA.subst₂ AA.fnOpComm ⟩
+            c * a + (- (c * b))
+          ≃˘⟨ ℤ-.sub-defn ⟩
+            c * a - c * b
+          ∎
 
-      *-distributive-subᴿ : AA.Distributive AA.handᴿ _*_ _-_
-      *-distributive-subᴿ = AA.distributiveᴿ-from-distributiveᴸ
+    *-distributive-subᴿ : AA.Distributive AA.handᴿ _*_ _-_
+    *-distributive-subᴿ = AA.distributiveᴿ-from-distributiveᴸ
 
     *-distributive-sub : AA.Distributive² _*_ _-_
     *-distributive-sub = AA.distributive²
@@ -127,6 +126,26 @@ record MultiplicationProperties : Set where
                   a * b
                 ∎
            in AA.subst₁ -b≃ab -b≃±1
+
+    *-preserves-Positive : AA.Preserves Positive _*_
+    *-preserves-Positive = AA.preserves *-pres-pos
+      where
+        *-pres-pos : {a b : ℤ} → Positive a → Positive b → Positive (a * b)
+        *-pres-pos {a} {b} pos[a] pos[b] =
+          let ℤS.≃posℕ-intro {n} pos[n] a≃n = ℤS.posℕ-from-posℤ pos[a]
+              ℤS.≃posℕ-intro {m} pos[m] b≃m = ℤS.posℕ-from-posℤ pos[b]
+              pos[nm] = AA.pres pos[n] pos[m]
+              ab≃nm =
+                begin
+                  a * b
+                ≃⟨ AA.subst₂ a≃n ⟩
+                  (n as ℤ) * b
+                ≃⟨ AA.subst₂ b≃m ⟩
+                  (n as ℤ) * (m as ℤ)
+                ≃˘⟨ AA.compat₂ ⟩
+                  (n * m as ℤ)
+                ∎
+           in ℤS.posℤ-from-posℕ (ℤS.≃posℕ-intro pos[nm] ab≃nm)
 
   PosOrNeg-from-nonzero : {a : ℤ} → a ≄ 0 → ℤ*.PosOrNeg a
   PosOrNeg-from-nonzero {a} a≄0
@@ -194,8 +213,8 @@ record MultiplicationProperties : Set where
      in nonzero-from-PosOrNeg ±ab
 
   instance
-    zero-product : AA.ZeroProduct _*_
-    zero-product = AA.zeroProduct 0 *-either-zero
+    zero-product : AA.ZeroProduct 0 _*_
+    zero-product = AA.zeroProduct *-either-zero
       where
         *-either-zero : {a b : ℤ} → a * b ≃ 0 → a ≃ 0 ∨ b ≃ 0
         *-either-zero {a} {b} ab≃0 with a ≃? 0
@@ -205,11 +224,11 @@ record MultiplicationProperties : Set where
         ... | no b≄0 = contra ab≃0 (*-neither-zero a≄0 b≄0)
 
     private
-      *-cancellativeᴸ : AA.Cancellative AA.handᴸ _*_ _≃_ _≃_
+      *-cancellativeᴸ : AA.Cancellative AA.handᴸ _*_ _≃_ _≃_ (_≄ⁱ 0)
       *-cancellativeᴸ = AA.cancellative *-cancelᴸ
         where
-          *-cancelᴸ : (a : ℤ) {{_ : a ≄ⁱ 0}} {b c : ℤ} → a * b ≃ a * c → b ≃ c
-          *-cancelᴸ a {{a≄ⁱ0}} {b} {c} ab≃ac with
+          *-cancelᴸ : {a : ℤ} {{_ : a ≄ⁱ 0}} {b c : ℤ} → a * b ≃ a * c → b ≃ c
+          *-cancelᴸ {a} {b} {c} ab≃ac with
             (let a[b-c]≃0 =
                    begin
                      a * (b - c)
@@ -224,10 +243,10 @@ record MultiplicationProperties : Set where
           ... | ∨-introᴸ a≃0 = contra a≃0 ≄ⁱ-elim
           ... | ∨-introᴿ b-c≃0 = ℤ-.≃-from-zero-sub b-c≃0
 
-      *-cancellativeᴿ : AA.Cancellative AA.handᴿ _*_ _≃_ _≃_
+      *-cancellativeᴿ : AA.Cancellative AA.handᴿ _*_ _≃_ _≃_ (_≄ⁱ 0)
       *-cancellativeᴿ = AA.cancelᴿ-from-cancelᴸ-comm {A = ℤ}
 
-    *-cancellative : AA.Cancellative² _*_ _≃_ _≃_
+    *-cancellative : AA.Cancellative² _*_ _≃_ _≃_ (_≄ⁱ 0)
     *-cancellative = AA.cancellative² {A = ℤ}
 
     neg-compatible-+ : AA.Compatible₂ -_ _+_ _+_ _≃_

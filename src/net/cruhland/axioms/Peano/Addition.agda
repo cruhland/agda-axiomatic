@@ -144,10 +144,10 @@ record Addition (PB : PeanoBase) (PS : ℕSign PB) : Set where
                 step k + (m + p)
               ∎
 
-    +-cancellativeᴸ : AA.Cancellative AA.handᴸ _+_ _≃_ _≃_
-    +-cancellativeᴸ = AA.cancellative λ {n m p} → +-cancelᴸ
+    +-cancellativeᴸ : AA.Cancellative AA.handᴸ _+_ _≃_ _≃_ (const ⊤)
+    +-cancellativeᴸ = AA.cancellative +-cancelᴸ
       where
-        +-cancelᴸ : ∀ {n m p} → n + m ≃ n + p → m ≃ p
+        +-cancelᴸ : ∀ {n m p} {{_ : ⊤}} → n + m ≃ n + p → m ≃ p
         +-cancelᴸ {n} {m} {p} = ind P Pz Ps n
           where
             P = λ x → x + m ≃ x + p → m ≃ p
@@ -178,10 +178,10 @@ record Addition (PB : PeanoBase) (PS : ℕSign PB) : Set where
                     step (k + p)
                   ∎
 
-    +-cancellativeᴿ : AA.Cancellative AA.handᴿ _+_ _≃_ _≃_
+    +-cancellativeᴿ : AA.Cancellative AA.handᴿ _+_ _≃_ _≃_ (const ⊤)
     +-cancellativeᴿ = AA.cancelᴿ-from-cancelᴸ-comm
 
-    +-cancellative² : AA.Cancellative² _+_ _≃_ _≃_
+    +-cancellative² : AA.Cancellative² _+_ _≃_ _≃_ (const ⊤)
     +-cancellative² = AA.cancellative²
 
   sn≃n+1 : ∀ {n} → step n ≃ n + 1
@@ -221,6 +221,13 @@ record Addition (PB : PeanoBase) (PS : ℕSign PB) : Set where
       Ps : step-case P
       Ps {k} _ =
         ℕS.Pos-intro-≄0 λ a+sk≃0 → step≄zero (trans AA.fnOpComm a+sk≃0)
+
+  instance
+    +-preserves-Positive : AA.Preserves Positive _+_
+    +-preserves-Positive = AA.preserves +-pres-pos
+      where
+        +-pres-pos : {n m : ℕ} → Positive n → Positive m → Positive (n + m)
+        +-pres-pos pos[n] pos[m] = +-positive pos[n]
 
   +-nonzero : {x y : ℕ} → x ≄ 0 → x + y ≄ 0
   +-nonzero = Sign.pos≄0 ∘ +-positive ∘ ℕS.Pos-intro-≄0

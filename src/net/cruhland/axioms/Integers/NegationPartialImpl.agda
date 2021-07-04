@@ -3,7 +3,7 @@ open import net.cruhland.axioms.Eq as Eq using (_≃_)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Integers.AdditionDecl using (Addition)
 open import net.cruhland.axioms.Integers.BaseDecl using (Base)
-open import net.cruhland.axioms.Operators as Op using (_+_; -_; _-_)
+open import net.cruhland.axioms.Operators as Op using (_+_; -_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.models.Function using (const)
 open import net.cruhland.models.Literals
@@ -68,77 +68,4 @@ record NegationProperties : Set₁ where
       - 0 + 0
     ≃⟨ AA.inv ⟩
       0
-    ∎
-
-  instance
-    sub-dash : Op.Dash₂ ℤ
-    sub-dash = Op.subtraction
-
-  sub-defn : {a b : ℤ} → a - b ≃ a + (- b)
-  sub-defn = Eq.refl
-
-  instance
-    private
-      sub-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _-_ _≃_ _≃_
-      sub-substitutiveᴸ = AA.substitutive₂ sub-substᴸ
-        where
-          sub-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ - b ≃ a₂ - b
-          sub-substᴸ {a₁} {a₂} {b} a₁≃a₂ =
-            begin
-              a₁ - b
-            ≃⟨⟩
-              a₁ + (- b)
-            ≃⟨ AA.subst₂
-                 {{r = AA.Substitutive².substitutiveᴸ ℤ+.+-substitutive}}
-                 a₁≃a₂ ⟩
-              a₂ + (- b)
-            ≃⟨⟩
-              a₂ - b
-            ∎
-
-      sub-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _-_ _≃_ _≃_
-      sub-substitutiveᴿ = AA.substitutive₂ sub-substᴿ
-        where
-          sub-substᴿ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → b - a₁ ≃ b - a₂
-          sub-substᴿ {a₁} {a₂} {b} a₁≃a₂ =
-            begin
-              b - a₁
-            ≃⟨⟩
-              b + (- a₁)
-            ≃⟨ AA.subst₂ (AA.subst₁ a₁≃a₂) ⟩
-              b + (- a₂)
-            ≃⟨⟩
-              b - a₂
-            ∎
-
-    sub-substitutive : AA.Substitutive² _-_ _≃_ _≃_
-    sub-substitutive = AA.substitutive²
-
-  sub-same≃zero : {a : ℤ} → a - a ≃ 0
-  sub-same≃zero = AA.inv
-
-  ≃ᴸ-subᴿ-toᴸ : {a b c : ℤ} → a - b ≃ c → a ≃ b + c
-  ≃ᴸ-subᴿ-toᴸ {a} {b} {c} a-b≃c =
-    begin
-      a
-    ≃˘⟨ AA.ident ⟩
-      0 + a
-    ≃˘⟨ AA.subst₂ sub-same≃zero ⟩
-      (b - b) + a
-    ≃⟨ AA.assoc ⟩
-      b + (- b + a)
-    ≃⟨ AA.subst₂ AA.comm ⟩
-      b + (a - b)
-    ≃⟨ AA.subst₂ a-b≃c ⟩
-      b + c
-    ∎
-
-  ≃-from-zero-sub : {a b : ℤ} → a - b ≃ 0 → a ≃ b
-  ≃-from-zero-sub {a} {b} a-b≃0 =
-    begin
-      a
-    ≃⟨ ≃ᴸ-subᴿ-toᴸ a-b≃0 ⟩
-      b + 0
-    ≃⟨ AA.ident ⟩
-      b
     ∎

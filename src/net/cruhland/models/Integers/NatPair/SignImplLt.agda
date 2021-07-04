@@ -16,6 +16,7 @@ module net.cruhland.models.Integers.NatPair.SignImplLt
 
 private open module ℕ = PeanoArithmetic PA using (ℕ)
 open import net.cruhland.models.Integers.NatPair.AdditionDefn PA using (Z+)
+import net.cruhland.models.Integers.NatPair.AdditionImpl PA as ℤ+
 open import net.cruhland.models.Integers.NatPair.BaseDefn PA using (ZB)
 open import net.cruhland.models.Integers.NatPair.BaseImpl PA as ℤB
   using (_—_; ℤ; ≃₀-intro)
@@ -178,6 +179,13 @@ trichotomy a@(a⁺ — a⁻) = AA.exactlyOneOfThree 1of3 ¬2of3
     ¬2of3 (AA.1∧2 neg[a] a≃0) = contra a≃0 (neg≄0 neg[a])
     ¬2of3 (AA.1∧3 a⁺<a⁻ a⁻<a⁺) = ℕ.<-asymmetric a⁺<a⁻ a⁻<a⁺
     ¬2of3 (AA.2∧3 a≃0 pos[a]) = contra a≃0 (pos≄0 pos[a])
+
+instance
+  +-preserves-pos : AA.Preserves Positive _+_
+  +-preserves-pos = AA.preserves +-pres-pos
+    where
+      +-pres-pos : {a b : ℤ} → Positive a → Positive b → Positive (a + b)
+      +-pres-pos {a⁺ — a⁻} {b⁺ — b⁻} a⁻<a⁺ b⁻<b⁺ = ℕ.<-compatible-+ a⁻<a⁺ b⁻<b⁺
 
 -- Include everything from the partial impl
 open import net.cruhland.axioms.Integers.SignPartialImpl PA ZB Z+ Z-

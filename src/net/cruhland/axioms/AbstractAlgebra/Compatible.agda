@@ -6,7 +6,7 @@ open import net.cruhland.models.Logic using (_∨_; ∨-rec)
 
 open import net.cruhland.axioms.AbstractAlgebra.Base using
   (forHand; Hand; handᴸ; handᴿ; handRec)
-open import net.cruhland.axioms.AbstractAlgebra.Reductive using (Absorptive)
+open import net.cruhland.axioms.AbstractAlgebra.Reductive using (Absorptive²)
 
 private
   record IsCompatible₁
@@ -94,20 +94,18 @@ record Distributive² {A : Set} {{_ : Eq A}} (_⊙_ _⊕_ : A → A → A) : Set
     {{distributiveᴸ}} : Distributive handᴸ _⊙_ _⊕_
     {{distributiveᴿ}} : Distributive handᴿ _⊙_ _⊕_
 
-record ZeroProduct {A : Set} {{_ : Eq A}} (_⊙_ : A → A → A) : Set where
+record ZeroProduct
+    {A : Set} {{_ : Eq A}} (z : A) (_⊙_ : A → A → A) {{_ : Absorptive² _⊙_ z}}
+    : Set where
   constructor zeroProduct
   field
-    z : A
-    {{absorptiveᴸ}} : Absorptive handᴸ _⊙_ z
-    {{absorptiveᴿ}} : Absorptive handᴿ _⊙_ z
     zero-prod : ∀ {a b} → a ⊙ b ≃ z → a ≃ z ∨ b ≃ z
 
 open ZeroProduct {{...}} public using (zero-prod)
 
 nonzero-prod :
-  {A : Set} {_⊙_ : A → A → A} →
-    ∀ {a b} {{_ : Eq A}} {{r : ZeroProduct _⊙_}} →
-      let open ZeroProduct r using (z) in a ≄ z → b ≄ z → a ⊙ b ≄ z
+  {A : Set} {z : A} {_⊙_ : A → A → A} {{_ : Eq A}} {{_ : Absorptive² _⊙_ z}} →
+  ∀ {a b} {{_ : Eq A}} {{r : ZeroProduct z _⊙_}} → a ≄ z → b ≄ z → a ⊙ b ≄ z
 nonzero-prod a≄z b≄z = ∨-rec a≄z b≄z ∘ zero-prod
 
 {--- Equivalences ---}
@@ -183,14 +181,14 @@ module _ {A : Set} {_⊙_ _⊕_ : A → A → A} {{_ : Eq A}} where
       Distributive handᴿ _⊙_ _⊕_
   distributiveᴿ-from-compatible₂ = distributive compat₂
 
-module _ {A : Set} {_⊙_ : A → A → A} {{_ : Eq A}} where
+module _
+    {A : Set} {z : A} {_⊙_ : A → A → A} {{_ : Eq A}} {{_ : Absorptive² _⊙_ z}}
+    where
 
   compatible₂-from-zero-product :
-    {{r : ZeroProduct _⊙_}} →
-      let open ZeroProduct r using (z) in Compatible₂ (_≃ z) _⊙_ _∨_ _⟨→⟩_
+    {{r : ZeroProduct z _⊙_}} → Compatible₂ (_≃ z) _⊙_ _∨_ _⟨→⟩_
   compatible₂-from-zero-product = compatible₂ zero-prod
 
   zero-product-from-compatible₂ :
-    ∀ {z} {{_ : Absorptive handᴸ _⊙_ z}} {{_ : Absorptive handᴿ _⊙_ z}}
-      {{_ : Compatible₂ (_≃ z) _⊙_ _∨_ _⟨→⟩_}} → ZeroProduct _⊙_
-  zero-product-from-compatible₂ {z} = zeroProduct z compat₂
+    {{_ : Compatible₂ (_≃ z) _⊙_ _∨_ _⟨→⟩_}} → ZeroProduct z _⊙_
+  zero-product-from-compatible₂ = zeroProduct compat₂
