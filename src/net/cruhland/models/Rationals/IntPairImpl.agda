@@ -5,4 +5,5 @@ module net.cruhland.models.Rationals.IntPairImpl
   (PA : PeanoArithmetic) (Z : Integers PA) where
 
 -- Export all sub-impls
-open import net.cruhland.models.Rationals.IntPair.BaseImpl public
+open import net.cruhland.models.Rationals.IntPair.AdditionImpl PA Z public
+open import net.cruhland.models.Rationals.IntPair.BaseImpl PA Z public

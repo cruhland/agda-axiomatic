@@ -1,16 +1,14 @@
 open import net.cruhland.axioms.Integers using (Integers)
+import net.cruhland.axioms.Operators as Op
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 
-module net.cruhland.axioms.Rationals
+module net.cruhland.axioms.Rationals.AdditionDecl
   (PA : PeanoArithmetic) (Z : Integers PA) where
 
-open import net.cruhland.axioms.Rationals.AdditionDecl PA Z using (Addition)
 open import net.cruhland.axioms.Rationals.BaseDecl PA Z using (Base)
 
-record Rationals : Set₁ where
-  field
-    QB : Base
-    Q+ : Addition QB
+record Addition (QB : Base) : Set where
+  open Base QB using (ℚ)
 
-  open Addition Q+ public
-  open Base QB public
+  field
+    {{plus}} : Op.Plus ℚ

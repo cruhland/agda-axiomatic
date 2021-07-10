@@ -1,16 +1,12 @@
 open import net.cruhland.axioms.Integers using (Integers)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 
-module net.cruhland.axioms.Rationals
+module net.cruhland.models.Rationals.IntPair.AdditionDefn
   (PA : PeanoArithmetic) (Z : Integers PA) where
 
 open import net.cruhland.axioms.Rationals.AdditionDecl PA Z using (Addition)
-open import net.cruhland.axioms.Rationals.BaseDecl PA Z using (Base)
+import net.cruhland.models.Rationals.IntPair.AdditionImpl PA Z as Q+
+open import net.cruhland.models.Rationals.IntPair.BaseDefn PA Z using (QB)
 
-record Rationals : Set₁ where
-  field
-    QB : Base
-    Q+ : Addition QB
-
-  open Addition Q+ public
-  open Base QB public
+Q+ : Addition QB
+Q+ = record { Q+ }
