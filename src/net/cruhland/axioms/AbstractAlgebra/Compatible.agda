@@ -1,6 +1,7 @@
 module net.cruhland.axioms.AbstractAlgebra.Compatible where
 
-open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_; Eq)
+open import net.cruhland.axioms.Eq as Eq
+  using (_≃_; _≄_; _≄ⁱ_; Eq; ≄ⁱ-elim; ≄ⁱ-intro)
 open import net.cruhland.models.Function using (_∘_; _⟨→⟩_)
 open import net.cruhland.models.Logic using (_∨_; ∨-rec)
 
@@ -104,9 +105,16 @@ record ZeroProduct
 open ZeroProduct {{...}} public using (zero-prod)
 
 nonzero-prod :
-  {A : Set} {z : A} {_⊙_ : A → A → A} {{_ : Eq A}} {{_ : Absorptive² _⊙_ z}} →
-  ∀ {a b} {{_ : Eq A}} {{r : ZeroProduct z _⊙_}} → a ≄ z → b ≄ z → a ⊙ b ≄ z
+  {A : Set} {z : A} {_⊙_ : A → A → A}
+  {{_ : Eq A}} {{_ : Absorptive² _⊙_ z}} {{r : ZeroProduct z _⊙_}} →
+  ∀ {a b} → a ≄ z → b ≄ z → a ⊙ b ≄ z
 nonzero-prod a≄z b≄z = ∨-rec a≄z b≄z ∘ zero-prod
+
+nonzero-prodⁱ :
+  {A : Set} {z : A} {_⊙_ : A → A → A}
+  {{_ : Eq A}} {{_ : Absorptive² _⊙_ z}} {{r : ZeroProduct z _⊙_}} →
+  ∀ {a b} {{_ : a ≄ⁱ z}} {{_ : b ≄ⁱ z}} → a ⊙ b ≄ⁱ z
+nonzero-prodⁱ = ≄ⁱ-intro (nonzero-prod ≄ⁱ-elim ≄ⁱ-elim)
 
 {--- Equivalences ---}
 
