@@ -8,3 +8,4 @@ module net.cruhland.models.Rationals.IntPairImpl
 open import net.cruhland.models.Rationals.IntPair.AdditionImpl PA Z public
 open import net.cruhland.models.Rationals.IntPair.BaseImpl PA Z public
 open import net.cruhland.models.Rationals.IntPair.MultiplicationImpl PA Z public
+open import net.cruhland.models.Rationals.IntPair.NegationImpl PA Z public
