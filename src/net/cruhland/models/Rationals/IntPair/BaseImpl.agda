@@ -100,3 +100,36 @@ instance
 
   from-literal : FromNatLiteral ℚ
   from-literal = nat-literal-from-cast
+
+  //-substitutiveᴸ : AA.Substitutive₂ᶜ AA.handᴸ _//_ _≃_ _≃_
+  //-substitutiveᴸ = AA.substitutive₂ //-substᴸ
+    where
+      //-substᴸ :
+        {a₁ a₂ b : ℤ} {{c₁ : b ≄ⁱ 0}} {{c₂ : b ≄ⁱ 0}} →
+        a₁ ≃ a₂ → (a₁ // b) {{c₁}} ≃ (a₂ // b) {{c₂}}
+      //-substᴸ {a₁} {a₂} {b} a₁≃a₂ =
+        let componentEq =
+              begin
+                a₁ * b
+              ≃⟨ AA.subst₂ a₁≃a₂ ⟩
+                a₂ * b
+              ∎
+         in ≃₀-intro componentEq
+
+  //-substitutiveᴿ : AA.Substitutive₂ᶜ AA.handᴿ _//_ _≃_ _≃_
+  //-substitutiveᴿ = AA.substitutive₂ //-substᴿ
+    where
+      //-substᴿ :
+        {a₁ a₂ b : ℤ} {{_ : a₁ ≄ⁱ 0}} {{_ : a₂ ≄ⁱ 0}} →
+        a₁ ≃ a₂ → b // a₁ ≃ b // a₂
+      //-substᴿ {a₁} {a₂} {b} a₁≃a₂ =
+        let componentEq =
+              begin
+                b * a₂
+              ≃˘⟨ AA.subst₂ a₁≃a₂ ⟩
+                b * a₁
+              ∎
+         in ≃₀-intro componentEq
+
+  //-substitutive : AA.Substitutive²ᶜ _//_ _≃_ _≃_
+  //-substitutive = AA.substitutive²

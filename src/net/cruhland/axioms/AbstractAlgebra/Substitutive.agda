@@ -9,7 +9,7 @@ import net.cruhland.models.Function.Properties
 open import net.cruhland.models.Logic using (⊤; contra)
 
 open import net.cruhland.axioms.AbstractAlgebra.Base using
-  (forHand; Hand; handᴸ; handᴿ)
+  (forHand; forHandᶜ; Hand; handᴸ; handᴿ)
 open import net.cruhland.axioms.AbstractAlgebra.Compatible using
   (fnOpComm; FnOpCommutative; fnOpCommutative)
 open import net.cruhland.axioms.AbstractAlgebra.Swappable using
@@ -41,35 +41,54 @@ record Substitutiveᶜ
 
 open Substitutiveᶜ {{...}} public using (substᶜ)
 
-record Substitutive₂
-    (hand : Hand) {α β χ δ} {A : Set α} {B : Set β}
-      (_⊙_ : A → A → B) (_~_ : A → A → Set χ) (_≈_ : B → B → Set δ)
-        : Set (α ⊔ χ ⊔ δ) where
+record Substitutive₂ᶜ
+    (hand : Hand) {α β χ δ} {A : Set α} {B : Set β} {C : A → A → Set}
+    (_⊙_ : (x y : A) {{_ : C x y}} → B)
+    (_~_ : A → A → Set χ) (_≈_ : B → B → Set δ)
+    : Set (α ⊔ χ ⊔ δ) where
   constructor substitutive₂
-  _<⊙>_ = forHand hand _⊙_
+  C˘ = forHand hand C
+  _⊙˘_ = forHandᶜ hand _⊙_
   field
-    subst₂ : ∀ {a₁ a₂ b} → a₁ ~ a₂ → (a₁ <⊙> b) ≈ (a₂ <⊙> b)
+    subst₂ :
+      ∀ {a₁ a₂ b} {{c₁ : C˘ a₁ b}} {{c₂ : C˘ a₂ b}} →
+      a₁ ~ a₂ → (a₁ ⊙˘ b) ≈ (a₂ ⊙˘ b)
 
-open Substitutive₂ {{...}} public using (subst₂)
+open Substitutive₂ᶜ {{...}} public using (subst₂)
 
 substᴸ = subst₂ {handᴸ}
 substᴿ = subst₂ {handᴿ}
 
+-- Short for "trivial constraint"
+tc : ∀ {α β} {A : Set α} {B : Set β} → (A → A → B) → (A → A → {{_ : ⊤}} → B)
+tc f x y = f x y
+
+Substitutive₂ :
+  Hand → ∀ {α β χ δ} {A : Set α} {B : Set β} (_⊙_ : A → A → B)
+  (_~_ : A → A → Set χ) (_≈_ : B → B → Set δ) → Set (α ⊔ χ ⊔ δ)
+Substitutive₂ hand _⊙_ = Substitutive₂ᶜ hand (tc _⊙_)
+
 substitutiveᴿ-from-substitutiveᴸ :
-  ∀ {α β χ δ} {A : Set α} {B : Set β}
-    {_⊙_ : A → A → B} {_~_ : A → A → Set χ} {_≈_ : B → B → Set δ}
-      {{_ : Eq.Transitive _≈_}} {{_ : Swappable _⊙_ _≈_}}
-      {{_ : Substitutive₂ handᴸ _⊙_ _~_ _≈_}} → Substitutive₂ handᴿ _⊙_ _~_ _≈_
+  ∀ {α β χ δ} {A : Set α} {B : Set β} {_⊙_ : A → A → B} {_~_ : A → A → Set χ}
+  {_≈_ : B → B → Set δ} {{_ : Eq.Transitive _≈_}} {{_ : Swappable _⊙_ _≈_}} →
+  {{_ : Substitutive₂ handᴸ _⊙_ _~_ _≈_}} →
+  Substitutive₂ handᴿ _⊙_ _~_ _≈_
 substitutiveᴿ-from-substitutiveᴸ = substitutive₂ (with-swap ∘ subst₂)
 
-record Substitutive²
-    {α β χ δ} {A : Set α} {B : Set β}
-      (_⊙_ : A → A → B) (_~_ : A → A → Set χ) (_≈_ : B → B → Set δ)
-        : Set (α ⊔ χ ⊔ δ) where
+record Substitutive²ᶜ
+    {α β χ δ} {A : Set α} {B : Set β} {C : A → A → Set}
+    (_⊙_ : (x y : A) {{_ : C x y}} → B)
+    (_~_ : A → A → Set χ) (_≈_ : B → B → Set δ)
+    : Set (α ⊔ χ ⊔ δ) where
   constructor substitutive²
   field
-    {{substitutiveᴸ}} : Substitutive₂ handᴸ _⊙_ _~_ _≈_
-    {{substitutiveᴿ}} : Substitutive₂ handᴿ _⊙_ _~_ _≈_
+    {{substitutiveᴸ}} : Substitutive₂ᶜ handᴸ _⊙_ _~_ _≈_
+    {{substitutiveᴿ}} : Substitutive₂ᶜ handᴿ _⊙_ _~_ _≈_
+
+Substitutive² :
+  ∀ {α β χ δ} {A : Set α} {B : Set β} (_⊙_ : A → A → B) (_~_ : A → A → Set χ)
+  (_≈_ : B → B → Set δ) → Set (α ⊔ χ ⊔ δ)
+Substitutive² _⊙_ = Substitutive²ᶜ (tc _⊙_)
 
 module _ {β} {A : Set} {B : Set β} {_⊙_ : A → A → B} {{_ : Eq B}} where
 
@@ -159,9 +178,9 @@ with-comm = with-swap
     instance ≃-substᴿ = EqProperties.≃-substitutiveᴿ
 
 substᴿ-from-substᴸ-comm :
-  ∀ {β} {A : Set} {B : Set β} {_⊙_ : A → A → B} {_~_ : A → A → Set}
-    {{_ : Eq B}} {{_ : Commutative _⊙_}}
-      {{_ : Substitutive₂ handᴸ _⊙_ _~_ _≃_}} → Substitutive₂ handᴿ _⊙_ _~_ _≃_
+  ∀ {β} {A : Set} {B : Set β} {_⊙_ : A → A → B} {_~_ : A → A → Set} {{_ : Eq B}}
+  {{_ : Commutative _⊙_}} {{_ : Substitutive₂ handᴸ _⊙_ _~_ _≃_}} →
+  Substitutive₂ handᴿ _⊙_ _~_ _≃_
 substᴿ-from-substᴸ-comm = substitutiveᴿ-from-substitutiveᴸ
   where
     instance ⊙-swap = swappable-from-commutative

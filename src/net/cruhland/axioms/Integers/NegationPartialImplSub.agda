@@ -35,7 +35,7 @@ record SubtractionProperties : Set₁ where
             ≃⟨ sub-defn ⟩
               a₁ + (- b)
             ≃⟨ AA.subst₂
-                 {{r = AA.Substitutive².substitutiveᴸ ℤ+.+-substitutive}}
+                 {{r = AA.Substitutive²ᶜ.substitutiveᴸ ℤ+.+-substitutive}}
                  a₁≃a₂ ⟩
               a₂ + (- b)
             ≃˘⟨ sub-defn ⟩

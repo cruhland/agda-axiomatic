@@ -113,7 +113,7 @@ nonzero-prod a≄z b≄z = ∨-rec a≄z b≄z ∘ zero-prod
 nonzero-prodⁱ :
   {A : Set} {z : A} {_⊙_ : A → A → A}
   {{_ : Eq A}} {{_ : Absorptive² _⊙_ z}} {{r : ZeroProduct z _⊙_}} →
-  ∀ {a b} {{_ : a ≄ⁱ z}} {{_ : b ≄ⁱ z}} → a ⊙ b ≄ⁱ z
+  ∀ {a b} {{ca : a ≄ⁱ z}} {{cb : b ≄ⁱ z}} → a ⊙ b ≄ⁱ z
 nonzero-prodⁱ = ≄ⁱ-intro (nonzero-prod ≄ⁱ-elim ≄ⁱ-elim)
 
 {--- Equivalences ---}
