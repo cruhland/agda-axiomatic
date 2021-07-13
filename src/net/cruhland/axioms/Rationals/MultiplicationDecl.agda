@@ -1,5 +1,7 @@
+import net.cruhland.axioms.AbstractAlgebra as AA
+open import net.cruhland.axioms.Eq using (_≃_)
 open import net.cruhland.axioms.Integers using (Integers)
-import net.cruhland.axioms.Operators as Op
+open import net.cruhland.axioms.Operators as Op using (_*_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 
 module net.cruhland.axioms.Rationals.MultiplicationDecl
@@ -12,3 +14,5 @@ record Multiplication (QB : Base) : Set where
 
   field
     {{star}} : Op.Star ℚ
+    {{*-substitutive}} : AA.Substitutive² {A = ℚ} _*_ _≃_ _≃_
+    {{*-commutative}} : AA.Commutative {A = ℚ} _*_

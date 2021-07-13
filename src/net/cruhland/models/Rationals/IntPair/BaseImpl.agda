@@ -15,6 +15,7 @@ module net.cruhland.models.Rationals.IntPair.BaseImpl
 private open module ℕ = PeanoArithmetic PA using (ℕ)
 open Integers Z using (ℤ)
 
+infix 8 _//_
 record ℚ : Set where
   constructor _//_
   field
