@@ -1,5 +1,7 @@
+import net.cruhland.axioms.AbstractAlgebra as AA
+open import net.cruhland.axioms.Eq using (_≃_)
 open import net.cruhland.axioms.Integers using (Integers)
-import net.cruhland.axioms.Operators as Op
+open import net.cruhland.axioms.Operators as Op using (-_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 
 module net.cruhland.axioms.Rationals.NegationDecl
@@ -12,3 +14,4 @@ record Negation (QB : Base) : Set where
 
   field
     {{dashᴸ}} : Op.Dashᴸ ℚ
+    {{neg-substitutive}} : AA.Substitutive₁ {A = ℚ} -_ _≃_ _≃_
