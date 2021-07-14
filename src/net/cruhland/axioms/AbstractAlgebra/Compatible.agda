@@ -10,15 +10,6 @@ open import net.cruhland.axioms.AbstractAlgebra.Base using
 open import net.cruhland.axioms.AbstractAlgebra.Reductive using (Absorptive²)
 
 private
-  record IsCompatible₁
-      {β} {A : Set} {B : Set β}
-        (f : A → B) (g : A → A) (h : B → B) (_~_ : B → B → Set) : Set where
-    constructor isCompatible₁
-    field
-      isCompat₁ : ∀ {a} → f (g a) ~ h (f a)
-
-  open IsCompatible₁ {{...}} using (isCompat₁)
-
   record Semicompatible₂
       (hand : Hand) {A B : Set}
         (f : A → B) (_⊙_ : A → A → A) (_~_ : B → B → Set) : Set where
@@ -30,11 +21,13 @@ private
 
   open Semicompatible₂ {{...}} using (semicompat₂)
 
-record Compatible₁ {A B : Set} {{_ : Eq B}} (f : A → B) (g : A → A) : Set where
+record Compatible₁
+    {β} {A : Set} {B : Set β}
+    (f : A → B) (g : A → A) (h : B → B) (_~_ : B → B → Set)
+    : Set where
   constructor compatible₁
   field
-    h : B → B
-    compat₁ : ∀ {a} → f (g a) ≃ h (f a)
+    compat₁ : ∀ {a} → f (g a) ~ h (f a)
 
 open Compatible₁ {{...}} public using (compat₁)
 
@@ -118,54 +111,43 @@ nonzero-prodⁱ = ≄ⁱ-intro (nonzero-prod ≄ⁱ-elim ≄ⁱ-elim)
 
 {--- Equivalences ---}
 
-module _ {A B : Set} {f : A → B} {g : A → A} {{_ : Eq B}} where
-
-  isCompatible₁-from-compatible₁ :
-    {{r : Compatible₁ f g}} →
-      let open Compatible₁ r using (h) in IsCompatible₁ f g h _≃_
-  isCompatible₁-from-compatible₁ = isCompatible₁ compat₁
-
-  compatible₁-from-isCompatible₁ :
-    {h : B → B} {{_ : IsCompatible₁ f g h _≃_}} → Compatible₁ f g
-  compatible₁-from-isCompatible₁ {h} = compatible₁ h isCompat₁
-
 module _
     {β} {A : Set} {B : Set β} {f : A → B}
       {_⊙_ : A → A → A} {_⊕_ : B → B → B} {_~_ : B → B → Set} where
 
-  isCompatible₁-from-compatible₂ :
+  compatible₁-from-compatible₂ :
     {{_ : Compatible₂ f _⊙_ _⊕_ _~_}} →
-      ∀ {b} → IsCompatible₁ f (_⊙ b) (_⊕ f b) _~_
-  isCompatible₁-from-compatible₂ = isCompatible₁ compat₂
+      ∀ {b} → Compatible₁ f (_⊙ b) (_⊕ f b) _~_
+  compatible₁-from-compatible₂ = compatible₁ compat₂
 
-  compatible₂-from-isCompatible₁ :
-    {{_ : ∀ {b} → IsCompatible₁ f (_⊙ b) (_⊕ f b) _~_}} →
+  compatible₂-from-compatible₁ :
+    {{_ : ∀ {b} → Compatible₁ f (_⊙ b) (_⊕ f b) _~_}} →
       Compatible₂ f _⊙_ _⊕_ _~_
-  compatible₂-from-isCompatible₁ = compatible₂ isCompat₁
+  compatible₂-from-compatible₁ = compatible₂ compat₁
 
 -- TODO Equivalences for Semicompatible₂ and Preserves
 
 module _ {A : Set} {f : A → A} {_⊙_ : A → A → A} {{_ : Eq A}} where
 
-  isCompatible₁-from-fnOpCommutativeᴸ :
+  compatible₁-from-fnOpCommutativeᴸ :
     {{_ : FnOpCommutative handᴸ f _⊙_}} →
-      ∀ {b} → IsCompatible₁ f (_⊙ b) (_⊙ b) _≃_
-  isCompatible₁-from-fnOpCommutativeᴸ = isCompatible₁ fnOpComm
+      ∀ {b} → Compatible₁ f (_⊙ b) (_⊙ b) _≃_
+  compatible₁-from-fnOpCommutativeᴸ = compatible₁ fnOpComm
 
-  fnOpCommutativeᴸ-from-isCompatible₁ :
-    {{_ : ∀ {b} → IsCompatible₁ f (_⊙ b) (_⊙ b) _≃_}} →
+  fnOpCommutativeᴸ-from-compatible₁ :
+    {{_ : ∀ {b} → Compatible₁ f (_⊙ b) (_⊙ b) _≃_}} →
       FnOpCommutative handᴸ f _⊙_
-  fnOpCommutativeᴸ-from-isCompatible₁ = fnOpCommutative isCompat₁
+  fnOpCommutativeᴸ-from-compatible₁ = fnOpCommutative compat₁
 
-  isCompatible₁-from-fnOpCommutativeᴿ :
+  compatible₁-from-fnOpCommutativeᴿ :
     {{_ : FnOpCommutative handᴿ f _⊙_}} →
-      ∀ {a} → IsCompatible₁ f (a ⊙_) (a ⊙_) _≃_
-  isCompatible₁-from-fnOpCommutativeᴿ = isCompatible₁ fnOpComm
+      ∀ {a} → Compatible₁ f (a ⊙_) (a ⊙_) _≃_
+  compatible₁-from-fnOpCommutativeᴿ = compatible₁ fnOpComm
 
-  fnOpCommutativeᴿ-from-isCompatible₁ :
-    {{_ : ∀ {a} → IsCompatible₁ f (a ⊙_) (a ⊙_) _≃_}} →
+  fnOpCommutativeᴿ-from-compatible₁ :
+    {{_ : ∀ {a} → Compatible₁ f (a ⊙_) (a ⊙_) _≃_}} →
       FnOpCommutative handᴿ f _⊙_
-  fnOpCommutativeᴿ-from-isCompatible₁ = fnOpCommutative isCompat₁
+  fnOpCommutativeᴿ-from-compatible₁ = fnOpCommutative compat₁
 
 module _ {A : Set} {_⊙_ _⊕_ : A → A → A} {{_ : Eq A}} where
 

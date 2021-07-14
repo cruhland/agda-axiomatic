@@ -1,13 +1,16 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
+open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq as Eq using (_≃_)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Integers using (Integers)
 open import net.cruhland.axioms.Operators as Op using (-_; _*_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
+open import net.cruhland.models.Literals
 
 module net.cruhland.models.Rationals.IntPair.NegationImpl
   (PA : PeanoArithmetic) (Z : Integers PA) where
 
+open Integers Z using (ℤ)
 open import net.cruhland.models.Rationals.IntPair.BaseImpl PA Z as ℚB
   using (_//_; ℚ)
 
@@ -47,3 +50,18 @@ instance
             ≃⟨ AA.fnOpComm ⟩
               (- q₂↑) * q₁↓
             ∎
+
+  neg-compatible-ℤ : AA.Compatible₁ (_as ℚ) -_ -_ _≃_
+  neg-compatible-ℤ = AA.compatible₁ {A = ℤ} neg-compat-ℤ
+    where
+      neg-compat-ℤ : {a : ℤ} → (- a as ℚ) ≃ - (a as ℚ)
+      neg-compat-ℤ {a} =
+        begin
+          (- a as ℚ)
+        ≃⟨⟩
+          (- a) // 1
+        ≃⟨⟩
+          - (a // 1)
+        ≃⟨⟩
+          - (a as ℚ)
+        ∎

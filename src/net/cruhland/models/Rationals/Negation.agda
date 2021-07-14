@@ -49,8 +49,8 @@ instance
               - a₂↑ * a₁↓
             ∎
 
-  neg-compatible-ℤ : AA.Compatible₁ (_as ℚ) -_
-  neg-compatible-ℤ = AA.compatible₁ {A = ℤ} -_ (≃₀-intro refl)
+  neg-compatible-ℤ : AA.Compatible₁ (_as ℚ) -_ -_ _≃_
+  neg-compatible-ℤ = AA.compatible₁ {A = ℤ} (≃₀-intro refl)
 
   +-inverseᴸ : AA.Inverse AA.handᴸ -_ (const ⊤) _+_ 0
   +-inverseᴸ = AA.inverse +-invᴸ
