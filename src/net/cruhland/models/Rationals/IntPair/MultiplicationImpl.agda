@@ -1,13 +1,16 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
+open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq as Eq using (_≃_)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Integers using (Integers)
 open import net.cruhland.axioms.Operators as Op using (_*_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
+open import net.cruhland.models.Literals
 
 module net.cruhland.models.Rationals.IntPair.MultiplicationImpl
   (PA : PeanoArithmetic) (Z : Integers PA) where
 
+open Integers Z using (ℤ)
 open import net.cruhland.models.Rationals.IntPair.BaseImpl PA Z as ℚB
   using (_//_; ℚ)
 
@@ -78,3 +81,20 @@ instance
 
   *-substitutive : AA.Substitutive² _*_ _≃_ _≃_
   *-substitutive = AA.substitutive² {A = ℚ}
+
+  *-compatible-ℤ : AA.Compatible₂ (_as ℚ) _*_ _*_ _≃_
+  *-compatible-ℤ = AA.compatible₂ {A = ℤ} *-compat-ℤ
+    where
+      *-compat-ℤ : {a b : ℤ} → (a * b as ℚ) ≃ (a as ℚ) * (b as ℚ)
+      *-compat-ℤ {a} {b} =
+        begin
+          (a * b as ℚ)
+        ≃⟨⟩
+          (a * b) // 1
+        ≃˘⟨ AA.subst₂ {{c₁ = AA.nonzero-prodⁱ}} AA.identᴸ ⟩
+          ((a * b) // (1 * 1)) {{AA.nonzero-prodⁱ}}
+        ≃⟨⟩
+          (a // 1) * (b // 1)
+        ≃⟨⟩
+          (a as ℚ) * (b as ℚ)
+        ∎

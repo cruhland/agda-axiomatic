@@ -20,6 +20,12 @@ record ℚ : Set where
   constructor _//_
   field
     numerator denominator : ℤ
+
+    -- Having this as an instance field is convenient when
+    -- implementing functions on ℚ, because it's automatically
+    -- available as an instance in scope. It does mean there's less
+    -- flexibility in the constructor, which can affect pattern
+    -- matching.
     {{denominator≄ⁱ0}} : denominator ≄ⁱ 0
 
 record _≃₀_ (p q : ℚ) : Set where
