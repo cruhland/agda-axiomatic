@@ -175,3 +175,20 @@ instance
         ≃⟨⟩
           (a₂ as ℚ)
         ∎
+
+  from-ℤ-injective : AA.Injective (_as ℚ) _≃_ _≃_
+  from-ℤ-injective = AA.injective from-ℤ-inject
+    where
+      from-ℤ-inject : {a₁ a₂ : ℤ} → (a₁ as ℚ) ≃ (a₂ as ℚ) → a₁ ≃ a₂
+      from-ℤ-inject {a₁} {a₂} a₁-as-ℚ≃a₂-as-ℚ =
+        let a₁//1≃a₂//1 =
+              begin
+                a₁ // 1
+              ≃⟨⟩
+                (a₁ as ℚ)
+              ≃⟨ a₁-as-ℚ≃a₂-as-ℚ ⟩
+                (a₂ as ℚ)
+              ≃⟨⟩
+                a₂ // 1
+              ∎
+         in AA.cancel a₁//1≃a₂//1

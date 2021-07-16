@@ -17,4 +17,5 @@ record Base : Set₁ where
     {{decEq}} : DecEq ℚ
     {{from-ℤ}} : ℤ As ℚ
     {{from-ℤ-substitutive}} : AA.Substitutive₁ {A = ℤ} (_as ℚ) _≃_ _≃_
+    {{from-ℤ-injective}} : AA.Injective {A = ℤ} (_as ℚ) _≃_ _≃_
     {{nat-literal}} : FromNatLiteral ℚ
