@@ -14,7 +14,7 @@ module net.cruhland.models.Rationals.IntPair.BaseImpl
   (PA : PeanoArithmetic) (Z : Integers PA) where
 
 private open module ℕ = PeanoArithmetic PA using (ℕ)
-open Integers Z using (ℤ)
+private open module ℤ = Integers Z using (ℤ)
 
 infix 8 _//_
 record ℚ : Set where
@@ -28,6 +28,8 @@ record ℚ : Set where
     -- flexibility in the constructor, which can affect pattern
     -- matching.
     {{denominator≄ⁱ0}} : denominator ≄ⁱ 0
+
+open ℚ public using (numerator; denominator)
 
 record _≃₀_ (p q : ℚ) : Set where
   constructor ≃₀-intro
@@ -192,3 +194,46 @@ instance
                 a₂ // 1
               ∎
          in AA.cancel a₁//1≃a₂//1
+
+q≃0-from-q↑≃0 : {q : ℚ} → numerator q ≃ 0 → q ≃ 0
+q≃0-from-q↑≃0 q@{q↑ // q↓} q↑≃0 =
+    begin
+      q
+    ≃⟨⟩
+      q↑ // q↓
+    ≃⟨ AA.subst₂ q↑≃0 ⟩
+      0 // q↓
+    ≃⟨ ≃₀-intro componentEq ⟩
+      0 // 1
+    ≃⟨⟩
+      (0 as ℚ)
+    ≃⟨ AA.subst₁ (ℤ.fromNatLiteral≃casts 0) ⟩
+      (0 as ℤ as ℚ)
+    ≃⟨⟩
+      0
+    ∎
+  where
+    componentEq =
+      begin
+        0 * 1
+      ≃⟨ AA.absorb ⟩
+        0
+      ≃˘⟨ AA.absorb ⟩
+        0 * q↓
+      ∎
+
+q↑≃0-from-q≃0 : {q : ℚ} → q ≃ 0 → numerator q ≃ 0
+q↑≃0-from-q≃0 q@{q↑ // q↓} (≃₀-intro q↑*1≃0*q↓) =
+  begin
+    numerator q
+  ≃⟨⟩
+    q↑
+  ≃˘⟨ AA.ident ⟩
+    q↑ * 1
+  ≃⟨ q↑*1≃0*q↓ ⟩
+    (0 as ℤ) * q↓
+  ≃˘⟨ AA.subst₂ (ℤ.fromNatLiteral≃casts 0) ⟩
+    0 * q↓
+  ≃⟨ AA.absorb ⟩
+    0
+  ∎
