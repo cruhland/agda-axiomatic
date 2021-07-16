@@ -1,6 +1,7 @@
-module net.cruhland.axioms.AbstractAlgebra.Base where
-
 open import net.cruhland.models.Function using (flip; id)
+open import net.cruhland.models.Logic using (⊤)
+
+module net.cruhland.axioms.AbstractAlgebra.Base where
 
 data Hand : Set where
   handᴸ : Hand
@@ -21,3 +22,7 @@ forHandᶜ handᴿ = flip
 
 other : Hand → Hand
 other = handRec handᴿ handᴸ
+
+-- Short for "trivial constraint"
+tc : ∀ {α β} {A : Set α} {B : Set β} → (A → A → B) → (A → A → {{_ : ⊤}} → B)
+tc f x y = f x y

@@ -3,9 +3,10 @@ module net.cruhland.axioms.AbstractAlgebra.Injective where
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_; Eq)
 open import net.cruhland.models.Function using
   (_∘_; _⟨→⟩_; ConstrainableFn; flip; toImpFn)
+import net.cruhland.models.Logic
 
 open import net.cruhland.axioms.AbstractAlgebra.Base using
-  (forHand; Hand; handᴸ; handᴿ)
+  (forHand; forHandᶜ; Hand; handᴸ; handᴿ; tc)
 open import net.cruhland.axioms.AbstractAlgebra.Substitutive using
   (Substitutive₁; substitutive₁; Substitutive₂; swappable-from-commutative
   ; module EqProperties
@@ -28,21 +29,34 @@ instance
         Substitutive₁ f _≄_ _≄_
   ≄-substitutive = substitutive₁ (λ a₁≄a₂ fa₁≃fa₂ → a₁≄a₂ (inject fa₁≃fa₂))
 
+CancellativePropertyᶜ :
+  Hand → {A B : Set} {C : A → A → Set} → ((x y : A) {{_ : C x y}} → B) →
+  (A → A → Set) → (B → B → Set) → A → Set
+CancellativePropertyᶜ hand {C = C} _⊙_ _~_ _≈_ x =
+  let C˘ = forHand hand C
+      _⊙˘_ = forHandᶜ hand _⊙_
+   in ∀ {y₁ y₂} {{c₁ : C˘ x y₁}} {{c₂ : C˘ x y₂}} →
+      (x ⊙˘ y₁) ≈ (x ⊙˘ y₂) → y₁ ~ y₂
+
 CancellativeProperty :
   Hand → {A B : Set} → (A → A → B) → (A → A → Set) → (B → B → Set) → A → Set
-CancellativeProperty hand _⊙_ _~_ _≈_ x =
-  let _<⊙>_ = forHand hand _⊙_
-   in ∀ {y₁ y₂} → (x <⊙> y₁) ≈ (x <⊙> y₂) → y₁ ~ y₂
+CancellativeProperty hand _⊙_ = CancellativePropertyᶜ hand (tc _⊙_)
 
-record Cancellative
-    (hand : Hand) {A B : Set} (_⊙_ : A → A → B) (_~_ : A → A → Set)
-    (_≈_ : B → B → Set) (C : A → Set)
+record Cancellativeᶜ
+    (hand : Hand) {A B : Set} {C⊙ : A → A → Set}
+    (_⊙_ : (x y : A) {{_ : C⊙ x y}} → B)
+    (_~_ : A → A → Set) (_≈_ : B → B → Set) (C : A → Set)
     : Set where
   constructor cancellative
   field
-    cancel : ∀ {a} {{_ : C a}} → CancellativeProperty hand _⊙_ _~_ _≈_ a
+    cancel : ∀ {a} {{c : C a}} → CancellativePropertyᶜ hand _⊙_ _~_ _≈_ a
 
-open Cancellative {{...}} public using (cancel)
+open Cancellativeᶜ {{...}} public using (cancel)
+
+Cancellative :
+    Hand → {A B : Set} (_⊙_ : A → A → B) (_~_ : A → A → Set) (_≈_ : B → B → Set)
+    (C : A → Set) → Set
+Cancellative hand _⊙_ = Cancellativeᶜ hand (tc _⊙_)
 
 cancellativeᴿ-from-cancellativeᴸ :
   {A B : Set} {_⊙_ : A → A → B} {_~_ : A → A → Set} {_≈_ : B → B → Set}
@@ -59,14 +73,20 @@ cancelᴿ-from-cancelᴸ-comm = cancellativeᴿ-from-cancellativeᴸ
     instance ⊙-swap = swappable-from-commutative
     instance ≃-substᴿ = EqProperties.≃-substitutiveᴿ
 
-record Cancellative²
-    {A B : Set}
-    (_⊙_ : A → A → B) (_~_ : A → A → Set) (_≈_ : B → B → Set) (C : A → Set)
+record Cancellative²ᶜ
+    {A B : Set} {C⊙ : A → A → Set}
+    (_⊙_ : (x y : A) {{_ : C⊙ x y}} → B)
+    (_~_ : A → A → Set) (_≈_ : B → B → Set) (Cᴸ : A → Set) (Cᴿ : A → Set)
     : Set where
   constructor cancellative²
   field
-    {{cancellativeᴸ}} : Cancellative handᴸ _⊙_ _~_ _≈_ C
-    {{cancellativeᴿ}} : Cancellative handᴿ _⊙_ _~_ _≈_ C
+    {{cancellativeᴸ}} : Cancellativeᶜ handᴸ _⊙_ _~_ _≈_ Cᴸ
+    {{cancellativeᴿ}} : Cancellativeᶜ handᴿ _⊙_ _~_ _≈_ Cᴿ
+
+Cancellative² :
+  {A B : Set} (_⊙_ : A → A → B) (_~_ : A → A → Set) (_≈_ : B → B → Set)
+  (C : A → Set) → Set
+Cancellative² _⊙_ _~_ _≈_ C = Cancellative²ᶜ (tc _⊙_) _~_ _≈_ C C
 
 {--- Equivalences ---}
 

@@ -6,6 +6,7 @@ open Eq.≃-Reasoning
 open import net.cruhland.axioms.Integers using (Integers)
 open import net.cruhland.axioms.Operators using (_*_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
+open import net.cruhland.models.Function using (const)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using (⊤; Dec; dec-map)
 
@@ -140,6 +141,25 @@ instance
 
   //-substitutive : AA.Substitutive²ᶜ _//_ _≃_ _≃_
   //-substitutive = AA.substitutive²
+
+  //-cancellativeᴸ : AA.Cancellativeᶜ AA.handᴸ _//_ _≃_ _≃_ (_≄ⁱ 0)
+  //-cancellativeᴸ = AA.cancellative //-cancelᴸ
+    where
+      //-cancelᴸ :
+        {a : ℤ} {{_ : a ≄ⁱ 0}} {b₁ b₂ : ℤ} {{c₁ : b₁ ≄ⁱ 0}} {{c₂ : b₂ ≄ⁱ 0}} →
+        a // b₁ ≃ a // b₂ → b₁ ≃ b₂
+      //-cancelᴸ (≃₀-intro ab₂≃ab₁) = AA.cancel (Eq.sym ab₂≃ab₁)
+
+  //-cancellativeᴿ : AA.Cancellativeᶜ AA.handᴿ _//_ _≃_ _≃_ (const ⊤)
+  //-cancellativeᴿ = AA.cancellative //-cancelᴿ
+    where
+      //-cancelᴿ :
+        {a b₁ b₂ : ℤ} {{c₁ : a ≄ⁱ 0}} {{c₂ : a ≄ⁱ 0}} →
+        (b₁ // a) {{c₁}} ≃ (b₂ // a) {{c₂}} → b₁ ≃ b₂
+      //-cancelᴿ {{c₁ = c₁}} (≃₀-intro b₁a≃b₂a) = AA.cancel {{c = c₁}} b₁a≃b₂a
+
+  //-cancellative : AA.Cancellative²ᶜ _//_ _≃_ _≃_ (_≄ⁱ 0) (const ⊤)
+  //-cancellative = AA.cancellative²
 
   from-ℤ-substitutive : AA.Substitutive₁ (_as ℚ) _≃_ _≃_
   from-ℤ-substitutive = AA.substitutive₁ from-ℤ-subst

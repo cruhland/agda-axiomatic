@@ -6,10 +6,10 @@ open Eq.≃-Reasoning
 open import net.cruhland.models.Function using
   (_∘_; _⟨→⟩_; ConstrainableFn; toExpFn)
 import net.cruhland.models.Function.Properties
-open import net.cruhland.models.Logic using (⊤; contra)
+open import net.cruhland.models.Logic using (contra)
 
 open import net.cruhland.axioms.AbstractAlgebra.Base using
-  (forHand; forHandᶜ; Hand; handᴸ; handᴿ)
+  (forHand; forHandᶜ; Hand; handᴸ; handᴿ; tc)
 open import net.cruhland.axioms.AbstractAlgebra.Compatible using
   (fnOpComm; FnOpCommutative; fnOpCommutative)
 open import net.cruhland.axioms.AbstractAlgebra.Swappable using
@@ -58,10 +58,6 @@ open Substitutive₂ᶜ {{...}} public using (subst₂)
 
 substᴸ = subst₂ {handᴸ}
 substᴿ = subst₂ {handᴿ}
-
--- Short for "trivial constraint"
-tc : ∀ {α β} {A : Set α} {B : Set β} → (A → A → B) → (A → A → {{_ : ⊤}} → B)
-tc f x y = f x y
 
 Substitutive₂ :
   Hand → ∀ {α β χ δ} {A : Set α} {B : Set β} (_⊙_ : A → A → B)
