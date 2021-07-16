@@ -1,5 +1,5 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
-open import net.cruhland.axioms.Cast as Cast using (_As_)
+open import net.cruhland.axioms.Cast as Cast using (_As_; _as_)
 open import net.cruhland.axioms.DecEq using (_≃?_; DecEq; DecEq-intro)
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄ⁱ_; Eq)
 open Eq.≃-Reasoning
@@ -140,3 +140,18 @@ instance
 
   //-substitutive : AA.Substitutive²ᶜ _//_ _≃_ _≃_
   //-substitutive = AA.substitutive²
+
+  from-ℤ-substitutive : AA.Substitutive₁ (_as ℚ) _≃_ _≃_
+  from-ℤ-substitutive = AA.substitutive₁ from-ℤ-subst
+    where
+      from-ℤ-subst : {a₁ a₂ : ℤ} → a₁ ≃ a₂ → (a₁ as ℚ) ≃ (a₂ as ℚ)
+      from-ℤ-subst {a₁} {a₂} a₁≃a₂ =
+        begin
+          (a₁ as ℚ)
+        ≃⟨⟩
+          a₁ // 1
+        ≃⟨ AA.subst₂ a₁≃a₂ ⟩
+          a₂ // 1
+        ≃⟨⟩
+          (a₂ as ℚ)
+        ∎
