@@ -9,15 +9,18 @@ open import net.cruhland.axioms.Rationals.BaseDecl PA Z using (Base)
 open import net.cruhland.axioms.Rationals.MultiplicationDecl PA Z
   using (Multiplication)
 open import net.cruhland.axioms.Rationals.NegationDecl PA Z using (Negation)
+open import net.cruhland.axioms.Rationals.ReciprocalDecl PA Z using (Reciprocal)
 
 record Rationals : Set₁ where
   field
     QB : Base
-    Q+ : Addition QB
-    Q- : Negation QB
-    Q* : Multiplication QB
+    QA : Addition QB
+    QN : Negation QB
+    QM : Multiplication QB
+    QR : Reciprocal QB
 
-  open Addition Q+ public
+  open Addition QA public
   open Base QB public
-  open Multiplication Q* public
-  open Negation Q- public
+  open Multiplication QM public
+  open Negation QN public
+  open Reciprocal QR public

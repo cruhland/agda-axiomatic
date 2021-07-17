@@ -5,8 +5,8 @@ module net.cruhland.models.Rationals.IntPair.AdditionDefn
   (PA : PeanoArithmetic) (Z : Integers PA) where
 
 open import net.cruhland.axioms.Rationals.AdditionDecl PA Z using (Addition)
-import net.cruhland.models.Rationals.IntPair.AdditionImpl PA Z as Q+
+import net.cruhland.models.Rationals.IntPair.AdditionImpl PA Z as QA
 open import net.cruhland.models.Rationals.IntPair.BaseDefn PA Z using (QB)
 
-Q+ : Addition QB
-Q+ = record { Q+ }
+QA : Addition QB
+QA = record { QA }

@@ -15,3 +15,6 @@ record ¬ⁱ_ {α} (A : Set α) : Set α where
   constructor ¬ⁱ-intro
   field
     elim : ¬ A
+
+contrapositive : ∀ {α β} {A : Set α} {B : Set β} → (A → B) → ¬ⁱ B → ¬ⁱ A
+contrapositive f (¬ⁱ-intro ⊥-from-b) = ¬ⁱ-intro λ a → ⊥-from-b (f a)

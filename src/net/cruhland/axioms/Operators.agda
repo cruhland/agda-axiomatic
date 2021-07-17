@@ -50,3 +50,15 @@ record Caret (A : Set) : Set where
     _^_ : A → A → A
 
 open Caret {{...}} public
+
+{-# DISPLAY Caret._^_ _ a b = a ^ b #-}
+
+record SupNegOne (A : Set) (C : A → Set) : Set where
+  constructor supNegOne
+  infix 8 _⁻¹
+  field
+    _⁻¹ : (a : A) {{_ : C a}} → A
+
+open SupNegOne {{...}} public
+
+{-# DISPLAY SupNegOne._⁻¹ _ a = a ⁻¹ #-}
