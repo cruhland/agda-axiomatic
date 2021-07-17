@@ -1,6 +1,7 @@
-open import net.cruhland.axioms.Eq using (_≄ⁱ_)
+import net.cruhland.axioms.AbstractAlgebra as AA
+open import net.cruhland.axioms.Eq using (_≃_; _≄ⁱ_)
 open import net.cruhland.axioms.Integers using (Integers)
-import net.cruhland.axioms.Operators as Op
+open import net.cruhland.axioms.Operators as Op using (_⁻¹)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.models.Literals
 
@@ -14,3 +15,4 @@ record Reciprocal (QB : Base) : Set where
 
   field
     {{reciprocal}} : Op.SupNegOne ℚ (_≄ⁱ 0)
+    {{recip-substitutive}} : AA.Substitutive₁ᶜ {A = ℚ} _⁻¹ _≃_ _≃_

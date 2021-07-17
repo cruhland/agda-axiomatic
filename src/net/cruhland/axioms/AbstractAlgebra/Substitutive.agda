@@ -9,7 +9,7 @@ import net.cruhland.models.Function.Properties
 open import net.cruhland.models.Logic using (contra)
 
 open import net.cruhland.axioms.AbstractAlgebra.Base using
-  (forHand; forHandᶜ; Hand; handᴸ; handᴿ; tc)
+  (forHand; forHandᶜ; Hand; handᴸ; handᴿ; tc₁; tc₂)
 open import net.cruhland.axioms.AbstractAlgebra.Compatible using
   (fnOpComm; FnOpCommutative; fnOpCommutative)
 open import net.cruhland.axioms.AbstractAlgebra.Swappable using
@@ -17,29 +17,19 @@ open import net.cruhland.axioms.AbstractAlgebra.Swappable using
   ; swappable-from-symmetric; with-swap
   )
 
-record Substitutive₁
-    {β} {A : Set} {B : A → Set β} (f : (a : A) → B a)
-      (_~_ : A → A → Set) (_≈_ : ∀ {a₁ a₂} → B a₁ → B a₂ → Set) : Set β where
+record Substitutive₁ᶜ
+    {β} {A : Set} {B : A → Set β} {C : A → Set} (f : (a : A) {{_ : C a}} → B a)
+    (_~_ : A → A → Set) (_≈_ : ∀ {a₁ a₂} → B a₁ → B a₂ → Set) : Set β where
   constructor substitutive₁
   field
-    subst₁ : ∀ {a₁ a₂} → a₁ ~ a₂ → f a₁ ≈ f a₂
+    subst₁ : ∀ {a₁ a₂} {{c₁ : C a₁}} {{c₂ : C a₂}} → a₁ ~ a₂ → f a₁ ≈ f a₂
 
-open Substitutive₁ {{...}} public using (subst₁)
+open Substitutive₁ᶜ {{...}} public using (subst₁)
 
-record Substitutiveᶜ
-    {β} {A F : Set} {B : A → Set β} (fn : F) (C : A → Set) (_~_ : A → A → Set)
-    (_≈_ : ∀ {a₁ a₂} → B a₁ → B a₂ → Set)
-    : Set β where
-  constructor substitutiveᶜ
-  field
-    {{cf}} : ConstrainableFn F C B
-
-  f = toExpFn fn
-
-  field
-    substᶜ : ∀ {a₁ a₂} {{c₁ : C a₁}} {{c₂ : C a₂}} → a₁ ~ a₂ → f a₁ ≈ f a₂
-
-open Substitutiveᶜ {{...}} public using (substᶜ)
+Substitutive₁ :
+  ∀ {β} {A : Set} {B : A → Set β} (f : (a : A) → B a) (_~_ : A → A → Set)
+  (_≈_ : ∀ {a₁ a₂} → B a₁ → B a₂ → Set) → Set β
+Substitutive₁ f = Substitutive₁ᶜ (tc₁ f)
 
 record Substitutive₂ᶜ
     (hand : Hand) {α β χ δ} {A : Set α} {B : Set β} {C : A → A → Set}
@@ -62,7 +52,7 @@ substᴿ = subst₂ {handᴿ}
 Substitutive₂ :
   Hand → ∀ {α β χ δ} {A : Set α} {B : Set β} (_⊙_ : A → A → B)
   (_~_ : A → A → Set χ) (_≈_ : B → B → Set δ) → Set (α ⊔ χ ⊔ δ)
-Substitutive₂ hand _⊙_ = Substitutive₂ᶜ hand (tc _⊙_)
+Substitutive₂ hand _⊙_ = Substitutive₂ᶜ hand (tc₂ _⊙_)
 
 substitutiveᴿ-from-substitutiveᴸ :
   ∀ {α β χ δ} {A : Set α} {B : Set β} {_⊙_ : A → A → B} {_~_ : A → A → Set χ}
@@ -84,7 +74,7 @@ record Substitutive²ᶜ
 Substitutive² :
   ∀ {α β χ δ} {A : Set α} {B : Set β} (_⊙_ : A → A → B) (_~_ : A → A → Set χ)
   (_≈_ : B → B → Set δ) → Set (α ⊔ χ ⊔ δ)
-Substitutive² _⊙_ = Substitutive²ᶜ (tc _⊙_)
+Substitutive² _⊙_ = Substitutive²ᶜ (tc₂ _⊙_)
 
 module _ {β} {A : Set} {B : Set β} {_⊙_ : A → A → B} {{_ : Eq B}} where
 

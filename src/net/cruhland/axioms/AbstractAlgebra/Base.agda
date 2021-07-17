@@ -24,5 +24,10 @@ other : Hand → Hand
 other = handRec handᴿ handᴸ
 
 -- Short for "trivial constraint"
-tc : ∀ {α β} {A : Set α} {B : Set β} → (A → A → B) → (A → A → {{_ : ⊤}} → B)
-tc f x y = f x y
+tc₁ :
+  ∀ {α β} {A : Set α} {B : A → Set β} →
+  ((a : A) → B a) → ((a : A) → {{_ : ⊤}} → B a)
+tc₁ f x = f x
+
+tc₂ : ∀ {α β} {A : Set α} {B : Set β} → (A → A → B) → (A → A → {{_ : ⊤}} → B)
+tc₂ f x y = f x y

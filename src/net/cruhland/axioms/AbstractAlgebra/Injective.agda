@@ -6,7 +6,7 @@ open import net.cruhland.models.Function using
 import net.cruhland.models.Logic
 
 open import net.cruhland.axioms.AbstractAlgebra.Base using
-  (forHand; forHandᶜ; Hand; handᴸ; handᴿ; tc)
+  (forHand; forHandᶜ; Hand; handᴸ; handᴿ; tc₂)
 open import net.cruhland.axioms.AbstractAlgebra.Substitutive using
   (Substitutive₁; substitutive₁; Substitutive₂; swappable-from-commutative
   ; module EqProperties
@@ -40,7 +40,7 @@ CancellativePropertyᶜ hand {C = C} _⊙_ _~_ _≈_ x =
 
 CancellativeProperty :
   Hand → {A B : Set} → (A → A → B) → (A → A → Set) → (B → B → Set) → A → Set
-CancellativeProperty hand _⊙_ = CancellativePropertyᶜ hand (tc _⊙_)
+CancellativeProperty hand _⊙_ = CancellativePropertyᶜ hand (tc₂ _⊙_)
 
 record Cancellativeᶜ
     (hand : Hand) {A B : Set} {C⊙ : A → A → Set}
@@ -56,7 +56,7 @@ open Cancellativeᶜ {{...}} public using (cancel)
 Cancellative :
     Hand → {A B : Set} (_⊙_ : A → A → B) (_~_ : A → A → Set) (_≈_ : B → B → Set)
     (C : A → Set) → Set
-Cancellative hand _⊙_ = Cancellativeᶜ hand (tc _⊙_)
+Cancellative hand _⊙_ = Cancellativeᶜ hand (tc₂ _⊙_)
 
 cancellativeᴿ-from-cancellativeᴸ :
   {A B : Set} {_⊙_ : A → A → B} {_~_ : A → A → Set} {_≈_ : B → B → Set}
@@ -86,7 +86,7 @@ record Cancellative²ᶜ
 Cancellative² :
   {A B : Set} (_⊙_ : A → A → B) (_~_ : A → A → Set) (_≈_ : B → B → Set)
   (C : A → Set) → Set
-Cancellative² _⊙_ _~_ _≈_ C = Cancellative²ᶜ (tc _⊙_) _~_ _≈_ C C
+Cancellative² _⊙_ _~_ _≈_ C = Cancellative²ᶜ (tc₂ _⊙_) _~_ _≈_ C C
 
 {--- Equivalences ---}
 

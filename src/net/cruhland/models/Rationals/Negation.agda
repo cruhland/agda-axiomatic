@@ -86,7 +86,7 @@ neg-literal≃neg-ℤ-literal//1 n =
     - (n as ℚ)
   ≃⟨⟩
     - (n as ℕ as ℤ as ℚ)
-  ≃˘⟨ AA.subst₁ {f = -_} (AA.subst₁ (ℤ.fromNatLiteral≃casts n)) ⟩
+  ≃˘⟨ AA.subst₁ {f = AA.tc₁ -_} (AA.subst₁ (ℤ.fromNatLiteral≃casts n)) ⟩
     - ((fromNatLiteral n) as ℚ)
   ≃⟨⟩
     - (fromNatLiteral n // 1 ~ ℤ.1≄0)

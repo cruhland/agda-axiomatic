@@ -42,8 +42,8 @@ _/′_ : (p q : ℚ) {{_ : q ≄ⁱ 0}} → ℚ
 p /′ q = p * q ⁻¹′
 
 instance
-  recip-substitutiveᶜ : AA.Substitutiveᶜ _⁻¹′ (_≄ⁱ 0) _≃_ _≃_
-  recip-substitutiveᶜ = record { substᶜ = recip-substᶜ }
+  recip-substitutiveᶜ : AA.Substitutive₁ᶜ _⁻¹′ _≃_ _≃_
+  recip-substitutiveᶜ = AA.substitutive₁ recip-substᶜ
     where
       recip-substᶜ :
         ∀ {q₁ q₂} {{c₁ : q₁ ≄ⁱ 0}} {{c₂ : q₂ ≄ⁱ 0}} → q₁ ≃ q₂ → q₁ ⁻¹′ ≃ q₂ ⁻¹′
