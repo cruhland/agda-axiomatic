@@ -18,4 +18,5 @@ record Addition (QB : Base) : Set where
     {{plus}} : Op.Plus ℚ
     {{+-substitutive}} : AA.Substitutive² {A = ℚ} _+_ _≃_ _≃_
     {{+-commutative}} : AA.Commutative {A = ℚ} _+_
+    {{+-associative}} : AA.Associative {A = ℚ} _+_
     {{+-compatible-ℤ}} : AA.Compatible₂ {A = ℤ} (_as ℚ) _+_ _+_ _≃_
