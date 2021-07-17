@@ -124,7 +124,7 @@ instance
         ∎
 
   +-associative : AA.Associative _+_
-  +-associative = AA.associative {A = ℚ} +-assoc
+  +-associative = AA.associative +-assoc
     where
       +-assoc : {p q r : ℚ} → (p + q) + r ≃ p + (q + r)
       +-assoc
