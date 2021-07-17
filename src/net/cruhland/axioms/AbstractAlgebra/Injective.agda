@@ -1,18 +1,16 @@
-module net.cruhland.axioms.AbstractAlgebra.Injective where
-
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_; Eq)
-open import net.cruhland.models.Function using
-  (_∘_; _⟨→⟩_; ConstrainableFn; flip; toImpFn)
+open import net.cruhland.models.Function using (_∘_; flip)
 import net.cruhland.models.Logic
 
-open import net.cruhland.axioms.AbstractAlgebra.Base using
-  (forHand; forHandᶜ; Hand; handᴸ; handᴿ; tc₂)
-open import net.cruhland.axioms.AbstractAlgebra.Substitutive using
-  (Substitutive₁; substitutive₁; Substitutive₂; swappable-from-commutative
-  ; module EqProperties
-  )
-open import net.cruhland.axioms.AbstractAlgebra.Swappable using
-  (Commutative; Swappable; with-swap)
+open import net.cruhland.axioms.AbstractAlgebra.Base
+  using (forHand; forHandᶜ; Hand; handᴸ; handᴿ; tc₂)
+open import net.cruhland.axioms.AbstractAlgebra.Substitutive
+  using (Substitutive₁; substitutive₁; swappable-from-commutative
+        ; module EqProperties)
+open import net.cruhland.axioms.AbstractAlgebra.Swappable
+  using (Commutative; Swappable; with-swap)
+
+module net.cruhland.axioms.AbstractAlgebra.Injective where
 
 record Injective
     {A B : Set} (f : A → B) (_~_ : A → A → Set) (_≈_ : B → B → Set) : Set where

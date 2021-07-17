@@ -1,21 +1,19 @@
-module net.cruhland.axioms.AbstractAlgebra.Substitutive where
-
-open import Level using (_⊔_; 0ℓ) renaming (suc to sℓ)
+open import Level using (_⊔_)
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_; Eq)
 open Eq.≃-Reasoning
-open import net.cruhland.models.Function using
-  (_∘_; _⟨→⟩_; ConstrainableFn; toExpFn)
+open import net.cruhland.models.Function using (_∘_; _⟨→⟩_)
 import net.cruhland.models.Function.Properties
 open import net.cruhland.models.Logic using (contra)
 
-open import net.cruhland.axioms.AbstractAlgebra.Base using
-  (forHand; forHandᶜ; Hand; handᴸ; handᴿ; tc₁; tc₂)
-open import net.cruhland.axioms.AbstractAlgebra.Compatible using
-  (fnOpComm; FnOpCommutative; fnOpCommutative)
-open import net.cruhland.axioms.AbstractAlgebra.Swappable using
-  (comm; Commutative; commutative; swap; Swappable; swappable
-  ; swappable-from-symmetric; with-swap
-  )
+open import net.cruhland.axioms.AbstractAlgebra.Base
+  using (forHand; forHandᶜ; Hand; handᴸ; handᴿ; tc₁; tc₂)
+open import net.cruhland.axioms.AbstractAlgebra.Compatible
+  using (fnOpComm; FnOpCommutative; fnOpCommutative)
+open import net.cruhland.axioms.AbstractAlgebra.Swappable
+  using (comm; Commutative; commutative; swap; Swappable; swappable
+        ; swappable-from-symmetric; with-swap)
+
+module net.cruhland.axioms.AbstractAlgebra.Substitutive where
 
 record Substitutive₁ᶜ
     {β} {A : Set} {B : A → Set β} {C : A → Set} (f : (a : A) {{_ : C a}} → B a)
