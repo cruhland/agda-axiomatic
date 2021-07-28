@@ -11,7 +11,7 @@ open import net.cruhland.axioms.Sign
   using (Negative; Negativity; Positive; Positivity; pos≄0)
 open import net.cruhland.models.Function using (_⟨→⟩_; id)
 open import net.cruhland.models.Literals
-open import net.cruhland.models.Logic using (contra)
+open import net.cruhland.models.Logic using (_↯_)
 
 module net.cruhland.axioms.Integers.SignPartialImplNat
   (PA : PeanoArithmetic)
@@ -27,7 +27,7 @@ import net.cruhland.axioms.Integers.SignDecl PA as SignDecl
 open SignDecl.SignPredefs ZB Z+ Z- using (_≃_[posℕ]; ≃posℕ-intro)
 
 nonzero-from-≃id[posℕ] : ∀ {a} → a ≃ id [posℕ] → a ≄ 0
-nonzero-from-≃id[posℕ] {a} (≃posℕ-intro {n} pos[n] a≃n) a≃0 =
+nonzero-from-≃id[posℕ] {a} (≃posℕ-intro {n} pos[n] a≃n) = Eq.≄-intro λ a≃0 →
   let n-as-ℤ≃0-as-ℤ =
         begin
           (n as ℤ)
@@ -40,7 +40,7 @@ nonzero-from-≃id[posℕ] {a} (≃posℕ-intro {n} pos[n] a≃n) a≃0 =
         ∎
       n≃0 = AA.inject n-as-ℤ≃0-as-ℤ
       n≄0 = pos≄0 pos[n]
-   in contra n≃0 n≄0
+   in n≃0 ↯ n≄0
 
 instance
   pos-substitutive : AA.Substitutive₁ (_≃ id [posℕ]) _≃_ _⟨→⟩_
@@ -55,7 +55,7 @@ instance
     record { Positive = _≃ id [posℕ] ; pos≄0 = nonzero-from-≃id[posℕ] }
 
 nonzero-from-≃neg[posℕ] : ∀ {a} → a ≃ -_ [posℕ] → a ≄ 0
-nonzero-from-≃neg[posℕ] {a} (≃posℕ-intro {n} pos[n] a≃-n) a≃0 =
+nonzero-from-≃neg[posℕ] {a} (≃posℕ-intro {n} pos[n] a≃-n) = Eq.≄-intro λ a≃0 →
   let n-as-ℤ≃0-as-ℤ =
         begin
           (n as ℤ)
@@ -70,8 +70,9 @@ nonzero-from-≃neg[posℕ] {a} (≃posℕ-intro {n} pos[n] a≃-n) a≃0 =
         ≃⟨ ℤB.fromNatLiteral≃casts 0 ⟩
           (0 as ℤ)
         ∎
+      n≃0 = AA.inject n-as-ℤ≃0-as-ℤ
       n≄0 = pos≄0 pos[n]
-   in contra (AA.inject n-as-ℤ≃0-as-ℤ) n≄0
+   in n≃0 ↯ n≄0
 
 instance
   negative-substitutive : AA.Substitutive₁ (_≃ -_ [posℕ]) _≃_ _⟨→⟩_

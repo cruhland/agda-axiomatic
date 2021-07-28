@@ -1,5 +1,5 @@
-open import Relation.Nullary using (Dec)
 open import net.cruhland.axioms.Sets.Base using (SetAxioms)
+open import net.cruhland.models.Logic using (Dec)
 open import net.cruhland.models.Setoid using (El; Setoid₀)
 
 module net.cruhland.axioms.Sets.Decidable (SA : SetAxioms) where

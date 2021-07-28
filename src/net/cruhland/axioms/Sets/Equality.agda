@@ -1,9 +1,9 @@
-open import Level using (_⊔_; Level; 0ℓ) renaming (suc to sℓ)
+open import Level using (_⊔_; Level) renaming (suc to sℓ)
 open import Relation.Binary using (IsEquivalence)
-open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_; Eq; sym)
+open import net.cruhland.axioms.Eq as Eq using (_≃_; Eq)
 open import net.cruhland.axioms.Sets.Base using (SetAxioms)
-open import net.cruhland.models.Logic using
-  (¬_; _↔_; ↔-elimᴸ; ↔-elimᴿ; ↔-refl; ↔-sym; ↔-trans)
+open import net.cruhland.models.Logic
+  using (contrapositive; _↔_; ↔-elimᴸ; ↔-elimᴿ; ↔-refl; ↔-sym; ↔-trans)
 open import net.cruhland.models.Setoid using (El; Setoid; Setoid₀)
 
 module net.cruhland.axioms.Sets.Equality (SA : SetAxioms) where
@@ -80,7 +80,7 @@ module net.cruhland.axioms.Sets.Equality (SA : SetAxioms) where
   ∈-substᴸ = PSet-cong
 
   ∉-substᴿ : {A B : PSet₀ S} {x : El S} → A ≃ B → x ∉ A → x ∉ B
-  ∉-substᴿ A≃B x∉A x∈B = x∉A (∈-substᴿ (sym A≃B) x∈B)
+  ∉-substᴿ A≃B x∉A = contrapositive (∈-substᴿ (Eq.sym A≃B)) x∉A
 
   ∉-substᴸ : {C : PSet (PSet-Setoid S)} → A ≃ B → A ∉ C → B ∉ C
-  ∉-substᴸ A≃B A∉C B∈C = A∉C (∈-substᴸ (sym A≃B) B∈C)
+  ∉-substᴸ A≃B A∉C = contrapositive (∈-substᴸ (Eq.sym A≃B)) A∉C

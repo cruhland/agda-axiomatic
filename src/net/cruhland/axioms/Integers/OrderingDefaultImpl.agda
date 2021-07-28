@@ -14,7 +14,7 @@ open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.axioms.Sign using (Positive; pos≄0)
 import net.cruhland.models.Function
 open import net.cruhland.models.Literals
-open import net.cruhland.models.Logic using (∧-intro; contra; ¬_)
+open import net.cruhland.models.Logic using (∧-intro; _↯_; ¬_; ¬-intro)
 
 module net.cruhland.axioms.Integers.OrderingDefaultImpl
   (PA : PeanoArithmetic)
@@ -98,7 +98,7 @@ instance
   let ℤS.≃posℕ-intro {d} pos[d] b-a≃d = ℤS.posℕ-from-posℤ pos[b-a]
       b≃a+d = ℤ-.≃ᴸ-subᴿ-toᴸ b-a≃d
       a≤b = ≤₀-intro (Eq.sym b≃a+d)
-      a≄b = λ a≃b →
+      a≄b = Eq.≄-intro λ a≃b →
         let d-as-ℤ≃0-as-ℤ =
               begin
                 (d as ℤ)
@@ -111,12 +111,12 @@ instance
               ≃⟨ ℤB.fromNatLiteral≃casts 0 ⟩
                 (0 as ℤ)
               ∎
-         in contra (AA.inject d-as-ℤ≃0-as-ℤ) (pos≄0 pos[d])
+         in AA.inject d-as-ℤ≃0-as-ℤ ↯ pos≄0 pos[d]
    in Ord.<-from-≤≄ a≤b a≄b
 
 pos-from-< : {a b : ℤ} → a < b → Positive (b - a)
 pos-from-< {a} {b} (<₀-intro (≤₀-intro {d} a+d≃b) a≄b) =
-  let d≄0 = λ d≃0 →
+  let d≄0 = Eq.≄-intro λ d≃0 →
         let a≃b =
               begin
                 a
@@ -129,7 +129,7 @@ pos-from-< {a} {b} (<₀-intro (≤₀-intro {d} a+d≃b) a≄b) =
               ≃⟨ a+d≃b ⟩
                 b
               ∎
-         in contra a≃b a≄b
+         in a≃b ↯ a≄b
       pos[d] = ℕ.Pos-intro-≄0 d≄0
       b-a≃d = ℤ-.≃ᴿ-+ᴸ-toᴿ (Eq.sym a+d≃b)
    in ℤS.posℤ-from-posℕ (ℤS.≃posℕ-intro pos[d] b-a≃d)
@@ -144,9 +144,11 @@ order-trichotomy a b = AA.exactlyOneOfThree 1of3 ¬2of3
     ... | AA.3rd pos[b-a] = AA.1st (<-from-pos pos[b-a])
 
     ¬2of3 : ¬ AA.TwoOfThree (a < b) (a ≃ b) (a > b)
-    ¬2of3 (AA.1∧2 (<₀-intro a≤b a≄b) a≃b) =
-      contra a≃b a≄b
-    ¬2of3 (AA.1∧3 (<₀-intro a≤b a≄b) (<₀-intro b≤a b≄a)) =
-      contra (AA.antisym a≤b b≤a) a≄b
-    ¬2of3 (AA.2∧3 a≃b (<₀-intro b≤a b≄a)) =
-      contra a≃b (Eq.sym b≄a)
+    ¬2of3 = ¬-intro λ
+      { (AA.1∧2 (<₀-intro a≤b a≄b) a≃b) →
+          a≃b ↯ a≄b
+      ; (AA.1∧3 (<₀-intro a≤b a≄b) (<₀-intro b≤a b≄a)) →
+          AA.antisym a≤b b≤a ↯ a≄b
+      ; (AA.2∧3 a≃b (<₀-intro b≤a b≄a)) →
+          a≃b ↯ Eq.sym b≄a
+      }

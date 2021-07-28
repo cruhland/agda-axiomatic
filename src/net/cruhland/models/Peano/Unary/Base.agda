@@ -1,6 +1,4 @@
-module net.cruhland.models.Peano.Unary.Base where
-
-open import Data.Nat as Nat using (ℕ; _+_; zero) renaming (suc to step)
+open import Data.Nat using (ℕ; _+_; zero) renaming (suc to step)
 open import Data.Nat.Properties using () renaming (suc-injective to step-inj)
 open import Relation.Binary.PropositionalEquality as PropEq using (_≡_)
 import net.cruhland.axioms.AbstractAlgebra as AA
@@ -11,6 +9,8 @@ open import net.cruhland.axioms.Peano.Base using (Peano)
 import net.cruhland.axioms.Peano.Inspect as Inspect
 open import net.cruhland.axioms.Peano.Sign using (Sign)
 open import net.cruhland.models.Function using (_∘_; id)
+
+module net.cruhland.models.Peano.Unary.Base where
 
 instance
   ≡-reflexive : Eq.Reflexive _≡_
@@ -40,7 +40,7 @@ base = record
   { ℕ = ℕ
   ; zero = zero
   ; step = step
-  ; step≄zero = λ ()
+  ; step≄zero = Eq.≄-intro λ ()
   ; ind = ind
   }
 

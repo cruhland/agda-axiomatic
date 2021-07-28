@@ -21,7 +21,9 @@ instance
     where
       _+₀_ : ℚ → ℚ → ℚ
       (p↑ // p↓ ~ p↓≄0) +₀ (q↑ // q↓ ~ q↓≄0) =
-        (p↑ * q↓ + p↓ * q↑) // p↓ * q↓ ~ AA.nonzero-prod p↓≄0 q↓≄0
+        let instance _ = p↓≄0
+            instance _ = q↓≄0
+         in (p↑ * q↓ + p↓ * q↑) // p↓ * q↓ ~ AA.nonzero-prod
 
   +-commutative : AA.Commutative _+_
   +-commutative = AA.commutative +-comm
@@ -133,27 +135,28 @@ instance
     where
       +-identᴸ : {p : ℚ} → 0 + p ≃ p
       +-identᴸ p@{p↑ // p↓ ~ p↓≄0} =
-        begin
-          0 + p
-        ≃⟨⟩
-          (0 as ℕ as ℤ as ℚ) + (p↑ // p↓ ~ p↓≄0)
-        ≃˘⟨ AA.subst₂ (AA.subst₁ (ℤ.fromNatLiteral≃casts 0)) ⟩
-          (0 as ℚ) + (p↑ // p↓ ~ p↓≄0)
-        ≃⟨⟩
-          (0 // 1 ~ ℤ.1≄0) + (p↑ // p↓ ~ p↓≄0)
-        ≃⟨⟩
-          (0 * p↓ + 1 * p↑) // 1 * p↓ ~ AA.nonzero-prod ℤ.1≄0 p↓≄0
-        ≃⟨ ℚ≃.subst↓ (AA.nonzero-prod ℤ.1≄0 p↓≄0) p↓≄0 AA.ident ⟩
-          (0 * p↓ + 1 * p↑) // p↓ ~ p↓≄0
-        ≃⟨ ℚ≃.subst↑ p↓≄0 (AA.subst₂ AA.absorb) ⟩
-          (0 + 1 * p↑) // p↓ ~ p↓≄0
-        ≃⟨ ℚ≃.subst↑ p↓≄0 AA.ident ⟩
-          (1 * p↑) // p↓ ~ p↓≄0
-        ≃⟨ ℚ≃.subst↑ p↓≄0 AA.ident ⟩
-          p↑ // p↓ ~ p↓≄0
-        ≃⟨⟩
-          p
-        ∎
+        let instance _ = p↓≄0
+         in begin
+              0 + p
+            ≃⟨⟩
+              (0 as ℕ as ℤ as ℚ) + (p↑ // p↓ ~ p↓≄0)
+            ≃˘⟨ AA.subst₂ (AA.subst₁ (ℤ.fromNatLiteral≃casts 0)) ⟩
+              (0 as ℚ) + (p↑ // p↓ ~ p↓≄0)
+            ≃⟨⟩
+              (0 // 1 ~ ℤ.1≄0) + (p↑ // p↓ ~ p↓≄0)
+            ≃⟨⟩
+              (0 * p↓ + 1 * p↑) // 1 * p↓ ~ AA.nonzero-prod
+            ≃⟨ ℚ≃.subst↓ AA.nonzero-prod p↓≄0 AA.ident ⟩
+              (0 * p↓ + 1 * p↑) // p↓ ~ p↓≄0
+            ≃⟨ ℚ≃.subst↑ p↓≄0 (AA.subst₂ AA.absorb) ⟩
+              (0 + 1 * p↑) // p↓ ~ p↓≄0
+            ≃⟨ ℚ≃.subst↑ p↓≄0 AA.ident ⟩
+              (1 * p↑) // p↓ ~ p↓≄0
+            ≃⟨ ℚ≃.subst↑ p↓≄0 AA.ident ⟩
+              p↑ // p↓ ~ p↓≄0
+            ≃⟨⟩
+              p
+            ∎
 
   +-identityᴿ : AA.Identity AA.handᴿ _+_ 0
   +-identityᴿ = AA.identityᴿ-from-identityᴸ {A = ℚ}

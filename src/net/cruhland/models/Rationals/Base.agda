@@ -1,4 +1,3 @@
-open import Relation.Nullary.Decidable using (False)
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast as Cast using (_As_; As-intro)
 open import net.cruhland.axioms.DecEq using (_≃?_; ≄-derive)
@@ -7,6 +6,7 @@ open import net.cruhland.axioms.Integers using (Integers)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.models.Function using (_∘_)
 open import net.cruhland.models.Literals
+open import net.cruhland.models.Logic using (False)
 
 module net.cruhland.models.Rationals.Base
   (PA : PeanoArithmetic) (Z : Integers PA) where

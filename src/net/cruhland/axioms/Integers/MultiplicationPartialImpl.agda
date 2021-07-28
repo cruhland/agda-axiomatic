@@ -1,7 +1,7 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.DecEq using (_≃?_)
-open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_; _≄ⁱ_; ≄ⁱ-elim)
+open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Integers.AdditionDecl using (Addition)
 open import net.cruhland.axioms.Integers.BaseDecl using (Base)
@@ -13,7 +13,7 @@ open import net.cruhland.axioms.Sign using (Negative; neg≄0; Positive; pos≄0
 import net.cruhland.models.Function
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic
-  using (_∨_; ∨-introᴸ; ∨-introᴿ; contra; no; yes)
+  using (_∨_; ∨-introᴸ; ∨-introᴿ; _↯_; no; yes)
 
 module net.cruhland.axioms.Integers.MultiplicationPartialImpl
   (PA : PeanoArithmetic)
@@ -155,7 +155,7 @@ record MultiplicationProperties : Set where
         a≃-1*n = Eq.trans a≃-n (Eq.sym neg-mult)
      in ℤ*.PosOrNeg-intro pos[n] (ℤS.≃-1-intro Eq.refl) a≃-1*n
   ... | AA.2nd a≃0 =
-    contra a≃0 a≄0
+    a≃0 ↯ a≄0
   ... | AA.3rd pos[a] =
     let ℤS.≃posℕ-intro pos[n] a≃n = ℤS.posℕ-from-posℤ pos[a]
         a≃1*n = Eq.trans a≃n (Eq.sym AA.ident)
@@ -221,14 +221,14 @@ record MultiplicationProperties : Set where
         ... | yes a≃0 = ∨-introᴸ a≃0
         ... | no a≄0 with b ≃? 0
         ... | yes b≃0 = ∨-introᴿ b≃0
-        ... | no b≄0 = contra ab≃0 (*-neither-zero a≄0 b≄0)
+        ... | no b≄0 = ab≃0 ↯ *-neither-zero a≄0 b≄0
 
     private
-      *-cancellativeᴸ : AA.Cancellative AA.handᴸ _*_ _≃_ _≃_ (_≄ⁱ 0)
+      *-cancellativeᴸ : AA.Cancellative AA.handᴸ _*_ _≃_ _≃_ (_≄ 0)
       *-cancellativeᴸ = AA.cancellative *-cancelᴸ
         where
-          *-cancelᴸ : {a : ℤ} {{_ : a ≄ⁱ 0}} {b c : ℤ} → a * b ≃ a * c → b ≃ c
-          *-cancelᴸ {a} {b} {c} ab≃ac with
+          *-cancelᴸ : {a : ℤ} {{_ : a ≄ 0}} {b c : ℤ} → a * b ≃ a * c → b ≃ c
+          *-cancelᴸ {a} {{a≄0}} {b} {c} ab≃ac with
             (let a[b-c]≃0 =
                    begin
                      a * (b - c)
@@ -240,13 +240,13 @@ record MultiplicationProperties : Set where
                      0
                    ∎
               in AA.zero-prod a[b-c]≃0)
-          ... | ∨-introᴸ a≃0 = contra a≃0 ≄ⁱ-elim
+          ... | ∨-introᴸ a≃0 = a≃0 ↯ a≄0
           ... | ∨-introᴿ b-c≃0 = ℤ-.≃-from-zero-sub b-c≃0
 
-      *-cancellativeᴿ : AA.Cancellative AA.handᴿ _*_ _≃_ _≃_ (_≄ⁱ 0)
+      *-cancellativeᴿ : AA.Cancellative AA.handᴿ _*_ _≃_ _≃_ (_≄ 0)
       *-cancellativeᴿ = AA.cancelᴿ-from-cancelᴸ-comm {A = ℤ}
 
-    *-cancellative : AA.Cancellative² _*_ _≃_ _≃_ (_≄ⁱ 0)
+    *-cancellative : AA.Cancellative² _*_ _≃_ _≃_ (_≄ 0)
     *-cancellative = AA.cancellative² {A = ℤ}
 
     neg-compatible-+ : AA.Compatible₂ -_ _+_ _+_ _≃_

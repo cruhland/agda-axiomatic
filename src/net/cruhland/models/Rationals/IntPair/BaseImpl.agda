@@ -1,7 +1,7 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast as Cast using (_As_; _as_)
 open import net.cruhland.axioms.DecEq using (_≃?_; DecEq; DecEq-intro)
-open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄ⁱ_; Eq)
+open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_; Eq)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Integers using (Integers)
 open import net.cruhland.axioms.Operators using (_*_)
@@ -27,7 +27,7 @@ record ℚ : Set where
     -- available as an instance in scope. It does mean there's less
     -- flexibility in the constructor, which can affect pattern
     -- matching.
-    {{denominator≄ⁱ0}} : denominator ≄ⁱ 0
+    {{denominator≄0}} : denominator ≄ 0
 
 open ℚ public using (numerator; denominator)
 
@@ -115,7 +115,7 @@ instance
   //-substitutiveᴸ = AA.substitutive₂ //-substᴸ
     where
       //-substᴸ :
-        {a₁ a₂ b : ℤ} {{c₁ : b ≄ⁱ 0}} {{c₂ : b ≄ⁱ 0}} →
+        {a₁ a₂ b : ℤ} {{c₁ : b ≄ 0}} {{c₂ : b ≄ 0}} →
         a₁ ≃ a₂ → (a₁ // b) {{c₁}} ≃ (a₂ // b) {{c₂}}
       //-substᴸ {a₁} {a₂} {b} a₁≃a₂ =
         let componentEq =
@@ -130,7 +130,7 @@ instance
   //-substitutiveᴿ = AA.substitutive₂ //-substᴿ
     where
       //-substᴿ :
-        {a₁ a₂ b : ℤ} {{_ : a₁ ≄ⁱ 0}} {{_ : a₂ ≄ⁱ 0}} →
+        {a₁ a₂ b : ℤ} {{_ : a₁ ≄ 0}} {{_ : a₂ ≄ 0}} →
         a₁ ≃ a₂ → b // a₁ ≃ b // a₂
       //-substᴿ {a₁} {a₂} {b} a₁≃a₂ =
         let componentEq =
@@ -144,11 +144,11 @@ instance
   //-substitutive : AA.Substitutive²ᶜ _//_ _≃_ _≃_
   //-substitutive = AA.substitutive²
 
-  //-cancellativeᴸ : AA.Cancellativeᶜ AA.handᴸ _//_ _≃_ _≃_ (_≄ⁱ 0)
+  //-cancellativeᴸ : AA.Cancellativeᶜ AA.handᴸ _//_ _≃_ _≃_ (_≄ 0)
   //-cancellativeᴸ = AA.cancellative //-cancelᴸ
     where
       //-cancelᴸ :
-        {a : ℤ} {{_ : a ≄ⁱ 0}} {b₁ b₂ : ℤ} {{c₁ : b₁ ≄ⁱ 0}} {{c₂ : b₂ ≄ⁱ 0}} →
+        {a : ℤ} {{_ : a ≄ 0}} {b₁ b₂ : ℤ} {{c₁ : b₁ ≄ 0}} {{c₂ : b₂ ≄ 0}} →
         a // b₁ ≃ a // b₂ → b₁ ≃ b₂
       //-cancelᴸ (≃₀-intro ab₂≃ab₁) = AA.cancel (Eq.sym ab₂≃ab₁)
 
@@ -156,11 +156,11 @@ instance
   //-cancellativeᴿ = AA.cancellative //-cancelᴿ
     where
       //-cancelᴿ :
-        {a b₁ b₂ : ℤ} {{c₁ : a ≄ⁱ 0}} {{c₂ : a ≄ⁱ 0}} →
+        {a b₁ b₂ : ℤ} {{c₁ : a ≄ 0}} {{c₂ : a ≄ 0}} →
         (b₁ // a) {{c₁}} ≃ (b₂ // a) {{c₂}} → b₁ ≃ b₂
       //-cancelᴿ {{c₁ = c₁}} (≃₀-intro b₁a≃b₂a) = AA.cancel {{c = c₁}} b₁a≃b₂a
 
-  //-cancellative : AA.Cancellative²ᶜ _//_ _≃_ _≃_ (_≄ⁱ 0) (const ⊤)
+  //-cancellative : AA.Cancellative²ᶜ _//_ _≃_ _≃_ (_≄ 0) (const ⊤)
   //-cancellative = AA.cancellative²
 
   from-ℤ-substitutive : AA.Substitutive₁ (_as ℚ) _≃_ _≃_

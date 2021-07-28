@@ -62,7 +62,7 @@ instance
             ≃⟨ AA.subst₂ AA.comm  ⟩
               r↑ * p↓ * q↓
             ∎
-          instance q↓≄ⁱ0 = Eq.≄ⁱ-intro q↓≄0
+          instance _ = q↓≄0
           p↑r↓≃r↑p↓ = AA.cancel p↑r↓q↓≃r↑p↓q↓
         in ≃₀-intro p↑r↓≃r↑p↓
 

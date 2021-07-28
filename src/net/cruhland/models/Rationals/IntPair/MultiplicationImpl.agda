@@ -15,7 +15,7 @@ open import net.cruhland.models.Rationals.IntPair.BaseImpl PA Z as ℚB
   using (_//_; ℚ)
 
 _*₀_ : ℚ → ℚ → ℚ
-(p↑ // p↓) *₀ (q↑ // q↓) = ((p↑ * q↑) // (p↓ * q↓)) {{AA.nonzero-prodⁱ}}
+(p↑ // p↓) *₀ (q↑ // q↓) = ((p↑ * q↑) // (p↓ * q↓)) {{AA.nonzero-prod}}
 
 instance
   star : Op.Star ℚ
@@ -26,8 +26,8 @@ instance
     where
       *-comm : {p q : ℚ} → p * q ≃ q * p
       *-comm p@{(p↑ // p↓) {{p↓≄ⁱ0}}} q@{(q↑ // q↓) {{q↓≄ⁱ0}}} =
-        let instance p↓q↓≄ⁱ0 = AA.nonzero-prodⁱ {{ca = p↓≄ⁱ0}} {{cb = q↓≄ⁱ0}}
-            instance q↓p↓≄ⁱ0 = AA.nonzero-prodⁱ {{ca = q↓≄ⁱ0}} {{cb = p↓≄ⁱ0}}
+        let instance p↓q↓≄ⁱ0 = AA.nonzero-prod {{a≄0 = p↓≄ⁱ0}} {{q↓≄ⁱ0}}
+            instance q↓p↓≄ⁱ0 = AA.nonzero-prod {{a≄0 = q↓≄ⁱ0}} {{p↓≄ⁱ0}}
          in begin
               p * q
             ≃⟨⟩
@@ -56,9 +56,9 @@ instance
           ≃⟨⟩
             (p₁↑ // p₁↓) * (q↑ // q↓)
           ≃⟨⟩
-            ((p₁↑ * q↑) // (p₁↓ * q↓)) {{AA.nonzero-prodⁱ}}
+            ((p₁↑ * q↑) // (p₁↓ * q↓)) {{AA.nonzero-prod}}
           ≃⟨ ℚB.≃₀-intro componentEq ⟩
-            ((p₂↑ * q↑) // (p₂↓ * q↓)) {{AA.nonzero-prodⁱ}}
+            ((p₂↑ * q↑) // (p₂↓ * q↓)) {{AA.nonzero-prod}}
           ≃⟨⟩
             (p₂↑ // p₂↓) * (q↑ // q↓)
           ≃⟨⟩
@@ -91,8 +91,8 @@ instance
           (a * b as ℚ)
         ≃⟨⟩
           (a * b) // 1
-        ≃˘⟨ AA.subst₂ {{c₁ = AA.nonzero-prodⁱ}} AA.identᴸ ⟩
-          ((a * b) // (1 * 1)) {{AA.nonzero-prodⁱ}}
+        ≃˘⟨ AA.subst₂ {{c₁ = AA.nonzero-prod}} AA.identᴸ ⟩
+          ((a * b) // (1 * 1)) {{AA.nonzero-prod}}
         ≃⟨⟩
           (a // 1) * (b // 1)
         ≃⟨⟩

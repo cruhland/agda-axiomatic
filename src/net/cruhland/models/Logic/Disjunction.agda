@@ -1,9 +1,9 @@
-module net.cruhland.models.Logic.Disjunction where
-
+open import Level using (0ℓ)
 open import net.cruhland.models.Function using (_∘_; id)
-import Level
-open import net.cruhland.models.Logic.Falsity using
-  (⊥-elim; ⊥ᴸᴾ; ⊥ᴸᴾ-elim; ¬_)
+open import net.cruhland.models.Logic.Falsity
+  using (⊥ᴸᴾ; ⊥ᴸᴾ-elim; ¬_; ¬-intro; _↯_)
+
+module net.cruhland.models.Logic.Disjunction where
 
 -- Export standard library definitions
 open import Data.Sum public using () renaming
@@ -42,7 +42,10 @@ open import Data.Sum public using () renaming
 ∨-identᴿ = ∨-recᴸ ⊥ᴸᴾ-elim
 
 ∨-forceᴸ : ∀ {α β} {A : Set α} {B : Set β} → ¬ B → A ∨ B → A
-∨-forceᴸ ¬b = ∨-identᴿ {β = Level.zero} ∘ ∨-mapᴿ (⊥-elim ∘ ¬b)
+∨-forceᴸ ¬b = ∨-identᴿ {β = 0ℓ} ∘ ∨-mapᴿ (_↯ ¬b)
 
 ∨-forceᴿ : ∀ {α β} {A : Set α} {B : Set β} → ¬ A → A ∨ B → B
-∨-forceᴿ ¬a = ∨-identᴸ {α = Level.zero} ∘ ∨-mapᴸ (⊥-elim ∘ ¬a)
+∨-forceᴿ ¬a = ∨-identᴸ {α = 0ℓ} ∘ ∨-mapᴸ (_↯ ¬a)
+
+¬[a∨b]-from-¬a∧¬b : ∀ {α β} {A : Set α} {B : Set β} → ¬ A → ¬ B → ¬ (A ∨ B)
+¬[a∨b]-from-¬a∧¬b ¬a ¬b = ¬-intro λ a∨b → ∨-rec (_↯ ¬a) (_↯ ¬b) a∨b

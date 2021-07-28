@@ -1,16 +1,13 @@
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_; Eq)
 open import net.cruhland.models.Function using (_∘_; flip)
-import net.cruhland.models.Logic
-
-open import net.cruhland.axioms.AbstractAlgebra.Base
-  using (forHand; forHandᶜ; Hand; handᴸ; handᴿ; tc₂)
-open import net.cruhland.axioms.AbstractAlgebra.Substitutive
-  using (Substitutive₁; substitutive₁; swappable-from-commutative
-        ; module EqProperties)
-open import net.cruhland.axioms.AbstractAlgebra.Swappable
-  using (Commutative; Swappable; with-swap)
+open import net.cruhland.models.Logic using (contrapositive)
 
 module net.cruhland.axioms.AbstractAlgebra.Injective where
+
+private module AA where
+  open import net.cruhland.axioms.AbstractAlgebra.Base public
+  open import net.cruhland.axioms.AbstractAlgebra.Substitutive public
+  open import net.cruhland.axioms.AbstractAlgebra.Swappable public
 
 record Injective
     {A B : Set} (f : A → B) (_~_ : A → A → Set) (_≈_ : B → B → Set) : Set where
@@ -22,26 +19,25 @@ open Injective {{...}} public using (inject)
 
 instance
   ≄-substitutive :
-    {A B : Set} {f : A → B}
-      {{_ : Eq A}} {{_ : Eq B}} {{_ : Injective f _≃_ _≃_}} →
-        Substitutive₁ f _≄_ _≄_
-  ≄-substitutive = substitutive₁ (λ a₁≄a₂ fa₁≃fa₂ → a₁≄a₂ (inject fa₁≃fa₂))
+    {A B : Set} {f : A → B} {{_ : Eq A}} {{_ : Eq B}}
+    {{_ : Injective f _≃_ _≃_}} → AA.Substitutive₁ f _≄_ _≄_
+  ≄-substitutive = AA.substitutive₁ (contrapositive inject)
 
 CancellativePropertyᶜ :
-  Hand → {A B : Set} {C : A → A → Set} → ((x y : A) {{_ : C x y}} → B) →
+  AA.Hand → {A B : Set} {C : A → A → Set} → ((x y : A) {{_ : C x y}} → B) →
   (A → A → Set) → (B → B → Set) → A → Set
 CancellativePropertyᶜ hand {C = C} _⊙_ _~_ _≈_ x =
-  let C˘ = forHand hand C
-      _⊙˘_ = forHandᶜ hand _⊙_
+  let C˘ = AA.forHand hand C
+      _⊙˘_ = AA.forHandᶜ hand _⊙_
    in ∀ {y₁ y₂} {{c₁ : C˘ x y₁}} {{c₂ : C˘ x y₂}} →
       (x ⊙˘ y₁) ≈ (x ⊙˘ y₂) → y₁ ~ y₂
 
 CancellativeProperty :
-  Hand → {A B : Set} → (A → A → B) → (A → A → Set) → (B → B → Set) → A → Set
-CancellativeProperty hand _⊙_ = CancellativePropertyᶜ hand (tc₂ _⊙_)
+  AA.Hand → {A B : Set} → (A → A → B) → (A → A → Set) → (B → B → Set) → A → Set
+CancellativeProperty hand _⊙_ = CancellativePropertyᶜ hand (AA.tc₂ _⊙_)
 
 record Cancellativeᶜ
-    (hand : Hand) {A B : Set} {C⊙ : A → A → Set}
+    (hand : AA.Hand) {A B : Set} {C⊙ : A → A → Set}
     (_⊙_ : (x y : A) {{_ : C⊙ x y}} → B)
     (_~_ : A → A → Set) (_≈_ : B → B → Set) (C : A → Set)
     : Set where
@@ -52,24 +48,25 @@ record Cancellativeᶜ
 open Cancellativeᶜ {{...}} public using (cancel)
 
 Cancellative :
-    Hand → {A B : Set} (_⊙_ : A → A → B) (_~_ : A → A → Set) (_≈_ : B → B → Set)
-    (C : A → Set) → Set
-Cancellative hand _⊙_ = Cancellativeᶜ hand (tc₂ _⊙_)
+    AA.Hand → {A B : Set} (_⊙_ : A → A → B) (_~_ : A → A → Set)
+    (_≈_ : B → B → Set) (C : A → Set) → Set
+Cancellative hand _⊙_ = Cancellativeᶜ hand (AA.tc₂ _⊙_)
 
 cancellativeᴿ-from-cancellativeᴸ :
   {A B : Set} {_⊙_ : A → A → B} {_~_ : A → A → Set} {_≈_ : B → B → Set}
-  {C : A → Set} {{_ : Eq.Transitive _≈_}} {{_ : Swappable _⊙_ _≈_}}
-  {{_ : Cancellative handᴸ _⊙_ _~_ _≈_ C}} →
-  Cancellative handᴿ _⊙_ _~_ _≈_ C
-cancellativeᴿ-from-cancellativeᴸ = cancellative (cancel ∘ with-swap)
+  {C : A → Set} {{_ : Eq.Transitive _≈_}} {{_ : AA.Swappable _⊙_ _≈_}}
+  {{_ : Cancellative AA.handᴸ _⊙_ _~_ _≈_ C}} →
+  Cancellative AA.handᴿ _⊙_ _~_ _≈_ C
+cancellativeᴿ-from-cancellativeᴸ = cancellative (cancel ∘ AA.with-swap)
 
 cancelᴿ-from-cancelᴸ-comm :
-  {A : Set} {_⊙_ : A → A → A} {C : A → Set} {{_ : Eq A}} {{_ : Commutative _⊙_}}
-  {{c : Cancellative handᴸ _⊙_ _≃_ _≃_ C}} → Cancellative handᴿ _⊙_ _≃_ _≃_ C
+  {A : Set} {_⊙_ : A → A → A} {C : A → Set} {{_ : Eq A}}
+  {{_ : AA.Commutative _⊙_}} {{c : Cancellative AA.handᴸ _⊙_ _≃_ _≃_ C}} →
+  Cancellative AA.handᴿ _⊙_ _≃_ _≃_ C
 cancelᴿ-from-cancelᴸ-comm = cancellativeᴿ-from-cancellativeᴸ
   where
-    instance ⊙-swap = swappable-from-commutative
-    instance ≃-substᴿ = EqProperties.≃-substitutiveᴿ
+    instance ⊙-swap = AA.swappable-from-commutative
+    instance ≃-substᴿ = AA.EqProperties.≃-substitutiveᴿ
 
 record Cancellative²ᶜ
     {A B : Set} {C⊙ : A → A → Set}
@@ -78,13 +75,13 @@ record Cancellative²ᶜ
     : Set where
   constructor cancellative²
   field
-    {{cancellativeᴸ}} : Cancellativeᶜ handᴸ _⊙_ _~_ _≈_ Cᴸ
-    {{cancellativeᴿ}} : Cancellativeᶜ handᴿ _⊙_ _~_ _≈_ Cᴿ
+    {{cancellativeᴸ}} : Cancellativeᶜ AA.handᴸ _⊙_ _~_ _≈_ Cᴸ
+    {{cancellativeᴿ}} : Cancellativeᶜ AA.handᴿ _⊙_ _~_ _≈_ Cᴿ
 
 Cancellative² :
   {A B : Set} (_⊙_ : A → A → B) (_~_ : A → A → Set) (_≈_ : B → B → Set)
   (C : A → Set) → Set
-Cancellative² _⊙_ _~_ _≈_ C = Cancellative²ᶜ (tc₂ _⊙_) _~_ _≈_ C C
+Cancellative² _⊙_ _~_ _≈_ C = Cancellative²ᶜ (AA.tc₂ _⊙_) _~_ _≈_ C C
 
 {--- Equivalences ---}
 
@@ -94,21 +91,21 @@ module _
     where
 
   injective-from-cancellativeᴸ :
-    ∀ {a} {{_ : Cancellative handᴸ _⊙_ _~_ _≈_ C}} {{_ : C a}} →
+    ∀ {a} {{_ : Cancellative AA.handᴸ _⊙_ _~_ _≈_ C}} {{_ : C a}} →
     Injective (a ⊙_) _~_ _≈_
   injective-from-cancellativeᴸ = injective cancel
 
   cancellativeᴸ-from-injective :
-    (∀ a → Injective (a ⊙_) _~_ _≈_) → Cancellative handᴸ _⊙_ _~_ _≈_ C
+    (∀ a → Injective (a ⊙_) _~_ _≈_) → Cancellative AA.handᴸ _⊙_ _~_ _≈_ C
   cancellativeᴸ-from-injective mkInjective =
     cancellative λ {a b₁ b₂} → inject {{r = mkInjective a}}
 
   cancellativeᴸ-flip :
-    {{c : Cancellative handᴸ _⊙_ _~_ _≈_ C}} →
-    Cancellative handᴿ (flip _⊙_) _~_ _≈_ C
+    {{c : Cancellative AA.handᴸ _⊙_ _~_ _≈_ C}} →
+    Cancellative AA.handᴿ (flip _⊙_) _~_ _≈_ C
   cancellativeᴸ-flip {{c}} = cancellative λ {a} {{_ : C a}} {b₁ b₂} → cancel
 
   cancellativeᴿ-flip :
-    {{c : Cancellative handᴿ _⊙_ _~_ _≈_ C}} →
-    Cancellative handᴸ (flip _⊙_) _~_ _≈_ C
+    {{c : Cancellative AA.handᴿ _⊙_ _~_ _≈_ C}} →
+    Cancellative AA.handᴸ (flip _⊙_) _~_ _≈_ C
   cancellativeᴿ-flip {{c}} = cancellative λ {a} {{_ : C a}} {b₁ b₂} → cancel

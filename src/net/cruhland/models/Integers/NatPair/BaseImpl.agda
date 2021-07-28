@@ -1,13 +1,13 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
-open import net.cruhland.axioms.Cast as Cast using (_As_; _as_; _value_)
+open import net.cruhland.axioms.Cast as Cast using (_As_; _as_)
 open import net.cruhland.axioms.DecEq using (_≃?_; DecEq; DecEq-intro)
-open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_; _≄ⁱ_; Eq; ≄ⁱ-intro)
+open import net.cruhland.axioms.Eq as Eq using (_≃_; Eq)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Operators using (_+_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.models.Function using (_∘_; const)
 open import net.cruhland.models.Literals
-open import net.cruhland.models.Logic using (⊤; contra; Dec; dec-map)
+open import net.cruhland.models.Logic using (⊤; Dec; dec-map)
 
 module net.cruhland.models.Integers.NatPair.BaseImpl
   (PA : PeanoArithmetic) where
@@ -22,8 +22,12 @@ record ℤ : Set where
 
 record _≃₀_ (a b : ℤ) : Set where
   constructor ≃₀-intro
+
+  open ℤ a using () renaming (pos to a⁺; neg to a⁻)
+  open ℤ b using () renaming (pos to b⁺; neg to b⁻)
+
   field
-    elim : ℤ.pos a + ℤ.neg b ≃ ℤ.pos b + ℤ.neg a
+    elim : a⁺ + b⁻ ≃ b⁺ + a⁻
 
 instance
   ≃₀-reflexive : Eq.Reflexive _≃₀_
@@ -93,18 +97,10 @@ instance
   from-ℕ-injective : AA.Injective (_as ℤ) _≃_ _≃_
   from-ℕ-injective = AA.injective {A = ℕ} AA.cancel
 
--- Pull in literals from the partial impl
+-- Pull in definitions from the partial impl
 import net.cruhland.axioms.Integers.BasePartialImpl PA as ZB
-open ZB.BaseProperties (record { ℤ = ℤ }) public hiding (ℤ; eq; from-ℕ)
-
-1≄0 : (ℤ value 1) ≄ 0
-1≄0 1-as-ℤ≃0-as-ℤ =
-  let 1-as-ℕ≃0-as-ℕ = AA.inject 1-as-ℤ≃0-as-ℤ
-   in contra 1-as-ℕ≃0-as-ℕ ℕ.step≄zero
-
-instance
-  1≄ⁱ0 : 1 ≄ⁱ 0
-  1≄ⁱ0 = ≄ⁱ-intro 1≄0
+open ZB.BaseProperties (record { ℤ = ℤ }) public
+  hiding (ℤ; eq; from-ℕ; from-ℕ-injective)
 
 zero-from-balanced : ∀ {x} → ℤ.pos x ≃ ℤ.neg x → x ≃ 0
 zero-from-balanced {x⁺ — x⁻} x⁺≃x⁻ =

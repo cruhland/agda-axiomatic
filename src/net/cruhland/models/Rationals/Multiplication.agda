@@ -23,7 +23,9 @@ instance
     where
       _*₀_ : ℚ → ℚ → ℚ
       (p↑ // p↓ ~ p↓≄0) *₀ (q↑ // q↓ ~ q↓≄0) =
-        (p↑ * q↑) // p↓ * q↓ ~ AA.nonzero-prod p↓≄0 q↓≄0
+        let instance _ = p↓≄0
+            instance _ = q↓≄0
+         in (p↑ * q↑) // p↓ * q↓ ~ AA.nonzero-prod
 
 instance
   *-commutative : AA.Commutative _*_
@@ -83,23 +85,24 @@ instance
 
 neg-mult : {q : ℚ} → - q ≃ -1 * q
 neg-mult q@{q↑ // q↓ ~ q↓≄0} =
-  begin
-    - q
-  ≃⟨⟩
-    - (q↑ // q↓ ~ q↓≄0)
-  ≃⟨⟩
-    (- q↑) // q↓ ~ q↓≄0
-  ≃˘⟨ ℚ≃.subst↑ q↓≄0 ℤ.neg-mult ⟩
-    (-1 * q↑) // q↓ ~ q↓≄0
-  ≃˘⟨ ℚ≃.subst↓ {q↓₁ = 1 * q↓} (AA.nonzero-prod ℤ.1≄0 q↓≄0) q↓≄0 AA.ident ⟩
-    (-1 * q↑) // 1 * q↓ ~ AA.nonzero-prod ℤ.1≄0 q↓≄0
-  ≃⟨⟩
-    (-1 // 1 ~ ℤ.1≄0) * (q↑ // q↓ ~ q↓≄0)
-  ≃˘⟨ AA.subst₂ (ℚ-.neg-literal≃neg-ℤ-literal//1 1) ⟩
-    -1 * (q↑ // q↓ ~ q↓≄0)
-  ≃⟨⟩
-    -1 * q
-  ∎
+  let instance _ = q↓≄0
+   in begin
+        - q
+      ≃⟨⟩
+        - (q↑ // q↓ ~ q↓≄0)
+      ≃⟨⟩
+        (- q↑) // q↓ ~ q↓≄0
+      ≃˘⟨ ℚ≃.subst↑ q↓≄0 ℤ.neg-mult ⟩
+        (-1 * q↑) // q↓ ~ q↓≄0
+      ≃˘⟨ ℚ≃.subst↓ {q↓₁ = 1 * q↓} AA.nonzero-prod q↓≄0 AA.ident ⟩
+        (-1 * q↑) // 1 * q↓ ~ AA.nonzero-prod
+      ≃⟨⟩
+        (-1 // 1 ~ ℤ.1≄0) * (q↑ // q↓ ~ q↓≄0)
+      ≃˘⟨ AA.subst₂ (ℚ-.neg-literal≃neg-ℤ-literal//1 1) ⟩
+        -1 * (q↑ // q↓ ~ q↓≄0)
+      ≃⟨⟩
+        -1 * q
+      ∎
 
 instance
   *-fnOpCommutativeᴸ-neg : AA.FnOpCommutative AA.handᴸ -_ _*_
@@ -125,21 +128,22 @@ instance
     where
       *-identᴸ : {p : ℚ} → 1 * p ≃ p
       *-identᴸ p@{p↑ // p↓ ~ p↓≄0} =
-        begin
-          1 * p
-        ≃⟨ AA.subst₂ (ℚ≃.literal≃ℤ-literal//1 1) ⟩
-          (1 // 1 ~ ℤ.1≄0) * p
-        ≃⟨⟩
-          (1 // 1 ~ ℤ.1≄0) * (p↑ // p↓ ~ p↓≄0)
-        ≃⟨⟩
-          (1 * p↑) // 1 * p↓ ~ AA.nonzero-prod ℤ.1≄0 p↓≄0
-        ≃⟨ ℚ≃.subst↓ (AA.nonzero-prod ℤ.1≄0 p↓≄0) p↓≄0 AA.ident ⟩
-          (1 * p↑) // p↓ ~ p↓≄0
-        ≃⟨ ℚ≃.subst↑ p↓≄0 AA.ident ⟩
-          p↑ // p↓ ~ p↓≄0
-        ≃⟨⟩
-          p
-        ∎
+        let instance _ = p↓≄0
+         in begin
+              1 * p
+            ≃⟨ AA.subst₂ (ℚ≃.literal≃ℤ-literal//1 1) ⟩
+              (1 // 1 ~ ℤ.1≄0) * p
+            ≃⟨⟩
+              (1 // 1 ~ ℤ.1≄0) * (p↑ // p↓ ~ p↓≄0)
+            ≃⟨⟩
+              (1 * p↑) // 1 * p↓ ~ AA.nonzero-prod
+            ≃⟨ ℚ≃.subst↓ AA.nonzero-prod p↓≄0 AA.ident ⟩
+              (1 * p↑) // p↓ ~ p↓≄0
+            ≃⟨ ℚ≃.subst↑ p↓≄0 AA.ident ⟩
+              p↑ // p↓ ~ p↓≄0
+            ≃⟨⟩
+              p
+            ∎
 
   *-identityᴿ : AA.Identity AA.handᴿ _*_ 1
   *-identityᴿ = AA.identityᴿ-from-identityᴸ {A = ℚ}

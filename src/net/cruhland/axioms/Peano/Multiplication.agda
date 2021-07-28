@@ -1,10 +1,5 @@
-module net.cruhland.axioms.Peano.Multiplication where
-
-open import Relation.Nullary.Decidable using (False)
 import net.cruhland.axioms.AbstractAlgebra as AA
-open import net.cruhland.axioms.Cast using (_as_)
-open import net.cruhland.axioms.DecEq using (_≃?_; ≄-derive)
-open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_)
+open import net.cruhland.axioms.Eq as Eq using (_≃_)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Ordering using (_<_)
 open import net.cruhland.axioms.Operators as Op using (_+_; _*_)
@@ -18,8 +13,24 @@ open import net.cruhland.axioms.Peano.Sign using () renaming (Sign to ℕSign)
 open import net.cruhland.axioms.Sign as Sign using (Positive)
 open import net.cruhland.models.Function using (it)
 open import net.cruhland.models.Literals
-open import net.cruhland.models.Logic using
-  (_∧_; ∧-elimᴿ; ∧-intro; _∨_; ∨-introᴸ; ∨-introᴿ; contra)
+open import net.cruhland.models.Logic
+  using (∧-intro; _∨_; ∨-introᴸ; ∨-introᴿ; _↯_)
+
+module net.cruhland.axioms.Peano.Multiplication where
+
+private
+  module Predefs
+      (PB : PeanoBase)
+      (PS : ℕSign PB)
+      (PA : Addition PB PS)
+      (PO : Ordering PB PS PA)
+      where
+    open Addition PA public
+    open Literals PB public
+    open ℕSign PS public
+    open Ordering PO public
+    open PeanoBase PB public
+    open PeanoInspect PB public
 
 record Multiplication
     (PB : PeanoBase)
@@ -27,13 +38,7 @@ record Multiplication
     (PA : Addition PB PS)
     (PO : Ordering PB PS PA)
     : Set where
-  private module ℕ+ = Addition PA
-  open PeanoBase PB using (ℕ; ind; step; step-case; zero)
-  private module Inspect = PeanoInspect PB
-  open Inspect using (case; case-step; case-zero; pred-intro)
-  private module ℕLit = Literals PB
-  private module ℕOrd = Ordering PO
-  private module ℕS = ℕSign PS
+  private open module ℕ = Predefs PB PS PA PO using (ℕ; step)
 
   field
     {{star}} : Op.Star ℕ
@@ -46,12 +51,12 @@ record Multiplication
     *-absorptiveᴿ = AA.absorptive *-zeroᴿ
       where
         *-zeroᴿ : ∀ {n} → n * 0 ≃ 0
-        *-zeroᴿ {n} = ind P P0 Ps n
+        *-zeroᴿ {n} = ℕ.ind P P0 Ps n
           where
             P = λ x → x * 0 ≃ 0
             P0 = AA.absorbᴸ
 
-            Ps : step-case P
+            Ps : ℕ.step-case P
             Ps {k} Pk =
               begin
                 step k * 0
@@ -67,7 +72,7 @@ record Multiplication
     *-absorptive² = AA.absorptive²
 
   *-stepᴿ : ∀ {n m} → n * step m ≃ n * m + n
-  *-stepᴿ {n} {m} = ind P P0 Ps n
+  *-stepᴿ {n} {m} = ℕ.ind P P0 Ps n
     where
       P = λ x → x * step m ≃ x * m + x
 
@@ -82,7 +87,7 @@ record Multiplication
           0 * m + 0
         ∎
 
-      Ps : step-case P
+      Ps : ℕ.step-case P
       Ps {k} Pk =
         begin
           step k * step m
@@ -101,12 +106,12 @@ record Multiplication
     *-commutative = AA.commutative *-comm
       where
         *-comm : ∀ {n m} → n * m ≃ m * n
-        *-comm {n} {m} = ind P P0 Ps n
+        *-comm {n} {m} = ℕ.ind P P0 Ps n
           where
             P = λ x → x * m ≃ m * x
             P0 = Eq.trans AA.absorb (Eq.sym AA.absorb)
 
-            Ps : step-case P
+            Ps : ℕ.step-case P
             Ps {k} Pk =
               begin
                 step k * m
@@ -140,31 +145,31 @@ record Multiplication
     zero-product = AA.zeroProduct *-either-zero
       where
         *-either-zero : ∀ {n m} → n * m ≃ 0 → n ≃ 0 ∨ m ≃ 0
-        *-either-zero {n} {m} n*m≃0 with case n
-        ... | case-zero n≃0 = ∨-introᴸ n≃0
-        ... | case-step (pred-intro p n≃sp) = ∨-introᴿ m≃0
-          where
-            p*m+m≃0 =
-              begin
-                p * m + m
-              ≃˘⟨ *-stepᴸ ⟩
-                step p * m
-              ≃˘⟨ AA.subst₂ n≃sp ⟩
-                n * m
-              ≃⟨ n*m≃0 ⟩
-                0
-              ∎
-
-            m≃0 = ∧-elimᴿ (ℕ+.+-both-zero p*m+m≃0)
+        *-either-zero {n} {m} n*m≃0 with ℕ.case n
+        ... | ℕ.case-zero n≃0 =
+          ∨-introᴸ n≃0
+        ... | ℕ.case-step (ℕ.pred-intro p n≃sp) =
+          let p*m+m≃0 =
+                begin
+                  p * m + m
+                ≃˘⟨ *-stepᴸ ⟩
+                  step p * m
+                ≃˘⟨ AA.subst₂ n≃sp ⟩
+                  n * m
+                ≃⟨ n*m≃0 ⟩
+                  0
+                ∎
+              ∧-intro _ m≃0 = ℕ.+-both-zero p*m+m≃0
+           in ∨-introᴿ m≃0
 
     *-preserves-Positive : AA.Preserves Positive _*_
     *-preserves-Positive = AA.preserves *-pres-pos
       where
         *-pres-pos : {n m : ℕ} → Positive n → Positive m → Positive (n * m)
         *-pres-pos pos[n] pos[m] =
-          let n≄0 = Sign.pos≄0 pos[n]
-              m≄0 = Sign.pos≄0 pos[m]
-           in ℕS.Pos-intro-≄0 (AA.nonzero-prod n≄0 m≄0)
+          let instance n≄0 = Sign.pos≄0 pos[n]
+              instance m≄0 = Sign.pos≄0 pos[m]
+           in ℕ.Pos-intro-≄0 AA.nonzero-prod
 
     *-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _*_ _≃_ _≃_
     *-substitutiveᴿ = AA.substᴿ-from-substᴸ-comm
@@ -176,7 +181,7 @@ record Multiplication
     *-distributive-+ᴸ = AA.distributive *-distrib-+ᴸ
       where
         *-distrib-+ᴸ : ∀ {a b c} → a * (b + c) ≃ a * b + a * c
-        *-distrib-+ᴸ {a} {b} {c} = ind P P0 Ps c
+        *-distrib-+ᴸ {a} {b} {c} = ℕ.ind P P0 Ps c
           where
             P = λ x → a * (b + x) ≃ a * b + a * x
             P0 =
@@ -190,7 +195,7 @@ record Multiplication
                 a * b + a * 0
               ∎
 
-            Ps : step-case P
+            Ps : ℕ.step-case P
             Ps {k} a[b+k]≃ab+ak =
               begin
                 a * (b + step k)
@@ -213,7 +218,7 @@ record Multiplication
     *-associative = record { assoc = *-assoc }
       where
         *-assoc : ∀ {a b c} → (a * b) * c ≃ a * (b * c)
-        *-assoc {a} {b} {c} = Eq.sym (ind P P0 Ps b)
+        *-assoc {a} {b} {c} = Eq.sym (ℕ.ind P P0 Ps b)
           where
             P = λ x → a * (x * c) ≃ (a * x) * c
             P0 =
@@ -229,7 +234,7 @@ record Multiplication
                 (a * 0) * c
               ∎
 
-            Ps : step-case P
+            Ps : ℕ.step-case P
             Ps {k} a[kc]≃[ak]c =
               begin
                 a * (step k * c)
@@ -247,13 +252,13 @@ record Multiplication
 
   *-preserves-<ᴿ : {a b c : ℕ} → a < b → Positive c → a * c < b * c
   *-preserves-<ᴿ {a} {b} {c} a<b pos[c] =
-    let a+d≃b = ℕOrd.<-elim-diff a<b
-        pos[d] = ℕOrd.<-diff-pos a<b
+    let a+d≃b = ℕ.<-elim-diff a<b
+        pos[d] = ℕ.<-diff-pos a<b
         ac+dc≃bc = Eq.trans (Eq.sym AA.distrib) (AA.subst₂ a+d≃b)
         pos[dc] = AA.pres pos[d] pos[c]
-        ac≤bc = ℕOrd.≤-intro-diff ac+dc≃bc
-        pos[d[ac≤bc]] = AA.subst₁ (Eq.sym (ℕOrd.intro-diff-id ac+dc≃bc)) pos[dc]
-     in ℕOrd.<-intro-≤pd ac≤bc pos[d[ac≤bc]]
+        ac≤bc = ℕ.≤-intro-diff ac+dc≃bc
+        pos[d[ac≤bc]] = AA.subst₁ (Eq.sym (ℕ.intro-diff-id ac+dc≃bc)) pos[dc]
+     in ℕ.<-intro-≤pd ac≤bc pos[d[ac≤bc]]
 
   *-preserves-<ᴸ : {a b c : ℕ} → b < c → Positive a → a * b < a * c
   *-preserves-<ᴸ {a} {b} {c} b<c pos[a] =
@@ -265,17 +270,17 @@ record Multiplication
       where
         *-cancelᴸ : {a : ℕ} {{_ : Positive a}} {b c : ℕ} → a * b ≃ a * c → b ≃ c
         *-cancelᴸ {a} {b} {c} ab≃ac with
-          AA.ExactlyOneOfThree.at-least-one (ℕOrd.order-trichotomy b c)
+          AA.ExactlyOneOfThree.at-least-one (ℕ.order-trichotomy b c)
         ... | AA.1st b<c =
           let ab<ac = *-preserves-<ᴸ b<c it
-              ab≄ac = ℕOrd.<-elim-≄ ab<ac
-           in contra ab≃ac ab≄ac
+              ab≄ac = ℕ.<-elim-≄ ab<ac
+           in ab≃ac ↯ ab≄ac
         ... | AA.2nd b≃c =
           b≃c
         ... | AA.3rd b>c =
           let ac<ab = *-preserves-<ᴸ b>c it
-              ac≄ab = ℕOrd.<-elim-≄ ac<ab
-           in contra (Eq.sym ab≃ac) ac≄ab
+              ac≄ab = ℕ.<-elim-≄ ac<ab
+           in Eq.sym ab≃ac ↯ ac≄ab
 
     *-cancellativeᴿ : AA.Cancellative AA.handᴿ _*_ _≃_ _≃_ Positive
     *-cancellativeᴿ = AA.cancelᴿ-from-cancelᴸ-comm

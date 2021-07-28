@@ -3,17 +3,14 @@ open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_; Eq)
 open Eq.≃-Reasoning
 open import net.cruhland.models.Function using (_∘_; _⟨→⟩_)
 import net.cruhland.models.Function.Properties
-open import net.cruhland.models.Logic using (contra)
-
-open import net.cruhland.axioms.AbstractAlgebra.Base
-  using (forHand; forHandᶜ; Hand; handᴸ; handᴿ; tc₁; tc₂)
-open import net.cruhland.axioms.AbstractAlgebra.Compatible
-  using (fnOpComm; FnOpCommutative; fnOpCommutative)
-open import net.cruhland.axioms.AbstractAlgebra.Swappable
-  using (comm; Commutative; commutative; swap; Swappable; swappable
-        ; swappable-from-symmetric; with-swap)
+open import net.cruhland.models.Logic using (contrapositive)
 
 module net.cruhland.axioms.AbstractAlgebra.Substitutive where
+
+private module AA where
+  open import net.cruhland.axioms.AbstractAlgebra.Base public
+  open import net.cruhland.axioms.AbstractAlgebra.Compatible public
+  open import net.cruhland.axioms.AbstractAlgebra.Swappable public
 
 record Substitutive₁ᶜ
     {β} {A : Set} {B : A → Set β} {C : A → Set} (f : (a : A) {{_ : C a}} → B a)
@@ -27,16 +24,16 @@ open Substitutive₁ᶜ {{...}} public using (subst₁)
 Substitutive₁ :
   ∀ {β} {A : Set} {B : A → Set β} (f : (a : A) → B a) (_~_ : A → A → Set)
   (_≈_ : ∀ {a₁ a₂} → B a₁ → B a₂ → Set) → Set β
-Substitutive₁ f = Substitutive₁ᶜ (tc₁ f)
+Substitutive₁ f = Substitutive₁ᶜ (AA.tc₁ f)
 
 record Substitutive₂ᶜ
-    (hand : Hand) {α β χ δ} {A : Set α} {B : Set β} {C : A → A → Set}
+    (hand : AA.Hand) {α β χ δ} {A : Set α} {B : Set β} {C : A → A → Set}
     (_⊙_ : (x y : A) {{_ : C x y}} → B)
     (_~_ : A → A → Set χ) (_≈_ : B → B → Set δ)
     : Set (α ⊔ χ ⊔ δ) where
   constructor substitutive₂
-  C˘ = forHand hand C
-  _⊙˘_ = forHandᶜ hand _⊙_
+  C˘ = AA.forHand hand C
+  _⊙˘_ = AA.forHandᶜ hand _⊙_
   field
     subst₂ :
       ∀ {a₁ a₂ b} {{c₁ : C˘ a₁ b}} {{c₂ : C˘ a₂ b}} →
@@ -44,20 +41,20 @@ record Substitutive₂ᶜ
 
 open Substitutive₂ᶜ {{...}} public using (subst₂)
 
-substᴸ = subst₂ {handᴸ}
-substᴿ = subst₂ {handᴿ}
+substᴸ = subst₂ {AA.handᴸ}
+substᴿ = subst₂ {AA.handᴿ}
 
 Substitutive₂ :
-  Hand → ∀ {α β χ δ} {A : Set α} {B : Set β} (_⊙_ : A → A → B)
+  AA.Hand → ∀ {α β χ δ} {A : Set α} {B : Set β} (_⊙_ : A → A → B)
   (_~_ : A → A → Set χ) (_≈_ : B → B → Set δ) → Set (α ⊔ χ ⊔ δ)
-Substitutive₂ hand _⊙_ = Substitutive₂ᶜ hand (tc₂ _⊙_)
+Substitutive₂ hand _⊙_ = Substitutive₂ᶜ hand (AA.tc₂ _⊙_)
 
 substitutiveᴿ-from-substitutiveᴸ :
   ∀ {α β χ δ} {A : Set α} {B : Set β} {_⊙_ : A → A → B} {_~_ : A → A → Set χ}
-  {_≈_ : B → B → Set δ} {{_ : Eq.Transitive _≈_}} {{_ : Swappable _⊙_ _≈_}} →
-  {{_ : Substitutive₂ handᴸ _⊙_ _~_ _≈_}} →
-  Substitutive₂ handᴿ _⊙_ _~_ _≈_
-substitutiveᴿ-from-substitutiveᴸ = substitutive₂ (with-swap ∘ subst₂)
+  {_≈_ : B → B → Set δ} {{_ : Eq.Transitive _≈_}} {{_ : AA.Swappable _⊙_ _≈_}} →
+  {{_ : Substitutive₂ AA.handᴸ _⊙_ _~_ _≈_}} →
+  Substitutive₂ AA.handᴿ _⊙_ _~_ _≈_
+substitutiveᴿ-from-substitutiveᴸ = substitutive₂ (AA.with-swap ∘ subst₂)
 
 record Substitutive²ᶜ
     {α β χ δ} {A : Set α} {B : Set β} {C : A → A → Set}
@@ -66,23 +63,23 @@ record Substitutive²ᶜ
     : Set (α ⊔ χ ⊔ δ) where
   constructor substitutive²
   field
-    {{substitutiveᴸ}} : Substitutive₂ᶜ handᴸ _⊙_ _~_ _≈_
-    {{substitutiveᴿ}} : Substitutive₂ᶜ handᴿ _⊙_ _~_ _≈_
+    {{substitutiveᴸ}} : Substitutive₂ᶜ AA.handᴸ _⊙_ _~_ _≈_
+    {{substitutiveᴿ}} : Substitutive₂ᶜ AA.handᴿ _⊙_ _~_ _≈_
 
 Substitutive² :
   ∀ {α β χ δ} {A : Set α} {B : Set β} (_⊙_ : A → A → B) (_~_ : A → A → Set χ)
   (_≈_ : B → B → Set δ) → Set (α ⊔ χ ⊔ δ)
-Substitutive² _⊙_ = Substitutive²ᶜ (tc₂ _⊙_)
+Substitutive² _⊙_ = Substitutive²ᶜ (AA.tc₂ _⊙_)
 
 module _ {β} {A : Set} {B : Set β} {_⊙_ : A → A → B} {{_ : Eq B}} where
 
   swappable-from-commutative :
-    {_~_ : B → B → Set β} {{_ : Commutative _⊙_}} {{_ : Eq.Reflexive _~_}}
-      {{_ : Substitutive₂ handᴿ _~_ _≃_ _⟨→⟩_}} → Swappable _⊙_ _~_
-  swappable-from-commutative = swappable (subst₂ comm Eq.refl)
+    {_~_ : B → B → Set β} {{_ : AA.Commutative _⊙_}} {{_ : Eq.Reflexive _~_}}
+      {{_ : Substitutive₂ AA.handᴿ _~_ _≃_ _⟨→⟩_}} → AA.Swappable _⊙_ _~_
+  swappable-from-commutative = AA.swappable (subst₂ AA.comm Eq.refl)
 
-  commutative-from-swappable : {{_ : Swappable _⊙_ _≃_}} → Commutative _⊙_
-  commutative-from-swappable = commutative swap
+  commutative-from-swappable : {{_ : AA.Swappable _⊙_ _≃_}} → AA.Commutative _⊙_
+  commutative-from-swappable = AA.commutative AA.swap
 
 [a≃b][c≃d] :
   {A B : Set} {_⊙_ : A → A → B}
@@ -98,36 +95,35 @@ module _ {β} {A : Set} {B : Set β} {_⊙_ : A → A → B} {{_ : Eq B}} where
   ∎
 
 fnOpCommutativeᴿ-from-fnOpCommutativeᴸ :
-  {A : Set} {f : A → A} {_⊙_ : A → A → A}
-    {{_ : Eq A}} {{_ : Substitutive₁ f _≃_ _≃_}}
-    {{_ : Commutative _⊙_}} {{_ : FnOpCommutative handᴸ f _⊙_}} →
-      FnOpCommutative handᴿ f _⊙_
-fnOpCommutativeᴿ-from-fnOpCommutativeᴸ {A} {f} {_⊙_} = fnOpCommutative commᴿ₀
+  {A : Set} {f : A → A} {_⊙_ : A → A → A} {{_ : Eq A}}
+  {{_ : Substitutive₁ f _≃_ _≃_}} {{_ : AA.Commutative _⊙_}}
+  {{_ : AA.FnOpCommutative AA.handᴸ f _⊙_}} → AA.FnOpCommutative AA.handᴿ f _⊙_
+fnOpCommutativeᴿ-from-fnOpCommutativeᴸ {A} {f} {_⊙_} = AA.fnOpCommutative commᴿ₀
   where
     commᴿ₀ : ∀ {a b} → f (a ⊙ b) ≃ a ⊙ f b
     commᴿ₀ {a} {b} =
       begin
         f (a ⊙ b)
-      ≃⟨ subst₁ comm ⟩
+      ≃⟨ subst₁ AA.comm ⟩
         f (b ⊙ a)
-      ≃⟨ fnOpComm ⟩
+      ≃⟨ AA.fnOpComm ⟩
         f b ⊙ a
-      ≃⟨ comm ⟩
+      ≃⟨ AA.comm ⟩
         a ⊙ f b
       ∎
 
 module EqProperties {α} {A : Set α} {{_ : Eq A}} where
 
-  ≃-substitutiveᴸ : Substitutive₂ handᴸ _≃_ _≃_ _⟨→⟩_
+  ≃-substitutiveᴸ : Substitutive₂ AA.handᴸ _≃_ _≃_ _⟨→⟩_
   ≃-substitutiveᴸ = substitutive₂ ≃-substᴸ
     where
       ≃-substᴸ : {a₁ a₂ b : A} → a₁ ≃ a₂ → a₁ ≃ b → a₂ ≃ b
       ≃-substᴸ a₁≃a₂ a₁≃b = Eq.trans (Eq.sym a₁≃a₂) a₁≃b
 
-  ≃-substitutiveᴿ : Substitutive₂ handᴿ _≃_ _≃_ _⟨→⟩_
+  ≃-substitutiveᴿ : Substitutive₂ AA.handᴿ _≃_ _≃_ _⟨→⟩_
   ≃-substitutiveᴿ = substitutiveᴿ-from-substitutiveᴸ
     where
-      instance ≃-swappable = swappable-from-symmetric
+      instance ≃-swappable = AA.swappable-from-symmetric
       instance ≃-substᴸ = ≃-substitutiveᴸ
 
   ≃-substitutive² : Substitutive² _≃_ _≃_ _⟨→⟩_
@@ -139,32 +135,32 @@ module EqProperties {α} {A : Set α} {{_ : Eq A}} where
 module _ {A : Set} {{_ : Eq A}} where
 
   instance
-    ≄-substitutiveᴸ : Substitutive₂ handᴸ _≄_ _≃_ _⟨→⟩_
+    ≄-substitutiveᴸ : Substitutive₂ AA.handᴸ _≄_ _≃_ _⟨→⟩_
     ≄-substitutiveᴸ = substitutive₂ ≄-substᴸ
       where
         ≄-substᴸ : {a₁ a₂ b : A} → a₁ ≃ a₂ → a₁ ≄ b → a₂ ≄ b
-        ≄-substᴸ a₁≃a₂ a₁≄b a₂≃b = contra (Eq.trans a₁≃a₂ a₂≃b) a₁≄b
+        ≄-substᴸ a₁≃a₂ a₁≄b = contrapositive (Eq.trans a₁≃a₂) a₁≄b
 
-    ≄-substitutiveᴿ : Substitutive₂ handᴿ _≄_ _≃_ _⟨→⟩_
+    ≄-substitutiveᴿ : Substitutive₂ AA.handᴿ _≄_ _≃_ _⟨→⟩_
     ≄-substitutiveᴿ = substitutiveᴿ-from-substitutiveᴸ
       where
-        instance ≄-swappable = swappable-from-symmetric
+        instance ≄-swappable = AA.swappable-from-symmetric
 
     ≄-substitutive² : Substitutive² _≄_ _≃_ _⟨→⟩_
     ≄-substitutive² = substitutive²
 
 with-comm :
-  {A : Set} {_⊙_ : A → A → A} {{_ : Eq A}} {{_ : Commutative _⊙_}} →
+  {A : Set} {_⊙_ : A → A → A} {{_ : Eq A}} {{_ : AA.Commutative _⊙_}} →
     ∀ {a b c d} → b ⊙ a ≃ d ⊙ c → a ⊙ b ≃ c ⊙ d
-with-comm = with-swap
+with-comm = AA.with-swap
   where
     instance ⊙-swap = swappable-from-commutative
     instance ≃-substᴿ = EqProperties.≃-substitutiveᴿ
 
 substᴿ-from-substᴸ-comm :
   ∀ {β} {A : Set} {B : Set β} {_⊙_ : A → A → B} {_~_ : A → A → Set} {{_ : Eq B}}
-  {{_ : Commutative _⊙_}} {{_ : Substitutive₂ handᴸ _⊙_ _~_ _≃_}} →
-  Substitutive₂ handᴿ _⊙_ _~_ _≃_
+  {{_ : AA.Commutative _⊙_}} {{_ : Substitutive₂ AA.handᴸ _⊙_ _~_ _≃_}} →
+  Substitutive₂ AA.handᴿ _⊙_ _~_ _≃_
 substᴿ-from-substᴸ-comm = substitutiveᴿ-from-substitutiveᴸ
   where
     instance ⊙-swap = swappable-from-commutative
@@ -172,7 +168,8 @@ substᴿ-from-substᴸ-comm = substitutiveᴿ-from-substitutiveᴸ
 
 substᴿ-from-substᴸ-comm₂ :
   {A : Set} {_⊙_ : A → A → A} {_~_ : A → A → Set} {{_ : Eq A}}
-  {{_ : Commutative _⊙_}} {{_ : Substitutive² _~_ _≃_ _⟨→⟩_}}
-  {{_ : Substitutive₂ handᴸ _⊙_ _~_ _~_}} → Substitutive₂ handᴿ _⊙_ _~_ _~_
+  {{_ : AA.Commutative _⊙_}} {{_ : Substitutive² _~_ _≃_ _⟨→⟩_}}
+  {{_ : Substitutive₂ AA.handᴸ _⊙_ _~_ _~_}} →
+  Substitutive₂ AA.handᴿ _⊙_ _~_ _~_
 substᴿ-from-substᴸ-comm₂ =
-  substitutive₂ λ a₁~a₂ → substᴸ comm (substᴿ comm (subst₂ a₁~a₂))
+  substitutive₂ λ a₁~a₂ → substᴸ AA.comm (substᴿ AA.comm (subst₂ a₁~a₂))

@@ -1,20 +1,18 @@
 open import Data.List using ([]; _∷_; foldr; List)
 open import Data.List.Relation.Unary.All
   using (All) renaming ([] to []ᴬ; _∷_ to _∷ᴬ_)
-open import Data.List.Relation.Unary.Any using (Any; here; there)
-import Data.List.Membership.DecSetoid as DecSetoidᴸ
-open import Level using (_⊔_)
-open import net.cruhland.axioms.Eq using (_≃_)
+open import Data.List.Relation.Unary.Any using (here; there)
+import Data.List.Membership.Setoid as Setoidᴸ
+open import net.cruhland.axioms.Eq as Eq using (_≃_)
 open import net.cruhland.axioms.Sets.Base using (SetAxioms)
 open import net.cruhland.axioms.Sets.Empty using (EmptySet)
-import net.cruhland.axioms.Sets.Equality as Equality
 open import net.cruhland.axioms.Sets.Singleton using (SingletonSet)
 import net.cruhland.axioms.Sets.Subset as Subset
 open import net.cruhland.axioms.Sets.Union using (PairwiseUnion)
 open import net.cruhland.models.Function using (_∘_)
-open import net.cruhland.models.Logic using (∨-introᴸ; ∨-introᴿ; ⊥-elim)
-open import net.cruhland.models.Setoid using
-  (El; module DecSetoid; DecSetoid₀; Setoid; Setoid₀)
+open import net.cruhland.models.Logic using (∨-introᴸ; ∨-introᴿ; _↯_)
+open import net.cruhland.models.Setoid
+  using (El; DecSetoid; DecSetoid₀; Setoid₀)
 
 module net.cruhland.axioms.Sets.PreFinite
     (SA : SetAxioms)
@@ -23,11 +21,11 @@ module net.cruhland.axioms.Sets.PreFinite
     (SS : SingletonSet SA)
     where
   open EmptySet ES using (∅; x∉∅)
-  private module ≃-SA = Equality SA
   open PairwiseUnion PU using (_∪_; x∈A∪B-elim; x∈A∪B-introᴸ; x∈A∪B-introᴿ)
-  open SetAxioms SA using (_∈_; PSet; PSet₀)
+  open SetAxioms SA using (_∈_; PSet₀)
   open SingletonSet SS using (singleton; x∈sa-elim; x∈sa-intro; a∈sa)
   open Subset SA using (_⊆_; ⊆-intro; ≃→⊆ᴸ)
+  import net.cruhland.axioms.Sets.Equality SA as SE
 
   private
     variable
@@ -55,16 +53,15 @@ module net.cruhland.axioms.Sets.PreFinite
         ⊆-elim (x∈A∪B-introᴸ a∈sa) ∷ᴬ xs⊆A xs (⊆-intro (⊆-elim ∘ x∈A∪B-introᴿ))
 
   module _ {DS : DecSetoid₀} where
-    open DecSetoidᴸ DS using () renaming (_∈_ to _∈ᴸ_)
-    open DecSetoid DS using (_≈_) renaming (sym to ≈-sym)
     S′ = DecSetoid.setoid DS
+    open Setoidᴸ S′ using () renaming (_∈_ to _∈ᴸ_)
 
     ∈fin→∈ᴸ : {a : El S′} {xs : List (El S′)} → a ∈ finite {S = S′} xs → a ∈ᴸ xs
-    ∈fin→∈ᴸ {xs = []} a∈fxs = ⊥-elim (x∉∅ a∈fxs)
+    ∈fin→∈ᴸ {xs = []} a∈fxs = a∈fxs ↯ x∉∅
     ∈fin→∈ᴸ {xs = x ∷ xs} a∈fxs with x∈A∪B-elim a∈fxs
-    ... | ∨-introᴸ a∈sx = here (≈-sym (x∈sa-elim a∈sx))
+    ... | ∨-introᴸ a∈sx = here (Eq.sym (x∈sa-elim a∈sx))
     ... | ∨-introᴿ a∈fxs′ = there (∈fin→∈ᴸ a∈fxs′)
 
     ∈ᴸ→∈fin : {a : El S′} {xs : List (El S′)} → a ∈ᴸ xs → a ∈ finite {S = S′} xs
-    ∈ᴸ→∈fin (here a≈x) = x∈A∪B-introᴸ (x∈sa-intro (≈-sym a≈x))
+    ∈ᴸ→∈fin (here a≈x) = x∈A∪B-introᴸ (x∈sa-intro (Eq.sym a≈x))
     ∈ᴸ→∈fin (there a∈ᴸxs) = x∈A∪B-introᴿ (∈ᴸ→∈fin a∈ᴸxs)

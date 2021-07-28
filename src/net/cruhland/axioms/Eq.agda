@@ -1,35 +1,32 @@
+open import Level using (_⊔_) renaming (suc to sℓ)
+open import net.cruhland.models.Logic using (⊥; ¬_; ¬-intro; contrapositive)
+
 module net.cruhland.axioms.Eq where
 
-open import Level using (_⊔_; 0ℓ; Level) renaming (suc to sℓ)
-open import net.cruhland.models.Logic using (¬_; ¬ⁱ_; ¬ⁱ-intro; contra)
+module _ {α β} {A : Set α} (_~_ : A → A → Set β) where
 
-private
-  variable
-    α β : Level
-    A : Set α
+  record Reflexive : Set (α ⊔ β) where
+    constructor reflexive
+    field
+      refl : ∀ {a} → a ~ a
 
-record Reflexive {A : Set α} (_~_ : A → A → Set β) : Set (α ⊔ β) where
-  constructor reflexive
-  field
-    refl : ∀ {a} → a ~ a
+  open Reflexive {{...}} public using (refl)
 
-open Reflexive {{...}} public using (refl)
+  record Symmetric : Set (α ⊔ β) where
+    constructor symmetric
+    field
+      sym : ∀ {a b} → a ~ b → b ~ a
 
-record Symmetric {A : Set α} (_~_ : A → A → Set β) : Set (α ⊔ β) where
-  constructor symmetric
-  field
-    sym : ∀ {a b} → a ~ b → b ~ a
+  open Symmetric {{...}} public using (sym)
 
-open Symmetric {{...}} public using (sym)
+  record Transitive : Set (α ⊔ β) where
+    constructor transitive
+    field
+      trans : ∀ {a b c} → a ~ b → b ~ c → a ~ c
 
-record Transitive {A : Set α} (_~_ : A → A → Set β) : Set (α ⊔ β) where
-  constructor transitive
-  field
-    trans : ∀ {a b c} → a ~ b → b ~ c → a ~ c
+  open Transitive {{...}} public using (trans)
 
-open Transitive {{...}} public using (trans)
-
-record Eq (A : Set α) : Set (sℓ α) where
+record Eq {α} (A : Set α) : Set (sℓ α) where
   constructor equivalence
   infix 4 _≃_
   field
@@ -38,19 +35,25 @@ record Eq (A : Set α) : Set (sℓ α) where
     {{≃-symmetric}} : Symmetric _≃_
     {{≃-transitive}} : Transitive _≃_
 
-  infix 4 _≄_
-  _≄_ : A → A → Set α
-  x ≄ y = ¬ (x ≃ y)
-
 open Eq {{...}} public
 
 {-# DISPLAY Eq._≃_ _ x y = x ≃ y #-}
 
-module _ {{eq : Eq A}} where
+module _ {α} {A : Set α} {{eq : Eq A}} where
+
+  infix 4 _≄_
+  _≄_ : A → A → Set α
+  x ≄ y = ¬ (x ≃ y)
+
+  ≄-intro : {x y : A} → (x ≃ y → ⊥) → x ≄ y
+  ≄-intro = ¬-intro
 
   instance
     ≄-symmetric : Symmetric _≄_
-    ≄-symmetric = symmetric λ x≄y y≃x → contra (sym y≃x) x≄y
+    ≄-symmetric = symmetric ≄-sym
+      where
+        ≄-sym : {x y : A} → x ≄ y → y ≄ x
+        ≄-sym x≄y = contrapositive sym x≄y
 
   module ≃-Reasoning where
 
@@ -75,13 +78,3 @@ module _ {{eq : Eq A}} where
 
     syntax step-≃ x y≃z x≃y = x ≃⟨ x≃y ⟩ y≃z
     syntax step-≃˘ x y≃z y≃x = x ≃˘⟨ y≃x ⟩ y≃z
-
-infix 4 _≄ⁱ_
-_≄ⁱ_ : {A : Set α} {{_ : Eq A}} → A → A → Set α
-x ≄ⁱ y = ¬ⁱ (x ≃ y)
-
-≄ⁱ-intro : {x y : A} {{_ : Eq A}} → x ≄ y → x ≄ⁱ y
-≄ⁱ-intro = ¬ⁱ-intro
-
-≄ⁱ-elim : {x y : A} {{_ : Eq A}} {{neq : x ≄ⁱ y}} → x ≄ y
-≄ⁱ-elim {{neq = neq}} = ¬ⁱ_.elim neq

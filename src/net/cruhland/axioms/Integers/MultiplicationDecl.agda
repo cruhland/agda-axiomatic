@@ -1,6 +1,6 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_)
-open import net.cruhland.axioms.Eq using (_≃_; _≄_; _≄ⁱ_)
+open import net.cruhland.axioms.Eq using (_≃_; _≄_)
 open import net.cruhland.axioms.Operators as Op using (_+_; -_; _-_; _*_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.axioms.Sign using (Negative; Positive)
@@ -53,7 +53,7 @@ record Multiplication
     {{*-distributive}} : AA.Distributive² {A = ℤ} _*_ _+_
     {{*-comm-with-neg}} : AA.FnOpCommutative² -_ _*_
     {{*-absorptive}} : AA.Absorptive² _*_ 0
-    {{*-cancellative}} : AA.Cancellative² {A = ℤ} _*_ _≃_ _≃_ (_≄ⁱ 0)
+    {{*-cancellative}} : AA.Cancellative² {A = ℤ} _*_ _≃_ _≃_ (_≄ 0)
 
     {{*-preserves-≃±1}} : AA.Preserves _≃±1 _*_
     {{*-preserves-Positive}} : AA.Preserves {A = ℤ} Positive _*_
