@@ -12,11 +12,11 @@ record ¬_ {α} (A : Set α) : Set α where
   field
     elim : A → ⊥
 
-contra : ∀ {α β} {A : Set α} {B : Set β} → A → ¬ A → B
-contra a (¬-intro ⊥-from-a) = ⊥-elim (⊥-from-a a)
-
+-- Helper for working with contradictions
+-- Performs ¬-elim and ⊥-elim in one step
 infix 2 _↯_
-_↯_ = contra
+_↯_ : ∀ {α β} {A : Set α} {B : Set β} → A → ¬ A → B
+a ↯ (¬-intro ⊥-from-a) = ⊥-elim (⊥-from-a a)
 
 contrapositive : ∀ {α β} {A : Set α} {B : Set β} → (A → B) → ¬ B → ¬ A
 contrapositive f ¬b = ¬-intro λ a → let b = f a in b ↯ ¬b
