@@ -144,20 +144,20 @@ instance
             ≃⟨⟩
               ((p↑ * q↓ + p↓ * q↑) * r↓ + (p↓ * q↓) * r↑) // ((p↓ * q↓) * r↓)
             ≃⟨ AA.subst₂ (AA.subst₂ AA.distrib) ⟩
-              (((p↑ * q↓) * r↓ + (p↓ * q↑) * r↓) + (p↓ * q↓) * r↑) //
-              ((p↓ * q↓) * r↓)
+              (((p↑ * q↓) * r↓ + (p↓ * q↑) * r↓) + (p↓ * q↓) * r↑)
+              // ((p↓ * q↓) * r↓)
             ≃⟨ AA.subst₂ AA.assoc ⟩
-              ((p↑ * q↓) * r↓ + ((p↓ * q↑) * r↓ + (p↓ * q↓) * r↑)) //
-              ((p↓ * q↓) * r↓)
+              ((p↑ * q↓) * r↓ + ((p↓ * q↑) * r↓ + (p↓ * q↓) * r↑))
+              // ((p↓ * q↓) * r↓)
             ≃⟨ AA.subst₂ (AA.subst₂ AA.assoc) ⟩
-              (p↑ * (q↓ * r↓) + ((p↓ * q↑) * r↓ + (p↓ * q↓) * r↑)) //
-              ((p↓ * q↓) * r↓)
+              (p↑ * (q↓ * r↓) + ((p↓ * q↑) * r↓ + (p↓ * q↓) * r↑))
+              // ((p↓ * q↓) * r↓)
             ≃⟨ AA.subst₂ (AA.subst₂ (AA.subst₂ AA.assoc)) ⟩
-              (p↑ * (q↓ * r↓) + (p↓ * (q↑ * r↓) + (p↓ * q↓) * r↑)) //
-              ((p↓ * q↓) * r↓)
+              (p↑ * (q↓ * r↓) + (p↓ * (q↑ * r↓) + (p↓ * q↓) * r↑))
+              // ((p↓ * q↓) * r↓)
             ≃⟨ AA.subst₂ (AA.subst₂ (AA.subst₂ AA.assoc)) ⟩
-              (p↑ * (q↓ * r↓) + (p↓ * (q↑ * r↓) + p↓ * (q↓ * r↑))) //
-              ((p↓ * q↓) * r↓)
+              (p↑ * (q↓ * r↓) + (p↓ * (q↑ * r↓) + p↓ * (q↓ * r↑)))
+              // ((p↓ * q↓) * r↓)
             ≃˘⟨ AA.subst₂ (AA.subst₂ AA.distrib) ⟩
               (p↑ * (q↓ * r↓) + p↓ * (q↑ * r↓ + q↓ * r↑)) // ((p↓ * q↓) * r↓)
             ≃⟨ AA.subst₂ AA.assoc ⟩
