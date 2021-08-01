@@ -14,15 +14,23 @@ open import net.cruhland.models.Literals
 module net.cruhland.axioms.Integers.SignPartialImpl
   (PA : PeanoArithmetic)
   (ZB : Base PA)
-  (Z+ : Addition PA ZB)
-  (Z- : Negation PA ZB Z+)
+  (ZA : Addition PA ZB)
+  (ZN : Negation PA ZB ZA)
   where
 
-private open module ℕ = PeanoArithmetic PA using (ℕ)
-private open module ℤB = Base ZB using (ℤ)
-private module ℤ- = Negation Z-
+import net.cruhland.axioms.Integers.LiteralImpl PA as LiteralImpl
 import net.cruhland.axioms.Integers.SignDecl PA as SignDecl
-open SignDecl.SignPredefs ZB Z+ Z- using (_≃±1; ≃+1-intro; ≃-1-intro)
+
+private module ℕ = PeanoArithmetic PA
+private module ℤ where
+  open Addition ZA public
+  open Base ZB public
+  open LiteralImpl ZB public
+  open Negation ZN public
+  open SignDecl.SignPredefs ZB ZA ZN public
+
+open ℕ using (ℕ)
+open ℤ using (ℤ; _≃±1)
 
 record SignProperties : Set₁ where
   field
@@ -34,35 +42,29 @@ record SignProperties : Set₁ where
     ≃±1-substitutive = AA.substitutive₁ ≃±1-subst
       where
         ≃±1-subst : {s₁ s₂ : ℤ} → s₁ ≃ s₂ → s₁ ≃±1 → s₂ ≃±1
-        ≃±1-subst s₁≃s₂ (≃+1-intro s₁≃1) =
-          ≃+1-intro (Eq.trans (Eq.sym s₁≃s₂) s₁≃1)
-        ≃±1-subst s₁≃s₂ (≃-1-intro s₁≃-1) =
-          ≃-1-intro (Eq.trans (Eq.sym s₁≃s₂) s₁≃-1)
+        ≃±1-subst s₁≃s₂ (ℤ.≃+1-intro s₁≃1) =
+          let s₂≃1 = Eq.trans (Eq.sym s₁≃s₂) s₁≃1
+           in ℤ.≃+1-intro s₂≃1
+        ≃±1-subst s₁≃s₂ (ℤ.≃-1-intro s₁≃-1) =
+          let s₂≃-1 = Eq.trans (Eq.sym s₁≃s₂) s₁≃-1
+           in ℤ.≃-1-intro s₂≃-1
 
   ≃±1-absorbs-neg : {a : ℤ} → - a ≃±1 → a ≃±1
-  ≃±1-absorbs-neg {a} (≃+1-intro -a≃1) =
+  ≃±1-absorbs-neg {a} (ℤ.≃+1-intro -a≃1) =
     let a≃-1 =
           begin
             a
-          ≃˘⟨ ℤ-.neg-involutive ⟩
+          ≃˘⟨ ℤ.neg-involutive ⟩
             - (- a)
           ≃⟨ AA.subst₁ -a≃1 ⟩
             - 1
-          ≃˘⟨ ℤ-.neg-literal≃nat-literal 1 ⟩
+          ≃⟨⟩
             -1
           ∎
-     in ≃-1-intro a≃-1
-  ≃±1-absorbs-neg {a} (≃-1-intro -a≃-1) =
-    let -1≃-[1] = ℤ-.neg-literal≃nat-literal 1
-        a≃1 = AA.inject (Eq.trans -a≃-1 -1≃-[1])
-     in ≃+1-intro a≃1
+     in ℤ.≃-1-intro a≃-1
+  ≃±1-absorbs-neg {a} (ℤ.≃-1-intro -a≃-1) =
+    let a≃1 = AA.inject -a≃-1
+     in ℤ.≃+1-intro a≃1
 
-  fromNatLiteral-preserves-pos :
-    (n : Nat) → Positive {A = ℕ} (fromNatLiteral n) →
-    Positive {A = ℤ} (fromNatLiteral n)
-  fromNatLiteral-preserves-pos n pos[n] =
-    let pos[a] = from-ℕ-preserves-pos pos[n]
-     in AA.subst₁ (Eq.sym (ℤB.fromNatLiteral≃casts n)) pos[a]
-
-  1-Positive : Positive 1
-  1-Positive = fromNatLiteral-preserves-pos 1 (ℕ.Pos-intro-≄0 ℕ.step≄zero)
+  1-Positive : Positive {A = ℤ} 1
+  1-Positive = from-ℕ-preserves-pos (ℕ.Pos-intro-≄0 ℕ.step≄zero)

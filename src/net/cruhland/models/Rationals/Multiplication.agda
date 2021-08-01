@@ -98,8 +98,6 @@ neg-mult q@{q↑ // q↓ ~ q↓≄0} =
         (-1 * q↑) // 1 * q↓ ~ AA.nonzero-prod
       ≃⟨⟩
         (-1 // 1 ~ ℤ.1≄0) * (q↑ // q↓ ~ q↓≄0)
-      ≃˘⟨ AA.subst₂ (ℚ-.neg-literal≃neg-ℤ-literal//1 1) ⟩
-        -1 * (q↑ // q↓ ~ q↓≄0)
       ≃⟨⟩
         -1 * q
       ∎
@@ -131,8 +129,6 @@ instance
         let instance _ = p↓≄0
          in begin
               1 * p
-            ≃⟨ AA.subst₂ (ℚ≃.literal≃ℤ-literal//1 1) ⟩
-              (1 // 1 ~ ℤ.1≄0) * p
             ≃⟨⟩
               (1 // 1 ~ ℤ.1≄0) * (p↑ // p↓ ~ p↓≄0)
             ≃⟨⟩

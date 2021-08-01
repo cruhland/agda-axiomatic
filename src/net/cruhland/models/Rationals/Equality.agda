@@ -83,19 +83,6 @@ instance
   from-ℤ-injective : AA.Injective (_as ℚ) _≃_ _≃_
   from-ℤ-injective = AA.injective {A = ℤ} (AA.cancel ∘ _≃₀_.elim)
 
-literal≃ℤ-literal//1 :
-  (n : Nat) → fromNatLiteral n ≃ (fromNatLiteral n) // 1 ~ ℤ.1≄0
-literal≃ℤ-literal//1 n =
-  begin
-    fromNatLiteral n
-  ≃⟨⟩
-    (n as ℕ as ℤ as ℚ)
-  ≃˘⟨ AA.subst₁ (ℤ.fromNatLiteral≃casts n) ⟩
-    ((fromNatLiteral n) as ℚ)
-  ≃⟨⟩
-    (fromNatLiteral n) // 1 ~ ℤ.1≄0
-  ∎
-
 q≃0 : {q : ℚ} → ℚ.n q ≃ 0 → q ≃ 0
 q≃0 q@{n // d ~ d≄0} n≃0 =
     begin
@@ -104,10 +91,6 @@ q≃0 q@{n // d ~ d≄0} n≃0 =
       n // d ~ d≄0
     ≃⟨ ≃₀-intro componentEq ⟩
       0 // 1 ~ ℤ.1≄0
-    ≃⟨⟩
-      (0 as ℚ)
-    ≃⟨ AA.subst₁ (ℤ.fromNatLiteral≃casts 0) ⟩
-      (0 as ℕ as ℤ as ℚ)
     ≃⟨⟩
       0
     ∎
@@ -124,16 +107,14 @@ q≃0 q@{n // d ~ d≄0} n≃0 =
       ∎
 
 q↑≃0 : ∀ {q} → q ≃ 0 → ℚ.n q ≃ 0
-q↑≃0 q@{n // d ~ d≄0} (≃₀-intro n1≃[0-as-ℕ-as-ℤ]d) =
+q↑≃0 q@{n // d ~ d≄0} (≃₀-intro n1≃0d) =
   begin
     ℚ.n q
   ≃⟨⟩
     n
   ≃˘⟨ AA.ident ⟩
     n * 1
-  ≃⟨ n1≃[0-as-ℕ-as-ℤ]d ⟩
-    (0 as ℕ as ℤ) * d
-  ≃˘⟨ AA.subst₂ (ℤ.fromNatLiteral≃casts 0) ⟩
+  ≃⟨ n1≃0d ⟩
     0 * d
   ≃⟨ AA.absorb ⟩
     0
@@ -160,24 +141,18 @@ q≃1 q@{q↑ // q↓ ~ q↓≄0} q↑≃q↓ =
   ≃⟨ ≃₀-intro AA.comm ⟩
     1 // 1 ~ ℤ.1≄0
   ≃⟨⟩
-    (1 as ℚ)
-  ≃⟨ AA.subst₁ (ℤ.fromNatLiteral≃casts 1) ⟩
-    (1 as ℕ as ℤ as ℚ)
-  ≃⟨⟩
     1
   ∎
 
 q↑≃q↓ : ∀ {q} → q ≃ 1 → ℚ.n q ≃ ℚ.d q
-q↑≃q↓ q@{q↑ // q↓ ~ q↓≄0} (≃₀-intro q↑1≃[1-as-ℕ-as-ℤ]q↓) =
+q↑≃q↓ q@{q↑ // q↓ ~ q↓≄0} (≃₀-intro q↑1≃1q↓) =
   begin
     ℚ.n q
   ≃⟨⟩
     q↑
   ≃˘⟨ AA.ident ⟩
     q↑ * 1
-  ≃⟨ q↑1≃[1-as-ℕ-as-ℤ]q↓ ⟩
-    (1 as ℕ as ℤ) * q↓
-  ≃˘⟨ AA.subst₂ (ℤ.fromNatLiteral≃casts 1) ⟩
+  ≃⟨ q↑1≃1q↓ ⟩
     1 * q↓
   ≃⟨ AA.ident ⟩
     q↓

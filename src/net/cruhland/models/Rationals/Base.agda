@@ -1,5 +1,5 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
-open import net.cruhland.axioms.Cast as Cast using (_As_; As-intro)
+open import net.cruhland.axioms.Cast using (_As_; As-intro)
 open import net.cruhland.axioms.DecEq using (_≃?_; ≄-derive)
 open import net.cruhland.axioms.Eq using (_≄_)
 open import net.cruhland.axioms.Integers using (Integers)
@@ -32,11 +32,5 @@ instance
   from-ℤ : ℤ As ℚ
   from-ℤ = As-intro _//1
 
-  from-ℕ : ℕ As ℚ
-  from-ℕ = Cast.via ℤ
-
-  from-Nat : Nat As ℚ
-  from-Nat = Cast.via ℕ
-
   from-literal : FromNatLiteral ℚ
-  from-literal = nat-literal-from-cast
+  from-literal = nat-literal-via ℤ

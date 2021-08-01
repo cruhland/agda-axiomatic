@@ -15,16 +15,17 @@ module net.cruhland.models.Integers.NatPair.SignImplLt
   (PA : PeanoArithmetic) where
 
 import net.cruhland.axioms.Integers.SignDecl PA as SignDecl
-open import net.cruhland.models.Integers.NatPair.AdditionDefn PA using (Z+)
+open import net.cruhland.models.Integers.NatPair.AdditionDefn PA using (ZA)
 open import net.cruhland.models.Integers.NatPair.BaseDefn PA using (ZB)
-open import net.cruhland.models.Integers.NatPair.NegationDefn PA using (Z-)
+open import net.cruhland.models.Integers.NatPair.NegationDefn PA using (ZN)
 
 private module ℕ = PeanoArithmetic PA
 private module ℤ where
+  open import net.cruhland.axioms.Integers.LiteralImpl PA ZB public
   open import net.cruhland.models.Integers.NatPair.AdditionImpl PA public
   open import net.cruhland.models.Integers.NatPair.BaseImpl PA public
   open import net.cruhland.models.Integers.NatPair.NegationImpl PA public
-  open SignDecl.SignPredefs ZB Z+ Z- public
+  open SignDecl.SignPredefs ZB ZA ZN public
 
 open ℕ using (ℕ)
 open ℤ using (_—_; _≃_[posℕ]; ℤ)
@@ -193,7 +194,12 @@ instance
       +-pres-pos {a⁺ — a⁻} {b⁺ — b⁻} a⁻<a⁺ b⁻<b⁺ = ℕ.<-compatible-+ a⁻<a⁺ b⁻<b⁺
 
 -- Include everything from the partial impl
-open import net.cruhland.axioms.Integers.SignPartialImpl PA ZB Z+ Z-
-  using (SignProperties)
-open SignProperties (record { from-ℕ-preserves-pos = from-ℕ-preserves-pos })
-  public hiding (from-ℕ-preserves-pos; positivity)
+private
+  open import net.cruhland.axioms.Integers.SignPartialImpl PA ZB ZA ZN
+    using (SignProperties)
+
+  signProperties : SignProperties
+  signProperties = record { from-ℕ-preserves-pos = from-ℕ-preserves-pos }
+
+open SignProperties signProperties public
+  hiding (from-ℕ-preserves-pos; positivity)

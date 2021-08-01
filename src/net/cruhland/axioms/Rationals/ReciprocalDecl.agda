@@ -9,9 +9,14 @@ module net.cruhland.axioms.Rationals.ReciprocalDecl
   (PA : PeanoArithmetic) (Z : Integers PA) where
 
 open import net.cruhland.axioms.Rationals.BaseDecl PA Z using (Base)
+import net.cruhland.axioms.Rationals.LiteralImpl PA Z as LiteralImpl
+
+private module RationalPredefs (QB : Base) where
+  open Base QB public
+  open LiteralImpl QB public
 
 record Reciprocal (QB : Base) : Set where
-  open Base QB using (ℚ)
+  private open module ℚ = RationalPredefs QB using (ℚ)
 
   field
     {{reciprocal}} : Op.SupNegOne ℚ (_≄ 0)

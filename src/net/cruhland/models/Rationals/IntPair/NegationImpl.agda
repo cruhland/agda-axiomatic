@@ -10,9 +10,12 @@ open import net.cruhland.models.Literals
 module net.cruhland.models.Rationals.IntPair.NegationImpl
   (PA : PeanoArithmetic) (Z : Integers PA) where
 
-open Integers Z using (ℤ)
-open import net.cruhland.models.Rationals.IntPair.BaseImpl PA Z as ℚB
-  using (_//_; ℚ)
+private module ℤ = Integers Z
+private module ℚ where
+  open import net.cruhland.models.Rationals.IntPair.BaseImpl PA Z public
+
+open ℤ using (ℤ)
+open ℚ using (_//_; ℚ)
 
 -₀_ : ℚ → ℚ
 -₀ (q↑ // q↓) = (- q↑) // q↓
@@ -25,14 +28,14 @@ instance
   neg-substitutive = AA.substitutive₁ neg-subst
     where
       neg-subst : {q₁ q₂ : ℚ} → q₁ ≃ q₂ → - q₁ ≃ - q₂
-      neg-subst q₁@{q₁↑ // q₁↓} q₂@{q₂↑ // q₂↓} (ℚB.≃₀-intro q₁↑q₂↓≃q₂↑q₁↓) =
+      neg-subst q₁@{q₁↑ // q₁↓} q₂@{q₂↑ // q₂↓} (ℚ.≃₀-intro q₁↑q₂↓≃q₂↑q₁↓) =
           begin
             - q₁
           ≃⟨⟩
             - (q₁↑ // q₁↓)
           ≃⟨⟩
             (- q₁↑) // q₁↓
-          ≃⟨ ℚB.≃₀-intro componentEq ⟩
+          ≃⟨ ℚ.≃₀-intro componentEq ⟩
             (- q₂↑ ) // q₂↓
           ≃⟨⟩
             - (q₂↑ // q₂↓)

@@ -139,10 +139,6 @@ instance
          in begin
               0 + p
             ≃⟨⟩
-              (0 as ℕ as ℤ as ℚ) + (p↑ // p↓ ~ p↓≄0)
-            ≃˘⟨ AA.subst₂ (AA.subst₁ (ℤ.fromNatLiteral≃casts 0)) ⟩
-              (0 as ℚ) + (p↑ // p↓ ~ p↓≄0)
-            ≃⟨⟩
               (0 // 1 ~ ℤ.1≄0) + (p↑ // p↓ ~ p↓≄0)
             ≃⟨⟩
               (0 * p↓ + 1 * p↑) // 1 * p↓ ~ AA.nonzero-prod

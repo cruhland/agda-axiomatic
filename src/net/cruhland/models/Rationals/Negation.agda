@@ -29,7 +29,7 @@ instance
   dash₂ = Op.subtraction
 
   negative : FromNegLiteral ℚ
-  negative = FromNegLiteral-intro (λ n → - (n as ℚ))
+  negative = FromNegLiteral-intro λ n → - fromNatLiteral n
 
   neg-substitutive₁ : AA.Substitutive₁ -_ _≃_ _≃_
   neg-substitutive₁ = AA.substitutive₁ neg-subst
@@ -76,22 +76,3 @@ instance
 
   +-inverse² : AA.Inverse² -_ (const ⊤) _+_ 0
   +-inverse² = AA.inverse² {A = ℚ}
-
-neg-literal≃neg-ℤ-literal//1 :
-  (n : Nat) → fromNegLiteral n ≃ (fromNegLiteral n // 1 ~ ℤ.1≄0)
-neg-literal≃neg-ℤ-literal//1 n =
-  begin
-    fromNegLiteral n
-  ≃⟨⟩
-    - (n as ℚ)
-  ≃⟨⟩
-    - (n as ℕ as ℤ as ℚ)
-  ≃˘⟨ AA.subst₁ {f = AA.tc₁ -_} (AA.subst₁ (ℤ.fromNatLiteral≃casts n)) ⟩
-    - ((fromNatLiteral n) as ℚ)
-  ≃⟨⟩
-    - (fromNatLiteral n // 1 ~ ℤ.1≄0)
-  ≃⟨⟩
-    (- fromNatLiteral n) // 1 ~ ℤ.1≄0
-  ≃˘⟨ ℚ≃.subst↑ ℤ.1≄0 (ℤ.neg-literal≃nat-literal n) ⟩
-    fromNegLiteral n // 1 ~ ℤ.1≄0
-  ∎

@@ -4,15 +4,20 @@ open import net.cruhland.axioms.Eq as Eq using (_≃_)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Operators as Op using (_+_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
-import net.cruhland.models.Integers.NatPair.BaseImpl as BaseImpl
 open import net.cruhland.models.Literals
 
 module net.cruhland.models.Integers.NatPair.AdditionImpl
   (PA : PeanoArithmetic) where
 
-private open module ℕ = PeanoArithmetic PA using (ℕ)
-open import net.cruhland.models.Integers.NatPair.BaseImpl PA as ℤB
-  using (_—_; ℤ; ≃₀-intro)
+open import net.cruhland.models.Integers.NatPair.BaseDefn PA using (ZB)
+
+private module ℕ = PeanoArithmetic PA
+private module ℤ where
+  open import net.cruhland.axioms.Integers.LiteralImpl PA ZB public
+  open import net.cruhland.models.Integers.NatPair.BaseImpl PA public
+
+open ℕ using (ℕ)
+open ℤ using (_—_; ℤ)
 
 _+₀_ : ℤ → ℤ → ℤ
 (a⁺ — a⁻) +₀ (b⁺ — b⁻) = (a⁺ + b⁺) — (a⁻ + b⁻)
@@ -48,14 +53,14 @@ instance
       +-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ + b ≃ a₂ + b
       +-substᴸ
           a₁@{a₁⁺ — a₁⁻} a₂@{a₂⁺ — a₂⁻} b@{b⁺ — b⁻}
-          (≃₀-intro a₁⁺+a₂⁻≃a₂⁺+a₁⁻) =
+          (ℤ.≃₀-intro a₁⁺+a₂⁻≃a₂⁺+a₁⁻) =
             begin
               a₁ + b
             ≃⟨⟩
               (a₁⁺ — a₁⁻) + (b⁺ — b⁻)
             ≃⟨⟩
               (a₁⁺ + b⁺) — (a₁⁻ + b⁻)
-            ≃⟨ ≃₀-intro componentEq ⟩
+            ≃⟨ ℤ.≃₀-intro componentEq ⟩
               (a₂⁺ + b⁺) — (a₂⁻ + b⁻)
             ≃⟨⟩
               (a₂⁺ — a₂⁻) + (b⁺ — b⁻)

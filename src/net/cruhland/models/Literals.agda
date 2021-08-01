@@ -22,8 +22,11 @@ open FromNatLiteral_~_ {{...}} public using (fromNatLiteral)
 FromNatLiteral : Set → Set
 FromNatLiteral A = FromNatLiteral A ~ const ⊤
 
-nat-literal-from-cast : {A : Set} {{_ : Nat As A}} → FromNatLiteral A
-nat-literal-from-cast {A} = FromNatLiteral-intro (_as A)
+nat-literal-via :
+  (A {B} : Set) {C : Nat → Set} {{_ : FromNatLiteral A ~ C}} {{_ : A As B}} →
+  FromNatLiteral B ~ C
+nat-literal-via A {B} =
+  FromNatLiteral-intro λ n → fromNatLiteral n as B
 
 record FromNegLiteral_~_ (A : Set) (C : Nat → Set) : Set where
   constructor FromNegLiteral-intro

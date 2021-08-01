@@ -9,20 +9,33 @@ open import net.cruhland.models.Literals
 module net.cruhland.axioms.Integers.MultiplicationDecl
   (PA : PeanoArithmetic) where
 
-open PeanoArithmetic PA using (ℕ)
+private open module ℕ = PeanoArithmetic PA using (ℕ)
 open import net.cruhland.axioms.Integers.AdditionDecl PA using (Addition)
 open import net.cruhland.axioms.Integers.BaseDecl PA using (Base)
+import net.cruhland.axioms.Integers.LiteralImpl PA as LiteralImpl
 open import net.cruhland.axioms.Integers.NegationDecl PA using (Negation)
 open import net.cruhland.axioms.Integers.SignDecl PA using (Sign)
 
+private
+  module IntegerPredefs
+      (ZB : Base)
+      (ZA : Addition ZB)
+      (ZN : Negation ZB ZA)
+      (ZS : Sign ZB ZA ZN)
+      where
+    open Addition ZA public
+    open Base ZB public
+    open LiteralImpl ZB public
+    open Negation ZN public
+    open Sign ZS public
+
 module MultiplicationPredefs
     (ZB : Base)
-    (Z+ : Addition ZB)
-    (Z- : Negation ZB Z+)
-    (ZS : Sign ZB Z+ Z-)
+    (ZA : Addition ZB)
+    (ZN : Negation ZB ZA)
+    (ZS : Sign ZB ZA ZN)
     where
-  open Base ZB using (ℤ)
-  open Sign ZS using (_≃±1)
+  private open module ℤ = IntegerPredefs ZB ZA ZN ZS using (ℤ; _≃±1)
 
   record PosOrNeg (a : ℤ) {{_ : Op.Star ℤ}} : Set where
     constructor PosOrNeg-intro
@@ -35,20 +48,19 @@ module MultiplicationPredefs
 
 record Multiplication
     (ZB : Base)
-    (Z+ : Addition ZB)
-    (Z- : Negation ZB Z+)
-    (ZS : Sign ZB Z+ Z-)
+    (ZA : Addition ZB)
+    (ZN : Negation ZB ZA)
+    (ZS : Sign ZB ZA ZN)
     : Set₁ where
-  open Base ZB using (ℤ)
-  open Sign ZS using (_≃±1)
-  open MultiplicationPredefs ZB Z+ Z- ZS public
+  private open module ℤ = IntegerPredefs ZB ZA ZN ZS using (ℤ; _≃±1)
+  open MultiplicationPredefs ZB ZA ZN ZS public
 
   field
     {{star}} : Op.Star ℤ
     {{*-substitutive}} : AA.Substitutive² {A = ℤ} _*_ _≃_ _≃_
     {{*-commutative}} : AA.Commutative {A = ℤ} _*_
     {{*-compatible-ℕ}} : AA.Compatible₂ {A = ℕ} (_as ℤ) _*_ _*_ _≃_
-    {{*-identity}} : AA.Identity² _*_ 1
+    {{*-identity}} : AA.Identity² {A = ℤ} _*_ 1
     {{*-associative}} : AA.Associative {A = ℤ} _*_
     {{*-distributive}} : AA.Distributive² {A = ℤ} _*_ _+_
     {{*-comm-with-neg}} : AA.FnOpCommutative² -_ _*_

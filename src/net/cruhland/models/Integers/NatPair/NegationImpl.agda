@@ -10,12 +10,16 @@ open import net.cruhland.models.Logic using (⊤)
 module net.cruhland.models.Integers.NatPair.NegationImpl
   (PA : PeanoArithmetic) where
 
-private module ℕ = PeanoArithmetic PA
-open import net.cruhland.models.Integers.NatPair.AdditionDefn PA using (Z+)
-import net.cruhland.models.Integers.NatPair.AdditionImpl PA as ℤ+
+open import net.cruhland.models.Integers.NatPair.AdditionDefn PA using (ZA)
 open import net.cruhland.models.Integers.NatPair.BaseDefn PA using (ZB)
-open import net.cruhland.models.Integers.NatPair.BaseImpl PA as ℤB
-  using (_—_; ℤ; ≃₀-intro)
+
+private module ℕ = PeanoArithmetic PA
+private module ℤ where
+  open import net.cruhland.axioms.Integers.LiteralImpl PA ZB public
+  open import net.cruhland.models.Integers.NatPair.AdditionImpl PA public
+  open import net.cruhland.models.Integers.NatPair.BaseImpl PA public
+
+open ℤ using (_—_; ℤ)
 
 instance
   neg-dash : Op.Dashᴸ ℤ
@@ -25,8 +29,8 @@ instance
   neg-substitutive = AA.substitutive₁ neg-subst
     where
       neg-subst : {a b : ℤ} → a ≃ b → - a ≃ - b
-      neg-subst {a⁺ — a⁻} {b⁺ — b⁻} (≃₀-intro a⁺+b⁻≃b⁺+a⁻) =
-          ≃₀-intro a⁻+b⁺≃b⁻+a⁺
+      neg-subst {a⁺ — a⁻} {b⁺ — b⁻} (ℤ.≃₀-intro a⁺+b⁻≃b⁺+a⁻) =
+          ℤ.≃₀-intro a⁻+b⁺≃b⁻+a⁺
         where
           a⁻+b⁺≃b⁻+a⁺ =
             begin
@@ -43,7 +47,7 @@ instance
   neg-inverseᴸ = AA.inverse neg-invᴸ
     where
       neg-invᴸ : {x : ℤ} → - x + x ≃ 0
-      neg-invᴸ {x⁺ — x⁻} = ≃₀-intro [x⁻+x⁺]+0≃0+[x⁺+x⁻]
+      neg-invᴸ {x⁺ — x⁻} = ℤ.≃₀-intro [x⁻+x⁺]+0≃0+[x⁺+x⁻]
         where
           [x⁻+x⁺]+0≃0+[x⁺+x⁻] =
             begin
@@ -81,11 +85,19 @@ neg-involutive a@{a⁺ — a⁻} =
   ∎
 
 -- Export everything not defined here from the default implementations
-open import net.cruhland.axioms.Integers.NegationPartialImpl PA ZB Z+
-  using (NegationProperties)
-open NegationProperties (record {}) public
+private
+  open import net.cruhland.axioms.Integers.NegationPartialImpl PA
+    using (NegationProperties)
+  open import net.cruhland.axioms.Integers.NegationPartialImplSub PA
+    using (SubtractionProperties)
+
+  negationProperties : NegationProperties ZB ZA
+  negationProperties = record {}
+
+  subtractionProperties : SubtractionProperties ZB ZA
+  subtractionProperties = record { sub-defn = sub-defn }
+
+open NegationProperties negationProperties public
   hiding (neg-dash; neg-inverse; neg-involutive; neg-substitutive)
-open import net.cruhland.axioms.Integers.NegationPartialImplSub PA ZB Z+
-  using (SubtractionProperties)
-open SubtractionProperties (record { sub-defn = sub-defn }) public
+open SubtractionProperties subtractionProperties public
   hiding (neg-dash; neg-inverse; neg-substitutive; sub-dash; sub-defn)

@@ -9,3 +9,6 @@ open import net.cruhland.models.Integers.NatPair.MultiplicationImpl PA public
 open import net.cruhland.models.Integers.NatPair.NegationImpl PA public
 open import net.cruhland.models.Integers.NatPair.OrderingImpl PA public
 open import net.cruhland.models.Integers.NatPair.SignImpl PA public
+
+open import net.cruhland.models.Integers.NatPair.BaseDefn PA using (ZB)
+open import net.cruhland.axioms.Integers.LiteralImpl PA ZB public

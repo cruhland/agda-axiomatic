@@ -63,9 +63,9 @@ instance
   eq = Eq.equivalence _≃₀_
 
   decEq : DecEq ℤ
-  decEq = DecEq-intro _≃₀?_
+  decEq = DecEq-intro (AA.tc₂ _≃₀?_)
     where
-      _≃₀?_ : (a b : ℤ) {{_ : ⊤}} → Dec (a ≃ b)
+      _≃₀?_ : (a b : ℤ) → Dec (a ≃ b)
       (a⁺ — a⁻) ≃₀? (b⁺ — b⁻) = dec-map ≃₀-intro _≃₀_.elim (a⁺ + b⁻ ≃? b⁺ + a⁻)
 
   ℤ-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _—_ _≃_ _≃_
@@ -97,10 +97,13 @@ instance
   from-ℕ-injective : AA.Injective (_as ℤ) _≃_ _≃_
   from-ℕ-injective = AA.injective {A = ℕ} AA.cancel
 
--- Pull in definitions from the partial impl
-import net.cruhland.axioms.Integers.BasePartialImpl PA as ZB
-open ZB.BaseProperties (record { ℤ = ℤ }) public
-  hiding (ℤ; eq; from-ℕ; from-ℕ-injective)
+-- Create Base instance so we can import literals
+private
+  open import net.cruhland.axioms.Integers.BaseDecl PA using (Base)
+  base : Base
+  base = record { ℤ = ℤ }
+
+import net.cruhland.axioms.Integers.LiteralImpl PA base as LiteralImpl
 
 zero-from-balanced : ∀ {x} → ℤ.pos x ≃ ℤ.neg x → x ≃ 0
 zero-from-balanced {x⁺ — x⁻} x⁺≃x⁻ =

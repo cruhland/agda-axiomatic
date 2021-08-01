@@ -13,10 +13,19 @@ module net.cruhland.axioms.Integers.SignDecl (PA : PeanoArithmetic) where
 private open module ℕ = PeanoArithmetic PA using (ℕ)
 open import net.cruhland.axioms.Integers.AdditionDecl PA using (Addition)
 open import net.cruhland.axioms.Integers.BaseDecl PA using (Base)
+import net.cruhland.axioms.Integers.LiteralImpl PA as LiteralImpl
 open import net.cruhland.axioms.Integers.NegationDecl PA using (Negation)
 
-module SignPredefs (ZB : Base) (Z+ : Addition ZB) (Z- : Negation ZB Z+) where
-  open Base ZB using (ℤ)
+private
+  module IntegerPredefs
+      (ZB : Base) (ZA : Addition ZB) (ZN : Negation ZB ZA) where
+    open Addition ZA public
+    open Base ZB public
+    open LiteralImpl ZB public
+    open Negation ZN public
+
+module SignPredefs (ZB : Base) (ZA : Addition ZB) (ZN : Negation ZB ZA) where
+  private open module ℤ = IntegerPredefs ZB ZA ZN using (ℤ)
 
   infix 4 _≃±1
   data _≃±1 (s : ℤ) : Set where
@@ -30,9 +39,9 @@ module SignPredefs (ZB : Base) (Z+ : Addition ZB) (Z- : Negation ZB Z+) where
       pos[n] : Positive n
       a≃n : a ≃ f (n as ℤ)
 
-record Sign (ZB : Base) (Z+ : Addition ZB) (Z- : Negation ZB Z+) : Set₁ where
-  open Base ZB using (ℤ)
-  open SignPredefs ZB Z+ Z- public
+record Sign (ZB : Base) (ZA : Addition ZB) (ZN : Negation ZB ZA) : Set₁ where
+  private open module ℤ = IntegerPredefs ZB ZA ZN using (ℤ)
+  open SignPredefs ZB ZA ZN public
 
   field
     {{positivity}} : Positivity {A = ℤ} 0
@@ -52,9 +61,5 @@ record Sign (ZB : Base) (Z+ : Addition ZB) (Z- : Negation ZB Z+) : Set₁ where
     neg-Negative : {a : ℤ} → Negative a → Positive (- a)
     trichotomy :
       (a : ℤ) → AA.ExactlyOneOfThree (Negative a) (a ≃ 0) (Positive a)
-
-    fromNatLiteral-preserves-pos :
-      ∀ n → Positive {A = ℕ} (fromNatLiteral n) →
-      Positive {A = ℤ} (fromNatLiteral n)
 
     1-Positive : Positive {A = ℤ} 1

@@ -19,17 +19,24 @@ open import net.cruhland.models.Logic using (∧-intro; _↯_; ¬_; ¬-intro)
 module net.cruhland.axioms.Integers.OrderingDefaultImpl
   (PA : PeanoArithmetic)
   (ZB : Base PA)
-  (Z+ : Addition PA ZB)
-  (Z- : Negation PA ZB Z+)
-  (ZS : Sign PA ZB Z+ Z-)
-  (Z* : Multiplication PA ZB Z+ Z- ZS)
+  (ZA : Addition PA ZB)
+  (ZN : Negation PA ZB ZA)
+  (ZS : Sign PA ZB ZA ZN)
+  (ZM : Multiplication PA ZB ZA ZN ZS)
   where
 
-private open module ℕ = PeanoArithmetic PA using (ℕ)
-private open module ℤB = Base ZB using (ℤ)
-private module ℤ* = Multiplication Z*
-private module ℤ- = Negation Z-
-private module ℤS = Sign ZS
+import net.cruhland.axioms.Integers.LiteralImpl PA as LiteralImpl
+
+private module ℕ = PeanoArithmetic PA
+private module ℤ where
+  open Base ZB public
+  open LiteralImpl ZB public
+  open Multiplication ZM public
+  open Negation ZN public
+  open Sign ZS public
+
+open ℕ using (ℕ)
+open ℤ using (ℤ)
 
 record _≤₀_ (a b : ℤ) : Set where
   constructor ≤₀-intro
@@ -58,7 +65,7 @@ instance
     where
       ≤-antisym : {a b : ℤ} → a ≤ b → b ≤ a → a ≃ b
       ≤-antisym {a} {b} (≤₀-intro {d₁} a+d₁≃b) (≤₀-intro {d₂} b+d₂≃a) =
-        let d₁+d₂-as-ℤ≃0-as-ℤ =
+        let d₁+d₂:ℤ≃0:ℤ =
               begin
                 (d₁ + d₂ as ℤ)
               ≃⟨ AA.compat₂ ⟩
@@ -77,17 +84,17 @@ instance
                 (- a) + a
               ≃⟨ AA.inv ⟩
                 0
-              ≃⟨ ℤB.fromNatLiteral≃casts 0 ⟩
+              ≃⟨⟩
                 (0 as ℤ)
               ∎
-            ∧-intro _ d₂≃0 = ℕ.+-both-zero (AA.inject d₁+d₂-as-ℤ≃0-as-ℤ)
+            ∧-intro _ d₂≃0 = ℕ.+-both-zero (AA.inject d₁+d₂:ℤ≃0:ℤ)
          in begin
               a
             ≃˘⟨ b+d₂≃a ⟩
               b + (d₂ as ℤ)
             ≃⟨ AA.subst₂ (AA.subst₁ d₂≃0) ⟩
               b + (0 as ℤ)
-            ≃˘⟨ AA.subst₂ (ℤB.fromNatLiteral≃casts 0) ⟩
+            ≃⟨⟩
               b + 0
             ≃⟨ AA.ident ⟩
               b
@@ -95,23 +102,25 @@ instance
 
 <-from-pos : {a b : ℤ} → Positive (b - a) → a < b
 <-from-pos {a} {b} pos[b-a] =
-  let ℤS.≃posℕ-intro {d} pos[d] b-a≃d = ℤS.posℕ-from-posℤ pos[b-a]
-      b≃a+d = ℤ-.≃ᴸ-subᴿ-toᴸ b-a≃d
+  let ℤ.≃posℕ-intro {d} pos[d] b-a≃d = ℤ.posℕ-from-posℤ pos[b-a]
+      b≃a+d = ℤ.≃ᴸ-subᴿ-toᴸ b-a≃d
       a≤b = ≤₀-intro (Eq.sym b≃a+d)
       a≄b = Eq.≄-intro λ a≃b →
-        let d-as-ℤ≃0-as-ℤ =
+        let d:ℤ≃0:ℤ =
               begin
                 (d as ℤ)
               ≃˘⟨ b-a≃d ⟩
                 b - a
               ≃⟨ AA.subst₂ a≃b ⟩
                 b - b
-              ≃⟨ ℤ-.sub-same≃zero ⟩
+              ≃⟨ ℤ.sub-same≃zero ⟩
                 0
-              ≃⟨ ℤB.fromNatLiteral≃casts 0 ⟩
+              ≃⟨⟩
                 (0 as ℤ)
               ∎
-         in AA.inject d-as-ℤ≃0-as-ℤ ↯ pos≄0 pos[d]
+            d≃0 = AA.inject d:ℤ≃0:ℤ
+            d≄0 = pos≄0 pos[d]
+         in d≃0 ↯ d≄0
    in Ord.<-from-≤≄ a≤b a≄b
 
 pos-from-< : {a b : ℤ} → a < b → Positive (b - a)
@@ -122,8 +131,8 @@ pos-from-< {a} {b} (<₀-intro (≤₀-intro {d} a+d≃b) a≄b) =
                 a
               ≃˘⟨ AA.ident ⟩
                 a + 0
-              ≃⟨ AA.subst₂ (ℤB.fromNatLiteral≃casts 0) ⟩
-                a + (0 as ℕ as ℤ)
+              ≃⟨⟩
+                a + (0 as ℤ)
               ≃˘⟨ AA.subst₂ (AA.subst₁ d≃0) ⟩
                 a + (d as ℤ)
               ≃⟨ a+d≃b ⟩
@@ -131,16 +140,16 @@ pos-from-< {a} {b} (<₀-intro (≤₀-intro {d} a+d≃b) a≄b) =
               ∎
          in a≃b ↯ a≄b
       pos[d] = ℕ.Pos-intro-≄0 d≄0
-      b-a≃d = ℤ-.≃ᴿ-+ᴸ-toᴿ (Eq.sym a+d≃b)
-   in ℤS.posℤ-from-posℕ (ℤS.≃posℕ-intro pos[d] b-a≃d)
+      b-a≃d = ℤ.≃ᴿ-+ᴸ-toᴿ (Eq.sym a+d≃b)
+   in ℤ.posℤ-from-posℕ (ℤ.≃posℕ-intro pos[d] b-a≃d)
 
 order-trichotomy : (a b : ℤ) → AA.ExactlyOneOfThree (a < b) (a ≃ b) (a > b)
 order-trichotomy a b = AA.exactlyOneOfThree 1of3 ¬2of3
   where
     1of3 : AA.OneOfThree (a < b) (a ≃ b) (a > b)
-    1of3 with AA.ExactlyOneOfThree.at-least-one (ℤS.trichotomy (b - a))
-    ... | AA.1st neg[b-a] = AA.3rd (<-from-pos (ℤ*.sub-sign-swap neg[b-a]))
-    ... | AA.2nd b-a≃0 = AA.2nd (Eq.sym (ℤ-.≃-from-zero-sub b-a≃0))
+    1of3 with AA.ExactlyOneOfThree.at-least-one (ℤ.trichotomy (b - a))
+    ... | AA.1st neg[b-a] = AA.3rd (<-from-pos (ℤ.sub-sign-swap neg[b-a]))
+    ... | AA.2nd b-a≃0 = AA.2nd (Eq.sym (ℤ.≃-from-zero-sub b-a≃0))
     ... | AA.3rd pos[b-a] = AA.1st (<-from-pos pos[b-a])
 
     ¬2of3 : ¬ AA.TwoOfThree (a < b) (a ≃ b) (a > b)

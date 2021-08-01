@@ -102,15 +102,6 @@ instance
   from-ℤ : ℤ As ℚ
   from-ℤ = Cast.As-intro (_// 1)
 
-  from-ℕ : ℕ As ℚ
-  from-ℕ = Cast.via ℤ
-
-  from-Nat : Nat As ℚ
-  from-Nat = Cast.via ℕ
-
-  from-literal : FromNatLiteral ℚ
-  from-literal = nat-literal-from-cast
-
   //-substitutiveᴸ : AA.Substitutive₂ᶜ AA.handᴸ _//_ _≃_ _≃_
   //-substitutiveᴸ = AA.substitutive₂ //-substᴸ
     where
@@ -195,6 +186,15 @@ instance
               ∎
          in AA.cancel a₁//1≃a₂//1
 
+-- Create Base instance so we can import literals
+private
+  open import net.cruhland.axioms.Rationals.BaseDecl PA Z using (Base)
+
+  base : Base
+  base = record { ℚ = ℚ }
+
+import net.cruhland.axioms.Rationals.LiteralImpl PA Z base as LiteralImpl
+
 q≃0-from-q↑≃0 : {q : ℚ} → numerator q ≃ 0 → q ≃ 0
 q≃0-from-q↑≃0 q@{q↑ // q↓} q↑≃0 =
     begin
@@ -205,10 +205,6 @@ q≃0-from-q↑≃0 q@{q↑ // q↓} q↑≃0 =
       0 // q↓
     ≃⟨ ≃₀-intro componentEq ⟩
       0 // 1
-    ≃⟨⟩
-      (0 as ℚ)
-    ≃⟨ AA.subst₁ (ℤ.fromNatLiteral≃casts 0) ⟩
-      (0 as ℤ as ℚ)
     ≃⟨⟩
       0
     ∎
@@ -231,8 +227,6 @@ q↑≃0-from-q≃0 q@{q↑ // q↓} (≃₀-intro q↑*1≃0*q↓) =
   ≃˘⟨ AA.ident ⟩
     q↑ * 1
   ≃⟨ q↑*1≃0*q↓ ⟩
-    (0 as ℤ) * q↓
-  ≃˘⟨ AA.subst₂ (ℤ.fromNatLiteral≃casts 0) ⟩
     0 * q↓
   ≃⟨ AA.absorb ⟩
     0

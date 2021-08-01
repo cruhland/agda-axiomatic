@@ -11,19 +11,20 @@ module net.cruhland.models.Integers.NatPair.SignImplNat
   (PA : PeanoArithmetic) where
 
 import net.cruhland.axioms.Integers.SignDecl PA as SignDecl
-open import net.cruhland.models.Integers.NatPair.AdditionDefn PA using (Z+)
+open import net.cruhland.models.Integers.NatPair.AdditionDefn PA using (ZA)
 open import net.cruhland.models.Integers.NatPair.BaseDefn PA using (ZB)
-open import net.cruhland.models.Integers.NatPair.NegationDefn PA using (Z-)
+open import net.cruhland.models.Integers.NatPair.NegationDefn PA using (ZN)
 
 private module ℕ = PeanoArithmetic PA
 private module ℤ where
+  open import net.cruhland.axioms.Integers.LiteralImpl PA ZB public
   open import net.cruhland.models.Integers.NatPair.BaseImpl PA public
-  open SignDecl.SignPredefs ZB Z+ Z- public
+  open SignDecl.SignPredefs ZB ZA ZN public
 
 open ℤ using (_—_; ℤ)
 
 -- Include everything from the partial impl
-open import net.cruhland.axioms.Integers.SignPartialImplNat PA ZB Z+ Z- public
+open import net.cruhland.axioms.Integers.SignPartialImplNat PA ZB ZA ZN public
 
 trichotomy : (a : ℤ) → AA.ExactlyOneOfThree (Negative a) (a ≃ 0) (Positive a)
 trichotomy x@(x⁺ — x⁻) = AA.exactlyOneOfThree 1of3 ¬2of3

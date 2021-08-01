@@ -5,7 +5,7 @@ module net.cruhland.models.Integers.NatPair.AdditionDefn
 
 open import net.cruhland.axioms.Integers.AdditionDecl PA using (Addition)
 open import net.cruhland.models.Integers.NatPair.BaseDefn PA using (ZB)
-import net.cruhland.models.Integers.NatPair.AdditionImpl PA as Z+
+import net.cruhland.models.Integers.NatPair.AdditionImpl PA as ZA
 
-Z+ : Addition ZB
-Z+ = record { Z+ }
+ZA : Addition ZB
+ZA = record { ZA }

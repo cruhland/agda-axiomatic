@@ -6,6 +6,7 @@ module net.cruhland.axioms.Rationals
 
 open import net.cruhland.axioms.Rationals.AdditionDecl PA Z using (Addition)
 open import net.cruhland.axioms.Rationals.BaseDecl PA Z using (Base)
+import net.cruhland.axioms.Rationals.LiteralImpl PA Z as LiteralImpl
 open import net.cruhland.axioms.Rationals.MultiplicationDecl PA Z
   using (Multiplication)
 open import net.cruhland.axioms.Rationals.NegationDecl PA Z using (Negation)
@@ -21,6 +22,7 @@ record Rationals : Set₁ where
 
   open Addition QA public
   open Base QB public
+  open LiteralImpl QB public
   open Multiplication QM public
   open Negation QN public
   open Reciprocal QR public

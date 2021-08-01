@@ -10,9 +10,12 @@ open import net.cruhland.models.Literals
 module net.cruhland.models.Rationals.IntPair.MultiplicationImpl
   (PA : PeanoArithmetic) (Z : Integers PA) where
 
-open Integers Z using (ℤ)
-open import net.cruhland.models.Rationals.IntPair.BaseImpl PA Z as ℚB
-  using (_//_; ℚ)
+private module ℤ = Integers Z
+private module ℚ where
+  open import net.cruhland.models.Rationals.IntPair.BaseImpl PA Z public
+
+open ℤ using (ℤ)
+open ℚ using (_//_; ℚ)
 
 _*₀_ : ℚ → ℚ → ℚ
 (p↑ // p↓) *₀ (q↑ // q↓) = ((p↑ * q↑) // (p↓ * q↓)) {{AA.nonzero-prod}}
@@ -25,9 +28,9 @@ instance
   *-commutative = AA.commutative *-comm
     where
       *-comm : {p q : ℚ} → p * q ≃ q * p
-      *-comm p@{(p↑ // p↓) {{p↓≄ⁱ0}}} q@{(q↑ // q↓) {{q↓≄ⁱ0}}} =
-        let instance p↓q↓≄ⁱ0 = AA.nonzero-prod {{a≄0 = p↓≄ⁱ0}} {{q↓≄ⁱ0}}
-            instance q↓p↓≄ⁱ0 = AA.nonzero-prod {{a≄0 = q↓≄ⁱ0}} {{p↓≄ⁱ0}}
+      *-comm p@{(p↑ // p↓) {{p↓≄0}}} q@{(q↑ // q↓) {{q↓≄0}}} =
+        let instance p↓q↓≄0 = AA.nonzero-prod {{a≄0 = p↓≄0}} {{q↓≄0}}
+            instance q↓p↓≄0 = AA.nonzero-prod {{a≄0 = q↓≄0}} {{p↓≄0}}
          in begin
               p * q
             ≃⟨⟩
@@ -50,14 +53,14 @@ instance
       *-substᴸ : {p₁ p₂ q : ℚ} → p₁ ≃ p₂ → p₁ * q ≃ p₂ * q
       *-substᴸ
         p₁@{p₁↑ // p₁↓} p₂@{p₂↑ // p₂↓} q@{q↑ // q↓}
-        (ℚB.≃₀-intro p₁↑p₂↓≃p₂↑p₁↓) =
+        (ℚ.≃₀-intro p₁↑p₂↓≃p₂↑p₁↓) =
           begin
             p₁ * q
           ≃⟨⟩
             (p₁↑ // p₁↓) * (q↑ // q↓)
           ≃⟨⟩
             ((p₁↑ * q↑) // (p₁↓ * q↓)) {{AA.nonzero-prod}}
-          ≃⟨ ℚB.≃₀-intro componentEq ⟩
+          ≃⟨ ℚ.≃₀-intro componentEq ⟩
             ((p₂↑ * q↑) // (p₂↓ * q↓)) {{AA.nonzero-prod}}
           ≃⟨⟩
             (p₂↑ // p₂↓) * (q↑ // q↓)
