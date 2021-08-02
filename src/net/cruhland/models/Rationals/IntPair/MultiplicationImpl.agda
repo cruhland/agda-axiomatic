@@ -101,3 +101,35 @@ instance
         ≃⟨⟩
           (a as ℚ) * (b as ℚ)
         ∎
+
+  *-associative : AA.Associative _*_
+  *-associative = AA.associative *-assoc
+    where
+      *-assoc : {p q r : ℚ} → (p * q) * r ≃ p * (q * r)
+      *-assoc
+          p@{(p↑ // p↓) {{p↓≄0}}}
+          q@{(q↑ // q↓) {{q↓≄0}}}
+          r@{(r↑ // r↓) {{r↓≄0}}} =
+        let instance p↓q↓≄0 = AA.nonzero-prod {{a≄0 = p↓≄0}} {{q↓≄0}}
+            instance q↓r↓≄0 = AA.nonzero-prod {{a≄0 = q↓≄0}} {{r↓≄0}}
+            instance [p↓q↓]r↓≄0 = AA.nonzero-prod {{a≄0 = p↓q↓≄0}} {{r↓≄0}}
+            instance p↓[q↓r↓]≄0 = AA.nonzero-prod {{a≄0 = p↓≄0}} {{q↓r↓≄0}}
+         in begin
+              (p * q) * r
+            ≃⟨⟩
+              ((p↑ // p↓) * (q↑ // q↓)) * (r↑ // r↓)
+            ≃⟨⟩
+              ((p↑ * q↑) // (p↓ * q↓)) * (r↑ // r↓)
+            ≃⟨⟩
+              ((p↑ * q↑) * r↑) // ((p↓ * q↓) * r↓)
+            ≃⟨ AA.subst₂ AA.assoc ⟩
+              (p↑ * (q↑ * r↑)) // ((p↓ * q↓) * r↓)
+            ≃⟨ AA.subst₂ AA.assoc ⟩
+              (p↑ * (q↑ * r↑)) // (p↓ * (q↓ * r↓))
+            ≃⟨⟩
+              (p↑ // p↓) * ((q↑ * r↑) // (q↓ * r↓))
+            ≃⟨⟩
+              (p↑ // p↓) * ((q↑ // q↓) * (r↑ // r↓))
+            ≃⟨⟩
+              p * (q * r)
+            ∎
