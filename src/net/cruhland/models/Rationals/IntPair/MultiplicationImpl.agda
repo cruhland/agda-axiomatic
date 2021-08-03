@@ -10,8 +10,11 @@ open import net.cruhland.models.Literals
 module net.cruhland.models.Rationals.IntPair.MultiplicationImpl
   (PA : PeanoArithmetic) (Z : Integers PA) where
 
+open import net.cruhland.models.Rationals.IntPair.BaseDefn PA Z using (QB)
+
 private module ℤ = Integers Z
 private module ℚ where
+  open import net.cruhland.axioms.Rationals.LiteralImpl PA Z QB public
   open import net.cruhland.models.Rationals.IntPair.BaseImpl PA Z public
 
 open ℤ using (ℤ)
@@ -133,3 +136,29 @@ instance
             ≃⟨⟩
               p * (q * r)
             ∎
+
+  *-identityᴸ : AA.Identity AA.handᴸ _*_ 1
+  *-identityᴸ = AA.identity *-identᴸ
+    where
+      *-identᴸ : {q : ℚ} → 1 * q ≃ q
+      *-identᴸ q@{(q↑ // q↓) {{q↓≄0}}} =
+        let instance 1*q↓≄0 = AA.nonzero-prod {{a≄0 = ℤ.1≄0}} {{q↓≄0}}
+         in begin
+              1 * q
+            ≃⟨⟩
+              (1 // 1) * (q↑ // q↓)
+            ≃⟨⟩
+              (1 * q↑) // (1 * q↓)
+            ≃⟨ AA.subst₂ AA.ident ⟩
+              q↑ // (1 * q↓)
+            ≃⟨ AA.subst₂ AA.ident ⟩
+              q↑ // q↓
+            ≃⟨⟩
+              q
+            ∎
+
+  *-identityᴿ : AA.Identity AA.handᴿ _*_ 1
+  *-identityᴿ = AA.identityᴿ-from-identityᴸ {A = ℚ}
+
+  *-identity : AA.Identity² _*_ 1
+  *-identity = AA.identity² {A = ℚ}
