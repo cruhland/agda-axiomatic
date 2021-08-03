@@ -6,8 +6,9 @@ module net.cruhland.models.Rationals.IntPair.MultiplicationDefn
 
 open import net.cruhland.axioms.Rationals.MultiplicationDecl PA Z
   using (Multiplication)
+open import net.cruhland.models.Rationals.IntPair.AdditionDefn PA Z using (QA)
 open import net.cruhland.models.Rationals.IntPair.BaseDefn PA Z using (QB)
 import net.cruhland.models.Rationals.IntPair.MultiplicationImpl PA Z as QM
 
-QM : Multiplication QB
+QM : Multiplication QB QA
 QM = record { QM }

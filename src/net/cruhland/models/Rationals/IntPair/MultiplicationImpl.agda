@@ -3,7 +3,7 @@ open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq as Eq using (_≃_)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Integers using (Integers)
-open import net.cruhland.axioms.Operators as Op using (_*_)
+open import net.cruhland.axioms.Operators as Op using (_+_; _*_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.models.Literals
 
@@ -15,6 +15,7 @@ open import net.cruhland.models.Rationals.IntPair.BaseDefn PA Z using (QB)
 private module ℤ = Integers Z
 private module ℚ where
   open import net.cruhland.axioms.Rationals.LiteralImpl PA Z QB public
+  open import net.cruhland.models.Rationals.IntPair.AdditionImpl PA Z public
   open import net.cruhland.models.Rationals.IntPair.BaseImpl PA Z public
 
 open ℤ using (ℤ)
@@ -32,8 +33,9 @@ instance
     where
       *-comm : {p q : ℚ} → p * q ≃ q * p
       *-comm p@{(p↑ // p↓) {{p↓≄0}}} q@{(q↑ // q↓) {{q↓≄0}}} =
-        let instance p↓q↓≄0 = AA.nonzero-prod {{a≄0 = p↓≄0}} {{q↓≄0}}
-            instance q↓p↓≄0 = AA.nonzero-prod {{a≄0 = q↓≄0}} {{p↓≄0}}
+        let instance
+              p↓q↓≄0 = AA.nonzero-prod {{a≄0 = p↓≄0}} {{q↓≄0}}
+              q↓p↓≄0 = AA.nonzero-prod {{a≄0 = q↓≄0}} {{p↓≄0}}
          in begin
               p * q
             ≃⟨⟩
@@ -113,10 +115,11 @@ instance
           p@{(p↑ // p↓) {{p↓≄0}}}
           q@{(q↑ // q↓) {{q↓≄0}}}
           r@{(r↑ // r↓) {{r↓≄0}}} =
-        let instance p↓q↓≄0 = AA.nonzero-prod {{a≄0 = p↓≄0}} {{q↓≄0}}
-            instance q↓r↓≄0 = AA.nonzero-prod {{a≄0 = q↓≄0}} {{r↓≄0}}
-            instance [p↓q↓]r↓≄0 = AA.nonzero-prod {{a≄0 = p↓q↓≄0}} {{r↓≄0}}
-            instance p↓[q↓r↓]≄0 = AA.nonzero-prod {{a≄0 = p↓≄0}} {{q↓r↓≄0}}
+        let instance
+              p↓q↓≄0 = AA.nonzero-prod {{a≄0 = p↓≄0}} {{q↓≄0}}
+              q↓r↓≄0 = AA.nonzero-prod {{a≄0 = q↓≄0}} {{r↓≄0}}
+              [p↓q↓]r↓≄0 = AA.nonzero-prod {{a≄0 = p↓q↓≄0}} {{r↓≄0}}
+              p↓[q↓r↓]≄0 = AA.nonzero-prod {{a≄0 = p↓≄0}} {{q↓r↓≄0}}
          in begin
               (p * q) * r
             ≃⟨⟩
@@ -162,3 +165,90 @@ instance
 
   *-identity : AA.Identity² _*_ 1
   *-identity = AA.identity² {A = ℚ}
+
+  *-distributiveᴸ : AA.Distributive AA.handᴸ _*_ _+_
+  *-distributiveᴸ = AA.distributive *-distribᴸ
+    where
+      *-distribᴸ : {p q r : ℚ} → p * (q + r) ≃ p * q + p * r
+      *-distribᴸ
+          p@{(p↑ // p↓) {{p↓≄0}}}
+          q@{(q↑ // q↓) {{q↓≄0}}}
+          r@{(r↑ // r↓) {{r↓≄0}}} =
+        let instance
+              p↓q↓≄0 = AA.nonzero-prod {{a≄0 = p↓≄0}} {{q↓≄0}}
+              p↓r↓≄0 = AA.nonzero-prod {{a≄0 = p↓≄0}} {{r↓≄0}}
+              q↓p↓≄0 = AA.nonzero-prod {{a≄0 = q↓≄0}} {{p↓≄0}}
+              q↓r↓≄0 = AA.nonzero-prod {{a≄0 = q↓≄0}} {{r↓≄0}}
+              p↓[q↓r↓]≄0 = AA.nonzero-prod {{a≄0 = p↓≄0}} {{q↓r↓≄0}}
+              [p↓q↓]r↓≄0 = AA.nonzero-prod {{a≄0 = p↓q↓≄0}} {{r↓≄0}}
+              [q↓p↓]r↓≄0 = AA.nonzero-prod {{a≄0 = q↓p↓≄0}} {{r↓≄0}}
+              q↓[p↓r↓]≄0 = AA.nonzero-prod {{a≄0 = q↓≄0}} {{p↓r↓≄0}}
+              p↓[q↓[p↓r↓]]≄0 = AA.nonzero-prod {{a≄0 = p↓≄0}} {{q↓[p↓r↓]≄0}}
+              [p↓q↓][p↓r↓]≄0 = AA.nonzero-prod {{a≄0 = p↓q↓≄0}} {{p↓r↓≄0}}
+         in begin
+              p * (q + r)
+            ≃⟨⟩
+              (p↑ // p↓) * ((q↑ // q↓) + (r↑ // r↓))
+            ≃⟨⟩
+              (p↑ // p↓) * ((q↑ * r↓ + q↓ * r↑) // (q↓ * r↓))
+            ≃⟨⟩
+              (p↑ * (q↑ * r↓ + q↓ * r↑)) // (p↓ * (q↓ * r↓))
+            ≃⟨ AA.subst₂ AA.distrib ⟩
+              (p↑ * (q↑ * r↓) + p↑ * (q↓ * r↑)) // (p↓ * (q↓ * r↓))
+            ≃˘⟨ AA.subst₂ (AA.subst₂ AA.assoc) ⟩
+              (p↑ * (q↑ * r↓) + (p↑ * q↓) * r↑) // (p↓ * (q↓ * r↓))
+            ≃⟨ AA.subst₂ (AA.subst₂ (AA.subst₂ AA.comm)) ⟩
+              (p↑ * (q↑ * r↓) + (q↓ * p↑) * r↑) // (p↓ * (q↓ * r↓))
+            ≃⟨ AA.subst₂ (AA.subst₂ AA.assoc) ⟩
+              (p↑ * (q↑ * r↓) + q↓ * (p↑ * r↑)) // (p↓ * (q↓ * r↓))
+            ≃˘⟨ AA.subst₂ AA.assoc ⟩
+              (p↑ * (q↑ * r↓) + q↓ * (p↑ * r↑)) // ((p↓ * q↓) * r↓)
+            ≃⟨ AA.subst₂ (AA.subst₂ AA.comm) ⟩
+              (p↑ * (q↑ * r↓) + q↓ * (p↑ * r↑)) // ((q↓ * p↓) * r↓)
+            ≃⟨ AA.subst₂ AA.assoc ⟩
+              (p↑ * (q↑ * r↓) + q↓ * (p↑ * r↑)) // (q↓ * (p↓ * r↓))
+            ≃˘⟨ AA.ident ⟩
+              1 * ((p↑ * (q↑ * r↓) + q↓ * (p↑ * r↑)) // (q↓ * (p↓ * r↓)))
+            ≃˘⟨ AA.subst₂ ℚ.a//a≃1 ⟩
+              (p↓ // p↓)
+              * ((p↑ * (q↑ * r↓) + q↓ * (p↑ * r↑)) // (q↓ * (p↓ * r↓)))
+            ≃⟨⟩
+              (p↓ * (p↑ * (q↑ * r↓) + q↓ * (p↑ * r↑)))
+              // (p↓ * (q↓ * (p↓ * r↓)))
+            ≃⟨ AA.subst₂ AA.distrib ⟩
+              (p↓ * (p↑ * (q↑ * r↓)) + p↓ * (q↓ * (p↑ * r↑)))
+              // (p↓ * (q↓ * (p↓ * r↓)))
+            ≃⟨ AA.subst₂ (AA.subst₂ AA.comm) ⟩
+              ((p↑ * (q↑ * r↓)) * p↓ + p↓ * (q↓ * (p↑ * r↑)))
+              // (p↓ * (q↓ * (p↓ * r↓)))
+            ≃⟨ AA.subst₂ (AA.subst₂ AA.assoc) ⟩
+              (p↑ * ((q↑ * r↓) * p↓) + p↓ * (q↓ * (p↑ * r↑)))
+              // (p↓ * (q↓ * (p↓ * r↓)))
+            ≃⟨ AA.subst₂ (AA.subst₂ (AA.subst₂ AA.assoc)) ⟩
+              (p↑ * (q↑ * (r↓ * p↓)) + p↓ * (q↓ * (p↑ * r↑)))
+              // (p↓ * (q↓ * (p↓ * r↓)))
+            ≃˘⟨ AA.subst₂ (AA.subst₂ AA.assoc) ⟩
+              ((p↑ * q↑) * (r↓ * p↓) + p↓ * (q↓ * (p↑ * r↑)))
+              // (p↓ * (q↓ * (p↓ * r↓)))
+            ≃⟨ AA.subst₂ (AA.subst₂ (AA.subst₂ AA.comm)) ⟩
+              ((p↑ * q↑) * (p↓ * r↓) + p↓ * (q↓ * (p↑ * r↑)))
+              // (p↓ * (q↓ * (p↓ * r↓)))
+            ≃˘⟨ AA.subst₂ (AA.subst₂ AA.assoc) ⟩
+              ((p↑ * q↑) * (p↓ * r↓) + (p↓ * q↓) * (p↑ * r↑))
+              // (p↓ * (q↓ * (p↓ * r↓)))
+            ≃˘⟨ AA.subst₂ AA.assoc ⟩
+              ((p↑ * q↑) * (p↓ * r↓) + (p↓ * q↓) * (p↑ * r↑))
+              // ((p↓ * q↓) * (p↓ * r↓))
+            ≃⟨⟩
+              ((p↑ * q↑) // (p↓ * q↓)) + ((p↑ * r↑) // (p↓ * r↓))
+            ≃⟨⟩
+              (p↑ // p↓) * (q↑ // q↓) + (p↑ // p↓) * (r↑ // r↓)
+            ≃⟨⟩
+              p * q + p * r
+            ∎
+
+  *-distributiveᴿ : AA.Distributive AA.handᴿ _*_ _+_
+  *-distributiveᴿ = AA.distributiveᴿ-from-distributiveᴸ {A = ℚ}
+
+  *-distributive : AA.Distributive² _*_ _+_
+  *-distributive = AA.distributive² {A = ℚ}

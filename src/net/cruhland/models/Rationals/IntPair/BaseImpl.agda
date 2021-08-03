@@ -231,3 +231,20 @@ q↑≃0-from-q≃0 q@{q↑ // q↓} (≃₀-intro q↑*1≃0*q↓) =
   ≃⟨ AA.absorb ⟩
     0
   ∎
+
+a//a≃1 : {a : ℤ} {{_ : a ≄ 0}} → a // a ≃ 1
+a//a≃1 {a} =
+    begin
+      a // a
+    ≃⟨ ≃₀-intro componentEq ⟩
+      1 // 1
+    ≃⟨⟩
+      1
+    ∎
+  where
+    componentEq =
+      begin
+        a * 1
+      ≃⟨ AA.comm ⟩
+        1 * a
+      ∎
