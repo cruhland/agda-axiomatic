@@ -5,8 +5,11 @@ module net.cruhland.models.Rationals.IntPair.ReciprocalDefn
   (PA : PeanoArithmetic) (Z : Integers PA) where
 
 open import net.cruhland.axioms.Rationals.ReciprocalDecl PA Z using (Reciprocal)
-import net.cruhland.models.Rationals.IntPair.ReciprocalImpl PA Z as QR
+open import net.cruhland.models.Rationals.IntPair.AdditionDefn PA Z using (QA)
 open import net.cruhland.models.Rationals.IntPair.BaseDefn PA Z using (QB)
+open import net.cruhland.models.Rationals.IntPair.MultiplicationDefn PA Z
+  using (QM)
+import net.cruhland.models.Rationals.IntPair.ReciprocalImpl PA Z as QR
 
-QR : Reciprocal QB
+QR : Reciprocal QB QA QM
 QR = record { QR }

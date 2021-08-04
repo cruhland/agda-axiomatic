@@ -18,7 +18,7 @@ record Rationals : Set₁ where
     QA : Addition QB
     QN : Negation QB QA
     QM : Multiplication QB QA
-    QR : Reciprocal QB
+    QR : Reciprocal QB QA QM
 
   open Addition QA public
   open Base QB public
