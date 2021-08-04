@@ -3,9 +3,7 @@ open import net.cruhland.axioms.Eq as Eq using (_≃_)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Operators as Op using (_+_; -_; _-_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
-open import net.cruhland.models.Function using (const)
 open import net.cruhland.models.Literals
-open import net.cruhland.models.Logic using (⊤)
 
 module net.cruhland.models.Integers.NatPair.NegationImpl
   (PA : PeanoArithmetic) where
@@ -43,7 +41,7 @@ instance
               b⁻ + a⁺
             ∎
 
-  neg-inverseᴸ : AA.Inverse AA.handᴸ -_ (const ⊤) _+_ 0
+  neg-inverseᴸ : AA.Inverse AA.handᴸ (AA.tc₁ λ a → - a) _+_ 0
   neg-inverseᴸ = AA.inverse neg-invᴸ
     where
       neg-invᴸ : {x : ℤ} → - x + x ≃ 0
@@ -58,10 +56,10 @@ instance
               0 + (x⁺ + x⁻)
             ∎
 
-  neg-inverseᴿ : AA.Inverse AA.handᴿ -_ (const ⊤) _+_ 0
+  neg-inverseᴿ : AA.Inverse AA.handᴿ (AA.tc₁ λ a → - a) _+_ 0
   neg-inverseᴿ = AA.inverseᴿ-from-inverseᴸ
 
-  neg-inverse : AA.Inverse² -_ (const ⊤) _+_ 0
+  neg-inverse : AA.Inverse² (AA.tc₁ λ a → - a) _+_ 0
   neg-inverse = AA.inverse²
 
   sub-dash : Op.Dash₂ ℤ

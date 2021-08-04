@@ -1,9 +1,8 @@
 module net.cruhland.axioms.AbstractAlgebra where
 
-open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_; Eq)
+open import net.cruhland.axioms.Eq as Eq using (_≃_; Eq)
 open Eq.≃-Reasoning
-open import net.cruhland.models.Function using (_∘_; const; ConstrainableFn)
-open import net.cruhland.models.Logic as Logic using (_∨_; ∨-rec; ¬_)
+open import net.cruhland.models.Logic as Logic using (¬_)
 
 open import net.cruhland.axioms.AbstractAlgebra.Base public
 open import net.cruhland.axioms.AbstractAlgebra.Compatible public
@@ -67,10 +66,9 @@ distributiveᴿ-from-distributiveᴸ {A} {_⊙_} {_⊕_} = distributive distrib�
       ∎
 
 inverseᴿ-from-inverseᴸ :
-  {A F : Set} {f : F} {C : A → Set} {_⊙_ : A → A → A} {e : A} {{_ : Eq A}}
-  {{_ : ConstrainableFn F C (const A)}} {{_ : Identity² _⊙_ e}}
-  {{_ : Inverse handᴸ f C _⊙_ e}} {{_ : Commutative _⊙_}} →
-  Inverse handᴿ f C _⊙_ e
+  {A : Set} {C : A → Set} {f : (a : A) {{_ : C a}} → A} {_⊙_ : A → A → A}
+  {e : A} {{_ : Eq A}} {{_ : Identity² _⊙_ e}} {{_ : Inverse handᴸ f _⊙_ e}}
+  {{_ : Commutative _⊙_}} → Inverse handᴿ f _⊙_ e
 inverseᴿ-from-inverseᴸ = inverse (Eq.trans comm inv)
 
 [ab][cd]≃a[[bc]d] :

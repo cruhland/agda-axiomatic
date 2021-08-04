@@ -4,9 +4,7 @@ open import net.cruhland.axioms.Eq using (_≃_)
 open import net.cruhland.axioms.Integers using (Integers)
 open import net.cruhland.axioms.Operators as Op using (_+_; -_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
-open import net.cruhland.models.Function using (const)
 open import net.cruhland.models.Literals
-open import net.cruhland.models.Logic using (⊤)
 
 module net.cruhland.axioms.Rationals.NegationDecl
   (PA : PeanoArithmetic) (Z : Integers PA) where
@@ -28,4 +26,4 @@ record Negation (QB : Base) (QA : Addition QB) : Set₁ where
     {{dashᴸ}} : Op.Dashᴸ ℚ
     {{neg-substitutive}} : AA.Substitutive₁ {A = ℚ} -_ _≃_ _≃_
     {{neg-compatible-ℤ}} : AA.Compatible₁ {A = ℤ} (_as ℚ) -_ -_ _≃_
-    {{+-inverse}} : AA.Inverse² {A = ℚ} -_ (const ⊤) _+_ 0
+    {{+-inverse}} : AA.Inverse² {A = ℚ} (AA.tc₁ -_) _+_ 0

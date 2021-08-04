@@ -4,7 +4,6 @@ open Eq.≃-Reasoning
 open import net.cruhland.axioms.Integers using (Integers)
 open import net.cruhland.axioms.Operators as Op using (_*_; _⁻¹)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
-import net.cruhland.models.Function
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using (contrapositive)
 
@@ -62,7 +61,7 @@ instance
               q₂↓ * q₁↑
             ∎
 
-  *-inverseᴸ : AA.Inverse AA.handᴸ _⁻¹ (_≄ 0) _*_ 1
+  *-inverseᴸ : AA.Inverse AA.handᴸ _⁻¹ _*_ 1
   *-inverseᴸ = AA.inverse *-invᴸ
     where
       *-invᴸ : {q : ℚ} {{_ : q ≄ 0}} → q ⁻¹ * q ≃ 1
@@ -84,8 +83,8 @@ instance
               1
             ∎
 
-  *-inverseᴿ : AA.Inverse AA.handᴿ _⁻¹ (_≄ 0) _*_ 1
+  *-inverseᴿ : AA.Inverse AA.handᴿ _⁻¹ _*_ 1
   *-inverseᴿ = AA.inverseᴿ-from-inverseᴸ
 
-  *-inverse : AA.Inverse² _⁻¹ (_≄ 0) _*_ 1
+  *-inverse : AA.Inverse² _⁻¹ _*_ 1
   *-inverse = AA.inverse²

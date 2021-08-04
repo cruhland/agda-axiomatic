@@ -3,7 +3,6 @@ open import net.cruhland.axioms.Eq using (_≃_; _≄_)
 open import net.cruhland.axioms.Integers using (Integers)
 open import net.cruhland.axioms.Operators as Op using (_*_; _⁻¹)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
-import net.cruhland.models.Function
 open import net.cruhland.models.Literals
 
 module net.cruhland.axioms.Rationals.ReciprocalDecl
@@ -30,4 +29,4 @@ record Reciprocal
   field
     {{reciprocal}} : Op.SupNegOne ℚ (_≄ 0)
     {{recip-substitutive}} : AA.Substitutive₁ᶜ {A = ℚ} _⁻¹ _≃_ _≃_
-    {{*-inverse}} : AA.Inverse² _⁻¹ (_≄ 0) _*_ 1
+    {{*-inverse}} : AA.Inverse² _⁻¹ _*_ 1

@@ -5,9 +5,7 @@ open ≃-Reasoning
 open import net.cruhland.axioms.Integers using (Integers)
 open import net.cruhland.axioms.Operators as Op using (_+_; _*_; -_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
-open import net.cruhland.models.Function using (const)
 open import net.cruhland.models.Literals as Literals
-open import net.cruhland.models.Logic using (⊤)
 
 module net.cruhland.models.Rationals.Negation
   (PA : PeanoArithmetic) (Z : Integers PA) where
@@ -52,7 +50,7 @@ instance
   neg-compatible-ℤ : AA.Compatible₁ (_as ℚ) -_ -_ _≃_
   neg-compatible-ℤ = AA.compatible₁ {A = ℤ} (≃₀-intro refl)
 
-  +-inverseᴸ : AA.Inverse AA.handᴸ -_ (const ⊤) _+_ 0
+  +-inverseᴸ : AA.Inverse AA.handᴸ (AA.tc₁ -_) _+_ 0
   +-inverseᴸ = AA.inverse +-invᴸ
     where
       +-invᴸ : {p : ℚ} → (- p) + p ≃ 0
@@ -71,8 +69,8 @@ instance
               0
             ∎
 
-  +-inverseᴿ : AA.Inverse AA.handᴿ -_ (const ⊤) _+_ 0
+  +-inverseᴿ : AA.Inverse AA.handᴿ (AA.tc₁ -_) _+_ 0
   +-inverseᴿ = AA.inverseᴿ-from-inverseᴸ {A = ℚ}
 
-  +-inverse² : AA.Inverse² -_ (const ⊤) _+_ 0
+  +-inverse² : AA.Inverse² (AA.tc₁ -_) _+_ 0
   +-inverse² = AA.inverse² {A = ℚ}
