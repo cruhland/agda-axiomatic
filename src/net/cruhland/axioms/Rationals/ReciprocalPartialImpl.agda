@@ -14,7 +14,7 @@ open import net.cruhland.axioms.Rationals.MultiplicationDecl PA Z
   using (Multiplication)
 
 private
-  module RationalProperties
+  module RationalPredefs
       (QB : Base) (QA : Addition QB) (QM : Multiplication QB QA) where
     open Addition QA public
     open Base QB public
@@ -23,7 +23,7 @@ private
 
 record ReciprocalProperties
     (QB : Base) (QA : Addition QB) (QM : Multiplication QB QA) : Set where
-  private open module ℚ = RationalProperties QB QA QM using (ℚ)
+  private open module ℚ = RationalPredefs QB QA QM using (ℚ)
 
   field
     {{reciprocal}} : Op.SupNegOne ℚ (_≄ 0)

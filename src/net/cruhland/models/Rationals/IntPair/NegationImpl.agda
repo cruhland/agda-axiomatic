@@ -10,6 +10,7 @@ open import net.cruhland.models.Literals
 module net.cruhland.models.Rationals.IntPair.NegationImpl
   (PA : PeanoArithmetic) (Z : Integers PA) where
 
+open import net.cruhland.models.Rationals.IntPair.AdditionDefn PA Z using (QA)
 open import net.cruhland.models.Rationals.IntPair.BaseDefn PA Z using (QB)
 
 private module ℤ = Integers Z
@@ -25,8 +26,8 @@ open ℚ using (_//_; ℚ)
 -₀ (q↑ // q↓) = (- q↑) // q↓
 
 instance
-  dashᴸ : Op.Dashᴸ ℚ
-  dashᴸ = Op.dashᴸ -₀_
+  neg-dash : Op.Dashᴸ ℚ
+  neg-dash = Op.dashᴸ -₀_
 
   neg-substitutive : AA.Substitutive₁ -_ _≃_ _≃_
   neg-substitutive = AA.substitutive₁ neg-subst
@@ -102,3 +103,13 @@ instance
 
   +-inverse : AA.Inverse² (AA.tc₁ -_) _+_ 0
   +-inverse = AA.inverse² {A = ℚ}
+
+-- Export everything not defined here from the partial implementation
+private
+  open import net.cruhland.axioms.Rationals.NegationPartialImpl PA Z
+    using (NegationProperties)
+
+  negationProperties : NegationProperties QB QA
+  negationProperties = record {}
+
+open NegationProperties negationProperties public hiding (neg-dash)

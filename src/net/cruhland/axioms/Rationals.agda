@@ -26,3 +26,8 @@ record Rationals : Set₁ where
   open Multiplication QM public
   open Negation QN public
   open Reciprocal QR public
+
+-- Confirm that all partial impls typecheck
+module _ where
+  import net.cruhland.axioms.Rationals.NegationPartialImpl
+  import net.cruhland.axioms.Rationals.ReciprocalPartialImpl
