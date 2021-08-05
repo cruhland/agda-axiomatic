@@ -10,7 +10,10 @@ open import net.cruhland.models.Logic using (contrapositive)
 module net.cruhland.models.Rationals.IntPair.ReciprocalImpl
   (PA : PeanoArithmetic) (Z : Integers PA) where
 
+open import net.cruhland.models.Rationals.IntPair.AdditionDefn PA Z using (QA)
 open import net.cruhland.models.Rationals.IntPair.BaseDefn PA Z using (QB)
+open import net.cruhland.models.Rationals.IntPair.MultiplicationDefn PA Z
+  using (QM)
 
 private module ℚ where
   open import net.cruhland.models.Rationals.IntPair.AdditionImpl PA Z public
@@ -25,8 +28,8 @@ _⁻¹₀ : (q : ℚ) {{_ : q ≄ 0}} → ℚ
 _⁻¹₀ (q↑ // q↓) {{q≄0}} = (q↓ // q↑) {{contrapositive ℚ.q≃0-from-q↑≃0 q≄0}}
 
 instance
-  supNegOne : Op.SupNegOne ℚ (_≄ 0)
-  supNegOne = Op.supNegOne _⁻¹₀
+  reciprocal : Op.SupNegOne ℚ (_≄ 0)
+  reciprocal = Op.supNegOne _⁻¹₀
 
   recip-substitutive : AA.Substitutive₁ᶜ {A = ℚ} _⁻¹ _≃_ _≃_
   recip-substitutive = AA.substitutive₁ recip-subst
@@ -88,3 +91,13 @@ instance
 
   *-inverse : AA.Inverse² _⁻¹ _*_ 1
   *-inverse = AA.inverse²
+
+-- Export everything not defined here from the partial implementation
+private
+  open import net.cruhland.axioms.Rationals.ReciprocalPartialImpl PA Z
+    using (ReciprocalProperties)
+
+  reciprocalProperties : ReciprocalProperties QB QA QM
+  reciprocalProperties = record {}
+
+open ReciprocalProperties reciprocalProperties public hiding (reciprocal)
