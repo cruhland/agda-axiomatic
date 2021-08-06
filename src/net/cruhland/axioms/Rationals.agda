@@ -11,6 +11,7 @@ open import net.cruhland.axioms.Rationals.MultiplicationDecl PA Z
   using (Multiplication)
 open import net.cruhland.axioms.Rationals.NegationDecl PA Z using (Negation)
 open import net.cruhland.axioms.Rationals.ReciprocalDecl PA Z using (Reciprocal)
+open import net.cruhland.axioms.Rationals.SignDecl PA Z using (Sign)
 
 record Rationals : Set₁ where
   field
@@ -19,6 +20,7 @@ record Rationals : Set₁ where
     QN : Negation QB QA
     QM : Multiplication QB QA
     QR : Reciprocal QB QA QM
+    QS : Sign QB
 
   open Addition QA public
   open Base QB public
@@ -26,6 +28,7 @@ record Rationals : Set₁ where
   open Multiplication QM public
   open Negation QN public
   open Reciprocal QR public
+  open Sign QS public
 
 -- Confirm that all partial impls typecheck
 module _ where

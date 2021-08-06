@@ -1,8 +1,9 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
+open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Integers using (Integers)
-open import net.cruhland.axioms.Operators as Op using (_*_; _⁻¹)
+open import net.cruhland.axioms.Operators as Op using (_*_; _/_; _⁻¹)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using (contrapositive)
@@ -15,6 +16,7 @@ open import net.cruhland.models.Rationals.IntPair.BaseDefn PA Z using (QB)
 open import net.cruhland.models.Rationals.IntPair.MultiplicationDefn PA Z
   using (QM)
 
+private module ℤ = Integers Z
 private module ℚ where
   open import net.cruhland.models.Rationals.IntPair.AdditionImpl PA Z public
   open import net.cruhland.models.Rationals.IntPair.BaseImpl PA Z public
@@ -22,6 +24,7 @@ private module ℚ where
   open import net.cruhland.models.Rationals.IntPair.MultiplicationImpl PA Z
     public
 
+open ℤ using (ℤ)
 open ℚ using (_//_; ℚ)
 
 _⁻¹₀ : (q : ℚ) {{_ : q ≄ 0}} → ℚ
@@ -101,3 +104,26 @@ private
   reciprocalProperties = record {}
 
 open ReciprocalProperties reciprocalProperties public hiding (reciprocal)
+
+a:ℚ/b:ℚ≃a//b :
+  {a b : ℤ} {{b≄0 : b ≄ 0}} →
+  let instance b:ℚ≄0:ℚ = AA.subst₁ b≄0 in (a as ℚ) / (b as ℚ) ≃ a // b
+a:ℚ/b:ℚ≃a//b {a} {b} {{b≄0}} =
+  let instance
+        b:ℚ≄0:ℚ = AA.subst₁ b≄0
+        1*b≄0 = AA.nonzero-prod {{a≄0 = ℤ.1≄0}} {{b≄0}}
+   in begin
+        (a as ℚ) / (b as ℚ)
+      ≃⟨⟩
+        (a // 1) / (b // 1)
+      ≃⟨⟩
+        (a // 1) * (b // 1) ⁻¹
+      ≃⟨ ℚ.≃₀-intro Eq.refl ⟩
+        (a // 1) * (1 // b)
+      ≃⟨ ℚ.≃₀-intro Eq.refl ⟩
+        (a * 1) // (1 * b)
+      ≃⟨ AA.subst₂ AA.ident ⟩
+        a // (1 * b)
+      ≃⟨ AA.subst₂ AA.ident ⟩
+        a // b
+      ∎

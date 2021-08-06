@@ -11,6 +11,7 @@ open import net.cruhland.models.Rationals.IntPair.MultiplicationDefn PA Z
   using (QM)
 open import net.cruhland.models.Rationals.IntPair.NegationDefn PA Z using (QN)
 open import net.cruhland.models.Rationals.IntPair.ReciprocalDefn PA Z using (QR)
+open import net.cruhland.models.Rationals.IntPair.SignDefn PA Z using (QS)
 
 rationals : Rationals
-rationals = record { QB = QB ; QA = QA ; QN = QN ; QM = QM ; QR = QR }
+rationals = record { QB = QB ; QA = QA ; QN = QN ; QM = QM ; QR = QR ; QS = QS }
