@@ -1,4 +1,5 @@
 open import net.cruhland.axioms.Cast using (_As_; _as_)
+open import net.cruhland.axioms.Operators as Op using (-_)
 open import net.cruhland.models.Function using (const)
 open import net.cruhland.models.Logic using (⊤)
 
@@ -40,3 +41,8 @@ open FromNegLiteral_~_ {{...}} public using (fromNegLiteral)
 
 FromNegLiteral : Set → Set
 FromNegLiteral A = FromNegLiteral A ~ const ⊤
+
+neg-literal-via-nat-literal :
+  {A : Set} {C : Nat → Set} {{_ : FromNatLiteral A ~ C}} {{_ : Op.Dashᴸ A}} →
+  FromNegLiteral A ~ C
+neg-literal-via-nat-literal = FromNegLiteral-intro λ n → - fromNatLiteral n

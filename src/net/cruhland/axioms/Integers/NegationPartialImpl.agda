@@ -27,22 +27,6 @@ module _ (ZB : Base) (ZA : Addition ZB) where
       {{neg-substitutive}} : AA.Substitutive₁ -_ _≃_ _≃_
       {{neg-inverse}} : AA.Inverse² {A = ℤ} (AA.tc₁ -_) _+_ 0
 
-    neg-involutive : {a : ℤ} → - (- a) ≃ a
-    neg-involutive {a} =
-      begin
-        - (- a)
-      ≃˘⟨ AA.ident ⟩
-        - (- a) + 0
-      ≃˘⟨ AA.subst₂ AA.inv ⟩
-        - (- a) + ((- a) + a)
-      ≃˘⟨ AA.assoc ⟩
-        (- (- a) + (- a)) + a
-      ≃⟨ AA.subst₂ AA.inv ⟩
-        0 + a
-      ≃⟨ AA.ident ⟩
-        a
-      ∎
-
     instance
       neg-injective : AA.Injective -_ _≃_ _≃_
       neg-injective = AA.injective neg-inject
@@ -51,20 +35,10 @@ module _ (ZB : Base) (ZA : Addition ZB) where
           neg-inject {a₁} {a₂} -a₁≃-a₂ =
             begin
               a₁
-            ≃˘⟨ neg-involutive ⟩
+            ≃˘⟨ AA.inv-involutive ⟩
               - (- a₁)
             ≃⟨ AA.subst₁ -a₁≃-a₂ ⟩
               - (- a₂)
-            ≃⟨ neg-involutive ⟩
+            ≃⟨ AA.inv-involutive ⟩
               a₂
             ∎
-
-    neg-zero : - 0 ≃ 0
-    neg-zero =
-      begin
-        - 0
-      ≃˘⟨ AA.ident ⟩
-        - 0 + 0
-      ≃⟨ AA.inv ⟩
-        0
-      ∎

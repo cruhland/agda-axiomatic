@@ -96,6 +96,6 @@ private
   subtractionProperties = record { sub-defn = sub-defn }
 
 open NegationProperties negationProperties public
-  hiding (neg-dash; neg-inverse; neg-involutive; neg-substitutive)
+  hiding (neg-dash; neg-inverse; neg-substitutive)
 open SubtractionProperties subtractionProperties public
   hiding (neg-dash; neg-inverse; neg-substitutive; sub-dash; sub-defn)

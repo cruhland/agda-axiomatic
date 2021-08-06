@@ -125,7 +125,7 @@ module _
                   ∎
              in AA.subst₁ b≃ab b≃±1
           *-pres-≃±1 {a} {b} (ℤ.≃-1-intro a≃-1) b≃±1 =
-            let -[-b]≃±1 = AA.subst₁ (Eq.sym ℤ.neg-involutive) b≃±1
+            let -[-b]≃±1 = AA.subst₁ (Eq.sym AA.inv-involutive) b≃±1
                 -b≃±1 = ℤ.≃±1-absorbs-neg -[-b]≃±1
                 -b≃ab =
                   begin
@@ -284,7 +284,7 @@ module _
         - (a + (- b))
       ≃⟨ AA.compat₂ ⟩
         (- a) + (- (- b))
-      ≃⟨ AA.subst₂ ℤ.neg-involutive ⟩
+      ≃⟨ AA.subst₂ AA.inv-involutive ⟩
         (- a) + b
       ≃⟨ AA.comm ⟩
         b + (- a)

@@ -69,13 +69,13 @@ nonzero-from-≃neg[posℕ] {a} (ℤ.≃posℕ-intro {n} pos[n] a≃-n) =
     let n:ℤ≃0:ℤ =
           begin
             (n as ℤ)
-          ≃˘⟨ ℤ.neg-involutive ⟩
+          ≃˘⟨ AA.inv-involutive ⟩
             - (- (n as ℤ))
           ≃˘⟨ AA.subst₁ a≃-n ⟩
             - a
           ≃⟨ AA.subst₁ a≃0 ⟩
             - 0
-          ≃⟨ ℤ.neg-zero ⟩
+          ≃⟨ AA.inv-ident ⟩
             0
           ≃⟨⟩
             (0 as ℤ)
@@ -123,7 +123,7 @@ neg-Negative {a} (ℤ.≃posℕ-intro {n} pos[n] a≃-n) =
           - a
         ≃⟨ AA.subst₁ a≃-n ⟩
           - (- (n as ℤ))
-        ≃⟨ ℤ.neg-involutive ⟩
+        ≃⟨ AA.inv-involutive ⟩
           (n as ℤ)
         ∎
    in ℤ.≃posℕ-intro pos[n] -a≃n

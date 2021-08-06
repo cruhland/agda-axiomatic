@@ -54,7 +54,7 @@ record SignProperties : Set₁ where
     let a≃-1 =
           begin
             a
-          ≃˘⟨ ℤ.neg-involutive ⟩
+          ≃˘⟨ AA.inv-involutive ⟩
             - (- a)
           ≃⟨ AA.subst₁ -a≃1 ⟩
             - 1

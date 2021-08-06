@@ -23,4 +23,4 @@ instance
      in s0≃0 ↯ ℕ.step≄zero
 
   neg-literal : {{_ : Op.Dashᴸ ℤ}} → FromNegLiteral ℤ
-  neg-literal = FromNegLiteral-intro λ n → - fromNatLiteral n
+  neg-literal = neg-literal-via-nat-literal

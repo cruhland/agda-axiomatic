@@ -18,3 +18,4 @@ record Sign (QB : Base) : Set₁ where
 
   field
     {{positivity}} : S.Positivity 0
+    {{negativity}} : S.Negativity 0

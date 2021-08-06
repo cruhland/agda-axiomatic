@@ -210,6 +210,37 @@ idᴿ→eq {A} {_⊙_} {a} {b} {d} {e} ad≃b d≃e =
     b
   ∎
 
+inv-involutive :
+  {A : Set} {_⊙_ : A → A → A} {f : A → A} {x e : A} {{_ : Eq A}}
+  {{_ : Substitutive² _⊙_ _≃_ _≃_}} {{_ : Associative _⊙_}}
+  {{_ : Identity² _⊙_ e}} {{_ : Inverse² (tc₁ f) _⊙_ e}} → f (f x) ≃ x
+inv-involutive {A} {_⊙_} {f} {x} {e} =
+  begin
+    f (f x)
+  ≃˘⟨ ident ⟩
+    f (f x) ⊙ e
+  ≃˘⟨ subst₂ inv ⟩
+    f (f x) ⊙ (f x ⊙ x)
+  ≃˘⟨ assoc ⟩
+    (f (f x) ⊙ f x) ⊙ x
+  ≃⟨ subst₂ inv ⟩
+    e ⊙ x
+  ≃⟨ ident ⟩
+    x
+  ∎
+
+inv-ident :
+  {A : Set} {_⊙_ : A → A → A} {f : A → A} {e : A} {{_ : Eq A}}
+  {{_ : Identity² _⊙_ e}} {{_ : Inverse² (tc₁ f) _⊙_ e}}→ f e ≃ e
+inv-ident {A} {_⊙_} {f} {e} =
+  begin
+    f e
+  ≃˘⟨ ident ⟩
+    f e ⊙ e
+  ≃⟨ inv ⟩
+    e
+  ∎
+
 assoc-four :
   {A : Set} {_⊙_ _⊕_ : A → A → A} {{_ : Eq A}} {{_ : Associative _⊙_}}
   {{_ : Substitutive² _⊕_ _≃_ _≃_}} → ∀ {a₁ a₂ a₃ b₁ b₂ b₃ c₁ c₂ c₃ d₁ d₂ d₃} →

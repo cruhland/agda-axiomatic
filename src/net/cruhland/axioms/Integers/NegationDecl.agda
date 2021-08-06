@@ -24,9 +24,6 @@ record Negation (ZB : Base) (ZA : Addition ZB) : Set₁ where
     {{neg-injective}} : AA.Injective -_ _≃_ _≃_
     {{neg-inverse}} : AA.Inverse² {A = ℤ} (AA.tc₁ λ a → - a) _+_ 0
 
-    neg-involutive : {a : ℤ} → - (- a) ≃ a
-    neg-zero : - 0 ≃ 0
-
     {{sub-dash}} : Op.Dash₂ ℤ
     sub-defn : {a b : ℤ} → a - b ≃ a + (- b)
     {{sub-substitutive}} : AA.Substitutive² _-_ _≃_ _≃_
