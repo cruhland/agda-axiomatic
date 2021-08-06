@@ -53,18 +53,18 @@ open SupNegOne {{...}} public
 
 {-# DISPLAY SupNegOne._⁻¹ _ a = a ⁻¹ #-}
 
-record Slash (A : Set) (C : A → Set) : Set where
+record Slash (A : Set) (C : A → Set) (B : Set) : Set where
   constructor slash
   infixl 7 _/_
   field
-    _/_ : (x y : A) {{_ : C y}} → A
+    _/_ : (x y : A) {{_ : C y}} → B
 
 open Slash {{...}} public
 
 {-# DISPLAY Slash._/_ _ x y = x / y #-}
 
 division :
-  {A : Set} {C : A → Set} {{_ : Star A}} {{_ : SupNegOne A C}} → Slash A C
+  {A : Set} {C : A → Set} {{_ : Star A}} {{_ : SupNegOne A C}} → Slash A C A
 division = slash λ x y → x * y ⁻¹
 
 record Caret (A : Set) : Set where

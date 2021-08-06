@@ -34,3 +34,4 @@ record Rationals : Set₁ where
 module _ where
   import net.cruhland.axioms.Rationals.NegationPartialImpl
   import net.cruhland.axioms.Rationals.ReciprocalPartialImpl
+  import net.cruhland.axioms.Rationals.SignDefaultImpl

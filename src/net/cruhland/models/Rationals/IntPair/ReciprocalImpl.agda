@@ -18,7 +18,6 @@ open import net.cruhland.models.Rationals.IntPair.MultiplicationDefn PA Z
 
 private module ℤ = Integers Z
 private module ℚ where
-  open import net.cruhland.models.Rationals.IntPair.AdditionImpl PA Z public
   open import net.cruhland.models.Rationals.IntPair.BaseImpl PA Z public
   open import net.cruhland.axioms.Rationals.LiteralImpl PA Z QB public
   open import net.cruhland.models.Rationals.IntPair.MultiplicationImpl PA Z
@@ -105,14 +104,14 @@ private
 
 open ReciprocalProperties reciprocalProperties public hiding (reciprocal)
 
-a:ℚ/b:ℚ≃a//b :
-  {a b : ℤ} {{b≄0 : b ≄ 0}} →
-  let instance b:ℚ≄0:ℚ = AA.subst₁ b≄0 in (a as ℚ) / (b as ℚ) ≃ a // b
-a:ℚ/b:ℚ≃a//b {a} {b} {{b≄0}} =
+a/b≃a//b : {a b : ℤ} {{b≄0 : b ≄ 0}} → a / b ≃ a // b
+a/b≃a//b {a} {b} {{b≄0}} =
   let instance
         b:ℚ≄0:ℚ = AA.subst₁ b≄0
         1*b≄0 = AA.nonzero-prod {{a≄0 = ℤ.1≄0}} {{b≄0}}
    in begin
+        a / b
+      ≃⟨⟩
         (a as ℚ) / (b as ℚ)
       ≃⟨⟩
         (a // 1) / (b // 1)
@@ -127,3 +126,15 @@ a:ℚ/b:ℚ≃a//b {a} {b} {{b≄0}} =
       ≃⟨ AA.subst₂ AA.ident ⟩
         a // b
       ∎
+
+a≃0-from-a/b≃0 : {a b : ℤ} {{_ : b ≄ 0}} → a / b ≃ 0 → a ≃ 0
+a≃0-from-a/b≃0 {a} {b} a/b≃0 =
+  let a//b≃0 =
+        begin
+          a // b
+        ≃˘⟨ a/b≃a//b ⟩
+          a / b
+        ≃⟨ a/b≃0 ⟩
+          0
+        ∎
+   in ℚ.q↑≃0-from-q≃0 a//b≃0

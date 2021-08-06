@@ -1,12 +1,15 @@
+import net.cruhland.axioms.AbstractAlgebra as AA
+open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq using (_≄_)
 open import net.cruhland.axioms.Integers using (Integers)
-import net.cruhland.axioms.Operators as Op
+open import net.cruhland.axioms.Operators as Op using (_/_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.models.Literals
 
 module net.cruhland.axioms.Rationals.ReciprocalPartialImpl
   (PA : PeanoArithmetic) (Z : Integers PA) where
 
+private open module ℤ = Integers Z using (ℤ)
 open import net.cruhland.axioms.Rationals.AdditionDecl PA Z using (Addition)
 open import net.cruhland.axioms.Rationals.BaseDecl PA Z using (Base)
 import net.cruhland.axioms.Rationals.LiteralImpl PA Z as LiteralImpl
@@ -29,5 +32,12 @@ record ReciprocalProperties
     {{reciprocal}} : Op.SupNegOne ℚ (_≄ 0)
 
   instance
-    slash : Op.Slash ℚ (_≄ 0)
-    slash = Op.division
+    slash-ℚ : Op.Slash ℚ (_≄ 0) ℚ
+    slash-ℚ = Op.division
+
+  _/ᶻ_ : (a b : ℤ) {{_ : b ≄ 0}} → ℚ
+  (a /ᶻ b) {{b≄0}} = let instance b:ℚ≃0:ℚ = AA.subst₁ b≄0 in (a as ℚ) / (b as ℚ)
+
+  instance
+    slash-ℤ : Op.Slash ℤ (_≄ 0) ℚ
+    slash-ℤ = Op.slash _/ᶻ_
