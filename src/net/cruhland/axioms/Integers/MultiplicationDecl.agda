@@ -63,7 +63,7 @@ record Multiplication
     {{*-identity}} : AA.Identity² {A = ℤ} _*_ 1
     {{*-associative}} : AA.Associative {A = ℤ} _*_
     {{*-distributive}} : AA.Distributive² {A = ℤ} _*_ _+_
-    {{*-comm-with-neg}} : AA.FnOpCommutative² -_ _*_
+    {{*-comm-with-neg}} : AA.FnOpCommutative² -_ -_ (AA.tc₂ _*_)
     {{*-absorptive}} : AA.Absorptive² _*_ 0
     {{*-cancellative}} : AA.Cancellative² {A = ℤ} _*_ _≃_ _≃_ (_≄ 0)
 

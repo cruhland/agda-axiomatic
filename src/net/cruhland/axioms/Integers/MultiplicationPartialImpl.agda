@@ -50,7 +50,7 @@ module _
       {{*-identity}} : AA.Identity² {A = ℤ} _*_ 1
 
       {{*-distributive}} : AA.Distributive² {A = ℤ} _*_ _+_
-      {{*-comm-with-neg}} : AA.FnOpCommutative² -_ _*_
+      {{*-comm-with-neg}} : AA.FnOpCommutative² -_ -_ (AA.tc₂ _*_)
 
     neg-mult : {a : ℤ} → -1 * a ≃ - a
     neg-mult {a} =
@@ -58,7 +58,7 @@ module _
         -1 * a
       ≃⟨⟩
         (- 1) * a
-      ≃˘⟨ AA.fnOpComm ⟩
+      ≃˘⟨ AA.fnOpCommᴸ ⟩
         - (1 * a)
       ≃⟨ AA.subst₁ AA.ident ⟩
         - a
@@ -76,7 +76,7 @@ module _
               c * (a + (- b))
             ≃⟨ AA.distrib ⟩
               c * a + c * (- b)
-            ≃˘⟨ AA.subst₂ AA.fnOpComm ⟩
+            ≃˘⟨ AA.subst₂ AA.fnOpCommᴿ ⟩
               c * a + (- (c * b))
             ≃˘⟨ ℤ.sub-defn ⟩
               c * a - c * b

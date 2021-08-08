@@ -107,7 +107,7 @@ instance
             s[n+d]≃sm =
               begin
                 step (n + d)
-              ≃⟨ AA.fnOpComm ⟩
+              ≃⟨ AA.fnOpCommᴸ ⟩
                 step n + d
               ≃⟨ sn+d≃sm ⟩
                 step m
@@ -201,7 +201,7 @@ _≤?_ n m = ℕ.ind P P0 Ps n m
               s[k+d]≃0 =
                 begin
                   step (k + d)
-                ≃⟨ AA.fnOpComm ⟩
+                ≃⟨ AA.fnOpCommᴸ ⟩
                   step k + d
                 ≃⟨ sk+d≃y ⟩
                   y

@@ -30,7 +30,7 @@ diff (≤-step n≤m) = step (diff n≤m)
 ≤-intro-diff : {n m d : ℕ} → n + d ≃ m → n ≤ m
 ≤-intro-diff {n} {m} {zero} n+0≃m with Eq.trans (Eq.sym AA.identᴿ) n+0≃m
 ... | refl = ≤-refl
-≤-intro-diff {n} {m} {step d} n+sd≃m with Eq.trans AA.fnOpComm n+sd≃m
+≤-intro-diff {n} {m} {step d} n+sd≃m with Eq.trans AA.fnOpCommᴿ n+sd≃m
 ≤-intro-diff {n} {step m} {step d} _ | s[n+d]≃sm =
   ≤-step (≤-intro-diff (AA.inject s[n+d]≃sm))
 
@@ -40,7 +40,7 @@ diff (≤-step n≤m) = step (diff n≤m)
 ≤-elim-diff {n} (≤-step {m} n≤m) =
   begin
     n + step (diff n≤m)
-  ≃˘⟨ AA.fnOpComm ⟩
+  ≃˘⟨ AA.fnOpCommᴿ ⟩
     step (n + diff n≤m)
   ≃⟨ AA.subst₁ (≤-elim-diff n≤m) ⟩
     step m
@@ -64,7 +64,7 @@ instance
             sn+d≃sm =
               begin
                 step n + d
-              ≃˘⟨ AA.fnOpComm {a = n} ⟩
+              ≃˘⟨ AA.fnOpCommᴸ {a = n} ⟩
                 step (n + d)
               ≃⟨ AA.subst₁ n+d≃m ⟩
                 step m

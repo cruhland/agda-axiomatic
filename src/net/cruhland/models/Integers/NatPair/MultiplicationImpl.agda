@@ -251,7 +251,7 @@ instance
         ∎
 
   private
-    *-comm-with-negᴸ : AA.FnOpCommutative AA.handᴸ -_ _*_
+    *-comm-with-negᴸ : AA.FnOpCommutative AA.handᴸ -_ -_ (AA.tc₂ _*_)
     *-comm-with-negᴸ = AA.fnOpCommutative *-negᴸ
       where
         *-negᴸ : {a b : ℤ} → - (a * b) ≃ - a * b
@@ -276,10 +276,10 @@ instance
             - a * b
           ∎
 
-    *-comm-with-negᴿ : AA.FnOpCommutative AA.handᴿ -_ _*_
+    *-comm-with-negᴿ : AA.FnOpCommutative AA.handᴿ -_ -_ (AA.tc₂ _*_)
     *-comm-with-negᴿ = AA.fnOpCommutativeᴿ-from-fnOpCommutativeᴸ
 
-  *-comm-with-neg : AA.FnOpCommutative² -_ _*_
+  *-comm-with-neg : AA.FnOpCommutative² -_ -_ (AA.tc₂ _*_)
   *-comm-with-neg = AA.fnOpCommutative²
 
 -- Include all proofs from the partial impl

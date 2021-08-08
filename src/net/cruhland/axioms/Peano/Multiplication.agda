@@ -199,7 +199,7 @@ record Multiplication
             Ps {k} a[b+k]≃ab+ak =
               begin
                 a * (b + step k)
-              ≃˘⟨ AA.subst₂ AA.fnOpComm ⟩
+              ≃˘⟨ AA.subst₂ AA.fnOpCommᴿ ⟩
                 a * step (b + k)
               ≃⟨ *-stepᴿ ⟩
                 a * (b + k) + a

@@ -6,6 +6,7 @@ module net.cruhland.axioms.Rationals
 
 open import net.cruhland.axioms.Rationals.AdditionDecl PA Z using (Addition)
 open import net.cruhland.axioms.Rationals.BaseDecl PA Z using (Base)
+open import net.cruhland.axioms.Rationals.DivisionDecl PA Z using (Division)
 import net.cruhland.axioms.Rationals.LiteralImpl PA Z as LiteralImpl
 open import net.cruhland.axioms.Rationals.MultiplicationDecl PA Z
   using (Multiplication)
@@ -17,13 +18,15 @@ record Rationals : Set₁ where
   field
     QB : Base
     QA : Addition QB
-    QN : Negation QB QA
-    QM : Multiplication QB QA
-    QR : Reciprocal QB QA QM
     QS : Sign QB
+    QN : Negation QB QA
+    QD : Division QB QA QN
+    QM : Multiplication QB QA QN
+    QR : Reciprocal QB QA QN QM
 
   open Addition QA public
   open Base QB public
+  open Division QD public
   open LiteralImpl QB public
   open Multiplication QM public
   open Negation QN public
@@ -33,5 +36,6 @@ record Rationals : Set₁ where
 -- Confirm that all partial impls typecheck
 module _ where
   import net.cruhland.axioms.Rationals.NegationPartialImpl
-  import net.cruhland.axioms.Rationals.ReciprocalPartialImpl
+  import net.cruhland.axioms.Rationals.DivisionPartialImplBase
+  import net.cruhland.axioms.Rationals.DivisionPartialImplProperties
   import net.cruhland.axioms.Rationals.SignDefaultImpl

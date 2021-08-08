@@ -62,7 +62,7 @@ instance
   +-identityᴸ : AA.Identity AA.handᴸ _+_ 0
   +-identityᴸ = AA.identity Eq.refl
 
-  +-fnOpCommutative-stepᴸ : AA.FnOpCommutative AA.handᴸ step _+_
+  +-fnOpCommutative-stepᴸ : AA.FnOpCommutative AA.handᴸ step step (AA.tc₂ _+_)
   +-fnOpCommutative-stepᴸ = AA.fnOpCommutative Eq.refl
 
 addition : Addition base sign

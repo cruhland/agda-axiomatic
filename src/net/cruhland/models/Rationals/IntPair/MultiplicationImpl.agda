@@ -3,7 +3,7 @@ open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq as Eq using (_≃_)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Integers using (Integers)
-open import net.cruhland.axioms.Operators as Op using (_+_; _*_)
+open import net.cruhland.axioms.Operators as Op using (_+_; -_; _*_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.models.Literals
 
@@ -17,6 +17,7 @@ private module ℚ where
   open import net.cruhland.axioms.Rationals.LiteralImpl PA Z QB public
   open import net.cruhland.models.Rationals.IntPair.AdditionImpl PA Z public
   open import net.cruhland.models.Rationals.IntPair.BaseImpl PA Z public
+  open import net.cruhland.models.Rationals.IntPair.NegationImpl PA Z public
 
 open ℤ using (ℤ)
 open ℚ using (_//_; ℚ)
@@ -252,3 +253,44 @@ instance
 
   *-distributive : AA.Distributive² _*_ _+_
   *-distributive = AA.distributive² {A = ℚ}
+
+  *-neg-ident : {q : ℚ} → -1 * q ≃ - q
+  *-neg-ident q@{(q↑ // q↓) {{q↓≄0}}} =
+    let instance
+          1*q↓≄0 = AA.nonzero-prod {{a≄0 = ℤ.1≄0}} {{q↓≄0}}
+     in begin
+          -1 * q
+        ≃⟨⟩
+          (-1 // 1) * (q↑ // q↓)
+        ≃⟨⟩
+          (-1 * q↑) // (1 * q↓)
+        ≃⟨ AA.subst₂ ℤ.neg-mult ⟩
+          (- q↑) // (1 * q↓)
+        ≃⟨ AA.subst₂ AA.ident ⟩
+          (- q↑) // q↓
+        ≃⟨⟩
+          - (q↑ // q↓)
+        ≃⟨⟩
+          - q
+        ∎
+
+  *-comm-with-negᴸ : AA.FnOpCommutative AA.handᴸ -_ -_ (AA.tc₂ _*_)
+  *-comm-with-negᴸ = AA.fnOpCommutative *-negᴸ
+    where
+      *-negᴸ : {p q : ℚ} → - (p * q) ≃ (- p) * q
+      *-negᴸ {p} {q} =
+        begin
+          - (p * q)
+        ≃˘⟨ *-neg-ident ⟩
+          -1 * (p * q)
+        ≃˘⟨ AA.assoc ⟩
+          (-1 * p) * q
+        ≃⟨ AA.subst₂ *-neg-ident ⟩
+          (- p) * q
+        ∎
+
+  *-comm-with-negᴿ : AA.FnOpCommutative AA.handᴿ -_ -_ (AA.tc₂ _*_)
+  *-comm-with-negᴿ = AA.fnOpCommutativeᴿ-from-fnOpCommutativeᴸ {A = ℚ}
+
+  *-comm-with-neg : AA.FnOpCommutative² -_ -_ (AA.tc₂ _*_)
+  *-comm-with-neg = AA.fnOpCommutative² {A = ℚ}

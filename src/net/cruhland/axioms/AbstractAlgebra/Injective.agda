@@ -20,7 +20,7 @@ open Injective {{...}} public using (inject)
 instance
   ≄-substitutive :
     {A B : Set} {f : A → B} {{_ : Eq A}} {{_ : Eq B}}
-    {{_ : Injective f _≃_ _≃_}} → AA.Substitutive₁ f _≄_ _≄_
+    {{r : Injective f _≃_ _≃_}} → AA.Substitutive₁ f _≄_ _≄_
   ≄-substitutive = AA.substitutive₁ (contrapositive inject)
 
 CancellativePropertyᶜ :

@@ -45,7 +45,7 @@ instance
             sn+d≃sm =
               begin
                 step n + d
-              ≃˘⟨ AA.fnOpComm ⟩
+              ≃˘⟨ AA.fnOpCommᴸ ⟩
                 step (n + d)
               ≃⟨ AA.subst₁ n+d≃m ⟩
                 step m
@@ -61,7 +61,7 @@ instance
     n+sd≃sm =
       begin
         n + step (diff n≤m)
-      ≃˘⟨ AA.fnOpComm ⟩
+      ≃˘⟨ AA.fnOpCommᴿ ⟩
         step (n + diff n≤m)
       ≃⟨ AA.subst₁ (≤-elim-diff n≤m) ⟩
         step m

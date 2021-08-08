@@ -97,7 +97,8 @@ module _ {β} {A : Set} {B : Set β} {_⊙_ : A → A → B} {{_ : Eq B}} where
 fnOpCommutativeᴿ-from-fnOpCommutativeᴸ :
   {A : Set} {f : A → A} {_⊙_ : A → A → A} {{_ : Eq A}}
   {{_ : Substitutive₁ f _≃_ _≃_}} {{_ : AA.Commutative _⊙_}}
-  {{_ : AA.FnOpCommutative AA.handᴸ f _⊙_}} → AA.FnOpCommutative AA.handᴿ f _⊙_
+  {{_ : AA.FnOpCommutative AA.handᴸ f f (AA.tc₂ _⊙_)}} →
+  AA.FnOpCommutative AA.handᴿ f f (AA.tc₂ _⊙_)
 fnOpCommutativeᴿ-from-fnOpCommutativeᴸ {A} {f} {_⊙_} = AA.fnOpCommutative commᴿ₀
   where
     commᴿ₀ : ∀ {a b} → f (a ⊙ b) ≃ a ⊙ f b
@@ -106,7 +107,7 @@ fnOpCommutativeᴿ-from-fnOpCommutativeᴸ {A} {f} {_⊙_} = AA.fnOpCommutative 
         f (a ⊙ b)
       ≃⟨ subst₁ AA.comm ⟩
         f (b ⊙ a)
-      ≃⟨ AA.fnOpComm ⟩
+      ≃⟨ AA.fnOpCommᴸ ⟩
         f b ⊙ a
       ≃⟨ AA.comm ⟩
         a ⊙ f b

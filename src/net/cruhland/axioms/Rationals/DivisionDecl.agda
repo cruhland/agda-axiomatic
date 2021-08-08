@@ -1,12 +1,11 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
-open import net.cruhland.axioms.Cast using (_as_)
-open import net.cruhland.axioms.Eq using (_≃_)
+open import net.cruhland.axioms.Eq using (_≃_; _≄_)
 open import net.cruhland.axioms.Integers using (Integers)
-open import net.cruhland.axioms.Operators as Op using (_+_; -_; _*_)
+open import net.cruhland.axioms.Operators as Op using (-_; _/_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.models.Literals
 
-module net.cruhland.axioms.Rationals.MultiplicationDecl
+module net.cruhland.axioms.Rationals.DivisionDecl
   (PA : PeanoArithmetic) (Z : Integers PA) where
 
 private open module ℤ = Integers Z using (ℤ)
@@ -23,19 +22,16 @@ private
     open LiteralImpl QB public
     open Negation QN public
 
-record Multiplication
-    (QB : Base) (QA : Addition QB) (QN : Negation QB QA) : Set where
+record Division (QB : Base) (QA : Addition QB) (QN : Negation QB QA) : Set where
   private open module ℚ = RationalPredefs QB QA QN using (ℚ)
 
   field
-    {{star}} : Op.Star ℚ
-    {{*-substitutive}} : AA.Substitutive² {A = ℚ} _*_ _≃_ _≃_
-    {{*-commutative}} : AA.Commutative {A = ℚ} _*_
-    {{*-associative}} : AA.Associative {A = ℚ} _*_
-    {{*-identity}} : AA.Identity² {A = ℚ} _*_ 1
+    {{div-ℚ}} : Op.Slash ℚ (_≄ 0) ℚ
+    {{div-ℚ-substitutive}} : AA.Substitutive²ᶜ {A = ℚ} _/_ _≃_ _≃_
+    {{div-ℚ-comm-with-neg}} : AA.FnOpCommutative² -_ -_ _/_
 
-    {{*-distributive}} : AA.Distributive² {A = ℚ} _*_ _+_
-    {{*-compatible-ℤ}} : AA.Compatible₂ {A = ℤ} (_as ℚ) _*_ _*_ _≃_
+    {{div-ℤ}} : Op.Slash ℤ (_≄ 0) ℚ
+    {{div-ℤ-substitutive}} : AA.Substitutive²ᶜ {A = ℤ} _/_ _≃_ _≃_
+    {{div-ℤ-comm-with-neg}} : AA.FnOpCommutative² {B = ℤ} -_ -_ _/_
 
-    *-neg-ident : {q : ℚ} → -1 * q ≃ - q
-    {{*-comm-with-neg}} : AA.FnOpCommutative² {A = ℚ} -_ -_ (AA.tc₂ _*_)
+    a≃0-from-a/b≃0 : {a b : ℤ} {{_ : b ≄ 0}} → a / b ≃ 0 → a ≃ 0

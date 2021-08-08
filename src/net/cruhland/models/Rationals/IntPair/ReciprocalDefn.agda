@@ -9,7 +9,8 @@ open import net.cruhland.models.Rationals.IntPair.AdditionDefn PA Z using (QA)
 open import net.cruhland.models.Rationals.IntPair.BaseDefn PA Z using (QB)
 open import net.cruhland.models.Rationals.IntPair.MultiplicationDefn PA Z
   using (QM)
+open import net.cruhland.models.Rationals.IntPair.NegationDefn PA Z using (QN)
 import net.cruhland.models.Rationals.IntPair.ReciprocalImpl PA Z as QR
 
-QR : Reciprocal QB QA QM
+QR : Reciprocal QB QA QN QM
 QR = record { QR }

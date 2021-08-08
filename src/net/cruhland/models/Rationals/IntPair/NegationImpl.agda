@@ -1,6 +1,6 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_)
-open import net.cruhland.axioms.Eq as Eq using (_≃_)
+open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Integers using (Integers)
 open import net.cruhland.axioms.Operators as Op using (_+_; -_; _*_)
@@ -51,15 +51,58 @@ instance
           componentEq =
             begin
               (- q₁↑) * q₂↓
-            ≃˘⟨ AA.fnOpComm ⟩
+            ≃˘⟨ AA.fnOpCommᴸ ⟩
               - (q₁↑ * q₂↓)
             ≃⟨ AA.subst₁ q₁↑q₂↓≃q₂↑q₁↓ ⟩
               - (q₂↑ * q₁↓)
-            ≃⟨ AA.fnOpComm ⟩
+            ≃⟨ AA.fnOpCommᴸ ⟩
               (- q₂↑) * q₁↓
             ∎
 
-  neg-compatible-ℤ : AA.Compatible₁ (_as ℚ) -_ -_ _≃_
+  //-comm-with-negᴸ : AA.FnOpCommutative AA.handᴸ -_ -_ _//_
+  //-comm-with-negᴸ = AA.fnOpCommutative //-negᴸ
+    where
+      //-negᴸ :
+        {a b : ℤ} {{c₁ : b ≄ 0}} {{c₂ : b ≄ 0}} →
+        - (a // b) {{c₁}} ≃ ((- a) // b) {{c₂}}
+      //-negᴸ {a} {b} {{c₁}} {{c₂}} =
+        begin
+          - (a // b) {{c₁}}
+        ≃⟨⟩
+          ((- a) // b) {{c₁}}
+        ≃⟨ ℚ.≃₀-intro Eq.refl ⟩
+          ((- a) // b) {{c₂}}
+        ∎
+
+  //-comm-with-negᴿ : AA.FnOpCommutative AA.handᴿ -_ -_ _//_
+  //-comm-with-negᴿ = AA.fnOpCommutative //-negᴿ
+    where
+      //-negᴿ :
+        {a b : ℤ} {{c₁ : b ≄ 0}} {{c₂ : - b ≄ 0}} → - (a // b) ≃ a // (- b)
+      //-negᴿ {a} {b} =
+          begin
+            - (a // b)
+          ≃⟨⟩
+            (- a) // b
+          ≃⟨ ℚ.≃₀-intro componentEq ⟩
+            a // (- b)
+          ∎
+        where
+          componentEq =
+            begin
+              (- a) * (- b)
+            ≃˘⟨ AA.fnOpCommᴸ ⟩
+              - (a * (- b))
+            ≃˘⟨ AA.subst₁ AA.fnOpCommᴿ ⟩
+              - (- (a * b))
+            ≃⟨ AA.inv-involutive ⟩
+              a * b
+            ∎
+
+  //-comm-with-neg : AA.FnOpCommutative² -_ -_ _//_
+  //-comm-with-neg = AA.fnOpCommutative²
+
+  neg-compatible-ℤ : AA.Compatible₁ (AA.tc₁ (_as ℚ)) -_ -_ _≃_
   neg-compatible-ℤ = AA.compatible₁ {A = ℤ} neg-compat-ℤ
     where
       neg-compat-ℤ : {a : ℤ} → (- a as ℚ) ≃ - (a as ℚ)
@@ -88,7 +131,7 @@ instance
               ((- q↑) // q↓) + (q↑ // q↓)
             ≃⟨⟩
               ((- q↑) * q↓ + q↓ * q↑) // (q↓ * q↓)
-            ≃˘⟨ AA.subst₂ (AA.subst₂ AA.fnOpComm) ⟩
+            ≃˘⟨ AA.subst₂ (AA.subst₂ AA.fnOpCommᴸ) ⟩
               (- (q↑ * q↓) + q↓ * q↑) // (q↓ * q↓)
             ≃⟨ AA.subst₂ (AA.subst₂ AA.comm) ⟩
               (- (q↑ * q↓) + q↑ * q↓) // (q↓ * q↓)

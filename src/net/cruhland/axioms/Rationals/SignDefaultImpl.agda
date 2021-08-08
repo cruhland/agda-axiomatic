@@ -7,10 +7,8 @@ open import net.cruhland.axioms.Operators using (-_; _/_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.axioms.Rationals.AdditionDecl using (Addition)
 open import net.cruhland.axioms.Rationals.BaseDecl using (Base)
-open import net.cruhland.axioms.Rationals.MultiplicationDecl
-  using (Multiplication)
+open import net.cruhland.axioms.Rationals.DivisionDecl using (Division)
 open import net.cruhland.axioms.Rationals.NegationDecl using (Negation)
-open import net.cruhland.axioms.Rationals.ReciprocalDecl using (Reciprocal)
 import net.cruhland.axioms.Sign as S
 open import net.cruhland.models.Function using (_⟨→⟩_)
 open import net.cruhland.models.Literals
@@ -21,9 +19,8 @@ module net.cruhland.axioms.Rationals.SignDefaultImpl
   (Z : Integers PA)
   (QB : Base PA Z)
   (QA : Addition PA Z QB)
-  (QM : Multiplication PA Z QB QA)
   (QN : Negation PA Z QB QA)
-  (QR : Reciprocal PA Z QB QA QM)
+  (QD : Division PA Z QB QA QN)
   where
 
 import net.cruhland.axioms.Rationals.LiteralImpl PA Z as LiteralImpl
@@ -32,9 +29,9 @@ private module ℤ = Integers Z
 private module ℚ where
   open Addition QA public
   open Base QB public
+  open Division QD public
   open LiteralImpl QB public
-  open Multiplication QM public
-  open Reciprocal QR public
+  open Negation QN public
 
 open ℤ using (ℤ)
 open ℚ using (ℚ)

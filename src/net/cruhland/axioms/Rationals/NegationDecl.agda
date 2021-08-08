@@ -25,7 +25,7 @@ record Negation (QB : Base) (QA : Addition QB) : Set₁ where
   field
     {{neg-dash}} : Op.Dashᴸ ℚ
     {{neg-substitutive}} : AA.Substitutive₁ {A = ℚ} -_ _≃_ _≃_
-    {{neg-compatible-ℤ}} : AA.Compatible₁ {A = ℤ} (_as ℚ) -_ -_ _≃_
+    {{neg-compatible-ℤ}} : AA.Compatible₁ {A = ℤ} (AA.tc₁ (_as ℚ)) -_ -_ _≃_
     {{+-inverse}} : AA.Inverse² {A = ℚ} (AA.tc₁ -_) _+_ 0
 
     {{sub-dash}} : Op.Dash₂ ℚ

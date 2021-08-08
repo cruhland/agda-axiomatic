@@ -31,7 +31,8 @@ record Addition (PB : PeanoBase) (PS : ℕSign PB) : Set where
     {{plus}} : Op.Plus ℕ
     {{+-substitutiveᴸ}} : AA.Substitutive₂ AA.handᴸ _+_ _≃_ _≃_
     {{+-identityᴸ}} : AA.Identity AA.handᴸ _+_ 0
-    {{+-fnOpCommutative-stepᴸ}} : AA.FnOpCommutative AA.handᴸ step _+_
+    {{+-fnOpCommutative-stepᴸ}} :
+      AA.FnOpCommutative AA.handᴸ step step (AA.tc₂ _+_)
 
   instance
     +-identityᴿ : AA.Identity AA.handᴿ _+_ 0
@@ -47,13 +48,13 @@ record Addition (PB : PeanoBase) (PS : ℕSign PB) : Set where
             Ps {k} k+z≃k =
               begin
                 step k + 0
-              ≃˘⟨ AA.fnOpComm ⟩
+              ≃˘⟨ AA.fnOpCommᴸ ⟩
                 step (k + 0)
               ≃⟨ AA.subst₁ k+z≃k ⟩
                 step k
               ∎
 
-    +-fnOpCommutative-stepᴿ : AA.FnOpCommutative AA.handᴿ step _+_
+    +-fnOpCommutative-stepᴿ : AA.FnOpCommutative AA.handᴿ step step (AA.tc₂ _+_)
     +-fnOpCommutative-stepᴿ = AA.fnOpCommutative +-stepᴿ
       where
         +-stepᴿ : ∀ {n m} → step (n + m) ≃ n + step m
@@ -74,11 +75,11 @@ record Addition (PB : PeanoBase) (PS : ℕSign PB) : Set where
             Ps {k} s[k+m]≃k+sm =
               begin
                 step (step k + m)
-              ≃˘⟨ AA.subst₁ AA.fnOpComm ⟩
+              ≃˘⟨ AA.subst₁ AA.fnOpCommᴸ ⟩
                 step (step (k + m))
               ≃⟨ AA.subst₁ s[k+m]≃k+sm ⟩
                 step (k + step m)
-              ≃⟨ AA.fnOpComm ⟩
+              ≃⟨ AA.fnOpCommᴸ ⟩
                 step k + step m
               ∎
 
@@ -102,11 +103,11 @@ record Addition (PB : PeanoBase) (PS : ℕSign PB) : Set where
             Ps {k} k+m≃m+k =
               begin
                 step k + m
-              ≃˘⟨ AA.fnOpComm ⟩
+              ≃˘⟨ AA.fnOpCommᴸ ⟩
                 step (k + m)
               ≃⟨ AA.subst₁ k+m≃m+k ⟩
                 step (m + k)
-              ≃⟨ AA.fnOpComm ⟩
+              ≃⟨ AA.fnOpCommᴿ ⟩
                 m + step k
               ∎
 
@@ -137,13 +138,13 @@ record Addition (PB : PeanoBase) (PS : ℕSign PB) : Set where
             Ps {k} [k+m]+p≃k+[m+p] =
               begin
                 (step k + m) + p
-              ≃˘⟨ AA.subst₂ AA.fnOpComm ⟩
+              ≃˘⟨ AA.subst₂ AA.fnOpCommᴸ ⟩
                 step (k + m) + p
-              ≃˘⟨ AA.fnOpComm ⟩
+              ≃˘⟨ AA.fnOpCommᴸ ⟩
                 step ((k + m) + p)
               ≃⟨ AA.subst₁ [k+m]+p≃k+[m+p] ⟩
                 step (k + (m + p))
-              ≃⟨ AA.fnOpComm ⟩
+              ≃⟨ AA.fnOpCommᴸ ⟩
                 step k + (m + p)
               ∎
 
@@ -173,11 +174,11 @@ record Addition (PB : PeanoBase) (PS : ℕSign PB) : Set where
                 s[k+m]≃s[k+p] =
                   begin
                     step (k + m)
-                  ≃⟨ AA.fnOpComm ⟩
+                  ≃⟨ AA.fnOpCommᴸ ⟩
                     step k + m
                   ≃⟨ sk+m≃sk+p ⟩
                     step k + p
-                  ≃˘⟨ AA.fnOpComm ⟩
+                  ≃˘⟨ AA.fnOpCommᴸ ⟩
                     step (k + p)
                   ∎
 
@@ -205,7 +206,7 @@ record Addition (PB : PeanoBase) (PS : ℕSign PB) : Set where
       step n
     ≃˘⟨ AA.subst₁ AA.ident ⟩
       step (n + 0)
-    ≃⟨ AA.fnOpComm ⟩
+    ≃⟨ AA.fnOpCommᴿ ⟩
       n + step 0
     ≃⟨⟩
       n + 1
@@ -238,7 +239,7 @@ record Addition (PB : PeanoBase) (PS : ℕSign PB) : Set where
       Ps : step-case P
       Ps {k} _ =
         let s[a+k]≄0 = step≄zero
-            a+sk≄0 = AA.substᴸ AA.fnOpComm s[a+k]≄0
+            a+sk≄0 = AA.substᴸ AA.fnOpCommᴿ s[a+k]≄0
          in ℕ.Pos-intro-≄0 a+sk≄0
 
   instance
