@@ -69,7 +69,7 @@ instance
       pos-subst p≃q (Positive₀-intro pos[a] pos[b] p≃a/b) =
         Positive₀-intro pos[a] pos[b] (Eq.trans (Eq.sym p≃q) p≃a/b)
 
-  positivity : S.Positivity 0
+  positivity : S.Positivity ℚ
   positivity = record { Positive = Positive₀ ; pos≄0 = q≄0-from-pos[q] }
 
 record Negative₀ (q : ℚ) : Set where
@@ -105,5 +105,5 @@ instance
       neg-subst q≃r (Negative₀-intro pos[p] q≃-p) =
         Negative₀-intro pos[p] (Eq.trans (Eq.sym q≃r) q≃-p)
 
-  negativity : S.Negativity 0
+  negativity : S.Negativity ℚ
   negativity = record { Negative = Negative₀ ; neg≄0 = q≄0-from-neg[q] }

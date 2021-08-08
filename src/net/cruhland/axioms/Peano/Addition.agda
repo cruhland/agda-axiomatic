@@ -8,7 +8,7 @@ open import net.cruhland.axioms.Peano.Base
 import net.cruhland.axioms.Peano.Inspect as PeanoInspect
 import net.cruhland.axioms.Peano.Literals as PeanoLiterals
 open import net.cruhland.axioms.Peano.Sign using () renaming (Sign to ℕSign)
-open import net.cruhland.axioms.Sign as Sign using (Positive)
+import net.cruhland.axioms.Sign as S
 open import net.cruhland.models.Function using (_∘_; const)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic
@@ -228,10 +228,10 @@ record Addition (PB : PeanoBase) (PS : ℕSign PB) : Set where
         1≄0 = step≄zero
      in 1≃0 ↯ 1≄0
 
-  +-positive : {a b : ℕ} → Positive a → Positive (a + b)
+  +-positive : {a b : ℕ} → S.Positive a → S.Positive (a + b)
   +-positive {a} {b} pos-a = ind P P0 Ps b
     where
-      P = λ x → Positive (a + x)
+      P = λ x → S.Positive (a + x)
 
       P0 : P 0
       P0 = AA.subst₁ (Eq.sym AA.ident) pos-a
@@ -243,14 +243,15 @@ record Addition (PB : PeanoBase) (PS : ℕSign PB) : Set where
          in ℕ.Pos-intro-≄0 a+sk≄0
 
   instance
-    +-preserves-Positive : AA.Preserves Positive _+_
+    +-preserves-Positive : AA.Preserves S.Positive _+_
     +-preserves-Positive = AA.preserves +-pres-pos
       where
-        +-pres-pos : {n m : ℕ} → Positive n → Positive m → Positive (n + m)
+        +-pres-pos :
+          {n m : ℕ} → S.Positive n → S.Positive m → S.Positive (n + m)
         +-pres-pos pos[n] pos[m] = +-positive pos[n]
 
   +-nonzero : {x y : ℕ} → x ≄ 0 → x + y ≄ 0
-  +-nonzero = Sign.pos≄0 ∘ +-positive ∘ ℕ.Pos-intro-≄0
+  +-nonzero = S.pos≄0 ∘ +-positive ∘ ℕ.Pos-intro-≄0
 
   +-both-zero : {a b : ℕ} → a + b ≃ 0 → a ≃ 0 ∧ b ≃ 0
   +-both-zero {a} {b} a+b≃0 =

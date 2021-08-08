@@ -10,7 +10,7 @@ import net.cruhland.axioms.Peano.Inspect as PeanoInspect
 import net.cruhland.axioms.Peano.Literals as Literals
 open import net.cruhland.axioms.Peano.Ordering using (Ordering)
 open import net.cruhland.axioms.Peano.Sign using () renaming (Sign to ℕSign)
-open import net.cruhland.axioms.Sign as Sign using (Positive)
+import net.cruhland.axioms.Sign as S
 open import net.cruhland.models.Function using (it)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic
@@ -162,13 +162,14 @@ record Multiplication
               ∧-intro _ m≃0 = ℕ.+-both-zero p*m+m≃0
            in ∨-introᴿ m≃0
 
-    *-preserves-Positive : AA.Preserves Positive _*_
+    *-preserves-Positive : AA.Preserves S.Positive _*_
     *-preserves-Positive = AA.preserves *-pres-pos
       where
-        *-pres-pos : {n m : ℕ} → Positive n → Positive m → Positive (n * m)
+        *-pres-pos :
+          {n m : ℕ} → S.Positive n → S.Positive m → S.Positive (n * m)
         *-pres-pos pos[n] pos[m] =
-          let instance n≄0 = Sign.pos≄0 pos[n]
-              instance m≄0 = Sign.pos≄0 pos[m]
+          let instance n≄0 = S.pos≄0 pos[n]
+              instance m≄0 = S.pos≄0 pos[m]
            in ℕ.Pos-intro-≄0 AA.nonzero-prod
 
     *-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _*_ _≃_ _≃_
@@ -250,7 +251,7 @@ record Multiplication
                 (a * step k) * c
               ∎
 
-  *-preserves-<ᴿ : {a b c : ℕ} → a < b → Positive c → a * c < b * c
+  *-preserves-<ᴿ : {a b c : ℕ} → a < b → S.Positive c → a * c < b * c
   *-preserves-<ᴿ {a} {b} {c} a<b pos[c] =
     let a+d≃b = ℕ.<-elim-diff a<b
         pos[d] = ℕ.<-diff-pos a<b
@@ -260,15 +261,16 @@ record Multiplication
         pos[d[ac≤bc]] = AA.subst₁ (Eq.sym (ℕ.intro-diff-id ac+dc≃bc)) pos[dc]
      in ℕ.<-intro-≤pd ac≤bc pos[d[ac≤bc]]
 
-  *-preserves-<ᴸ : {a b c : ℕ} → b < c → Positive a → a * b < a * c
+  *-preserves-<ᴸ : {a b c : ℕ} → b < c → S.Positive a → a * b < a * c
   *-preserves-<ᴸ {a} {b} {c} b<c pos[a] =
     AA.substᴸ AA.comm (AA.substᴿ AA.comm (*-preserves-<ᴿ b<c pos[a]))
 
   instance
-    *-cancellativeᴸ : AA.Cancellative AA.handᴸ _*_ _≃_ _≃_ Positive
+    *-cancellativeᴸ : AA.Cancellative AA.handᴸ _*_ _≃_ _≃_ S.Positive
     *-cancellativeᴸ = AA.cancellative *-cancelᴸ
       where
-        *-cancelᴸ : {a : ℕ} {{_ : Positive a}} {b c : ℕ} → a * b ≃ a * c → b ≃ c
+        *-cancelᴸ :
+          {a : ℕ} {{_ : S.Positive a}} {b c : ℕ} → a * b ≃ a * c → b ≃ c
         *-cancelᴸ {a} {b} {c} ab≃ac with
           AA.ExactlyOneOfThree.at-least-one (ℕ.order-trichotomy b c)
         ... | AA.1st b<c =
@@ -282,8 +284,8 @@ record Multiplication
               ac≄ab = ℕ.<-elim-≄ ac<ab
            in Eq.sym ab≃ac ↯ ac≄ab
 
-    *-cancellativeᴿ : AA.Cancellative AA.handᴿ _*_ _≃_ _≃_ Positive
+    *-cancellativeᴿ : AA.Cancellative AA.handᴿ _*_ _≃_ _≃_ S.Positive
     *-cancellativeᴿ = AA.cancelᴿ-from-cancelᴸ-comm
 
-    *-cancellative² : AA.Cancellative² _*_ _≃_ _≃_ Positive
+    *-cancellative² : AA.Cancellative² _*_ _≃_ _≃_ S.Positive
     *-cancellative² = AA.cancellative²

@@ -7,8 +7,7 @@ open import net.cruhland.axioms.Integers.BaseDecl using (Base)
 open import net.cruhland.axioms.Integers.NegationDecl using (Negation)
 open import net.cruhland.axioms.Operators using (_+_; -_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
-open import net.cruhland.axioms.Sign
-  using (Negative; Negativity; Positive; Positivity; pos≄0)
+import net.cruhland.axioms.Sign as S
 open import net.cruhland.models.Function using (_⟨→⟩_; id)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using (_↯_)
@@ -48,7 +47,7 @@ nonzero-from-≃id[posℕ] {a} (ℤ.≃posℕ-intro {n} pos[n] a≃n) =
             (0 as ℤ)
           ∎
         n≃0 = AA.inject n:ℤ≃0:ℤ
-        n≄0 = pos≄0 pos[n]
+        n≄0 = S.pos≄0 pos[n]
      in n≃0 ↯ n≄0
 
 instance
@@ -59,7 +58,7 @@ instance
       pos-subst a≃b (ℤ.≃posℕ-intro pos[n] a≃n) =
         ℤ.≃posℕ-intro pos[n] (Eq.trans (Eq.sym a≃b) a≃n)
 
-  positivity : Positivity {A = ℤ} 0
+  positivity : S.Positivity ℤ
   positivity =
     record { Positive = _≃ id [posℕ] ; pos≄0 = nonzero-from-≃id[posℕ] }
 
@@ -81,7 +80,7 @@ nonzero-from-≃neg[posℕ] {a} (ℤ.≃posℕ-intro {n} pos[n] a≃-n) =
             (0 as ℤ)
           ∎
         n≃0 = AA.inject n:ℤ≃0:ℤ
-        n≄0 = pos≄0 pos[n]
+        n≄0 = S.pos≄0 pos[n]
      in n≃0 ↯ n≄0
 
 instance
@@ -92,31 +91,31 @@ instance
       neg-subst a≃b (ℤ.≃posℕ-intro pos[n] a≃n) =
         ℤ.≃posℕ-intro pos[n] (Eq.trans (Eq.sym a≃b) a≃n)
 
-  negativity : Negativity {A = ℤ} 0
+  negativity : S.Negativity ℤ
   negativity =
     record { Negative = _≃ -_ [posℕ] ; neg≄0 = nonzero-from-≃neg[posℕ] }
 
-posℕ-from-posℤ : {a : ℤ} → Positive a → a ≃ id [posℕ]
+posℕ-from-posℤ : {a : ℤ} → S.Positive a → a ≃ id [posℕ]
 posℕ-from-posℤ = id
 
-posℕ-from-negℤ : {a : ℤ} → Negative a → a ≃ -_ [posℕ]
+posℕ-from-negℤ : {a : ℤ} → S.Negative a → a ≃ -_ [posℕ]
 posℕ-from-negℤ = id
 
-posℤ-from-posℕ : {a : ℤ} → a ≃ id [posℕ] → Positive a
+posℤ-from-posℕ : {a : ℤ} → a ≃ id [posℕ] → S.Positive a
 posℤ-from-posℕ = id
 
-negℤ-from-posℕ : {a : ℤ} → a ≃ -_ [posℕ] → Negative a
+negℤ-from-posℕ : {a : ℤ} → a ≃ -_ [posℕ] → S.Negative a
 negℤ-from-posℕ = id
 
-from-ℕ-preserves-pos : {n : ℕ} → Positive n → Positive (n as ℤ)
+from-ℕ-preserves-pos : {n : ℕ} → S.Positive n → S.Positive (n as ℤ)
 from-ℕ-preserves-pos pos[n] = ℤ.≃posℕ-intro pos[n] Eq.refl
 
-neg-Positive : {a : ℤ} → Positive a → Negative (- a)
+neg-Positive : {a : ℤ} → S.Positive a → S.Negative (- a)
 neg-Positive (ℤ.≃posℕ-intro pos[n] a≃n) =
   let -a≃-n = AA.subst₁ a≃n
    in ℤ.≃posℕ-intro pos[n] -a≃-n
 
-neg-Negative : {a : ℤ} → Negative a → Positive (- a)
+neg-Negative : {a : ℤ} → S.Negative a → S.Positive (- a)
 neg-Negative {a} (ℤ.≃posℕ-intro {n} pos[n] a≃-n) =
   let -a≃n =
         begin
@@ -129,10 +128,10 @@ neg-Negative {a} (ℤ.≃posℕ-intro {n} pos[n] a≃-n) =
    in ℤ.≃posℕ-intro pos[n] -a≃n
 
 instance
-  +-preserves-pos : AA.Preserves Positive _+_
+  +-preserves-pos : AA.Preserves S.Positive _+_
   +-preserves-pos = AA.preserves +-pres-pos
     where
-      +-pres-pos : {a b : ℤ} → Positive a → Positive b → Positive (a + b)
+      +-pres-pos : {a b : ℤ} → S.Positive a → S.Positive b → S.Positive (a + b)
       +-pres-pos {a} {b}
           (ℤ.≃posℕ-intro {n} pos[n] a≃n) (ℤ.≃posℕ-intro {m} pos[m] b≃m) =
         let pos[n+m] = AA.pres pos[n] pos[m]

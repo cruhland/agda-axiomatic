@@ -8,7 +8,7 @@ open import net.cruhland.axioms.Peano.Base
 import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.BaseDecl
   as LteBaseDecl
 open import net.cruhland.axioms.Peano.Sign using (Sign)
-open import net.cruhland.axioms.Sign using (Positive)
+import net.cruhland.axioms.Sign as S
 
 module net.cruhland.axioms.Peano.Ordering.LessThan.BaseDecl
   (PB : PeanoBase)
@@ -17,6 +17,7 @@ module net.cruhland.axioms.Peano.Ordering.LessThan.BaseDecl
   where
 
 open PeanoBase PB using (ℕ)
+import net.cruhland.axioms.Peano.Literals PB as ℕL
 open LteBaseDecl PB PS PA using (LteBase)
 
 record LtBase (LTEB : LteBase) : Set₁ where
@@ -26,14 +27,14 @@ record LtBase (LTEB : LteBase) : Set₁ where
     {{lessThan}} : LessThan ℕ
 
     <-intro-≤≄ : {n m : ℕ} → n ≤ m → n ≄ m → n < m
-    <-intro-≤pd : {n m : ℕ} (n≤m : n ≤ m) → Positive (ℕ≤.≤-diff n≤m) → n < m
+    <-intro-≤pd : {n m : ℕ} (n≤m : n ≤ m) → S.Positive (ℕ≤.≤-diff n≤m) → n < m
 
     <-elim-≤ : {n m : ℕ} → n < m → n ≤ m
     <-elim-≄ : {n m : ℕ} → n < m → n ≄ m
 
     <-diff : {n m : ℕ} → n < m → ℕ
-    <-diff-pos : {n m : ℕ} (n<m : n < m) → Positive (<-diff n<m)
+    <-diff-pos : {n m : ℕ} (n<m : n < m) → S.Positive (<-diff n<m)
     <-diff-from-≤-diff :
       {n m : ℕ} (n<m : n < m) → <-diff n<m ≃ ℕ≤.≤-diff (<-elim-≤ n<m)
-    <-intro-diff : {n m d : ℕ} → Positive d → n + d ≃ m → n < m
+    <-intro-diff : {n m d : ℕ} → S.Positive d → n + d ≃ m → n < m
     <-elim-diff : {n m : ℕ} (n<m : n < m) → n + <-diff n<m ≃ m

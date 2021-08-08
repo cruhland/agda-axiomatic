@@ -31,6 +31,13 @@ record Compatible₁
 
 open Compatible₁ {{...}} public using (compat₁)
 
+record Associative {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set where
+  constructor associative
+  field
+    assoc : ∀ {a b c} → (a ⊙ b) ⊙ c ≃ a ⊙ (b ⊙ c)
+
+open Associative {{...}} public using (assoc)
+
 record Preserves {A : Set} (P : A → Set) (_⊙_ : A → A → A) : Set where
   constructor preserves
   field

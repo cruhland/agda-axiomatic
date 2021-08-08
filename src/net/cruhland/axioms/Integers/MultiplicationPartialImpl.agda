@@ -5,7 +5,7 @@ open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Operators as Op using (_+_; -_; _-_; _*_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
-open import net.cruhland.axioms.Sign using (Negative; neg≄0; Positive; pos≄0)
+import net.cruhland.axioms.Sign as S
 import net.cruhland.models.Function
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic
@@ -137,10 +137,11 @@ module _
                   ∎
              in AA.subst₁ -b≃ab -b≃±1
 
-      *-preserves-Positive : AA.Preserves Positive _*_
+      *-preserves-Positive : AA.Preserves S.Positive _*_
       *-preserves-Positive = AA.preserves *-pres-pos
         where
-          *-pres-pos : {a b : ℤ} → Positive a → Positive b → Positive (a * b)
+          *-pres-pos :
+            {a b : ℤ} → S.Positive a → S.Positive b → S.Positive (a * b)
           *-pres-pos {a} {b} pos[a] pos[b] =
             let ℤ.≃posℕ-intro {n} pos[n] a≃n = ℤ.posℕ-from-posℤ pos[a]
                 ℤ.≃posℕ-intro {m} pos[m] b≃m = ℤ.posℕ-from-posℤ pos[b]
@@ -159,17 +160,17 @@ module _
 
     PosOrNeg-from-nonzero : {a : ℤ} → a ≄ 0 → ℤ.PosOrNeg a
     PosOrNeg-from-nonzero {a} a≄0
-      with AA.ExactlyOneOfThree.at-least-one (ℤ.trichotomy a)
-    ... | AA.1st neg[a] =
-      let ℤ.≃posℕ-intro pos[n] a≃-n = ℤ.posℕ-from-negℤ neg[a]
-          a≃-1*n = Eq.trans a≃-n (Eq.sym neg-mult)
-       in ℤ.PosOrNeg-intro pos[n] (ℤ.≃-1-intro Eq.refl) a≃-1*n
-    ... | AA.2nd a≃0 =
+      with AA.ExactlyOneOfThree.at-least-one (S.trichotomy a)
+    ... | AA.1st a≃0 =
       a≃0 ↯ a≄0
-    ... | AA.3rd pos[a] =
+    ... | AA.2nd pos[a] =
       let ℤ.≃posℕ-intro pos[n] a≃n = ℤ.posℕ-from-posℤ pos[a]
           a≃1*n = Eq.trans a≃n (Eq.sym AA.ident)
        in ℤ.PosOrNeg-intro pos[n] (ℤ.≃+1-intro Eq.refl) a≃1*n
+    ... | AA.3rd neg[a] =
+      let ℤ.≃posℕ-intro pos[n] a≃-n = ℤ.posℕ-from-negℤ neg[a]
+          a≃-1*n = Eq.trans a≃-n (Eq.sym neg-mult)
+       in ℤ.PosOrNeg-intro pos[n] (ℤ.≃-1-intro Eq.refl) a≃-1*n
 
     nonzero-from-PosOrNeg : {a : ℤ} → ℤ.PosOrNeg a → a ≄ 0
     nonzero-from-PosOrNeg
@@ -184,7 +185,7 @@ module _
             ≃⟨ AA.ident ⟩
               (n as ℤ)
             ∎
-       in pos≄0 (ℤ.posℤ-from-posℕ (ℤ.≃posℕ-intro pos[n] a≃n))
+       in S.pos≄0 (ℤ.posℤ-from-posℕ (ℤ.≃posℕ-intro pos[n] a≃n))
     nonzero-from-PosOrNeg
         {a} (ℤ.PosOrNeg-intro {n} {s} pos[n] (ℤ.≃-1-intro s≃-1) a≃sn) =
       let a≃-n =
@@ -197,7 +198,7 @@ module _
             ≃⟨ neg-mult ⟩
               - (n as ℤ)
             ∎
-       in neg≄0 (ℤ.negℤ-from-posℕ (ℤ.≃posℕ-intro pos[n] a≃-n))
+       in S.neg≄0 (ℤ.negℤ-from-posℕ (ℤ.≃posℕ-intro pos[n] a≃-n))
 
     *-neither-zero : {a b : ℤ} → a ≄ 0 → b ≄ 0 → a * b ≄ 0
     *-neither-zero {a} {b} a≄0 b≄0 =
@@ -292,7 +293,7 @@ module _
         b - a
       ∎
 
-    sub-sign-swap : {a b : ℤ} → Negative (a - b) → Positive (b - a)
+    sub-sign-swap : {a b : ℤ} → S.Negative (a - b) → S.Positive (b - a)
     sub-sign-swap neg[a-b] =
       let pos[-[a-b]] = ℤ.neg-Negative neg[a-b]
        in AA.subst₁ neg-sub-swap pos[-[a-b]]

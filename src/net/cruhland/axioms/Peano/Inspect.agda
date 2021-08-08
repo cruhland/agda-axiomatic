@@ -3,7 +3,7 @@ open import net.cruhland.axioms.DecEq using (DecEq; DecEq-intro)
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
-open import net.cruhland.axioms.Sign using (Positivity)
+import net.cruhland.axioms.Sign as S
 open import net.cruhland.models.Function using (_⟨→⟩_; id)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using (⊤; _↯_; Dec; no; yes)
@@ -16,7 +16,7 @@ private module ℕ where
 
 open ℕ using (ℕ; step)
 
-non-zero-positivity : Positivity 0
+non-zero-positivity : S.Positivity ℕ
 non-zero-positivity = record { Positive = Pos ; pos≄0 = id }
   where
     Pos = _≄ 0

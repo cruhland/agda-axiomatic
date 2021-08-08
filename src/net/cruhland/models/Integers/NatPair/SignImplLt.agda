@@ -5,8 +5,7 @@ open Eq.≃-Reasoning
 open import net.cruhland.axioms.Operators using (_+_; -_)
 open import net.cruhland.axioms.Ordering using (_<_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
-open import net.cruhland.axioms.Sign
-  using (Negative; Negativity; neg≄0; Positive; Positivity; pos≄0)
+import net.cruhland.axioms.Sign as S
 open import net.cruhland.models.Function using (_⟨→⟩_; id)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using (¬_; ¬-intro; _↯_)
@@ -74,7 +73,7 @@ instance
             b⁻+d≃b⁺ = AA.cancel [b⁻+d]+a⁻≃b⁺+a⁻
          in ℕ.<-intro-diff pos[d] b⁻+d≃b⁺
 
-  positivity : Positivity {A = ℤ} 0
+  positivity : S.Positivity ℤ
   positivity = record { Positive = Pos ; pos≄0 = Pos≄0 }
 
   Neg-substitutive : AA.Substitutive₁ Neg _≃_ _⟨→⟩_
@@ -102,10 +101,10 @@ instance
             b⁺+d≃b⁻ = Eq.sym (AA.cancel a⁺+b⁻≃a⁺+[b⁺+d])
          in ℕ.<-intro-diff pos[d] b⁺+d≃b⁻
 
-  negativity : Negativity {A = ℤ} 0
+  negativity : S.Negativity ℤ
   negativity = record { Negative = Neg ; neg≄0 = Neg≄0 }
 
-posℕ-from-posℤ : {a : ℤ} → Positive a → a ≃ id [posℕ]
+posℕ-from-posℤ : {a : ℤ} → S.Positive a → a ≃ id [posℕ]
 posℕ-from-posℤ {a⁺ — a⁻} a⁻<a⁺ =
   let n = ℕ.<-diff a⁻<a⁺
       pos[n] = ℕ.<-diff-pos a⁻<a⁺
@@ -121,7 +120,7 @@ posℕ-from-posℤ {a⁺ — a⁻} a⁻<a⁺ =
         ∎
    in ℤ.≃posℕ-intro pos[n] (ℤ.≃₀-intro a⁺+0≃n+a⁻)
 
-posℕ-from-negℤ : {a : ℤ} → Negative a → a ≃ -_ [posℕ]
+posℕ-from-negℤ : {a : ℤ} → S.Negative a → a ≃ -_ [posℕ]
 posℕ-from-negℤ {a⁺ — a⁻} a⁺<a⁻ =
   let n = ℕ.<-diff a⁺<a⁻
       pos[n] = ℕ.<-diff-pos a⁺<a⁻
@@ -135,7 +134,7 @@ posℕ-from-negℤ {a⁺ — a⁻} a⁺<a⁻ =
         ∎
    in ℤ.≃posℕ-intro pos[n] (ℤ.≃₀-intro a⁺+n≃0+a⁻)
 
-posℤ-from-posℕ : {a : ℤ} → a ≃ id [posℕ] → Positive a
+posℤ-from-posℕ : {a : ℤ} → a ≃ id [posℕ] → S.Positive a
 posℤ-from-posℕ {a⁺ — a⁻} (ℤ.≃posℕ-intro {n} pos[n] (ℤ.≃₀-intro a⁺+0≃n+a⁻)) =
   let a⁻+n≃a⁺ =
         begin
@@ -149,7 +148,7 @@ posℤ-from-posℕ {a⁺ — a⁻} (ℤ.≃posℕ-intro {n} pos[n] (ℤ.≃₀-i
         ∎
    in ℕ.<-intro-diff pos[n] a⁻+n≃a⁺
 
-negℤ-from-posℕ : {a : ℤ} → a ≃ -_ [posℕ] → Negative a
+negℤ-from-posℕ : {a : ℤ} → a ≃ -_ [posℕ] → S.Negative a
 negℤ-from-posℕ {a⁺ — a⁻} (ℤ.≃posℕ-intro {n} pos[n] (ℤ.≃₀-intro a⁺+n≃0+a⁻)) =
   let a⁺+n≃a⁻ =
         begin
@@ -161,36 +160,40 @@ negℤ-from-posℕ {a⁺ — a⁻} (ℤ.≃posℕ-intro {n} pos[n] (ℤ.≃₀-i
         ∎
    in ℕ.<-intro-diff pos[n] a⁺+n≃a⁻
 
-from-ℕ-preserves-pos : {n : ℕ} → Positive n → Positive (n as ℤ)
+from-ℕ-preserves-pos : {n : ℕ} → S.Positive n → S.Positive (n as ℤ)
 from-ℕ-preserves-pos = ℕ.<-from-pos
 
-neg-Positive : {a : ℤ} → Positive a → Negative (- a)
+neg-Positive : {a : ℤ} → S.Positive a → S.Negative (- a)
 neg-Positive {a⁺ — a⁻} a⁻<a⁺ = a⁻<a⁺
 
-neg-Negative : {a : ℤ} → Negative a → Positive (- a)
+neg-Negative : {a : ℤ} → S.Negative a → S.Positive (- a)
 neg-Negative {a⁺ — a⁻} a⁺<a⁻ = a⁺<a⁻
 
-trichotomy : (a : ℤ) → AA.ExactlyOneOfThree (Negative a) (a ≃ 0) (Positive a)
-trichotomy a@(a⁺ — a⁻) = AA.exactlyOneOfThree 1of3 ¬2of3
-  where
-    1of3 : AA.OneOfThree (Negative a) (a ≃ 0) (Positive a)
-    1of3 with AA.ExactlyOneOfThree.at-least-one (ℕ.order-trichotomy a⁺ a⁻)
-    1of3 | AA.1st a⁺<a⁻ = AA.1st a⁺<a⁻
-    1of3 | AA.2nd a⁺≃a⁻ = AA.2nd (ℤ.zero-from-balanced a⁺≃a⁻)
-    1of3 | AA.3rd a⁻<a⁺ = AA.3rd a⁻<a⁺
-
-    ¬2of3 : ¬ AA.TwoOfThree (Negative a) (a ≃ 0) (Positive a)
-    ¬2of3 = ¬-intro λ
-      { (AA.1∧2 neg[a] a≃0) → a≃0 ↯ (neg≄0 neg[a])
-      ; (AA.1∧3 a⁺<a⁻ a⁻<a⁺) → ℕ.<-asymmetric a⁺<a⁻ a⁻<a⁺
-      ; (AA.2∧3 a≃0 pos[a]) → a≃0 ↯ (pos≄0 pos[a])
-      }
-
 instance
-  +-preserves-pos : AA.Preserves Positive _+_
+  sign-trichotomy : S.Trichotomy ℤ
+  sign-trichotomy = S.trichotomy-intro sign-tri
+    where
+      sign-tri :
+        (a : ℤ) → AA.ExactlyOneOfThree (a ≃ 0) (S.Positive a) (S.Negative a)
+      sign-tri a@(a⁺ — a⁻) = AA.exactlyOneOfThree 1of3 ¬2of3
+        where
+          1of3 : AA.OneOfThree (a ≃ 0) (S.Positive a) (S.Negative a)
+          1of3 with AA.ExactlyOneOfThree.at-least-one (ℕ.order-trichotomy a⁺ a⁻)
+          1of3 | AA.1st a⁺<a⁻ = AA.3rd a⁺<a⁻
+          1of3 | AA.2nd a⁺≃a⁻ = AA.1st (ℤ.zero-from-balanced a⁺≃a⁻)
+          1of3 | AA.3rd a⁻<a⁺ = AA.2nd a⁻<a⁺
+
+          ¬2of3 : ¬ AA.TwoOfThree (a ≃ 0) (S.Positive a) (S.Negative a)
+          ¬2of3 = ¬-intro λ
+            { (AA.1∧2 a≃0 pos[a]) → a≃0 ↯ (S.pos≄0 pos[a])
+            ; (AA.1∧3 a≃0 neg[a]) → a≃0 ↯ (S.neg≄0 neg[a])
+            ; (AA.2∧3 a⁻<a⁺ a⁺<a⁻) → ℕ.<-asymmetric a⁺<a⁻ a⁻<a⁺
+            }
+
+  +-preserves-pos : AA.Preserves S.Positive _+_
   +-preserves-pos = AA.preserves +-pres-pos
     where
-      +-pres-pos : {a b : ℤ} → Positive a → Positive b → Positive (a + b)
+      +-pres-pos : {a b : ℤ} → S.Positive a → S.Positive b → S.Positive (a + b)
       +-pres-pos {a⁺ — a⁻} {b⁺ — b⁻} a⁻<a⁺ b⁻<b⁺ = ℕ.<-compatible-+ a⁻<a⁺ b⁻<b⁺
 
 -- Include everything from the partial impl

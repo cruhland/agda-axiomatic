@@ -11,7 +11,7 @@ open import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.BaseDecl using
 import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.PropertiesImplBase
   as LteProps
 open import net.cruhland.axioms.Peano.Sign using (Sign)
-open import net.cruhland.axioms.Sign using (Positive; pos≄0)
+import net.cruhland.axioms.Sign as S
 open import net.cruhland.models.Function using (_⟨→⟩_)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using (∧-intro; ⊥; _↯_; ¬-intro)
@@ -105,8 +105,8 @@ n≮0 = ¬-intro λ n<0 →
       ∧-intro n≃0 _ = ℕ+.+-both-zero n+d≃0
    in n≃0 ↯ n≄0
 
-<-from-pos : {n : ℕ} → Positive n → 0 < n
-<-from-pos pos[n] = ℕ<.<-intro-≤≄ ℕ≤.≤-zeroᴸ (Eq.sym (pos≄0 pos[n]))
+<-from-pos : {n : ℕ} → S.Positive n → 0 < n
+<-from-pos pos[n] = ℕ<.<-intro-≤≄ ℕ≤.≤-zeroᴸ (Eq.sym (S.pos≄0 pos[n]))
 
 <-asymmetric : {n m : ℕ} → n < m → m < n → ⊥
 <-asymmetric n<m m<n =

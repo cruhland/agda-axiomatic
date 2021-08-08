@@ -7,7 +7,7 @@ open import net.cruhland.axioms.Integers.BaseDecl using (Base)
 open import net.cruhland.axioms.Integers.NegationDecl using (Negation)
 open import net.cruhland.axioms.Operators using (-_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
-open import net.cruhland.axioms.Sign using (Positive; Positivity)
+import net.cruhland.axioms.Sign as S
 open import net.cruhland.models.Function using (_⟨→⟩_)
 open import net.cruhland.models.Literals
 
@@ -34,8 +34,8 @@ open ℤ using (ℤ; _≃±1)
 
 record SignProperties : Set₁ where
   field
-    {{positivity}} : Positivity {A = ℤ} 0
-    from-ℕ-preserves-pos : {n : ℕ} → Positive n → Positive (n as ℤ)
+    {{positivity}} : S.Positivity ℤ
+    from-ℕ-preserves-pos : {n : ℕ} → S.Positive n → S.Positive (n as ℤ)
 
   instance
     ≃±1-substitutive : AA.Substitutive₁ _≃±1 _≃_ _⟨→⟩_
@@ -66,5 +66,5 @@ record SignProperties : Set₁ where
     let a≃1 = AA.inject -a≃-1
      in ℤ.≃+1-intro a≃1
 
-  1-Positive : Positive {A = ℤ} 1
+  1-Positive : S.Positive {A = ℤ} 1
   1-Positive = from-ℕ-preserves-pos (ℕ.Pos-intro-≄0 ℕ.step≄zero)

@@ -12,7 +12,7 @@ open import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.BaseDecl
 open import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.PropertiesDecl
   using (LteProperties)
 open import net.cruhland.axioms.Peano.Sign using () renaming (Sign to ℕSign)
-open import net.cruhland.axioms.Sign as Sign using (Positive)
+import net.cruhland.axioms.Sign as S
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using (_↯_; contrapositive; no; yes)
 
@@ -44,10 +44,10 @@ instance
 <-intro-≤≄ : {n m : ℕ} → n ≤ m → n ≄ m → n ≤≄ m
 <-intro-≤≄ = ND.≤≄-intro
 
-<-intro-≤pd : {n m : ℕ} (n≤m : n ≤ m) → Positive (ℕ.≤-diff n≤m) → n < m
+<-intro-≤pd : {n m : ℕ} (n≤m : n ≤ m) → S.Positive (ℕ.≤-diff n≤m) → n < m
 <-intro-≤pd n≤m pos[d] =
   let d = ℕ.≤-diff n≤m
-      d≄0 = Sign.pos≄0 pos[d]
+      d≄0 = S.pos≄0 pos[d]
       n+d≃m = ℕ.≤-elim-diff n≤m
       n≄m = contrapositive (AA.eq→idᴿ n+d≃m) d≄0
    in <-intro-≤≄ n≤m n≄m
@@ -65,7 +65,7 @@ instance
   {n m : ℕ} (n<m : n < m) → <-diff n<m ≃ ℕ.≤-diff (<-elim-≤ n<m)
 <-diff-from-≤-diff n<m = Eq.refl
 
-<-intro-diff : {n m d : ℕ} → Positive d → n + d ≃ m → n < m
+<-intro-diff : {n m d : ℕ} → S.Positive d → n + d ≃ m → n < m
 <-intro-diff pd n+d≃m =
   let n≤m = ℕ.≤-intro-diff n+d≃m
       d≃d[n≤m] = Eq.sym (ℕ.intro-diff-id n+d≃m)
@@ -74,7 +74,7 @@ instance
 <-elim-diff : {n m : ℕ} (n<m : n < m) → n + <-diff n<m ≃ m
 <-elim-diff n<m = ℕ.≤-elim-diff (<-elim-≤ n<m)
 
-<-diff-pos : {n m : ℕ} (n<m : n < m) → Positive (<-diff n<m)
+<-diff-pos : {n m : ℕ} (n<m : n < m) → S.Positive (<-diff n<m)
 <-diff-pos {n} {m} n<m with <-diff n<m ≃? 0
 ... | yes d≃0 =
   let n≃m =

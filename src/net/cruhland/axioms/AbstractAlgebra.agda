@@ -11,16 +11,10 @@ open import net.cruhland.axioms.AbstractAlgebra.Inverse public
 open import net.cruhland.axioms.AbstractAlgebra.Reductive public
 open import net.cruhland.axioms.AbstractAlgebra.Substitutive public
 open import net.cruhland.axioms.AbstractAlgebra.Swappable public
+open import net.cruhland.axioms.AbstractAlgebra.Trichotomous public
 
 -- Export the ⊤-intro instance publicly to help with instance resolution
 open Logic using (⊤-intro) public
-
-record Associative {A : Set} {{eq : Eq A}} (_⊙_ : A → A → A) : Set where
-  constructor associative
-  field
-    assoc : ∀ {a b c} → (a ⊙ b) ⊙ c ≃ a ⊙ (b ⊙ c)
-
-open Associative {{...}} public using (assoc)
 
 record Antisymmetric {A : Set} {{eq : Eq A}} (_~_ : A → A → Set) : Set where
   constructor antisymmetric
@@ -28,22 +22,6 @@ record Antisymmetric {A : Set} {{eq : Eq A}} (_~_ : A → A → Set) : Set where
     antisym : ∀ {a b} → a ~ b → b ~ a → a ≃ b
 
 open Antisymmetric {{...}} public using (antisym)
-
-data OneOfThree (A B C : Set) : Set where
-  1st : A → OneOfThree A B C
-  2nd : B → OneOfThree A B C
-  3rd : C → OneOfThree A B C
-
-data TwoOfThree (A B C : Set) : Set where
-  1∧2 : A → B → TwoOfThree A B C
-  1∧3 : A → C → TwoOfThree A B C
-  2∧3 : B → C → TwoOfThree A B C
-
-record ExactlyOneOfThree (A B C : Set) : Set where
-  constructor exactlyOneOfThree
-  field
-    at-least-one : OneOfThree A B C
-    at-most-one : ¬ TwoOfThree A B C
 
 distributiveᴿ-from-distributiveᴸ :
   {A : Set} {_⊙_ _⊕_ : A → A → A} {{_ : Eq A}} {{_ : Commutative _⊙_}}

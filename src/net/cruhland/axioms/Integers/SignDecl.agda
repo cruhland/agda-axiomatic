@@ -3,8 +3,7 @@ open import net.cruhland.axioms.Cast using (_As_; _as_)
 open import net.cruhland.axioms.Eq using (_≃_; Eq)
 open import net.cruhland.axioms.Operators using (_+_; -_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
-open import net.cruhland.axioms.Sign
-  using (Negative; Negativity; Positive; Positivity)
+import net.cruhland.axioms.Sign as S
 open import net.cruhland.models.Function using (_⟨→⟩_; id)
 open import net.cruhland.models.Literals
 
@@ -36,7 +35,7 @@ module SignPredefs (ZB : Base) (ZA : Addition ZB) (ZN : Negation ZB ZA) where
     constructor ≃posℕ-intro
     field
       {n} : ℕ
-      pos[n] : Positive n
+      pos[n] : S.Positive n
       a≃n : a ≃ f (n as ℤ)
 
 record Sign (ZB : Base) (ZA : Addition ZB) (ZN : Negation ZB ZA) : Set₁ where
@@ -44,22 +43,21 @@ record Sign (ZB : Base) (ZA : Addition ZB) (ZN : Negation ZB ZA) : Set₁ where
   open SignPredefs ZB ZA ZN public
 
   field
-    {{positivity}} : Positivity {A = ℤ} 0
-    {{negativity}} : Negativity {A = ℤ} 0
+    {{positivity}} : S.Positivity ℤ
+    {{negativity}} : S.Negativity ℤ
+    {{sign-trichotomy}} : S.Trichotomy ℤ
 
     {{≃±1-substitutive}} : AA.Substitutive₁ _≃±1 _≃_ _⟨→⟩_
     ≃±1-absorbs-neg : {a : ℤ} → - a ≃±1 → a ≃±1
 
-    posℕ-from-posℤ : {a : ℤ} → Positive a → a ≃ id [posℕ]
-    posℕ-from-negℤ : {a : ℤ} → Negative a → a ≃ -_ [posℕ]
-    posℤ-from-posℕ : {a : ℤ} → a ≃ id [posℕ] → Positive a
-    negℤ-from-posℕ : {a : ℤ} → a ≃ -_ [posℕ] → Negative a
+    posℕ-from-posℤ : {a : ℤ} → S.Positive a → a ≃ id [posℕ]
+    posℕ-from-negℤ : {a : ℤ} → S.Negative a → a ≃ -_ [posℕ]
+    posℤ-from-posℕ : {a : ℤ} → a ≃ id [posℕ] → S.Positive a
+    negℤ-from-posℕ : {a : ℤ} → a ≃ -_ [posℕ] → S.Negative a
 
-    from-ℕ-preserves-pos : {n : ℕ} → Positive n → Positive (n as ℤ)
-    +-preserves-pos : AA.Preserves {A = ℤ} Positive _+_
-    neg-Positive : {a : ℤ} → Positive a → Negative (- a)
-    neg-Negative : {a : ℤ} → Negative a → Positive (- a)
-    trichotomy :
-      (a : ℤ) → AA.ExactlyOneOfThree (Negative a) (a ≃ 0) (Positive a)
+    from-ℕ-preserves-pos : {n : ℕ} → S.Positive n → S.Positive (n as ℤ)
+    +-preserves-pos : AA.Preserves {A = ℤ} S.Positive _+_
+    neg-Positive : {a : ℤ} → S.Positive a → S.Negative (- a)
+    neg-Negative : {a : ℤ} → S.Negative a → S.Positive (- a)
 
-    1-Positive : Positive {A = ℤ} 1
+    1-Positive : S.Positive {A = ℤ} 1

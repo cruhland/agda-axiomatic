@@ -3,7 +3,7 @@ open import net.cruhland.axioms.Eq using (_≄_)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
 import net.cruhland.axioms.Peano.Literals as Literals
-open import net.cruhland.axioms.Sign using (Positive; Positivity)
+import net.cruhland.axioms.Sign as S
 open import net.cruhland.models.Literals
 
 module net.cruhland.axioms.Peano.Sign (PB : PeanoBase) where
@@ -13,5 +13,5 @@ private module ℕLit = Literals PB
 
 record Sign : Set₁ where
   field
-    {{positivity}} : Positivity 0
-    Pos-intro-≄0 : {n : ℕ} → n ≄ 0 → Positive n
+    {{positivity}} : S.Positivity ℕ
+    Pos-intro-≄0 : {n : ℕ} → n ≄ 0 → S.Positive n

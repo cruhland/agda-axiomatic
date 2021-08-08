@@ -17,5 +17,5 @@ record Sign (QB : Base) : Set₁ where
   private open module ℚ = RationalPredefs QB using (ℚ)
 
   field
-    {{positivity}} : S.Positivity 0
-    {{negativity}} : S.Negativity 0
+    {{positivity}} : S.Positivity ℚ
+    {{negativity}} : S.Negativity ℚ

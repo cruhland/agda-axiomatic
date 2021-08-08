@@ -11,7 +11,7 @@ open import net.cruhland.axioms.Integers.SignDecl using (Sign)
 open import net.cruhland.axioms.Operators using (_+_; -_; _-_)
 open import net.cruhland.axioms.Ordering as Ord using (_≤_; _<_; _>_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
-open import net.cruhland.axioms.Sign using (Positive; pos≄0)
+import net.cruhland.axioms.Sign as S
 import net.cruhland.models.Function
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using (∧-intro; _↯_; ¬_; ¬-intro)
@@ -100,7 +100,7 @@ instance
               b
             ∎
 
-<-from-pos : {a b : ℤ} → Positive (b - a) → a < b
+<-from-pos : {a b : ℤ} → S.Positive (b - a) → a < b
 <-from-pos {a} {b} pos[b-a] =
   let ℤ.≃posℕ-intro {d} pos[d] b-a≃d = ℤ.posℕ-from-posℤ pos[b-a]
       b≃a+d = ℤ.≃ᴸ-subᴿ-toᴸ b-a≃d
@@ -119,11 +119,11 @@ instance
                 (0 as ℤ)
               ∎
             d≃0 = AA.inject d:ℤ≃0:ℤ
-            d≄0 = pos≄0 pos[d]
+            d≄0 = S.pos≄0 pos[d]
          in d≃0 ↯ d≄0
    in Ord.<-from-≤≄ a≤b a≄b
 
-pos-from-< : {a b : ℤ} → a < b → Positive (b - a)
+pos-from-< : {a b : ℤ} → a < b → S.Positive (b - a)
 pos-from-< {a} {b} (<₀-intro (≤₀-intro {d} a+d≃b) a≄b) =
   let d≄0 = Eq.≄-intro λ d≃0 →
         let a≃b =
@@ -147,10 +147,10 @@ order-trichotomy : (a b : ℤ) → AA.ExactlyOneOfThree (a < b) (a ≃ b) (a > b
 order-trichotomy a b = AA.exactlyOneOfThree 1of3 ¬2of3
   where
     1of3 : AA.OneOfThree (a < b) (a ≃ b) (a > b)
-    1of3 with AA.ExactlyOneOfThree.at-least-one (ℤ.trichotomy (b - a))
-    ... | AA.1st neg[b-a] = AA.3rd (<-from-pos (ℤ.sub-sign-swap neg[b-a]))
-    ... | AA.2nd b-a≃0 = AA.2nd (Eq.sym (ℤ.≃-from-zero-sub b-a≃0))
-    ... | AA.3rd pos[b-a] = AA.1st (<-from-pos pos[b-a])
+    1of3 with AA.ExactlyOneOfThree.at-least-one (S.trichotomy (b - a))
+    ... | AA.1st b-a≃0 = AA.2nd (Eq.sym (ℤ.≃-from-zero-sub b-a≃0))
+    ... | AA.2nd pos[b-a] = AA.1st (<-from-pos pos[b-a])
+    ... | AA.3rd neg[b-a] = AA.3rd (<-from-pos (ℤ.sub-sign-swap neg[b-a]))
 
     ¬2of3 : ¬ AA.TwoOfThree (a < b) (a ≃ b) (a > b)
     ¬2of3 = ¬-intro λ
