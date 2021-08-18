@@ -1,7 +1,7 @@
 module net.cruhland.axioms.CoreAlgebra.Monoid where
 
 import net.cruhland.axioms.AbstractAlgebra as AA
-open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_; Eq; sym)
+open import net.cruhland.axioms.Eq as Eq using (_≃_; Eq)
   
 record Monoid (G : Set) : Set₁ where
   infix 7 _⊙_
