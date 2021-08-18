@@ -56,7 +56,7 @@ record Sign (ZB : Base) (ZA : Addition ZB) (ZN : Negation ZB ZA) : Set₁ where
     negℤ-from-posℕ : {a : ℤ} → a ≃ -_ [posℕ] → S.Negative a
 
     from-ℕ-preserves-pos : {n : ℕ} → S.Positive n → S.Positive (n as ℤ)
-    +-preserves-pos : AA.Preserves {A = ℤ} S.Positive _+_
+    {{+-preserves-pos}} : AA.Preserves {A = ℤ} S.Positive _+_
     neg-Positive : {a : ℤ} → S.Positive a → S.Negative (- a)
     neg-Negative : {a : ℤ} → S.Negative a → S.Positive (- a)
 

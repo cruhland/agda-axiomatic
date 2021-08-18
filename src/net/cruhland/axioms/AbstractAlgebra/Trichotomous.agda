@@ -17,3 +17,5 @@ record ExactlyOneOfThree (A B C : Set) : Set where
   field
     at-least-one : OneOfThree A B C
     at-most-one : ¬ TwoOfThree A B C
+
+open ExactlyOneOfThree public using (at-least-one; at-most-one)

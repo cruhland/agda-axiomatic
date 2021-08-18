@@ -33,9 +33,11 @@ record Multiplication
     {{*-commutative}} : AA.Commutative {A = ℚ} _*_
     {{*-associative}} : AA.Associative {A = ℚ} _*_
     {{*-identity}} : AA.Identity² {A = ℚ} _*_ 1
+    {{*-absorptive}} : AA.Absorptive² {A = ℚ} (AA.tc₂ _*_)
+    {{*-zero}} : AA.ZeroProduct {A = ℚ} _*_
 
-    {{*-distributive}} : AA.Distributive² {A = ℚ} _*_ _+_
-    {{*-compatible-ℤ}} : AA.Compatible₂ {A = ℤ} (_as ℚ) _*_ _*_ _≃_
+    {{*-distributive}} : AA.Distributive² {A = ℚ} (AA.tc₂ _*_) _+_
+    {{*-compatible-ℤ}} : AA.Compatible₂ {A = ℤ} (AA.tc₁ (_as ℚ)) _*_ _*_ _≃_
 
     *-neg-ident : {q : ℚ} → -1 * q ≃ - q
     {{*-comm-with-neg}} : AA.FnOpCommutative² {A = ℚ} -_ -_ (AA.tc₂ _*_)

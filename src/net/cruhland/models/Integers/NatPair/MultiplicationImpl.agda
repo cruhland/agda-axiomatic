@@ -112,7 +112,7 @@ instance
   *-substitutive : AA.Substitutive² _*_ _≃_ _≃_
   *-substitutive = AA.substitutive² {A = ℤ}
 
-  *-compatible-ℕ : AA.Compatible₂ (_as ℤ) _*_ _*_ _≃_
+  *-compatible-ℕ : AA.Compatible₂ (AA.tc₁ (_as ℤ)) _*_ _*_ _≃_
   *-compatible-ℕ = AA.compatible₂ {A = ℕ} *-compat-ℕ
     where
       *-compat-ℕ : {n m : ℕ} → (n * m as ℤ) ≃ (n as ℤ) * (m as ℤ)
@@ -174,7 +174,7 @@ instance
   *-identity : AA.Identity² _*_ 1
   *-identity = AA.identity² {A = ℤ}
 
-  *-distributiveᴸ : AA.Distributive AA.handᴸ _*_ _+_
+  *-distributiveᴸ : AA.Distributive AA.handᴸ (AA.tc₂ _*_) _+_
   *-distributiveᴸ = AA.distributive *-distribᴸ
     where
       *-distribᴸ : {a b c : ℤ} → a * (b + c) ≃ a * b + a * c
@@ -216,10 +216,10 @@ instance
               (b₁ * a₁ + b₂ * a₂) + (b₁ * a₃ + b₂ * a₄)
             ∎
 
-  *-distributiveᴿ : AA.Distributive AA.handᴿ _*_ _+_
+  *-distributiveᴿ : AA.Distributive AA.handᴿ (AA.tc₂ _*_) _+_
   *-distributiveᴿ = AA.distributiveᴿ-from-distributiveᴸ {A = ℤ}
 
-  *-distributive : AA.Distributive² _*_ _+_
+  *-distributive : AA.Distributive² (AA.tc₂ _*_) _+_
   *-distributive = AA.distributive² {A = ℤ}
 
   *-associative : AA.Associative _*_

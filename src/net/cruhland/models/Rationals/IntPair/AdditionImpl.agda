@@ -108,7 +108,7 @@ instance
   +-substitutive : AA.Substitutive² _+_ _≃_ _≃_
   +-substitutive = AA.substitutive² {A = ℚ}
 
-  +-compatible-ℤ : AA.Compatible₂ (_as ℚ) _+_ _+_ _≃_
+  +-compatible-ℤ : AA.Compatible₂ (AA.tc₁ (_as ℚ)) _+_ _+_ _≃_
   +-compatible-ℤ = AA.compatible₂ {A = ℤ} +-compat-ℤ
     where
       +-compat-ℤ : {a b : ℤ} → (a + b as ℚ) ≃ (a as ℚ) + (b as ℚ)

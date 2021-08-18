@@ -6,11 +6,14 @@ open import net.cruhland.axioms.Integers using (Integers)
 open import net.cruhland.axioms.Operators as Op using (_+_; -_; _*_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.models.Literals
+open import net.cruhland.models.Logic using (_∨_; ∨-map)
 
 module net.cruhland.models.Rationals.IntPair.MultiplicationImpl
   (PA : PeanoArithmetic) (Z : Integers PA) where
 
+open import net.cruhland.models.Rationals.IntPair.AdditionDefn PA Z using (QA)
 open import net.cruhland.models.Rationals.IntPair.BaseDefn PA Z using (QB)
+open import net.cruhland.models.Rationals.IntPair.NegationDefn PA Z using (QN)
 
 private module ℤ = Integers Z
 private module ℚ where
@@ -91,7 +94,7 @@ instance
   *-substitutive : AA.Substitutive² _*_ _≃_ _≃_
   *-substitutive = AA.substitutive² {A = ℚ}
 
-  *-compatible-ℤ : AA.Compatible₂ (_as ℚ) _*_ _*_ _≃_
+  *-compatible-ℤ : AA.Compatible₂ (AA.tc₁ (_as ℚ)) _*_ _*_ _≃_
   *-compatible-ℤ = AA.compatible₂ {A = ℤ} *-compat-ℤ
     where
       *-compat-ℤ : {a b : ℤ} → (a * b as ℚ) ≃ (a as ℚ) * (b as ℚ)
@@ -167,7 +170,7 @@ instance
   *-identity : AA.Identity² _*_ 1
   *-identity = AA.identity² {A = ℚ}
 
-  *-distributiveᴸ : AA.Distributive AA.handᴸ _*_ _+_
+  *-distributiveᴸ : AA.Distributive AA.handᴸ (AA.tc₂ _*_) _+_
   *-distributiveᴸ = AA.distributive *-distribᴸ
     where
       *-distribᴸ : {p q r : ℚ} → p * (q + r) ≃ p * q + p * r
@@ -248,49 +251,49 @@ instance
               p * q + p * r
             ∎
 
-  *-distributiveᴿ : AA.Distributive AA.handᴿ _*_ _+_
+  *-distributiveᴿ : AA.Distributive AA.handᴿ (AA.tc₂ _*_) _+_
   *-distributiveᴿ = AA.distributiveᴿ-from-distributiveᴸ {A = ℚ}
 
-  *-distributive : AA.Distributive² _*_ _+_
+  *-distributive : AA.Distributive² (AA.tc₂ _*_) _+_
   *-distributive = AA.distributive² {A = ℚ}
 
-  *-neg-ident : {q : ℚ} → -1 * q ≃ - q
-  *-neg-ident q@{(q↑ // q↓) {{q↓≄0}}} =
-    let instance
-          1*q↓≄0 = AA.nonzero-prod {{a≄0 = ℤ.1≄0}} {{q↓≄0}}
-     in begin
-          -1 * q
-        ≃⟨⟩
-          (-1 // 1) * (q↑ // q↓)
-        ≃⟨⟩
-          (-1 * q↑) // (1 * q↓)
-        ≃⟨ AA.subst₂ ℤ.neg-mult ⟩
-          (- q↑) // (1 * q↓)
-        ≃⟨ AA.subst₂ AA.ident ⟩
-          (- q↑) // q↓
-        ≃⟨⟩
-          - (q↑ // q↓)
-        ≃⟨⟩
-          - q
-        ∎
-
-  *-comm-with-negᴸ : AA.FnOpCommutative AA.handᴸ -_ -_ (AA.tc₂ _*_)
-  *-comm-with-negᴸ = AA.fnOpCommutative *-negᴸ
+  *-zero : AA.ZeroProduct _*_
+  *-zero = AA.zeroProduct *-zero-prod
     where
-      *-negᴸ : {p q : ℚ} → - (p * q) ≃ (- p) * q
-      *-negᴸ {p} {q} =
-        begin
-          - (p * q)
-        ≃˘⟨ *-neg-ident ⟩
-          -1 * (p * q)
-        ≃˘⟨ AA.assoc ⟩
-          (-1 * p) * q
-        ≃⟨ AA.subst₂ *-neg-ident ⟩
-          (- p) * q
-        ∎
+      *-zero-prod : {p q : ℚ} → p * q ≃ 0 → p ≃ 0 ∨ q ≃ 0
+      *-zero-prod p@{p↑ // p↓} q@{q↑ // q↓} pq≃0 =
+        let p↑q↑≃0 = ℚ.q↑≃0-from-q≃0 pq≃0
+            p↑≃0∨q↑≃0 = AA.zero-prod p↑q↑≃0
+         in ∨-map ℚ.q≃0-from-q↑≃0 ℚ.q≃0-from-q↑≃0 p↑≃0∨q↑≃0
 
-  *-comm-with-negᴿ : AA.FnOpCommutative AA.handᴿ -_ -_ (AA.tc₂ _*_)
-  *-comm-with-negᴿ = AA.fnOpCommutativeᴿ-from-fnOpCommutativeᴸ {A = ℚ}
+*-neg-ident : {q : ℚ} → -1 * q ≃ - q
+*-neg-ident q@{(q↑ // q↓) {{q↓≄0}}} =
+  let instance
+        1*q↓≄0 = AA.nonzero-prod {{a≄0 = ℤ.1≄0}} {{q↓≄0}}
+   in begin
+        -1 * q
+      ≃⟨⟩
+        (-1 // 1) * (q↑ // q↓)
+      ≃⟨⟩
+        (-1 * q↑) // (1 * q↓)
+      ≃⟨ AA.subst₂ ℤ.neg-mult ⟩
+        (- q↑) // (1 * q↓)
+      ≃⟨ AA.subst₂ AA.ident ⟩
+        (- q↑) // q↓
+      ≃⟨⟩
+        - (q↑ // q↓)
+      ≃⟨⟩
+        - q
+      ∎
 
-  *-comm-with-neg : AA.FnOpCommutative² -_ -_ (AA.tc₂ _*_)
-  *-comm-with-neg = AA.fnOpCommutative² {A = ℚ}
+-- Export everything not defined here from the partial implementation
+private
+  open import net.cruhland.axioms.Rationals.MultiplicationPartialImpl PA Z
+    using (MultiplicationProperties)
+
+  multiplicationProperties : MultiplicationProperties QB QA QN
+  multiplicationProperties = record { *-neg-ident = *-neg-ident }
+
+open MultiplicationProperties multiplicationProperties public
+  hiding ( *-associative; *-commutative; *-distributive; *-identity; *-neg-ident
+         ; *-substitutive; star)

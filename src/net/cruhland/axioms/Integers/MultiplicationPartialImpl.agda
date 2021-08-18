@@ -46,10 +46,10 @@ module _
       {{*-substitutive}} : AA.Substitutive² {A = ℤ} _*_ _≃_ _≃_
       {{*-associative}} : AA.Associative {A = ℤ} _*_
       {{*-commutative}} : AA.Commutative {A = ℤ} _*_
-      {{*-compatible-ℕ}} : AA.Compatible₂ {A = ℕ} (_as ℤ) _*_ _*_ _≃_
+      {{*-compatible-ℕ}} : AA.Compatible₂ {A = ℕ} (AA.tc₁ (_as ℤ)) _*_ _*_ _≃_
       {{*-identity}} : AA.Identity² {A = ℤ} _*_ 1
 
-      {{*-distributive}} : AA.Distributive² {A = ℤ} _*_ _+_
+      {{*-distributive}} : AA.Distributive² {A = ℤ} (AA.tc₂ _*_) _+_
       {{*-comm-with-neg}} : AA.FnOpCommutative² -_ -_ (AA.tc₂ _*_)
 
     neg-mult : {a : ℤ} → -1 * a ≃ - a
@@ -65,7 +65,7 @@ module _
       ∎
 
     instance
-      *-distributive-subᴸ : AA.Distributive AA.handᴸ _*_ _-_
+      *-distributive-subᴸ : AA.Distributive AA.handᴸ (AA.tc₂ _*_) _-_
       *-distributive-subᴸ = AA.distributive *-distrib-subᴸ
         where
           *-distrib-subᴸ : {a b c : ℤ} → c * (a - b) ≃ c * a - c * b
@@ -82,14 +82,14 @@ module _
               c * a - c * b
             ∎
 
-      *-distributive-subᴿ : AA.Distributive AA.handᴿ _*_ _-_
+      *-distributive-subᴿ : AA.Distributive AA.handᴿ (AA.tc₂ _*_) _-_
       *-distributive-subᴿ = AA.distributiveᴿ-from-distributiveᴸ
 
-      *-distributive-sub : AA.Distributive² _*_ _-_
+      *-distributive-sub : AA.Distributive² (AA.tc₂ _*_) _-_
       *-distributive-sub = AA.distributive²
 
       private
-        *-absorptiveᴸ : AA.Absorptive AA.handᴸ _*_ 0
+        *-absorptiveᴸ : AA.Absorptive AA.handᴸ (AA.tc₂ _*_)
         *-absorptiveᴸ = AA.absorptive *-absorbᴸ
           where
             *-absorbᴸ : {a : ℤ} → 0 * a ≃ 0
@@ -104,10 +104,10 @@ module _
                 0
               ∎
 
-        *-absorptiveᴿ : AA.Absorptive AA.handᴿ _*_ 0
+        *-absorptiveᴿ : AA.Absorptive AA.handᴿ (AA.tc₂ _*_)
         *-absorptiveᴿ = AA.absorptiveᴿ-from-absorptiveᴸ {A = ℤ}
 
-      *-absorptive : AA.Absorptive² _*_ 0
+      *-absorptive : AA.Absorptive² (AA.tc₂ _*_)
       *-absorptive = AA.absorptive² {A = ℤ}
 
       *-preserves-≃±1 : AA.Preserves _≃±1 _*_
@@ -224,7 +224,7 @@ module _
        in nonzero-from-PosOrNeg ±ab
 
     instance
-      zero-product : AA.ZeroProduct 0 _*_
+      zero-product : AA.ZeroProduct _*_
       zero-product = AA.zeroProduct *-either-zero
         where
           *-either-zero : {a b : ℤ} → a * b ≃ 0 → a ≃ 0 ∨ b ≃ 0
@@ -260,7 +260,7 @@ module _
       *-cancellative : AA.Cancellative² _*_ _≃_ _≃_ (_≄ 0)
       *-cancellative = AA.cancellative² {A = ℤ}
 
-      neg-compatible-+ : AA.Compatible₂ -_ _+_ _+_ _≃_
+      neg-compatible-+ : AA.Compatible₂ (AA.tc₁ λ a → - a) _+_ _+_ _≃_
       neg-compatible-+ = AA.compatible₂ neg-compat-+
         where
           neg-compat-+ : {a b : ℤ} → - (a + b) ≃ (- a) + (- b)

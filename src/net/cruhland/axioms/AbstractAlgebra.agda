@@ -25,8 +25,8 @@ open Antisymmetric {{...}} public using (antisym)
 
 distributiveᴿ-from-distributiveᴸ :
   {A : Set} {_⊙_ _⊕_ : A → A → A} {{_ : Eq A}} {{_ : Commutative _⊙_}}
-  {{_ : Substitutive² _⊕_ _≃_ _≃_}} {{_ : Distributive handᴸ _⊙_ _⊕_}} →
-  Distributive handᴿ _⊙_ _⊕_
+  {{_ : Substitutive² _⊕_ _≃_ _≃_}} {{_ : Distributive handᴸ (tc₂ _⊙_) _⊕_}} →
+  Distributive handᴿ (tc₂ _⊙_) _⊕_
 distributiveᴿ-from-distributiveᴸ {A} {_⊙_} {_⊕_} = distributive distribᴿ₀
   where
     distribᴿ₀ : ∀ {a b c} → (a ⊕ b) ⊙ c ≃ (a ⊙ c) ⊕ (b ⊙ c)
@@ -100,7 +100,7 @@ perm-adcb {A} {_⊙_} {a} {b} {c} {d} =
 
 distrib-twoᴸ :
   {A : Set} {_⊙_ _⊕_ : A → A → A} {{_ : Eq A}}
-  {{_ : Distributive handᴸ _⊙_ _⊕_}} {{_ : Substitutive² _⊕_ _≃_ _≃_}} →
+  {{_ : Distributive handᴸ (tc₂ _⊙_) _⊕_}} {{_ : Substitutive² _⊕_ _≃_ _≃_}} →
   ∀ {a b c d e f} →
   (a ⊙ (b ⊕ c)) ⊕ (d ⊙ (e ⊕ f)) ≃ ((a ⊙ b) ⊕ (a ⊙ c)) ⊕ ((d ⊙ e) ⊕ (d ⊙ f))
 distrib-twoᴸ {A} {_⊙_} {_⊕_} {a} {b} {c} {d} {e} {f} =
@@ -114,7 +114,7 @@ distrib-twoᴸ {A} {_⊙_} {_⊕_} {a} {b} {c} {d} {e} {f} =
 
 distrib-twoᴿ :
   {A : Set} {_⊙_ _⊕_ : A → A → A} {{_ : Eq A}}
-  {{_ : Distributive handᴿ _⊙_ _⊕_}} {{_ : Substitutive² _⊕_ _≃_ _≃_}} →
+  {{_ : Distributive handᴿ (tc₂ _⊙_) _⊕_}} {{_ : Substitutive² _⊕_ _≃_ _≃_}} →
   ∀ {a b c d e f} →
   ((a ⊕ b) ⊙ c) ⊕ ((d ⊕ e) ⊙ f) ≃ ((a ⊙ c) ⊕ (b ⊙ c)) ⊕ ((d ⊙ f) ⊕ (e ⊙ f))
 distrib-twoᴿ {A} {_⊙_} {_⊕_} {a} {b} {c} {d} {e} {f} =
@@ -248,8 +248,8 @@ assoc-four
 refactor :
   {A : Set} {_⊙_ _⊕_ : A → A → A} {{eq : Eq A}} {{_ : Associative _⊙_}}
   {{_ : Associative _⊕_}} {{_ : Commutative _⊕_}}
-  {{_ : Substitutive² _⊕_ _≃_ _≃_}} {{_ : Distributive handᴸ _⊙_ _⊕_}}
-  {{_ : Distributive handᴿ _⊙_ _⊕_}} → ∀ {b₁ b₂ a₁ a₂ a₃ a₄} →
+  {{_ : Substitutive² _⊕_ _≃_ _≃_}} {{_ : Distributive handᴸ (tc₂ _⊙_) _⊕_}}
+  {{_ : Distributive handᴿ (tc₂ _⊙_) _⊕_}} → ∀ {b₁ b₂ a₁ a₂ a₃ a₄} →
   (((a₁ ⊙ a₃) ⊕ (a₂ ⊙ a₄)) ⊙ b₁) ⊕ (((a₁ ⊙ a₄) ⊕ (a₂ ⊙ a₃)) ⊙ b₂)
   ≃ (a₁ ⊙ ((a₃ ⊙ b₁) ⊕ (a₄ ⊙ b₂))) ⊕ (a₂ ⊙ ((a₃ ⊙ b₂) ⊕ (a₄ ⊙ b₁)))
 refactor {A} {_⊙_} {_⊕_} {b₁} {b₂} {a₁} {a₂} {a₃} {a₄} =

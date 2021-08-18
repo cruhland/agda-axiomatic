@@ -43,11 +43,11 @@ record Multiplication
   field
     {{star}} : Op.Star ℕ
     {{*-substitutiveᴸ}} : AA.Substitutive₂ AA.handᴸ _*_ _≃_ _≃_
-    {{*-absorptiveᴸ}} : AA.Absorptive AA.handᴸ _*_ 0
+    {{*-absorptiveᴸ}} : AA.Absorptive AA.handᴸ (AA.tc₂ _*_)
     *-stepᴸ : ∀ {n m} → step n * m ≃ n * m + m
 
   instance
-    *-absorptiveᴿ : AA.Absorptive AA.handᴿ _*_ 0
+    *-absorptiveᴿ : AA.Absorptive AA.handᴿ (AA.tc₂ _*_)
     *-absorptiveᴿ = AA.absorptive *-zeroᴿ
       where
         *-zeroᴿ : ∀ {n} → n * 0 ≃ 0
@@ -68,7 +68,7 @@ record Multiplication
                 0
               ∎
 
-    *-absorptive² : AA.Absorptive² _*_ 0
+    *-absorptive² : AA.Absorptive² (AA.tc₂ _*_)
     *-absorptive² = AA.absorptive²
 
   *-stepᴿ : ∀ {n m} → n * step m ≃ n * m + n
@@ -141,7 +141,7 @@ record Multiplication
     *-identityᴿ : AA.Identity AA.handᴿ _*_ 1
     *-identityᴿ = AA.identityᴿ-from-identityᴸ
 
-    zero-product : AA.ZeroProduct 0 _*_
+    zero-product : AA.ZeroProduct _*_
     zero-product = AA.zeroProduct *-either-zero
       where
         *-either-zero : ∀ {n m} → n * m ≃ 0 → n ≃ 0 ∨ m ≃ 0
@@ -178,7 +178,7 @@ record Multiplication
     *-substitutive : AA.Substitutive² _*_ _≃_ _≃_
     *-substitutive = AA.substitutive²
 
-    *-distributive-+ᴸ : AA.Distributive AA.handᴸ _*_ _+_
+    *-distributive-+ᴸ : AA.Distributive AA.handᴸ (AA.tc₂ _*_) _+_
     *-distributive-+ᴸ = AA.distributive *-distrib-+ᴸ
       where
         *-distrib-+ᴸ : ∀ {a b c} → a * (b + c) ≃ a * b + a * c
@@ -212,7 +212,7 @@ record Multiplication
                 a * b + a * step k
               ∎
 
-    *-distributive-+ᴿ : AA.Distributive AA.handᴿ _*_ _+_
+    *-distributive-+ᴿ : AA.Distributive AA.handᴿ (AA.tc₂ _*_) _+_
     *-distributive-+ᴿ = AA.distributiveᴿ-from-distributiveᴸ
 
     *-associative : AA.Associative _*_

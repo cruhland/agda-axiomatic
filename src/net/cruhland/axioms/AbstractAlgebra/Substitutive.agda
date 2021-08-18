@@ -150,6 +150,14 @@ module _ {A : Set} {{_ : Eq A}} where
     ≄-substitutive² : Substitutive² _≄_ _≃_ _⟨→⟩_
     ≄-substitutive² = substitutive²
 
+module NeqProperties {A : Set} {{_ : Eq A}} where
+
+  ≄-substitutive₁ᴸ : {z : A} → Substitutive₁ (_≄ z) _≃_ _⟨→⟩_
+  ≄-substitutive₁ᴸ {z} = substitutive₁ ≄z-subst
+    where
+      ≄z-subst : {x y : A} → x ≃ y → x ≄ z → y ≄ z
+      ≄z-subst = substᴸ
+
 with-comm :
   {A : Set} {_⊙_ : A → A → A} {{_ : Eq A}} {{_ : AA.Commutative _⊙_}} →
     ∀ {a b c d} → b ⊙ a ≃ d ⊙ c → a ⊙ b ≃ c ⊙ d

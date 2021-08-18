@@ -12,6 +12,7 @@ module net.cruhland.models.Rationals.IntPair.ReciprocalImpl
 
 open import net.cruhland.models.Rationals.IntPair.BaseDefn PA Z using (QB)
 
+private module ℤ = Integers Z
 private module ℚ where
   open import net.cruhland.models.Rationals.IntPair.BaseImpl PA Z public
   open import net.cruhland.axioms.Rationals.LiteralImpl PA Z QB public
@@ -110,3 +111,36 @@ instance
 
   *-inverse : AA.Inverse² _⁻¹ _*_ 1
   *-inverse = AA.inverse²
+
+  recip-compat-* : AA.Compatible₂ _⁻¹ _*_ _*_ _≃_
+  recip-compat-* = AA.compatible₂ *-recip
+    where
+      *-recip :
+        {p q : ℚ} {{pq≄0 : p * q ≄ 0}} {{p≄0 : p ≄ 0}} {{q≄0 : q ≄ 0}} →
+        (p * q) ⁻¹ ≃ p ⁻¹ * q ⁻¹
+      *-recip
+          p@{(p↑ // p↓) {{p↓≄0}}} q@{(q↑ // q↓) {{q↓≄0}}}
+          {{pq≄0}} {{p≄0}} {{q≄0}} =
+        let instance
+              p↑≄0 = contrapositive ℚ.q≃0-from-q↑≃0 p≄0
+              q↑≄0 = contrapositive ℚ.q≃0-from-q↑≃0 q≄0
+              p↑q↑≄0₁ = contrapositive ℚ.q≃0-from-q↑≃0 pq≄0
+              p↑q↑≄0₂ = AA.nonzero-prod {{a≄0 = p↑≄0}} {{q↑≄0}}
+              p↓q↓≄0 = AA.nonzero-prod {{a≄0 = p↓≄0}} {{q↓≄0}}
+         in begin
+              (p * q) ⁻¹
+            ≃⟨⟩
+              ((p↑ // p↓) * (q↑ // q↓)) ⁻¹
+            ≃⟨⟩
+              ((p↑ * q↑) // (p↓ * q↓)) ⁻¹
+            ≃⟨⟩
+              ((p↓ * q↓) // (p↑ * q↑)) {{p↑q↑≄0₁}}
+            ≃⟨ ℚ.≃₀-intro Eq.refl ⟩
+              ((p↓ * q↓) // (p↑ * q↑)) {{p↑q↑≄0₂}}
+            ≃⟨⟩
+              (p↓ // p↑) * (q↓ // q↑)
+            ≃⟨⟩
+              (p↑ // p↓) ⁻¹ * (q↑ // q↓) ⁻¹
+            ≃⟨⟩
+              p ⁻¹ * q ⁻¹
+            ∎

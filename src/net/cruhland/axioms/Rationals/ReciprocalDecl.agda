@@ -41,4 +41,6 @@ record Reciprocal
     {{recip-substitutive}} : AA.Substitutive₁ᶜ {A = ℚ} _⁻¹ _≃_ _≃_
 
     {{recip-compat-neg}} : AA.Compatible₁ _⁻¹ -_ -_ _≃_
+
     {{*-inverse}} : AA.Inverse² _⁻¹ _*_ 1
+    {{recip-compat-*}} : AA.Compatible₂ _⁻¹ _*_ _*_ _≃_

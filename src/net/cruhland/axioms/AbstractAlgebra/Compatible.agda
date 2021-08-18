@@ -1,6 +1,7 @@
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_; Eq)
 open Eq.≃-Reasoning
 open import net.cruhland.models.Function using (_⟨→⟩_)
+open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using (_∨_; ∨-rec; _↯_)
 
 module net.cruhland.axioms.AbstractAlgebra.Compatible where
@@ -8,7 +9,6 @@ module net.cruhland.axioms.AbstractAlgebra.Compatible where
 private
   module AA where
     open import net.cruhland.axioms.AbstractAlgebra.Base public
-    open import net.cruhland.axioms.AbstractAlgebra.Reductive public
 
   record Semicompatible₂
       (hand : AA.Hand) {A B : Set}
@@ -46,12 +46,15 @@ record Preserves {A : Set} (P : A → Set) (_⊙_ : A → A → A) : Set where
 open Preserves {{...}} public using (pres)
 
 record Compatible₂
-    {β} {A : Set} {B : Set β}
-    (f : A → B) (_⊙_ : A → A → A) (_⊕_ : B → B → B) (_~_ : B → B → Set)
+    {β} {A : Set} {B : Set β} {C : A → Set}
+    (f : (x : A) {{_ : C x}} → B) (_⊙_ : A → A → A) (_⊕_ : B → B → B)
+    (_~_ : B → B → Set)
     : Set where
   constructor compatible₂
   field
-    compat₂ : ∀ {a b} → (f (a ⊙ b)) ~ (f a ⊕ f b)
+    compat₂ :
+      ∀ {a b} {{Cab : C (a ⊙ b)}} {{Ca : C a}} {{Cb : C b}} →
+      (f (a ⊙ b)) ~ (f a ⊕ f b)
 
 open Compatible₂ {{...}} public using (compat₂)
 
@@ -97,39 +100,46 @@ record FnOpCommutative²
     {{fnOpCommutativeᴿ}} : FnOpCommutative AA.handᴿ f g _⊙_
 
 record Distributive
-    (hand : AA.Hand) {A : Set} {{_ : Eq A}} (_⊙_ _⊕_ : A → A → A) : Set where
+    (hand : AA.Hand) {A : Set} {{_ : Eq A}} {C : A → A → Set}
+    (_⊙_ : (x y : A) {{_ : C x y}} → A) (_⊕_ : A → A → A)
+    : Set where
   constructor distributive
-  _<⊙>_ = AA.forHand hand _⊙_
+  C˘ = AA.forHand hand C
+  _⊙˘_ = AA.forHandᶜ hand _⊙_
   field
-    distrib : ∀ {a b c} → a <⊙> (b ⊕ c) ≃ (a <⊙> b) ⊕ (a <⊙> c)
+    distrib :
+      ∀ {a b c} {{Cabc : C˘ a (b ⊕ c)}} {{Cab : C˘ a b}} {{Cac : C˘ a c}} →
+      a ⊙˘ (b ⊕ c) ≃ (a ⊙˘ b) ⊕ (a ⊙˘ c)
 
 open Distributive {{...}} public using (distrib)
 
 distribᴸ = distrib {AA.handᴸ}
 distribᴿ = distrib {AA.handᴿ}
 
-record Distributive² {A : Set} {{_ : Eq A}} (_⊙_ _⊕_ : A → A → A) : Set where
+record Distributive²
+    {A : Set} {{_ : Eq A}} {C : A → A → Set}
+    (_⊙_ : (x y : A) {{_ : C x y}} → A) (_⊕_ : A → A → A)
+    : Set where
   constructor distributive²
   field
     {{distributiveᴸ}} : Distributive AA.handᴸ _⊙_ _⊕_
     {{distributiveᴿ}} : Distributive AA.handᴿ _⊙_ _⊕_
 
 record ZeroProduct
-    {A : Set} (z : A) (_⊙_ : A → A → A)
-    {{_ : Eq A}} {{_ : AA.Absorptive² _⊙_ z}}
+    {A : Set} (_⊙_ : A → A → A) {{_ : Eq A}} {{_ : FromNatLiteral A}}
     : Set where
   constructor zeroProduct
   field
-    zero-prod : ∀ {a b} → a ⊙ b ≃ z → a ≃ z ∨ b ≃ z
+    zero-prod : ∀ {a b} → a ⊙ b ≃ 0 → a ≃ 0 ∨ b ≃ 0
 
 open ZeroProduct {{...}} public using (zero-prod)
 
 nonzero-prod :
-  {A : Set} {z : A} {_⊙_ : A → A → A}
-  {{_ : Eq A}} {{_ : AA.Absorptive² _⊙_ z}} {{r : ZeroProduct z _⊙_}} →
-  ∀ {a b} {{a≄0 : a ≄ z}} {{b≄0 : b ≄ z}} → a ⊙ b ≄ z
-nonzero-prod {{a≄0 = a≄0}} {{b≄0}} = Eq.≄-intro λ ab≃z →
-  ∨-rec (_↯ a≄0) (_↯ b≄0) (zero-prod ab≃z)
+  {A : Set} {_⊙_ : A → A → A}
+  {{_ : Eq A}} {{_ : FromNatLiteral A}} {{r : ZeroProduct _⊙_}} →
+  ∀ {a b} {{a≄0 : a ≄ 0}} {{b≄0 : b ≄ 0}} → a ⊙ b ≄ 0
+nonzero-prod {{a≄0 = a≄0}} {{b≄0}} = Eq.≄-intro λ ab≃0 →
+  ∨-rec (_↯ a≄0) (_↯ b≄0) (zero-prod ab≃0)
 
 {--- Equivalences ---}
 
@@ -138,13 +148,13 @@ module _
       {_⊙_ : A → A → A} {_⊕_ : B → B → B} {_~_ : B → B → Set} where
 
   compatible₁-from-compatible₂ :
-    {{_ : Compatible₂ f _⊙_ _⊕_ _~_}} →
+    {{_ : Compatible₂ (AA.tc₁ f) _⊙_ _⊕_ _~_}} →
       ∀ {b} → Compatible₁ (AA.tc₁ f) (_⊙ b) (_⊕ f b) _~_
   compatible₁-from-compatible₂ = compatible₁ compat₂
 
   compatible₂-from-compatible₁ :
     {{_ : ∀ {b} → Compatible₁ (AA.tc₁ f) (_⊙ b) (_⊕ f b) _~_}} →
-      Compatible₂ f _⊙_ _⊕_ _~_
+      Compatible₂ (AA.tc₁ f) _⊙_ _⊕_ _~_
   compatible₂-from-compatible₁ = compatible₂ compat₁
 
 -- TODO Equivalences for Semicompatible₂ and Preserves
@@ -174,34 +184,31 @@ module _ {A : Set} {f : A → A} {_⊙_ : A → A → A} {{_ : Eq A}} where
 module _ {A : Set} {_⊙_ _⊕_ : A → A → A} {{_ : Eq A}} where
 
   compatible₂-from-distributiveᴸ :
-    {{_ : Distributive AA.handᴸ _⊙_ _⊕_}} →
-      ∀ {a} → Compatible₂ (a ⊙_) _⊕_ _⊕_ _≃_
+    {{_ : Distributive AA.handᴸ (AA.tc₂ _⊙_) _⊕_}} →
+      ∀ {a} → Compatible₂ (AA.tc₁ (a ⊙_)) _⊕_ _⊕_ _≃_
   compatible₂-from-distributiveᴸ {a} = compatible₂ distrib
 
   distributiveᴸ-from-compatible₂ :
-    {{_ : ∀ {a} → Compatible₂ (a ⊙_) _⊕_ _⊕_ _≃_}} →
-      Distributive AA.handᴸ _⊙_ _⊕_
+    {{_ : ∀ {a} → Compatible₂ (AA.tc₁ (a ⊙_)) _⊕_ _⊕_ _≃_}} →
+      Distributive AA.handᴸ (AA.tc₂ _⊙_) _⊕_
   distributiveᴸ-from-compatible₂ = distributive compat₂
 
   compatible₂-from-distributiveᴿ :
-    {{_ : Distributive AA.handᴿ _⊙_ _⊕_}} →
-      ∀ {a} → Compatible₂ (_⊙ a) _⊕_ _⊕_ _≃_
+    {{_ : Distributive AA.handᴿ (AA.tc₂ _⊙_) _⊕_}} →
+      ∀ {a} → Compatible₂ (AA.tc₁ (_⊙ a)) _⊕_ _⊕_ _≃_
   compatible₂-from-distributiveᴿ {a} = compatible₂ distrib
 
   distributiveᴿ-from-compatible₂ :
-    {{_ : ∀ {a} → Compatible₂ (_⊙ a) _⊕_ _⊕_ _≃_}} →
-      Distributive AA.handᴿ _⊙_ _⊕_
+    {{_ : ∀ {a} → Compatible₂ (AA.tc₁ (_⊙ a)) _⊕_ _⊕_ _≃_}} →
+      Distributive AA.handᴿ (AA.tc₂ _⊙_) _⊕_
   distributiveᴿ-from-compatible₂ = distributive compat₂
 
-module _
-    {A : Set} {z : A} {_⊙_ : A → A → A}
-    {{_ : Eq A}} {{_ : AA.Absorptive² _⊙_ z}}
-    where
+module _ {A : Set} {_⊙_ : A → A → A} {{_ : Eq A}} {{_ : FromNatLiteral A}} where
 
   compatible₂-from-zero-product :
-    {{r : ZeroProduct z _⊙_}} → Compatible₂ (_≃ z) _⊙_ _∨_ _⟨→⟩_
+    {{r : ZeroProduct _⊙_}} → Compatible₂ (AA.tc₁ (_≃ 0)) _⊙_ _∨_ _⟨→⟩_
   compatible₂-from-zero-product = compatible₂ zero-prod
 
   zero-product-from-compatible₂ :
-    {{_ : Compatible₂ (_≃ z) _⊙_ _∨_ _⟨→⟩_}} → ZeroProduct z _⊙_
+    {{_ : Compatible₂ (AA.tc₁ (_≃ 0)) _⊙_ _∨_ _⟨→⟩_}} → ZeroProduct _⊙_
   zero-product-from-compatible₂ = zeroProduct compat₂

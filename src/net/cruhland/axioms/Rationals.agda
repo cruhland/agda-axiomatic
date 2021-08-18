@@ -18,11 +18,11 @@ record Rationals : Set₁ where
   field
     QB : Base
     QA : Addition QB
-    QS : Sign QB
     QN : Negation QB QA
-    QD : Division QB QA QN
     QM : Multiplication QB QA QN
     QR : Reciprocal QB QA QN QM
+    QD : Division QB QA QN QM QR
+    QS : Sign QB QA QN QM QR QD
 
   open Addition QA public
   open Base QB public
@@ -35,7 +35,11 @@ record Rationals : Set₁ where
 
 -- Confirm that all partial impls typecheck
 module _ where
+  import net.cruhland.axioms.Rationals.DivisionPartialImplBaseQ
+  import net.cruhland.axioms.Rationals.DivisionPartialImplDerivedQ
+  import net.cruhland.axioms.Rationals.DivisionPartialImplPropertiesQ
+  import net.cruhland.axioms.Rationals.DivisionPartialImplBaseZ
+  import net.cruhland.axioms.Rationals.DivisionPartialImplPropertiesZ
+  import net.cruhland.axioms.Rationals.MultiplicationPartialImpl
   import net.cruhland.axioms.Rationals.NegationPartialImpl
-  import net.cruhland.axioms.Rationals.DivisionPartialImplBase
-  import net.cruhland.axioms.Rationals.DivisionPartialImplProperties
   import net.cruhland.axioms.Rationals.SignDefaultImpl
