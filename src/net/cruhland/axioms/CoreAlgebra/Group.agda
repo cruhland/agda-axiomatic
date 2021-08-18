@@ -1,11 +1,13 @@
 open import net.cruhland.axioms.CoreAlgebra.Monoid using (Monoid)
-import net.cruhland.axioms.AbstractAlgebra as AA
-open import net.cruhland.models.Function using (const)
-open import net.cruhland.models.Logic using (⊤)
-open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_; Eq; sym)
-open Eq.≃-Reasoning
 
 module net.cruhland.axioms.CoreAlgebra.Group (G : Set) (M : Monoid G) where
+
+import net.cruhland.axioms.AbstractAlgebra as AA
+
+open import net.cruhland.axioms.Eq as Eq using (_≃_; sym)
+open import net.cruhland.models.Function using (const)
+open import net.cruhland.models.Logic using (⊤)
+open Eq.≃-Reasoning
 
 private open module M = Monoid M using (_⊙_; identity)
 
