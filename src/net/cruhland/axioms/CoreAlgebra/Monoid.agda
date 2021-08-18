@@ -8,8 +8,7 @@ record Monoid (G : Set) : Set₁ where
   field
     {{eq}} : Eq G  -- includes reflexive, symmetric, and transitive properties
     _⊙_ : G → G → G
-
-    {{identity}} : G
+    identity : G
 
     -- properties of composition
     {{⊙-substitutive}} : AA.Substitutive² {A = G} _⊙_ _≃_ _≃_  -- Eq subst with ⊙
