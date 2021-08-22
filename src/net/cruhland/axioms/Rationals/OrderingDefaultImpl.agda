@@ -16,7 +16,7 @@ open import net.cruhland.axioms.Rationals.SignDecl using (Sign)
 import net.cruhland.axioms.Sign as S
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic
-  using (_∨_; ∨-map; ∨-forceᴸ; _↯_; ¬_; ¬-intro)
+  using (_∨_; ∨-map; ∨-forceᴸ; ¬_; contrapositive)
 
 module net.cruhland.axioms.Rationals.OrderingDefaultImpl
   (PA : PeanoArithmetic)
@@ -118,10 +118,9 @@ instance
             AA.2∧3 pos[p-q] neg[p-q]
 
           ¬2of3 : ¬ AA.TwoOfThree (p ≃ q) (p < q) (p > q)
-          ¬2of3 = ¬-intro λ ord-2of3 →
-            let sign-2of3 = sign-2of3-from-ord-2of3 ord-2of3
-                ¬sign-2of3 = AA.at-most-one sign-tri
-             in sign-2of3 ↯ ¬sign-2of3
+          ¬2of3 =
+            let ¬sign-2of3 = AA.at-most-one sign-tri
+             in contrapositive sign-2of3-from-ord-2of3 ¬sign-2of3
 
   totalOrder : Ord.TotalOrder ℚ
   totalOrder = record { <-from-≤≄ = <₀-from-≤₀≄ }
