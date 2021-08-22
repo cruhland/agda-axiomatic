@@ -3,7 +3,7 @@ open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Operators using (_+_; -_)
-open import net.cruhland.axioms.Ordering using (_<_)
+open import net.cruhland.axioms.Ordering as Ord using (_<_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 import net.cruhland.axioms.Sign as S
 open import net.cruhland.models.Function using (_⟨→⟩_; id)
@@ -181,7 +181,7 @@ instance
           1of3 with AA.ExactlyOneOfThree.at-least-one (ℕ.order-trichotomy a⁺ a⁻)
           1of3 | AA.1st a⁺<a⁻ = AA.3rd a⁺<a⁻
           1of3 | AA.2nd a⁺≃a⁻ = AA.1st (ℤ.zero-from-balanced a⁺≃a⁻)
-          1of3 | AA.3rd a⁻<a⁺ = AA.2nd a⁻<a⁺
+          1of3 | AA.3rd a⁺>a⁻ = AA.2nd (Ord.>-flip a⁺>a⁻)
 
           ¬2of3 : ¬ AA.TwoOfThree (a ≃ 0) (S.Positive a) (S.Negative a)
           ¬2of3 = ¬-intro λ
@@ -195,6 +195,14 @@ instance
     where
       +-pres-pos : {a b : ℤ} → S.Positive a → S.Positive b → S.Positive (a + b)
       +-pres-pos {a⁺ — a⁻} {b⁺ — b⁻} a⁻<a⁺ b⁻<b⁺ = ℕ.<-compatible-+ a⁻<a⁺ b⁻<b⁺
+
+instance
+  positivity-common : S.PositivityCommon ℤ
+  positivity-common = record {}
+
+  sign-common : S.SignCommon ℤ
+  sign-common =
+    record { neg-Positive = neg-Positive ; neg-Negative = neg-Negative }
 
 -- Include everything from the partial impl
 private

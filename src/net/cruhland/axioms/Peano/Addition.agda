@@ -250,6 +250,9 @@ record Addition (PB : PeanoBase) (PS : ℕSign PB) : Set where
           {n m : ℕ} → S.Positive n → S.Positive m → S.Positive (n + m)
         +-pres-pos pos[n] pos[m] = +-positive pos[n]
 
+    positivityCommon : S.PositivityCommon ℕ
+    positivityCommon = record {}
+
   +-nonzero : {x y : ℕ} → x ≄ 0 → x + y ≄ 0
   +-nonzero = S.pos≄0 ∘ +-positive ∘ ℕ.Pos-intro-≄0
 

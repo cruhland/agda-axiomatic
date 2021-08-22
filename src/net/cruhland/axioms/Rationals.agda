@@ -11,6 +11,7 @@ import net.cruhland.axioms.Rationals.LiteralImpl PA Z as LiteralImpl
 open import net.cruhland.axioms.Rationals.MultiplicationDecl PA Z
   using (Multiplication)
 open import net.cruhland.axioms.Rationals.NegationDecl PA Z using (Negation)
+open import net.cruhland.axioms.Rationals.OrderingDecl PA Z using (Ordering)
 open import net.cruhland.axioms.Rationals.ReciprocalDecl PA Z using (Reciprocal)
 open import net.cruhland.axioms.Rationals.SignDecl PA Z using (Sign)
 
@@ -18,6 +19,7 @@ record Rationals : Set₁ where
   field
     QB : Base
     QA : Addition QB
+    QO : Ordering QB
     QN : Negation QB QA
     QM : Multiplication QB QA QN
     QR : Reciprocal QB QA QN QM
@@ -30,6 +32,7 @@ record Rationals : Set₁ where
   open LiteralImpl QB public
   open Multiplication QM public
   open Negation QN public
+  open Ordering QO public
   open Reciprocal QR public
   open Sign QS public
 
@@ -42,4 +45,5 @@ module _ where
   import net.cruhland.axioms.Rationals.DivisionPartialImplPropertiesZ
   import net.cruhland.axioms.Rationals.MultiplicationPartialImpl
   import net.cruhland.axioms.Rationals.NegationPartialImpl
+  import net.cruhland.axioms.Rationals.OrderingDefaultImpl
   import net.cruhland.axioms.Rationals.SignDefaultImpl

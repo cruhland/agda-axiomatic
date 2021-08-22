@@ -2,6 +2,7 @@ import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq as Eq using (_≃_)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Operators using (_+_)
+import net.cruhland.axioms.Ordering as Ord
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 import net.cruhland.axioms.Sign as S
 open import net.cruhland.models.Literals
@@ -17,8 +18,10 @@ open import net.cruhland.models.Integers.NatPair.NegationDefn PA using (ZN)
 
 private module ℕ = PeanoArithmetic PA
 private module ℤ where
+  open import net.cruhland.models.Integers.NatPair.AdditionImpl PA public
   open import net.cruhland.axioms.Integers.LiteralImpl PA ZB public
   open import net.cruhland.models.Integers.NatPair.BaseImpl PA public
+  open import net.cruhland.models.Integers.NatPair.NegationImpl PA public
   open SignDecl.SignPredefs ZB ZA ZN public
 
 open ℤ using (_—_; ℤ)
@@ -53,9 +56,10 @@ instance
              in AA.3rd (ℤ.≃posℕ-intro pos[d] (ℤ.≃₀-intro x⁺+d≃0+x⁻))
           1of3 | AA.2nd x⁺≃x⁻ = AA.1st (ℤ.zero-from-balanced x⁺≃x⁻)
           1of3 | AA.3rd x⁺>x⁻ =
-            let d = ℕ.<-diff x⁺>x⁻
-                pos[d] = ℕ.<-diff-pos x⁺>x⁻
-                x⁻+d≃x⁺ = ℕ.<-elim-diff x⁺>x⁻
+            let x⁻<x⁺ = Ord.>-flip x⁺>x⁻
+                d = ℕ.<-diff x⁻<x⁺
+                pos[d] = ℕ.<-diff-pos x⁻<x⁺
+                x⁻+d≃x⁺ = ℕ.<-elim-diff x⁻<x⁺
                 x⁺+0≃d+x⁻ =
                   begin
                     x⁺ + 0
@@ -95,7 +99,15 @@ instance
                       ∎
                     x⁺<x⁻ = ℕ.<-intro-diff pos[n] x⁺+n≃x⁻
                     x⁻<x⁺ = ℕ.<-intro-diff pos[m] x⁻+m≃x⁺
-                    x⁺<>x⁻ = AA.1∧3 x⁺<x⁻ x⁻<x⁺
+                    x⁺>x⁻ = Ord.<-flip x⁻<x⁺
+                    x⁺<>x⁻ = AA.1∧3 x⁺<x⁻ x⁺>x⁻
                     ¬x⁺<>x⁻ = AA.ExactlyOneOfThree.at-most-one x⁺<≃>x⁻
                  in x⁺<>x⁻ ↯ ¬x⁺<>x⁻
             }
+
+  positivity-common : S.PositivityCommon ℤ
+  positivity-common = record {}
+
+  sign-common : S.SignCommon ℤ
+  sign-common =
+    record { neg-Positive = neg-Positive ; neg-Negative = neg-Negative }

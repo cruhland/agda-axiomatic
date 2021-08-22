@@ -1,7 +1,7 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq as Eq using (_≃_)
 open import net.cruhland.axioms.Operators using (_+_)
-open import net.cruhland.axioms.Ordering using (_<_; _≮_)
+open import net.cruhland.axioms.Ordering as Ord using (_<_; _≮_; _>_)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
@@ -45,6 +45,17 @@ instance
             d[n≤m]+d[m≤k]≃d[n≤k] = Eq.sym (ℕ≤P.diff-trans n≤m m≤k)
             pos[d[n≤k]] = AA.subst₁ d[n≤m]+d[m≤k]≃d[n≤k] pos[d[n≤m]+d[m≤k]]
          in ℕ<.<-intro-≤pd n≤k pos[d[n≤k]]
+
+  >-transitive : Eq.Transitive _>_
+  >-transitive = Eq.transitive >-trans
+    where
+      >-trans : {n m k : ℕ} → n > m → m > k → n > k
+      >-trans n>m m>k =
+        let m<n = Ord.>-flip n>m
+            k<m = Ord.>-flip m>k
+            k<n = Eq.trans k<m m<n
+            n>k = Ord.<-flip k<n
+         in n>k
 
   <-substitutive-≃ᴸ : AA.Substitutive₂ AA.handᴸ _<_ _≃_ _⟨→⟩_
   <-substitutive-≃ᴸ = AA.substitutive₂ <-substᴸ

@@ -1,10 +1,8 @@
-import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq using (_≃_)
 open import net.cruhland.axioms.Integers using (Integers)
-open import net.cruhland.axioms.Operators using (_+_; _/_)
+open import net.cruhland.axioms.Operators using (_/_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 import net.cruhland.axioms.Sign as S
-open import net.cruhland.models.Literals
 
 module net.cruhland.axioms.Rationals.SignDecl
   (PA : PeanoArithmetic) (Z : Integers PA) where
@@ -67,7 +65,6 @@ record Sign
   field
     {{positivity}} : S.Positivity ℚ
     {{negativity}} : S.Negativity ℚ
-    {{sign-trichotomy}} : S.Trichotomy ℚ
+    {{sign-common}} : S.SignCommon ℚ
 
-    {{+-preserves-pos}} : AA.Preserves {A = ℚ} S.Positive _+_
     positiveDenominator : (q : ℚ) → PositiveDenominator q

@@ -1,7 +1,7 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_As_; _as_)
 open import net.cruhland.axioms.Eq using (_≃_; Eq)
-open import net.cruhland.axioms.Operators using (_+_; -_)
+open import net.cruhland.axioms.Operators using (-_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 import net.cruhland.axioms.Sign as S
 open import net.cruhland.models.Function using (_⟨→⟩_; id)
@@ -45,7 +45,7 @@ record Sign (ZB : Base) (ZA : Addition ZB) (ZN : Negation ZB ZA) : Set₁ where
   field
     {{positivity}} : S.Positivity ℤ
     {{negativity}} : S.Negativity ℤ
-    {{sign-trichotomy}} : S.Trichotomy ℤ
+    {{sign-common}} : S.SignCommon ℤ
 
     {{≃±1-substitutive}} : AA.Substitutive₁ _≃±1 _≃_ _⟨→⟩_
     ≃±1-absorbs-neg : {a : ℤ} → - a ≃±1 → a ≃±1
@@ -56,8 +56,4 @@ record Sign (ZB : Base) (ZA : Addition ZB) (ZN : Negation ZB ZA) : Set₁ where
     negℤ-from-posℕ : {a : ℤ} → a ≃ -_ [posℕ] → S.Negative a
 
     from-ℕ-preserves-pos : {n : ℕ} → S.Positive n → S.Positive (n as ℤ)
-    {{+-preserves-pos}} : AA.Preserves {A = ℤ} S.Positive _+_
-    neg-Positive : {a : ℤ} → S.Positive a → S.Negative (- a)
-    neg-Negative : {a : ℤ} → S.Negative a → S.Positive (- a)
-
     1-Positive : S.Positive {A = ℤ} 1

@@ -117,7 +117,7 @@ instance
           - (a as ℚ)
         ∎
 
-  +-inverseᴸ : AA.Inverse AA.handᴸ (AA.tc₁ -_) _+_ 0
+  +-inverseᴸ : AA.Inverse AA.handᴸ (AA.tc₁ λ q → - q) _+_ 0
   +-inverseᴸ = AA.inverse +-invᴸ
     where
       +-invᴸ : {q : ℚ} → (- q) + q ≃ 0
@@ -141,10 +141,10 @@ instance
               0
             ∎
 
-  +-inverseᴿ : AA.Inverse AA.handᴿ (AA.tc₁ -_) _+_ 0
+  +-inverseᴿ : AA.Inverse AA.handᴿ (AA.tc₁ λ q → - q) _+_ 0
   +-inverseᴿ = AA.inverseᴿ-from-inverseᴸ {A = ℚ}
 
-  +-inverse : AA.Inverse² (AA.tc₁ -_) _+_ 0
+  +-inverse : AA.Inverse² (AA.tc₁ λ q → - q) _+_ 0
   +-inverse = AA.inverse² {A = ℚ}
 
 -- Export everything not defined here from the partial implementation
@@ -155,4 +155,5 @@ private
   negationProperties : NegationProperties QB QA
   negationProperties = record {}
 
-open NegationProperties negationProperties public hiding (neg-dash)
+open NegationProperties negationProperties public
+  hiding (neg-dash; neg-substitutive; +-inverse)

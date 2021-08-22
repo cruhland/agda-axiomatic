@@ -1,6 +1,6 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq as Eq using (_≃_)
-open import net.cruhland.axioms.Ordering using (_≤_; LessThanOrEqual)
+open import net.cruhland.axioms.Ordering as Ord using (_≤_)
 open import net.cruhland.axioms.Operators using (_+_)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
@@ -16,7 +16,8 @@ import net.cruhland.axioms.Peano.Literals PB as ℕL
 
 record LteBase : Set₁ where
   field
-    {{lessThanOrEqual}} : LessThanOrEqual ℕ
+    {{nonStrictOrder}} : Ord.NonStrictOrder ℕ
+
     {{≤-reflexive}} : Eq.Reflexive _≤_
     ≤-zeroᴸ : {n : ℕ} → 0 ≤ n
 

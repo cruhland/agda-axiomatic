@@ -38,8 +38,12 @@ open import net.cruhland.axioms.Peano.Ordering.LessThan.NeqDecl PB PS PA LTEB
   as ND using (_≤≄_)
 
 instance
-  lessThan : Ord.LessThan ℕ
-  lessThan = Ord.lessThan _≤≄_
+  strictOrder : Ord.StrictOrder ℕ
+  strictOrder = Ord.strict-from-lt _≤≄_
+
+  -- Instances needed in impls only
+  lessThan = Ord.StrictOrder.lt strictOrder
+  greaterThan = Ord.StrictOrder.gt strictOrder
 
 <-intro-≤≄ : {n m : ℕ} → n ≤ m → n ≄ m → n ≤≄ m
 <-intro-≤≄ = ND.≤≄-intro

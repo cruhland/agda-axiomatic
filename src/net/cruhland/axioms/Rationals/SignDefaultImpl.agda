@@ -134,7 +134,7 @@ positiveDenominator q with ℚ.fraction q
         ∎
    in ℚ.positiveDenominator-intro {a = q↑} pos[q↓] q≃q↑/q↓
 ... | AA.3rd neg[q↓] =
-  let pos[-q↓] = ℤ.neg-Negative neg[q↓]
+  let pos[-q↓] = S.neg-Negative neg[q↓]
       instance
         -q↓≄0-from-pos = S.pos≄0 pos[-q↓]
         -1≄0 = AA.substᴿ AA.inv-ident (AA.subst₁ ℤ.1≄0)
@@ -213,7 +213,7 @@ instance
             AA.2nd (Positive₀-intro pos[a] pos[b] q≃a/b)
           ... | AA.3rd neg[a] =
             let instance b≄0 = S.pos≄0 pos[b]
-                pos[-a] = ℤ.neg-Negative neg[a]
+                pos[-a] = S.neg-Negative neg[a]
                 pos[-a/b] = Positive₀-intro pos[-a] pos[b] Eq.refl
                 q≃-[[-a]/b] =
                   begin
@@ -246,3 +246,26 @@ instance
                     p+q≄0 = S.pos≄0 pos[p+q]
                  in p+q≃0 ↯ p+q≄0
             }
+
+neg-Positive : {q : ℚ} → S.Positive q → S.Negative (- q)
+neg-Positive pos[q] = Negative₀-intro pos[q] Eq.refl
+
+neg-Negative : {q : ℚ} → S.Negative q → S.Positive (- q)
+neg-Negative {q} (Negative₀-intro {p} pos[p] q≃-p) =
+  let p≃-q =
+        begin
+          p
+        ≃˘⟨ AA.inv-involutive ⟩
+          - (- p)
+        ≃˘⟨ AA.subst₁ q≃-p ⟩
+          - q
+        ∎
+   in AA.subst₁ p≃-q pos[p]
+
+instance
+  positivity-common : S.PositivityCommon ℚ
+  positivity-common = record {}
+
+  sign-common : S.SignCommon ℚ
+  sign-common =
+    record { neg-Positive = neg-Positive ; neg-Negative = neg-Negative }

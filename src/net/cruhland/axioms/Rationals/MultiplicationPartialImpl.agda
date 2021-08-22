@@ -2,7 +2,7 @@ import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq as Eq using (_≃_)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Integers using (Integers)
-open import net.cruhland.axioms.Operators as Op using (_+_; -_; _*_)
+open import net.cruhland.axioms.Operators as Op using (_+_; -_; _-_; _*_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.models.Literals
 
@@ -32,7 +32,7 @@ record MultiplicationProperties
     {{*-commutative}} : AA.Commutative {A = ℚ} _*_
     {{*-associative}} : AA.Associative {A = ℚ} _*_
     {{*-identity}} : AA.Identity² {A = ℚ} _*_ 1
-    {{*-distributive}} : AA.Distributive² {A = ℚ} (AA.tc₂ _*_) _+_
+    {{*-distributive-+}} : AA.Distributive² {A = ℚ} (AA.tc₂ _*_) _+_
     *-neg-ident : {q : ℚ} → -1 * q ≃ - q
 
   instance
@@ -81,3 +81,57 @@ record MultiplicationProperties
 
     *-absorptive : AA.Absorptive² (AA.tc₂ _*_)
     *-absorptive = AA.absorptive² {A = ℚ}
+
+    *-distributive-subᴸ : AA.Distributive AA.handᴸ (AA.tc₂ _*_) _-_
+    *-distributive-subᴸ = AA.distributive *-distrib-subᴸ
+      where
+        *-distrib-subᴸ : {p q r : ℚ} → p * (q - r) ≃ p * q - p * r
+        *-distrib-subᴸ {p} {q} {r} =
+          begin
+            p * (q - r)
+          ≃⟨ AA.subst₂ ℚ.sub-defn ⟩
+            p * (q + (- r))
+          ≃⟨ AA.distrib ⟩
+            p * q + p * (- r)
+          ≃˘⟨ AA.subst₂ AA.fnOpCommᴿ ⟩
+            p * q + (- (p * r))
+          ≃˘⟨ ℚ.sub-defn ⟩
+            p * q - p * r
+          ∎
+
+    *-distributive-subᴿ : AA.Distributive AA.handᴿ (AA.tc₂ _*_) _-_
+    *-distributive-subᴿ = AA.distributiveᴿ-from-distributiveᴸ {A = ℚ}
+
+    *-distributive-sub : AA.Distributive² (AA.tc₂ _*_) _-_
+    *-distributive-sub = AA.distributive² {A = ℚ}
+
+    neg-compatible-sub : AA.Compatible₂ (AA.tc₁ λ q → - q) _-_ _-_ _≃_
+    neg-compatible-sub = AA.compatible₂ neg-compat-sub
+      where
+        neg-compat-sub : {p q : ℚ} → - (p - q) ≃ (- p) - (- q)
+        neg-compat-sub {p} {q} =
+          begin
+            - (p - q)
+          ≃˘⟨ *-neg-ident ⟩
+            -1 * (p - q)
+          ≃⟨ AA.distrib ⟩
+            -1 * p - -1 * q
+          ≃⟨ AA.subst₂ *-neg-ident ⟩
+            (- p) - -1 * q
+          ≃⟨ AA.subst₂ *-neg-ident ⟩
+            (- p) - (- q)
+          ∎
+
+  neg-sub : {p q : ℚ} → - (p - q) ≃ q - p
+  neg-sub {p} {q} =
+    begin
+      - (p - q)
+    ≃⟨ AA.compat₂ ⟩
+      (- p) - (- q)
+    ≃⟨ ℚ.sub-negᴿ ⟩
+      (- p) + q
+    ≃⟨ AA.comm ⟩
+      q + (- p)
+    ≃˘⟨ ℚ.sub-defn ⟩
+      q - p
+    ∎

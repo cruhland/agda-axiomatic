@@ -170,8 +170,8 @@ instance
   *-identity : AA.Identity² _*_ 1
   *-identity = AA.identity² {A = ℚ}
 
-  *-distributiveᴸ : AA.Distributive AA.handᴸ (AA.tc₂ _*_) _+_
-  *-distributiveᴸ = AA.distributive *-distribᴸ
+  *-distributive-+ᴸ : AA.Distributive AA.handᴸ (AA.tc₂ _*_) _+_
+  *-distributive-+ᴸ = AA.distributive *-distribᴸ
     where
       *-distribᴸ : {p q r : ℚ} → p * (q + r) ≃ p * q + p * r
       *-distribᴸ
@@ -251,11 +251,11 @@ instance
               p * q + p * r
             ∎
 
-  *-distributiveᴿ : AA.Distributive AA.handᴿ (AA.tc₂ _*_) _+_
-  *-distributiveᴿ = AA.distributiveᴿ-from-distributiveᴸ {A = ℚ}
+  *-distributive-+ᴿ : AA.Distributive AA.handᴿ (AA.tc₂ _*_) _+_
+  *-distributive-+ᴿ = AA.distributiveᴿ-from-distributiveᴸ {A = ℚ}
 
-  *-distributive : AA.Distributive² (AA.tc₂ _*_) _+_
-  *-distributive = AA.distributive² {A = ℚ}
+  *-distributive-+ : AA.Distributive² (AA.tc₂ _*_) _+_
+  *-distributive-+ = AA.distributive² {A = ℚ}
 
   *-zero : AA.ZeroProduct _*_
   *-zero = AA.zeroProduct *-zero-prod
@@ -295,5 +295,5 @@ private
   multiplicationProperties = record { *-neg-ident = *-neg-ident }
 
 open MultiplicationProperties multiplicationProperties public
-  hiding ( *-associative; *-commutative; *-distributive; *-identity; *-neg-ident
-         ; *-substitutive; star)
+  hiding ( *-associative; *-commutative; *-distributive-+; *-identity
+         ; *-neg-ident ; *-substitutive; star)

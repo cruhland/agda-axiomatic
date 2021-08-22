@@ -1,7 +1,7 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq as Eq using (_≃_)
 open Eq.≃-Reasoning
-open import net.cruhland.axioms.Ordering using (_≤_; LessThanOrEqual)
+open import net.cruhland.axioms.Ordering as Ord using (_≤_)
 open import net.cruhland.axioms.Operators using (_+_)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
@@ -19,8 +19,12 @@ open PeanoBase PB using (ℕ; step)
 import net.cruhland.axioms.Peano.Literals PB as ℕL
 
 instance
-  lessThanOrEqual : LessThanOrEqual ℕ
-  lessThanOrEqual = record { _≤_ = AD._+d≃_ }
+  nonStrictOrder : Ord.NonStrictOrder ℕ
+  nonStrictOrder = Ord.nonStrict-from-lte AD._+d≃_
+
+  -- Instances needed in impls only
+  lessThanOrEqual = Ord.NonStrictOrder.lte nonStrictOrder
+  greaterThanOrEqual = Ord.NonStrictOrder.gte nonStrictOrder
 
 diff : {n m : ℕ} → n ≤ m → ℕ
 diff = AD.diff

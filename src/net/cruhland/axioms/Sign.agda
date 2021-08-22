@@ -1,5 +1,6 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq using (_≃_; _≄_; Eq)
+open import net.cruhland.axioms.Operators as Op using (_+_; -_)
 open import net.cruhland.models.Function using (_⟨→⟩_)
 open import net.cruhland.models.Literals
 
@@ -14,6 +15,16 @@ record Positivity (A : Set) {{_ : Eq A}} {{_ : FromNatLiteral A}} : Set₁ where
 open Positivity {{...}} public using (pos≄0; Positive)
 
 {-# DISPLAY Positivity.Positive _ x = Positive x #-}
+
+record PositivityCommon
+    (A : Set)
+    {{_ : Eq A}}
+    {{_ : FromNatLiteral A}}
+    {{_ : Op.Plus A}}
+    {{_ : Positivity A}}
+    : Set where
+  field
+    {{+-preserves-pos}} : AA.Preserves Positive _+_
 
 record Negativity (A : Set) {{_ : Eq A}} {{_ : FromNatLiteral A}} : Set₁ where
   field
@@ -37,3 +48,21 @@ record Trichotomy
 open Trichotomy {{...}} public using (trichotomy)
 
 {-# DISPLAY Trichotomy.trichotomy _ x = trichotomy x #-}
+
+record SignCommon
+    (A : Set)
+    {{_ : Eq A}}
+    {{_ : FromNatLiteral A}}
+    {{_ : Op.Plus A}}
+    {{_ : Op.Dashᴸ A}}
+    {{_ : Positivity A}}
+    {{_ : Negativity A}}
+    : Set where
+  field
+    {{positivity-common}} : PositivityCommon A
+    {{sign-trichotomy}} : Trichotomy A
+
+    neg-Positive : {x : A} → Positive x → Negative (- x)
+    neg-Negative : {x : A} → Negative x → Positive (- x)
+
+open SignCommon {{...}} public using (neg-Positive; neg-Negative)

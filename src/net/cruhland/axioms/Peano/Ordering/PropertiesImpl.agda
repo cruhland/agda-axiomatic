@@ -1,7 +1,7 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_)
 open Eq.≃-Reasoning
-open import net.cruhland.axioms.Ordering using (_≤_; _<_; _>_)
+open import net.cruhland.axioms.Ordering as Ord using (_≤_; _<_; _>_)
 open import net.cruhland.axioms.Operators using (_+_)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
@@ -126,19 +126,25 @@ order-trichotomy n m = AA.exactlyOneOfThree 1of3 ¬2of3
         ... | ∨-introᴿ sk≃m = AA.2nd sk≃m
         Ps {k} (AA.2nd k≃m) =
           let sm≃sk = AA.subst₁ (Eq.sym k≃m)
-           in AA.3rd (<-from-s≤ (ℕ.≤-intro-≃ sm≃sk))
+              sm≤sk = ℕ.≤-intro-≃ sm≃sk
+              m<sk = <-from-s≤ sm≤sk
+              sk>m = Ord.<-flip m<sk
+           in AA.3rd sk>m
         Ps (AA.3rd k>m) =
-          AA.3rd (Eq.trans k>m ℕ.n<sn)
+          let sk>k = Ord.<-flip ℕ.n<sn
+              sk>m = Eq.trans sk>k k>m
+           in AA.3rd sk>m
 
     ¬2of3 : ¬ AA.TwoOfThree (n < m) (n ≃ m) (n > m)
     ¬2of3 = ¬-intro λ
       { (AA.1∧2 n<m n≃m) →
           let n≄m = ℕ.<-elim-≄ n<m
            in n≃m ↯ n≄m
-      ; (AA.1∧3 n<m m<n) →
-          ℕ.<-asymmetric n<m m<n
-      ; (AA.2∧3 n≃m m<n) →
+      ; (AA.1∧3 n<m n>m) →
+          ℕ.<-asymmetric n<m (Ord.>-flip n>m)
+      ; (AA.2∧3 n≃m n>m) →
           let m≃n = Eq.sym n≃m
+              m<n = Ord.>-flip n>m
               m≄n = ℕ.<-elim-≄ m<n
            in m≃n ↯ m≄n
       }

@@ -12,7 +12,6 @@ open import net.cruhland.axioms.Operators using (_+_; -_; _-_)
 open import net.cruhland.axioms.Ordering as Ord using (_≤_; _<_; _>_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 import net.cruhland.axioms.Sign as S
-import net.cruhland.models.Function
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using (∧-intro; _↯_; ¬_; ¬-intro)
 
@@ -51,14 +50,20 @@ record _<₀_ (a b : ℤ) : Set where
     a≄b : a ≄ b
 
 instance
-  lessThanOrEqual : Ord.LessThanOrEqual ℤ
-  lessThanOrEqual = Ord.lessThanOrEqual _≤₀_
+  nonStrictOrder : Ord.NonStrictOrder ℤ
+  nonStrictOrder = Ord.nonStrict-from-lte _≤₀_
 
-  lessThan : Ord.LessThan ℤ
-  lessThan = Ord.lessThan _<₀_
+  strictOrder : Ord.StrictOrder ℤ
+  strictOrder = Ord.strict-from-lt _<₀_
 
   totalOrder : Ord.TotalOrder ℤ
   totalOrder = record { <-from-≤≄ = <₀-intro }
+
+  -- Instances needed in impls only
+  lessThanOrEqual = Ord.NonStrictOrder.lte nonStrictOrder
+  greaterThanOrEqual = Ord.NonStrictOrder.gte nonStrictOrder
+  lessThan = Ord.StrictOrder.lt strictOrder
+  greaterThan = Ord.StrictOrder.gt strictOrder
 
   ≤-antisymmetric : AA.Antisymmetric _≤_
   ≤-antisymmetric = AA.antisymmetric ≤-antisym

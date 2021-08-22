@@ -295,5 +295,5 @@ module _
 
     sub-sign-swap : {a b : ℤ} → S.Negative (a - b) → S.Positive (b - a)
     sub-sign-swap neg[a-b] =
-      let pos[-[a-b]] = ℤ.neg-Negative neg[a-b]
+      let pos[-[a-b]] = S.neg-Negative neg[a-b]
        in AA.subst₁ neg-sub-swap pos[-[a-b]]

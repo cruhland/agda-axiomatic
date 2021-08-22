@@ -5,7 +5,7 @@ open import Relation.Binary.PropositionalEquality using (refl)
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq as Eq using (_≃_)
 open Eq.≃-Reasoning
-open import net.cruhland.axioms.Ordering using (_≤_; LessThanOrEqual)
+open import net.cruhland.axioms.Ordering as Ord using (_≤_)
 open import net.cruhland.axioms.Operators using (_+_)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 import net.cruhland.models.Peano.Unary.Base as UB
@@ -17,8 +17,12 @@ data _≤ᴿ_ (n : ℕ) : ℕ → Set where
   ≤-step : ∀ {m} → n ≤ᴿ m → n ≤ᴿ step m
 
 instance
-  lessThanOrEqual : LessThanOrEqual ℕ
-  lessThanOrEqual = record { _≤_ = _≤ᴿ_ }
+  nonStrictOrder : Ord.NonStrictOrder ℕ
+  nonStrictOrder = Ord.nonStrict-from-lte _≤ᴿ_
+
+  -- Instances needed in impls only
+  lessThanOrEqual = Ord.NonStrictOrder.lte nonStrictOrder
+  greaterThanOrEqual = Ord.NonStrictOrder.gte nonStrictOrder
 
   ≤-reflexive : Eq.Reflexive _≤_
   ≤-reflexive = Eq.reflexive ≤-refl

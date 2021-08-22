@@ -7,13 +7,17 @@ open import Data.Nat.Properties
 open import Relation.Binary.PropositionalEquality using (cong; refl)
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq as Eq using (_≃_)
-open import net.cruhland.axioms.Ordering using (_≤_; LessThanOrEqual)
+open import net.cruhland.axioms.Ordering as Ord using (_≤_)
 open import net.cruhland.axioms.Operators using (_+_)
 import net.cruhland.models.Peano.Unary.Base
 
 instance
-  lessThanOrEqual : LessThanOrEqual ℕ
-  lessThanOrEqual = record { _≤_ = _≤ᴸ_ }
+  nonStrictOrder : Ord.NonStrictOrder ℕ
+  nonStrictOrder = Ord.nonStrict-from-lte _≤ᴸ_
+
+  -- Instances needed in impls only
+  lessThanOrEqual = Ord.NonStrictOrder.lte nonStrictOrder
+  greaterThanOrEqual = Ord.NonStrictOrder.gte nonStrictOrder
 
   ≤-reflexive : Eq.Reflexive _≤_
   ≤-reflexive = Eq.reflexive ≤-refl
