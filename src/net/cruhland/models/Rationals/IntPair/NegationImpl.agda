@@ -148,13 +148,23 @@ instance
   +-inverse : AA.Inverse² (AA.tc₁ λ q → - q) _+_ 0
   +-inverse = AA.inverse² {A = ℚ}
 
--- Export everything not defined here from the partial implementation
+-- Export everything not defined here from the partial implementations
 private
-  open import net.cruhland.axioms.Rationals.NegationPartialImpl PA Z
-    using (NegationProperties)
+  open import net.cruhland.axioms.Rationals.NegationPartialImplBase PA Z
+    using (NegationBase)
 
-  negationProperties : NegationProperties QB QA
-  negationProperties = record {}
+  negationBase : NegationBase QB QA
+  negationBase = record {}
 
-open NegationProperties negationProperties public
+open NegationBase negationBase public
   hiding (neg-dash; neg-substitutive; +-inverse)
+
+private
+  open import net.cruhland.axioms.Rationals.NegationPartialImplDerived PA Z
+    using (NegationDerived)
+
+  negationDerived : NegationDerived QB QA
+  negationDerived = record { sub-same = sub-same }
+
+open NegationDerived negationDerived public
+  hiding (neg-dash; +-inverse; sub-dash; sub-same; sub-substitutive)

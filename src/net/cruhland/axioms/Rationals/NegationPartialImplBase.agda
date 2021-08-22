@@ -6,7 +6,7 @@ open import net.cruhland.axioms.Operators as Op using (_+_; -_; _-_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.models.Literals
 
-module net.cruhland.axioms.Rationals.NegationPartialImpl
+module net.cruhland.axioms.Rationals.NegationPartialImplBase
   (PA : PeanoArithmetic) (Z : Integers PA) where
 
 open import net.cruhland.axioms.Rationals.AdditionDecl PA Z using (Addition)
@@ -19,7 +19,7 @@ private
     open Base QB public
     open LiteralImpl QB public
 
-record NegationProperties (QB : Base) (QA : Addition QB) : Set₁ where
+record NegationBase (QB : Base) (QA : Addition QB) : Set₁ where
   private
     open module ℚ = RationalPredefs QB QA using (ℚ)
 
@@ -58,4 +58,32 @@ record NegationProperties (QB : Base) (QA : Addition QB) : Set₁ where
       p + (- (- q))
     ≃⟨ AA.subst₂ AA.inv-involutive ⟩
       p + q
+    ∎
+
+  sub-same : {q : ℚ} → q - q ≃ 0
+  sub-same {q} =
+    begin
+      q - q
+    ≃⟨⟩
+      q + - q
+    ≃⟨ AA.inv ⟩
+      0
+    ∎
+
+  p≃q-from-p-q≃0 : {p q : ℚ} → p - q ≃ 0 → p ≃ q
+  p≃q-from-p-q≃0 {p} {q} p-q≃0 =
+    begin
+      p
+    ≃˘⟨ AA.ident ⟩
+      p + 0
+    ≃˘⟨ AA.subst₂ AA.inv ⟩
+      p + (- q + q)
+    ≃˘⟨ AA.assoc ⟩
+      (p + - q) + q
+    ≃⟨⟩
+      (p - q) + q
+    ≃⟨ AA.subst₂ p-q≃0 ⟩
+      0 + q
+    ≃⟨ AA.ident ⟩
+      q
     ∎

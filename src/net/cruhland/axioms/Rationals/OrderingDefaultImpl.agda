@@ -1,8 +1,9 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_)
+open Eq.≃-Reasoning
 open import net.cruhland.axioms.Integers using (Integers)
-open import net.cruhland.axioms.Operators using (_-_)
-import net.cruhland.axioms.Ordering as Ord
+open import net.cruhland.axioms.Operators using (_+_; -_; _-_)
+open import net.cruhland.axioms.Ordering as Ord using (_<_; _>_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.axioms.Rationals.AdditionDecl using (Addition)
 open import net.cruhland.axioms.Rationals.BaseDecl using (Base)
@@ -13,7 +14,9 @@ open import net.cruhland.axioms.Rationals.NegationDecl using (Negation)
 open import net.cruhland.axioms.Rationals.ReciprocalDecl using (Reciprocal)
 open import net.cruhland.axioms.Rationals.SignDecl using (Sign)
 import net.cruhland.axioms.Sign as S
-open import net.cruhland.models.Logic using (_∨_; ∨-map; ∨-forceᴸ)
+open import net.cruhland.models.Literals
+open import net.cruhland.models.Logic
+  using (_∨_; ∨-map; ∨-forceᴸ; _↯_; ¬_; ¬-intro)
 
 module net.cruhland.axioms.Rationals.OrderingDefaultImpl
   (PA : PeanoArithmetic)
@@ -87,6 +90,38 @@ instance
 
   nonStrictOrder : Ord.NonStrictOrder ℚ
   nonStrictOrder = record { ≤-flip = ≤₀-flip ; ≥-flip = ≥₀-flip }
+
+  order-trichotomy : Ord.Trichotomy ℚ
+  order-trichotomy = Ord.trichotomy-intro ord-tri
+    where
+      ord-tri : (p q : ℚ) → AA.ExactlyOneOfThree (p ≃ q) (p < q) (p > q)
+      ord-tri p q = AA.exactlyOneOfThree 1of3 ¬2of3
+        where
+          sign-tri = S.trichotomy (p - q)
+
+          1of3 : AA.OneOfThree (p ≃ q) (p < q) (p > q)
+          1of3 with AA.at-least-one sign-tri
+          ... | AA.1st p-q≃0 = AA.1st (ℚ.p≃q-from-p-q≃0 p-q≃0)
+          ... | AA.2nd p>q = AA.3rd p>q
+          ... | AA.3rd p<q = AA.2nd p<q
+
+          sign-2of3-from-ord-2of3 :
+            AA.TwoOfThree (p ≃ q) (p < q) (p > q) →
+            AA.TwoOfThree (p - q ≃ 0) (S.Positive (p - q)) (S.Negative (p - q))
+          sign-2of3-from-ord-2of3 (AA.1∧2 p≃q neg[p-q]) =
+            let p-q≃0 = ℚ.p-q≃0-from-p≃q p≃q
+             in AA.1∧3 p-q≃0 neg[p-q]
+          sign-2of3-from-ord-2of3 (AA.1∧3 p≃q pos[p-q]) =
+            let p-q≃0 = ℚ.p-q≃0-from-p≃q p≃q
+             in AA.1∧2 p-q≃0 pos[p-q]
+          sign-2of3-from-ord-2of3 (AA.2∧3 neg[p-q] pos[p-q]) =
+            AA.2∧3 pos[p-q] neg[p-q]
+
+          ¬2of3 : ¬ AA.TwoOfThree (p ≃ q) (p < q) (p > q)
+          ¬2of3 = ¬-intro λ ord-2of3 →
+            let sign-2of3 = sign-2of3-from-ord-2of3 ord-2of3
+                ¬sign-2of3 = AA.at-most-one sign-tri
+             in sign-2of3 ↯ ¬sign-2of3
 
   totalOrder : Ord.TotalOrder ℚ
   totalOrder = record { <-from-≤≄ = <₀-from-≤₀≄ }

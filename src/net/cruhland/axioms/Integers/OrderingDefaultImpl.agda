@@ -57,9 +57,6 @@ instance
   strictOrder : Ord.StrictOrder ℤ
   strictOrder = Ord.strict-from-lt _<₀_
 
-  totalOrder : Ord.TotalOrder ℤ
-  totalOrder = record { <-from-≤≄ = <₀-intro }
-
   -- Instances needed in impls only
   lessThanOrEqual = Ord.NonStrictOrder.lte nonStrictOrder
   greaterThanOrEqual = Ord.NonStrictOrder.gte nonStrictOrder
@@ -127,7 +124,7 @@ instance
             d≃0 = AA.inject d:ℤ≃0:ℤ
             d≄0 = S.pos≄0 pos[d]
          in d≃0 ↯ d≄0
-   in Ord.<-from-≤≄ a≤b a≄b
+   in <₀-intro a≤b a≄b
 
 pos-from-< : {a b : ℤ} → a < b → S.Positive (b - a)
 pos-from-< {a} {b} (<₀-intro (≤₀-intro {d} a+d≃b) a≄b) =
@@ -149,21 +146,28 @@ pos-from-< {a} {b} (<₀-intro (≤₀-intro {d} a+d≃b) a≄b) =
       b-a≃d = ℤ.≃ᴿ-+ᴸ-toᴿ (Eq.sym a+d≃b)
    in ℤ.posℤ-from-posℕ (ℤ.≃posℕ-intro pos[d] b-a≃d)
 
-order-trichotomy : (a b : ℤ) → AA.ExactlyOneOfThree (a < b) (a ≃ b) (a > b)
-order-trichotomy a b = AA.exactlyOneOfThree 1of3 ¬2of3
-  where
-    1of3 : AA.OneOfThree (a < b) (a ≃ b) (a > b)
-    1of3 with AA.ExactlyOneOfThree.at-least-one (S.trichotomy (b - a))
-    ... | AA.1st b-a≃0 = AA.2nd (Eq.sym (ℤ.≃-from-zero-sub b-a≃0))
-    ... | AA.2nd pos[b-a] = AA.1st (<-from-pos pos[b-a])
-    ... | AA.3rd neg[b-a] = AA.3rd (<-from-pos (ℤ.sub-sign-swap neg[b-a]))
+instance
+  order-trichotomy : Ord.Trichotomy ℤ
+  order-trichotomy = Ord.trichotomy-intro ord-tri
+    where
+      ord-tri : (a b : ℤ) → AA.ExactlyOneOfThree (a ≃ b) (a < b) (a > b)
+      ord-tri a b = AA.exactlyOneOfThree 1of3 ¬2of3
+        where
+          1of3 : AA.OneOfThree (a ≃ b) (a < b) (a > b)
+          1of3 with AA.at-least-one (S.trichotomy (b - a))
+          ... | AA.1st b-a≃0 = AA.1st (Eq.sym (ℤ.≃-from-zero-sub b-a≃0))
+          ... | AA.2nd pos[b-a] = AA.2nd (<-from-pos pos[b-a])
+          ... | AA.3rd neg[b-a] = AA.3rd (<-from-pos (ℤ.sub-sign-swap neg[b-a]))
 
-    ¬2of3 : ¬ AA.TwoOfThree (a < b) (a ≃ b) (a > b)
-    ¬2of3 = ¬-intro λ
-      { (AA.1∧2 (<₀-intro a≤b a≄b) a≃b) →
-          a≃b ↯ a≄b
-      ; (AA.1∧3 (<₀-intro a≤b a≄b) (<₀-intro b≤a b≄a)) →
-          AA.antisym a≤b b≤a ↯ a≄b
-      ; (AA.2∧3 a≃b (<₀-intro b≤a b≄a)) →
-          a≃b ↯ Eq.sym b≄a
-      }
+          ¬2of3 : ¬ AA.TwoOfThree (a ≃ b) (a < b) (a > b)
+          ¬2of3 = ¬-intro λ
+            { (AA.1∧2 a≃b (<₀-intro a≤b a≄b)) →
+                a≃b ↯ a≄b
+            ; (AA.1∧3 a≃b (<₀-intro b≤a b≄a)) →
+                a≃b ↯ Eq.sym b≄a
+            ; (AA.2∧3 (<₀-intro a≤b a≄b) (<₀-intro b≤a b≄a)) →
+                AA.antisym a≤b b≤a ↯ a≄b
+            }
+
+  totalOrder : Ord.TotalOrder ℤ
+  totalOrder = record { <-from-≤≄ = <₀-intro }

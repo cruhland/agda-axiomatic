@@ -44,6 +44,7 @@ module _ where
   import net.cruhland.axioms.Rationals.DivisionPartialImplBaseZ
   import net.cruhland.axioms.Rationals.DivisionPartialImplPropertiesZ
   import net.cruhland.axioms.Rationals.MultiplicationPartialImpl
-  import net.cruhland.axioms.Rationals.NegationPartialImpl
+  import net.cruhland.axioms.Rationals.NegationPartialImplBase
+  import net.cruhland.axioms.Rationals.NegationPartialImplDerived
   import net.cruhland.axioms.Rationals.OrderingDefaultImpl
   import net.cruhland.axioms.Rationals.SignDefaultImpl

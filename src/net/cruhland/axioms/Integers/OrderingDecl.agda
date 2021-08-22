@@ -1,7 +1,6 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
-open import net.cruhland.axioms.Eq using (_≃_)
 open import net.cruhland.axioms.Operators using (_-_)
-open import net.cruhland.axioms.Ordering as Ord using (_≤_; _<_; _>_)
+open import net.cruhland.axioms.Ordering as Ord using (_≤_; _<_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 import net.cruhland.axioms.Sign as S
 
@@ -40,4 +39,3 @@ record Ordering
     {{≤-antisymmetric}} : AA.Antisymmetric {A = ℤ} _≤_
     <-from-pos : {a b : ℤ} → S.Positive (b - a) → a < b
     pos-from-< : {a b : ℤ} → a < b → S.Positive (b - a)
-    order-trichotomy : (a b : ℤ) → AA.ExactlyOneOfThree (a < b) (a ≃ b) (a > b)

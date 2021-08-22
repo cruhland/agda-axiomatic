@@ -1,3 +1,4 @@
+import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq using (_≃_; _≄_; Eq)
 open import net.cruhland.models.Function using (flip; id)
 open import net.cruhland.models.Logic using (_∨_; ¬_)
@@ -72,10 +73,20 @@ record StrictOrder (A : Set) : Set₁ where
 
 open StrictOrder {{...}} public using (<-flip; >-flip)
 
+record Trichotomy (A : Set) {{_ : Eq A}} {{_ : StrictOrder A}} : Set where
+  constructor trichotomy-intro
+  field
+    trichotomy : (x y : A) → AA.ExactlyOneOfThree (x ≃ y) (x < y) (x > y)
+
+open Trichotomy {{...}} public using (trichotomy)
+
+{-# DISPLAY Trichotomy.trichotomy _ x y = trichotomy x y #-}
+
 record TotalOrder (A : Set) {{_ : Eq A}} : Set₁ where
   field
     {{nonstrict}} : NonStrictOrder A
     {{strict}} : StrictOrder A
+    {{order-trichotomy}} : Trichotomy A
     <-from-≤≄ : {x y : A} → x ≤ y → x ≄ y → x < y
 
 open TotalOrder {{...}} public using (<-from-≤≄)
