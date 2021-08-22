@@ -10,7 +10,6 @@ open import net.cruhland.models.Literals
 module net.cruhland.axioms.Rationals.DivisionPartialImplDerivedQ
   (PA : PeanoArithmetic) (Z : Integers PA) where
 
-private open module ℤ = Integers Z using (ℤ)
 open import net.cruhland.axioms.Rationals.AdditionDecl PA Z using (Addition)
 open import net.cruhland.axioms.Rationals.BaseDecl PA Z using (Base)
 import net.cruhland.axioms.Rationals.LiteralImpl PA Z as LiteralImpl
@@ -20,6 +19,7 @@ open import net.cruhland.axioms.Rationals.NegationDecl PA Z using (Negation)
 open import net.cruhland.axioms.Rationals.ReciprocalDecl PA Z using (Reciprocal)
 
 private
+  open module ℤ = Integers Z using (ℤ)
   module RationalPredefs
       (QB : Base)
       (QA : Addition QB)
@@ -40,7 +40,8 @@ record DivisionDerivedQ
     (QM : Multiplication QB QA QN)
     (QR : Reciprocal QB QA QN QM)
     : Set where
-  private open module ℚ = RationalPredefs QB QA QN QM QR using (ℚ)
+  private
+    open module ℚ = RationalPredefs QB QA QN QM QR using (ℚ)
 
   field
     {{div-ℚ}} : Op.Slash ℚ (_≄ 0) ℚ

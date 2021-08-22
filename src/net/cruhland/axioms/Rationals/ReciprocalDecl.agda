@@ -34,7 +34,8 @@ record Reciprocal
     (QN : Negation QB QA)
     (QM : Multiplication QB QA QN)
     : Set₁ where
-  private open module ℚ = RationalPredefs QB QA QN QM using (ℚ)
+  private
+    open module ℚ = RationalPredefs QB QA QN QM using (ℚ)
 
   field
     {{reciprocal}} : Op.SupNegOne ℚ (_≄ 0)

@@ -13,8 +13,9 @@ open import net.cruhland.models.Logic using (⊤; Dec; dec-map)
 module net.cruhland.models.Rationals.IntPair.BaseImpl
   (PA : PeanoArithmetic) (Z : Integers PA) where
 
-private open module ℕ = PeanoArithmetic PA using (ℕ)
-private open module ℤ = Integers Z using (ℤ)
+private
+  open module ℕ = PeanoArithmetic PA using (ℕ)
+  open module ℤ = Integers Z using (ℤ)
 
 infix 8 _//_
 record ℚ : Set where

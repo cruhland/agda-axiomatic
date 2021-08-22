@@ -21,13 +21,14 @@ module net.cruhland.axioms.Integers.SignPartialImpl
 import net.cruhland.axioms.Integers.LiteralImpl PA as LiteralImpl
 import net.cruhland.axioms.Integers.SignDecl PA as SignDecl
 
-private module ℕ = PeanoArithmetic PA
-private module ℤ where
-  open Addition ZA public
-  open Base ZB public
-  open LiteralImpl ZB public
-  open Negation ZN public
-  open SignDecl.SignPredefs ZB ZA ZN public
+private
+  module ℕ = PeanoArithmetic PA
+  module ℤ where
+    open Addition ZA public
+    open Base ZB public
+    open LiteralImpl ZB public
+    open Negation ZN public
+    open SignDecl.SignPredefs ZB ZA ZN public
 
 open ℕ using (ℕ)
 open ℤ using (ℤ; _≃±1)

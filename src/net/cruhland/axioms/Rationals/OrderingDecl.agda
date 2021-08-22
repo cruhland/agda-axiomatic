@@ -12,7 +12,8 @@ private
     open Base QB public
 
 record Ordering (QB : Base) : Set₁ where
-  private open module ℚ = RationalPredefs QB using (ℚ)
+  private
+    open module ℚ = RationalPredefs QB using (ℚ)
 
   field
     {{totalOrder}} : Ord.TotalOrder ℚ

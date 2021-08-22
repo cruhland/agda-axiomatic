@@ -31,15 +31,16 @@ module net.cruhland.axioms.Rationals.SignDefaultImpl
 import net.cruhland.axioms.Rationals.LiteralImpl PA Z as LiteralImpl
 import net.cruhland.axioms.Rationals.SignDecl PA Z as SignDecl
 
-private module ℤ = Integers Z
-private module ℚ where
-  open SignDecl.SignPredefs QB QA QN QM QR QD public
-  open Addition QA public
-  open Base QB public
-  open Division QD public
-  open LiteralImpl QB public
-  open Multiplication QM public
-  open Negation QN public
+private
+  module ℤ = Integers Z
+  module ℚ where
+    open SignDecl.SignPredefs QB QA QN QM QR QD public
+    open Addition QA public
+    open Base QB public
+    open Division QD public
+    open LiteralImpl QB public
+    open Multiplication QM public
+    open Negation QN public
 
 open ℤ using (ℤ)
 open ℚ using (ℚ)

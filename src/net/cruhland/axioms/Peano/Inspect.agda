@@ -10,9 +10,10 @@ open import net.cruhland.models.Logic using (⊤; _↯_; Dec; no; yes)
 
 module net.cruhland.axioms.Peano.Inspect (PB : PeanoBase) where
 
-private module ℕ where
-  open PeanoBase PB public
-  open import net.cruhland.axioms.Peano.Literals PB public
+private
+  module ℕ where
+    open PeanoBase PB public
+    open import net.cruhland.axioms.Peano.Literals PB public
 
 open ℕ using (ℕ; step)
 

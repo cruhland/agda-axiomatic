@@ -16,7 +16,8 @@ module net.cruhland.axioms.Peano.Ordering.LessThan.PosDiffDecl
 
 open PeanoBase PB using (ℕ)
 import net.cruhland.axioms.Peano.Literals PB as ℕL
-private module ℕ≤ = LteBase LTEB
+private
+  module ℕ≤ = LteBase LTEB
 
 record _≤⁺_ (n m : ℕ) : Set where
   constructor ≤⁺-intro

@@ -39,7 +39,8 @@ record DivisionPropertiesQ
     (QM : Multiplication QB QA QN)
     (QR : Reciprocal QB QA QN QM)
     : Set where
-  private open module ℚ = RationalPredefs QB QA QN QM QR using (ℚ)
+  private
+    open module ℚ = RationalPredefs QB QA QN QM QR using (ℚ)
 
   field
     {{div-ℚ}} : Op.Slash ℚ (_≄ 0) ℚ

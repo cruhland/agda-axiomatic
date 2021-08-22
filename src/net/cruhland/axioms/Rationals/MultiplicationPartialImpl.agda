@@ -24,7 +24,8 @@ private
 
 record MultiplicationProperties
     (QB : Base) (QA : Addition QB) (QN : Negation QB QA) : Set where
-  private open module ℚ = RationalPredefs QB QA QN using (ℚ)
+  private
+    open module ℚ = RationalPredefs QB QA QN using (ℚ)
 
   field
     {{star}} : Op.Star ℚ

@@ -2,9 +2,10 @@ module net.cruhland.axioms.AbstractAlgebra.Inverse where
 
 open import net.cruhland.axioms.Eq as Eq using (_≃_; Eq)
 
-private module AA where
-  open import net.cruhland.axioms.AbstractAlgebra.Base public
-  open import net.cruhland.axioms.AbstractAlgebra.Reductive public
+private
+  module AA where
+    open import net.cruhland.axioms.AbstractAlgebra.Base public
+    open import net.cruhland.axioms.AbstractAlgebra.Reductive public
 
 open AA using (forHand; Hand; handᴸ; handᴿ)
 

@@ -20,12 +20,13 @@ module net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.PropertiesImplBase
   (PA : Addition PB PS)
   (LTEB : LteBase PB PS PA) where
 
-private module ℕ where
-  open Addition PA public
-  open LteBase LTEB public
-  open PeanoBase PB public
-  open import net.cruhland.axioms.Peano.Inspect PB public
-  open import net.cruhland.axioms.Peano.Literals PB public
+private
+  module ℕ where
+    open Addition PA public
+    open LteBase LTEB public
+    open PeanoBase PB public
+    open import net.cruhland.axioms.Peano.Inspect PB public
+    open import net.cruhland.axioms.Peano.Literals PB public
 
 open ℕ using (ℕ; step)
 

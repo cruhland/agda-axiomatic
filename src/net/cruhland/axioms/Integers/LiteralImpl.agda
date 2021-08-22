@@ -10,7 +10,8 @@ open import net.cruhland.models.Logic using (_↯_)
 module net.cruhland.axioms.Integers.LiteralImpl
   (PA : PeanoArithmetic) (ZB : Base PA) where
 
-private open module ℕ = PeanoArithmetic PA using (ℕ)
+private
+  open module ℕ = PeanoArithmetic PA using (ℕ)
 open Base ZB using (ℤ)
 
 instance

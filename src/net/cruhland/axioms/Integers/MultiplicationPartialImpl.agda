@@ -28,14 +28,15 @@ module _
     (ZS : Sign ZB ZA ZN)
     where
 
-  private module ℕ = PeanoArithmetic PA
-  private module ℤ where
-    open Addition ZA public
-    open Base ZB public
-    open LiteralImpl ZB public
-    open MultiplicationDecl.MultiplicationPredefs ZB ZA ZN ZS public
-    open Negation ZN public
-    open Sign ZS public
+  private
+    module ℕ = PeanoArithmetic PA
+    module ℤ where
+      open Addition ZA public
+      open Base ZB public
+      open LiteralImpl ZB public
+      open MultiplicationDecl.MultiplicationPredefs ZB ZA ZN ZS public
+      open Negation ZN public
+      open Sign ZS public
 
   open ℕ using (ℕ)
   open ℤ using (_≃±1; ℤ)

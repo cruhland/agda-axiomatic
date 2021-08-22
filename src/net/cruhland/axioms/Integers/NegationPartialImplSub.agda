@@ -14,10 +14,11 @@ import net.cruhland.axioms.Integers.LiteralImpl PA as LiteralImpl
 
 module _ (ZB : Base) (ZA : Addition ZB) where
 
-  private module ℤ where
-    open Addition ZA public
-    open Base ZB public
-    open LiteralImpl ZB public
+  private
+    module ℤ where
+      open Addition ZA public
+      open Base ZB public
+      open LiteralImpl ZB public
 
   open ℤ using (ℤ)
 

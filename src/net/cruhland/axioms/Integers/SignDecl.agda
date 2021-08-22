@@ -9,13 +9,13 @@ open import net.cruhland.models.Literals
 
 module net.cruhland.axioms.Integers.SignDecl (PA : PeanoArithmetic) where
 
-private open module ℕ = PeanoArithmetic PA using (ℕ)
 open import net.cruhland.axioms.Integers.AdditionDecl PA using (Addition)
 open import net.cruhland.axioms.Integers.BaseDecl PA using (Base)
 import net.cruhland.axioms.Integers.LiteralImpl PA as LiteralImpl
 open import net.cruhland.axioms.Integers.NegationDecl PA using (Negation)
 
 private
+  open module ℕ = PeanoArithmetic PA using (ℕ)
   module IntegerPredefs
       (ZB : Base) (ZA : Addition ZB) (ZN : Negation ZB ZA) where
     open Addition ZA public
@@ -24,7 +24,8 @@ private
     open Negation ZN public
 
 module SignPredefs (ZB : Base) (ZA : Addition ZB) (ZN : Negation ZB ZA) where
-  private open module ℤ = IntegerPredefs ZB ZA ZN using (ℤ)
+  private
+    open module ℤ = IntegerPredefs ZB ZA ZN using (ℤ)
 
   infix 4 _≃±1
   data _≃±1 (s : ℤ) : Set where
@@ -39,7 +40,8 @@ module SignPredefs (ZB : Base) (ZA : Addition ZB) (ZN : Negation ZB ZA) where
       a≃n : a ≃ f (n as ℤ)
 
 record Sign (ZB : Base) (ZA : Addition ZB) (ZN : Negation ZB ZA) : Set₁ where
-  private open module ℤ = IntegerPredefs ZB ZA ZN using (ℤ)
+  private
+    open module ℤ = IntegerPredefs ZB ZA ZN using (ℤ)
   open SignPredefs ZB ZA ZN public
 
   field

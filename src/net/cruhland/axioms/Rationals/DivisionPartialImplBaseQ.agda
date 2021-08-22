@@ -24,10 +24,11 @@ module net.cruhland.axioms.Rationals.DivisionPartialImplBaseQ
 
 import net.cruhland.axioms.Rationals.LiteralImpl PA Z as LiteralImpl
 
-private module ℚ where
-  open Base QB public
-  open LiteralImpl QB public
-  open Multiplication QM public
+private
+  module ℚ where
+    open Base QB public
+    open LiteralImpl QB public
+    open Multiplication QM public
 
 open ℚ using (ℚ)
 

@@ -4,9 +4,10 @@ open import net.cruhland.models.Literals
 
 module net.cruhland.axioms.AbstractAlgebra.Reductive where
 
-private module AA where
-  open import net.cruhland.axioms.AbstractAlgebra.Base public
-  open import net.cruhland.axioms.AbstractAlgebra.Swappable public
+private
+  module AA where
+    open import net.cruhland.axioms.AbstractAlgebra.Base public
+    open import net.cruhland.axioms.AbstractAlgebra.Swappable public
 
 record Identity
     (hand : AA.Hand) {A : Set} {{_ : Eq A}} (_⊙_ : A → A → A) (e : A)

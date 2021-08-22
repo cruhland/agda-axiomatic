@@ -10,13 +10,15 @@ open import net.cruhland.axioms.Integers.AdditionDecl PA using (Addition)
 open import net.cruhland.axioms.Integers.BaseDecl PA using (Base)
 import net.cruhland.axioms.Integers.LiteralImpl PA as LiteralImpl
 
-private module IntegerPredefs (ZB : Base) (ZA : Addition ZB) where
-  open Addition ZA public
-  open Base ZB public
-  open LiteralImpl ZB public
+private
+  module IntegerPredefs (ZB : Base) (ZA : Addition ZB) where
+    open Addition ZA public
+    open Base ZB public
+    open LiteralImpl ZB public
 
 record Negation (ZB : Base) (ZA : Addition ZB) : Set₁ where
-  private open module ℤ = IntegerPredefs ZB ZA using (ℤ)
+  private
+    open module ℤ = IntegerPredefs ZB ZA using (ℤ)
 
   field
     {{neg-dash}} : Op.Dashᴸ ℤ

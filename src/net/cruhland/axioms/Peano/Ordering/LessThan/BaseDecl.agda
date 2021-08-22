@@ -20,7 +20,8 @@ import net.cruhland.axioms.Peano.Literals PB as ℕL
 open LteBaseDecl PB PS PA using (LteBase)
 
 record LtBase (LTEB : LteBase) : Set₁ where
-  private module ℕ≤ = LteBase LTEB
+  private
+    module ℕ≤ = LteBase LTEB
 
   field
     {{strictOrder}} : Ord.StrictOrder ℕ

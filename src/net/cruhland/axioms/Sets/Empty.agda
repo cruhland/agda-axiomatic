@@ -17,7 +17,8 @@ private
 
 record EmptySet (SA : SetAxioms) : Setω where
   open Decidable SA using (DecMembership; ∈?-intro)
-  private open module SE = Equality SA using (≃-intro)
+  private
+    open module SE = Equality SA using (≃-intro)
   open SetAxioms SA using (_∉_; PSet)
 
   field

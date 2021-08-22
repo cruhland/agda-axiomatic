@@ -30,15 +30,16 @@ module net.cruhland.axioms.Peano.Ordering.PropertiesImpl
   (LTP : LtProperties PB PS PA LTEB LTB)
   where
 
-private module ℕ where
-  open Addition PA public
-  open LtBase LTB public
-  open LteBase LTEB public
-  open LteProperties LTEP public
-  open LtProperties LTP public
-  open PeanoBase PB public
-  open import net.cruhland.axioms.Peano.Inspect PB public
-  open import net.cruhland.axioms.Peano.Literals PB public
+private
+  module ℕ where
+    open Addition PA public
+    open LtBase LTB public
+    open LteBase LTEB public
+    open LteProperties LTEP public
+    open LtProperties LTP public
+    open PeanoBase PB public
+    open import net.cruhland.axioms.Peano.Inspect PB public
+    open import net.cruhland.axioms.Peano.Literals PB public
 
 open ℕ using (_≤?_; ℕ; step)
 

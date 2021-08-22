@@ -7,10 +7,11 @@ open import net.cruhland.models.Logic using (contrapositive)
 
 module net.cruhland.axioms.AbstractAlgebra.Substitutive where
 
-private module AA where
-  open import net.cruhland.axioms.AbstractAlgebra.Base public
-  open import net.cruhland.axioms.AbstractAlgebra.Compatible public
-  open import net.cruhland.axioms.AbstractAlgebra.Swappable public
+private
+  module AA where
+    open import net.cruhland.axioms.AbstractAlgebra.Base public
+    open import net.cruhland.axioms.AbstractAlgebra.Compatible public
+    open import net.cruhland.axioms.AbstractAlgebra.Swappable public
 
 record Substitutive₁ᶜ
     {β} {A : Set} {B : A → Set β} {C : A → Set} (f : (a : A) {{_ : C a}} → B a)

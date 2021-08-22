@@ -7,16 +7,18 @@ open import net.cruhland.models.Literals
 
 module net.cruhland.axioms.Integers.AdditionDecl (PA : PeanoArithmetic) where
 
-private open module ℕ = PeanoArithmetic PA using (ℕ)
 open import net.cruhland.axioms.Integers.BaseDecl PA using (Base)
 import net.cruhland.axioms.Integers.LiteralImpl PA as LiteralImpl
 
-private module IntegerPredefs (ZB : Base) where
-  open Base ZB public
-  open LiteralImpl ZB public
+private
+  open module ℕ = PeanoArithmetic PA using (ℕ)
+  module IntegerPredefs (ZB : Base) where
+    open Base ZB public
+    open LiteralImpl ZB public
 
 record Addition (ZB : Base) : Set where
-  private open module ℤ = IntegerPredefs ZB using (ℤ)
+  private
+    open module ℤ = IntegerPredefs ZB using (ℤ)
 
   field
     {{plus}} : Plus ℤ

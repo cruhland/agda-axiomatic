@@ -27,7 +27,8 @@ module PairDef (SA : SetAxioms) where
 
 record PairSet (SA : SetAxioms) : Setω where
   open Decidable SA using (DecMembership; ∈?-intro)
-  private open module SE = Equality SA using (≃-intro)
+  private
+    open module SE = Equality SA using (≃-intro)
   open PairDef SA using (is-pair)
   open SetAxioms SA using (_∈_; PSet)
 

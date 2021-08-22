@@ -23,7 +23,8 @@ import net.cruhland.axioms.Peano.Literals PB as ℕL
 open LteBaseDecl PB PS PA using (LteBase)
 
 record LteProperties (LTEB : LteBase) : Set₁ where
-  private module ℕ≤ = LteBase LTEB
+  private
+    module ℕ≤ = LteBase LTEB
 
   field
     {{≤-transitive}} : Eq.Transitive _≤_

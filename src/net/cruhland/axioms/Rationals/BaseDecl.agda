@@ -8,7 +8,8 @@ open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 module net.cruhland.axioms.Rationals.BaseDecl
   (PA : PeanoArithmetic) (Z : Integers PA) where
 
-private open module ℤ = Integers Z using (ℤ)
+private
+  open module ℤ = Integers Z using (ℤ)
 
 record Base : Set₁ where
   field

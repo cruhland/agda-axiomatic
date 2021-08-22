@@ -9,18 +9,20 @@ open import net.cruhland.models.Literals
 module net.cruhland.axioms.Rationals.NegationDecl
   (PA : PeanoArithmetic) (Z : Integers PA) where
 
-private open module ℤ = Integers Z using (ℤ)
 open import net.cruhland.axioms.Rationals.AdditionDecl PA Z using (Addition)
 open import net.cruhland.axioms.Rationals.BaseDecl PA Z using (Base)
 import net.cruhland.axioms.Rationals.LiteralImpl PA Z as LiteralImpl
 
-private module RationalPredefs (QB : Base) (QA : Addition QB) where
-  open Addition QA public
-  open Base QB public
-  open LiteralImpl QB public
+private
+  open module ℤ = Integers Z using (ℤ)
+  module RationalPredefs (QB : Base) (QA : Addition QB) where
+    open Addition QA public
+    open Base QB public
+    open LiteralImpl QB public
 
 record Negation (QB : Base) (QA : Addition QB) : Set₁ where
-  private open module ℚ = RationalPredefs QB QA using (ℚ)
+  private
+    open module ℚ = RationalPredefs QB QA using (ℚ)
 
   field
     {{neg-dash}} : Op.Dashᴸ ℚ

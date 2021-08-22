@@ -13,11 +13,12 @@ module net.cruhland.models.Rationals.IntPair.NegationImpl
 open import net.cruhland.models.Rationals.IntPair.AdditionDefn PA Z using (QA)
 open import net.cruhland.models.Rationals.IntPair.BaseDefn PA Z using (QB)
 
-private module ℤ = Integers Z
-private module ℚ where
-  open import net.cruhland.axioms.Rationals.LiteralImpl PA Z QB public
-  open import net.cruhland.models.Rationals.IntPair.AdditionImpl PA Z public
-  open import net.cruhland.models.Rationals.IntPair.BaseImpl PA Z public
+private
+  module ℤ = Integers Z
+  module ℚ where
+    open import net.cruhland.axioms.Rationals.LiteralImpl PA Z QB public
+    open import net.cruhland.models.Rationals.IntPair.AdditionImpl PA Z public
+    open import net.cruhland.models.Rationals.IntPair.BaseImpl PA Z public
 
 open ℤ using (ℤ)
 open ℚ using (_//_; ℚ)

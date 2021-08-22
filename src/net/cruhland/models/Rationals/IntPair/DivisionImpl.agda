@@ -18,14 +18,15 @@ open import net.cruhland.models.Rationals.IntPair.MultiplicationDefn PA Z
 open import net.cruhland.models.Rationals.IntPair.NegationDefn PA Z using (QN)
 open import net.cruhland.models.Rationals.IntPair.ReciprocalDefn PA Z using (QR)
 
-private module ℤ = Integers Z
-private module ℚ where
-  open DivisionDecl.DivisionPredefs QB QA QN QM QR public
-  open import net.cruhland.models.Rationals.IntPair.BaseImpl PA Z public
-  open import net.cruhland.axioms.Rationals.LiteralImpl PA Z QB public
-  open import net.cruhland.models.Rationals.IntPair.MultiplicationImpl PA Z
-    public
-  open import net.cruhland.models.Rationals.IntPair.ReciprocalImpl PA Z public
+private
+  module ℤ = Integers Z
+  module ℚ where
+    open DivisionDecl.DivisionPredefs QB QA QN QM QR public
+    open import net.cruhland.models.Rationals.IntPair.BaseImpl PA Z public
+    open import net.cruhland.axioms.Rationals.LiteralImpl PA Z QB public
+    open import net.cruhland.models.Rationals.IntPair.MultiplicationImpl PA Z
+      public
+    open import net.cruhland.models.Rationals.IntPair.ReciprocalImpl PA Z public
 
 open ℤ using (ℤ)
 open ℚ using (ℚ; _//_)

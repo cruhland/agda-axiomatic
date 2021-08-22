@@ -59,7 +59,8 @@ record Replacement
     : Setω where
   open Decidable SA using (DecMembership; ∈?-intro)
   open EmptySet ES using (∅; x∉∅)
-  private open module SE = Equality SA using (∈-substᴿ)
+  private
+    open module SE = Equality SA using (∈-substᴿ)
   open PairwiseUnion PU
     using (_∪_; x∈A∪B-elim; x∈A∪B-introᴸ; x∈A∪B-introᴿ; ∪-substᴿ)
   open PreFinite SA ES PU SS

@@ -38,7 +38,8 @@ record Multiplication
     (PA : Addition PB PS)
     (PO : Ordering PB PS PA)
     : Set where
-  private open module ℕ = Predefs PB PS PA PO using (ℕ; step)
+  private
+    open module ℕ = Predefs PB PS PA PO using (ℕ; step)
 
   field
     {{star}} : Op.Star ℕ

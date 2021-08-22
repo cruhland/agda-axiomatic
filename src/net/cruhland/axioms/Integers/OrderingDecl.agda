@@ -32,7 +32,8 @@ record Ordering
     (ZN : Negation ZB ZA)
     (ZS : Sign ZB ZA ZN)
     : Set₁ where
-  private open module ℤ = IntegerPredefs ZB ZA ZN ZS using (ℤ)
+  private
+    open module ℤ = IntegerPredefs ZB ZA ZN ZS using (ℤ)
 
   field
     {{totalOrder}} : Ord.TotalOrder ℤ

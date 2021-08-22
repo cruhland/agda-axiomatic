@@ -13,8 +13,9 @@ open import net.cruhland.models.Literals
 module net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.BaseImplAdd
   (PB : PeanoBase) (PS : Sign PB) (PA : Addition PB PS) where
 
-private module AD = AddDecl PB PS PA
-private module ℕ+ = Addition PA
+private
+  module AD = AddDecl PB PS PA
+  module ℕ+ = Addition PA
 open PeanoBase PB using (ℕ; step)
 import net.cruhland.axioms.Peano.Literals PB as ℕL
 

@@ -6,7 +6,8 @@ open import net.cruhland.models.Logic using ( ↔-intro; ¬_; contrapositive)
 open import net.cruhland.models.Setoid using (El; Setoid₀)
 
 module net.cruhland.axioms.Sets.Subset (SA : SetAxioms) where
-  private module SE = Equality SA
+  private
+    module SE = Equality SA
   open SE using (≃-elimᴸ; ≃-elimᴿ; ≃-intro; ∈-substᴿ; ∉-substᴿ)
   open SetAxioms SA using (_∈_; _∉_; PSet)
 

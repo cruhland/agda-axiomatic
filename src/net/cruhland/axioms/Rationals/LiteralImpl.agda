@@ -7,8 +7,9 @@ open import net.cruhland.models.Literals
 module net.cruhland.axioms.Rationals.LiteralImpl
   (PA : PeanoArithmetic) (Z : Integers PA) (QB : Base PA Z) where
 
-private open module ℤ = Integers Z using (ℤ)
-private open module ℚ = Base QB using (ℚ)
+private
+  open module ℤ = Integers Z using (ℤ)
+  open module ℚ = Base QB using (ℚ)
 
 instance
   nat-literal : FromNatLiteral ℚ

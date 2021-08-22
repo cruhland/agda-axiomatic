@@ -21,7 +21,8 @@ private
 
 record PairwiseUnion (SA : SetAxioms) (ES : EmptySet SA) : Setω where
   open Decidable SA using (_∈?_; DecMembership; ∈?-intro)
-  private module ≃-SA = Equality SA
+  private
+    module ≃-SA = Equality SA
   open ≃-SA using (≃-intro; ∈-substᴿ)
   open EmptySet ES using (∅; x∉∅)
   open SetAxioms SA using (_∈_; PSet₀)

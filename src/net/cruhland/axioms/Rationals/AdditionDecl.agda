@@ -9,16 +9,18 @@ open import net.cruhland.models.Literals
 module net.cruhland.axioms.Rationals.AdditionDecl
   (PA : PeanoArithmetic) (Z : Integers PA) where
 
-private open module ℤ = Integers Z using (ℤ)
 open import net.cruhland.axioms.Rationals.BaseDecl PA Z using (Base)
 import net.cruhland.axioms.Rationals.LiteralImpl PA Z as LiteralImpl
 
-private module RationalPredefs (QB : Base) where
-  open Base QB public
-  open LiteralImpl QB public
+private
+  open module ℤ = Integers Z using (ℤ)
+  module RationalPredefs (QB : Base) where
+    open Base QB public
+    open LiteralImpl QB public
 
 record Addition (QB : Base) : Set where
-  private open module ℚ = RationalPredefs QB using (ℚ)
+  private
+    open module ℚ = RationalPredefs QB using (ℚ)
 
   field
     {{plus}} : Op.Plus ℚ

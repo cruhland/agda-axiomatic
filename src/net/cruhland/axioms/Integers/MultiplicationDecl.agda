@@ -9,7 +9,6 @@ open import net.cruhland.models.Literals
 module net.cruhland.axioms.Integers.MultiplicationDecl
   (PA : PeanoArithmetic) where
 
-private open module ℕ = PeanoArithmetic PA using (ℕ)
 open import net.cruhland.axioms.Integers.AdditionDecl PA using (Addition)
 open import net.cruhland.axioms.Integers.BaseDecl PA using (Base)
 import net.cruhland.axioms.Integers.LiteralImpl PA as LiteralImpl
@@ -17,6 +16,7 @@ open import net.cruhland.axioms.Integers.NegationDecl PA using (Negation)
 open import net.cruhland.axioms.Integers.SignDecl PA using (Sign)
 
 private
+  open module ℕ = PeanoArithmetic PA using (ℕ)
   module IntegerPredefs
       (ZB : Base)
       (ZA : Addition ZB)
@@ -35,7 +35,8 @@ module MultiplicationPredefs
     (ZN : Negation ZB ZA)
     (ZS : Sign ZB ZA ZN)
     where
-  private open module ℤ = IntegerPredefs ZB ZA ZN ZS using (ℤ; _≃±1)
+  private
+    open module ℤ = IntegerPredefs ZB ZA ZN ZS using (ℤ; _≃±1)
 
   record PosOrNeg (a : ℤ) {{_ : Op.Star ℤ}} : Set where
     constructor PosOrNeg-intro
@@ -52,7 +53,8 @@ record Multiplication
     (ZN : Negation ZB ZA)
     (ZS : Sign ZB ZA ZN)
     : Set₁ where
-  private open module ℤ = IntegerPredefs ZB ZA ZN ZS using (ℤ; _≃±1)
+  private
+    open module ℤ = IntegerPredefs ZB ZA ZN ZS using (ℤ; _≃±1)
   open MultiplicationPredefs ZB ZA ZN ZS public
 
   field

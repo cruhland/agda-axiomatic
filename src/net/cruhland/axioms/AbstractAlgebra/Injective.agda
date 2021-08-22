@@ -5,10 +5,11 @@ open import net.cruhland.models.Logic using (contrapositive)
 
 module net.cruhland.axioms.AbstractAlgebra.Injective where
 
-private module AA where
-  open import net.cruhland.axioms.AbstractAlgebra.Base public
-  open import net.cruhland.axioms.AbstractAlgebra.Substitutive public
-  open import net.cruhland.axioms.AbstractAlgebra.Swappable public
+private
+  module AA where
+    open import net.cruhland.axioms.AbstractAlgebra.Base public
+    open import net.cruhland.axioms.AbstractAlgebra.Substitutive public
+    open import net.cruhland.axioms.AbstractAlgebra.Swappable public
 
 record Injective
     {A B : Set} (f : A → B) (_~_ : A → A → Set) (_≈_ : B → B → Set) : Set where

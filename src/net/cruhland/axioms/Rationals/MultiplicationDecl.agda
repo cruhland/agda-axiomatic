@@ -9,13 +9,13 @@ open import net.cruhland.models.Literals
 module net.cruhland.axioms.Rationals.MultiplicationDecl
   (PA : PeanoArithmetic) (Z : Integers PA) where
 
-private open module ℤ = Integers Z using (ℤ)
 open import net.cruhland.axioms.Rationals.AdditionDecl PA Z using (Addition)
 open import net.cruhland.axioms.Rationals.BaseDecl PA Z using (Base)
 import net.cruhland.axioms.Rationals.LiteralImpl PA Z as LiteralImpl
 open import net.cruhland.axioms.Rationals.NegationDecl PA Z using (Negation)
 
 private
+  open module ℤ = Integers Z using (ℤ)
   module RationalPredefs
       (QB : Base) (QA : Addition QB) (QN : Negation QB QA) where
     open Addition QA public
@@ -25,7 +25,8 @@ private
 
 record Multiplication
     (QB : Base) (QA : Addition QB) (QN : Negation QB QA) : Set where
-  private open module ℚ = RationalPredefs QB QA QN using (ℚ)
+  private
+    open module ℚ = RationalPredefs QB QA QN using (ℚ)
 
   field
     {{star}} : Op.Star ℚ

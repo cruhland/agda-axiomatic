@@ -17,15 +17,16 @@ open import net.cruhland.models.Logic
 
 module net.cruhland.axioms.Peano.Addition where
 
-private module Predefs (PB : PeanoBase) (PS : ℕSign PB) where
-  open PeanoBase PB public
-  open PeanoInspect PB public
-  open PeanoLiterals PB public
-  open ℕSign PS public
+private
+  module Predefs (PB : PeanoBase) (PS : ℕSign PB) where
+    open PeanoBase PB public
+    open PeanoInspect PB public
+    open PeanoLiterals PB public
+    open ℕSign PS public
 
 record Addition (PB : PeanoBase) (PS : ℕSign PB) : Set where
-  private module ℕ = Predefs PB PS
-  open ℕ using (ℕ; ind; step; step-case; step≄zero)
+  private
+    open module ℕ = Predefs PB PS using (ℕ; ind; step; step-case; step≄zero)
 
   field
     {{plus}} : Op.Plus ℕ

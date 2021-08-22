@@ -24,14 +24,15 @@ module net.cruhland.axioms.Peano.Ordering.LessThan.BaseImplPosDiff
   (LTEP : LteProperties PB PS PA LTEB)
   where
 
-private module ℕ where
-  open Addition PA public
-  open LteBase LTEB public
-  open LteProperties LTEP public
-  open ℕSign PS public
-  open PeanoBase PB public
-  open import net.cruhland.axioms.Peano.Inspect PB public
-  open import net.cruhland.axioms.Peano.Literals PB public
+private
+  module ℕ where
+    open Addition PA public
+    open LteBase LTEB public
+    open LteProperties LTEP public
+    open ℕSign PS public
+    open PeanoBase PB public
+    open import net.cruhland.axioms.Peano.Inspect PB public
+    open import net.cruhland.axioms.Peano.Literals PB public
 
 open ℕ using (ℕ)
 import net.cruhland.axioms.Peano.Ordering.LessThan.PosDiffDecl PB PS PA LTEB

@@ -26,13 +26,14 @@ module net.cruhland.axioms.Integers.OrderingDefaultImpl
 
 import net.cruhland.axioms.Integers.LiteralImpl PA as LiteralImpl
 
-private module ℕ = PeanoArithmetic PA
-private module ℤ where
-  open Base ZB public
-  open LiteralImpl ZB public
-  open Multiplication ZM public
-  open Negation ZN public
-  open Sign ZS public
+private
+  module ℕ = PeanoArithmetic PA
+  module ℤ where
+    open Base ZB public
+    open LiteralImpl ZB public
+    open Multiplication ZM public
+    open Negation ZN public
+    open Sign ZS public
 
 open ℕ using (ℕ)
 open ℤ using (ℤ)

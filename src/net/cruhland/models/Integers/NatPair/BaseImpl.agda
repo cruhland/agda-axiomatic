@@ -12,7 +12,8 @@ open import net.cruhland.models.Logic using (⊤; Dec; dec-map)
 module net.cruhland.models.Integers.NatPair.BaseImpl
   (PA : PeanoArithmetic) where
 
-private open module ℕ = PeanoArithmetic PA using (ℕ)
+private
+  open module ℕ = PeanoArithmetic PA using (ℕ)
 
 infix 9 _—_
 record ℤ : Set where

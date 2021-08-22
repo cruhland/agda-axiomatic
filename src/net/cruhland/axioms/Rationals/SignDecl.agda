@@ -7,7 +7,6 @@ import net.cruhland.axioms.Sign as S
 module net.cruhland.axioms.Rationals.SignDecl
   (PA : PeanoArithmetic) (Z : Integers PA) where
 
-private open module ℤ = Integers Z using (ℤ)
 open import net.cruhland.axioms.Rationals.AdditionDecl PA Z using (Addition)
 open import net.cruhland.axioms.Rationals.BaseDecl PA Z using (Base)
 open import net.cruhland.axioms.Rationals.DivisionDecl PA Z using (Division)
@@ -18,6 +17,7 @@ open import net.cruhland.axioms.Rationals.NegationDecl PA Z using (Negation)
 open import net.cruhland.axioms.Rationals.ReciprocalDecl PA Z using (Reciprocal)
 
 private
+  open module ℤ = Integers Z using (ℤ)
   module RationalPredefs
       (QB : Base)
       (QA : Addition QB)
@@ -42,7 +42,8 @@ module SignPredefs
     (QR : Reciprocal QB QA QN QM)
     (QD : Division QB QA QN QM QR)
     where
-  private open module ℚ = RationalPredefs QB QA QN QM QR QD using (ℚ)
+  private
+    open module ℚ = RationalPredefs QB QA QN QM QR QD using (ℚ)
 
   record PositiveDenominator (q : ℚ) : Set where
     constructor positiveDenominator-intro
@@ -59,7 +60,8 @@ record Sign
     (QR : Reciprocal QB QA QN QM)
     (QD : Division QB QA QN QM QR)
     : Set₁ where
-  private open module ℚ = RationalPredefs QB QA QN QM QR QD using (ℚ)
+  private
+    open module ℚ = RationalPredefs QB QA QN QM QR QD using (ℚ)
   open SignPredefs QB QA QN QM QR QD public
 
   field

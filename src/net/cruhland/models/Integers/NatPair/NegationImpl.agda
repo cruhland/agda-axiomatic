@@ -11,11 +11,12 @@ module net.cruhland.models.Integers.NatPair.NegationImpl
 open import net.cruhland.models.Integers.NatPair.AdditionDefn PA using (ZA)
 open import net.cruhland.models.Integers.NatPair.BaseDefn PA using (ZB)
 
-private module ℕ = PeanoArithmetic PA
-private module ℤ where
-  open import net.cruhland.axioms.Integers.LiteralImpl PA ZB public
-  open import net.cruhland.models.Integers.NatPair.AdditionImpl PA public
-  open import net.cruhland.models.Integers.NatPair.BaseImpl PA public
+private
+  module ℕ = PeanoArithmetic PA
+  module ℤ where
+    open import net.cruhland.axioms.Integers.LiteralImpl PA ZB public
+    open import net.cruhland.models.Integers.NatPair.AdditionImpl PA public
+    open import net.cruhland.models.Integers.NatPair.BaseImpl PA public
 
 open ℤ using (_—_; ℤ)
 

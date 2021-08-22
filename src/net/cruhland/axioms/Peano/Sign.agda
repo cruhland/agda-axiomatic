@@ -9,7 +9,8 @@ open import net.cruhland.models.Literals
 module net.cruhland.axioms.Peano.Sign (PB : PeanoBase) where
 
 open PeanoBase PB using (ℕ)
-private module ℕLit = Literals PB
+private
+  module ℕLit = Literals PB
 
 record Sign : Set₁ where
   field
