@@ -6,9 +6,11 @@ module net.cruhland.models.Integers.NatPair.OrderingDefn
 open import net.cruhland.axioms.Integers.OrderingDecl PA using (Ordering)
 open import net.cruhland.models.Integers.NatPair.AdditionDefn PA using (ZA)
 open import net.cruhland.models.Integers.NatPair.BaseDefn PA using (ZB)
+open import net.cruhland.models.Integers.NatPair.MultiplicationDefn PA
+  using (ZM)
 open import net.cruhland.models.Integers.NatPair.NegationDefn PA using (ZN)
 open import net.cruhland.models.Integers.NatPair.SignDefn PA using (ZS)
 import net.cruhland.models.Integers.NatPair.OrderingImpl PA as ZO
 
-ZO : Ordering ZB ZA ZN ZS
+ZO : Ordering ZB ZA ZN ZM ZS
 ZO = record { ZO }

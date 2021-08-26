@@ -41,6 +41,7 @@ record Multiplication
     {{*-compatible-ℤ}} : AA.Compatible₂ {A = ℤ} (AA.tc₁ (_as ℚ)) _*_ _*_ _≃_
 
     *-neg-ident : {q : ℚ} → -1 * q ≃ - q
+    {{neg-compatible-+}} : AA.Compatible₂ {A = ℚ} (AA.tc₁ λ q → - q) _+_ _+_ _≃_
     {{*-comm-with-neg}} : AA.FnOpCommutative² {A = ℚ} -_ -_ (AA.tc₂ _*_)
 
     {{*-distributive-sub}} : AA.Distributive² {A = ℚ} (AA.tc₂ _*_) _-_

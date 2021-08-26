@@ -12,8 +12,11 @@ module net.cruhland.models.Integers.NatPair.SignImplNat
   (PA : PeanoArithmetic) where
 
 import net.cruhland.axioms.Integers.SignDecl PA as SignDecl
+import net.cruhland.axioms.Integers.SignPartialImplNat PA as SignPartialImplNat
 open import net.cruhland.models.Integers.NatPair.AdditionDefn PA using (ZA)
 open import net.cruhland.models.Integers.NatPair.BaseDefn PA using (ZB)
+open import net.cruhland.models.Integers.NatPair.MultiplicationDefn PA
+  using (ZM)
 open import net.cruhland.models.Integers.NatPair.NegationDefn PA using (ZN)
 
 private
@@ -22,13 +25,13 @@ private
     open import net.cruhland.models.Integers.NatPair.AdditionImpl PA public
     open import net.cruhland.axioms.Integers.LiteralImpl PA ZB public
     open import net.cruhland.models.Integers.NatPair.BaseImpl PA public
+    open import net.cruhland.models.Integers.NatPair.MultiplicationImpl PA
+      public
     open import net.cruhland.models.Integers.NatPair.NegationImpl PA public
-    open SignDecl.SignPredefs ZB ZA ZN public
 
 open ℤ using (_—_; ℤ)
-
--- Include everything from the partial impl
-open import net.cruhland.axioms.Integers.SignPartialImplNat PA ZB ZA ZN public
+open SignDecl.SignPredefs ZB ZA ZN ZM public
+open SignPartialImplNat.SignPredefs ZB ZA ZN ZM public
 
 instance
   sign-trichotomy : S.Trichotomy ℤ
@@ -54,7 +57,7 @@ instance
                   ≃˘⟨ AA.ident ⟩
                     0 + x⁻
                   ∎
-             in AA.3rd (ℤ.≃posℕ-intro pos[d] (ℤ.≃₀-intro x⁺+d≃0+x⁻))
+             in AA.3rd (≃posℕ-intro pos[d] (ℤ.≃₀-intro x⁺+d≃0+x⁻))
           1of3 | AA.2nd x⁺≃x⁻ = AA.1st (ℤ.zero-from-balanced x⁺≃x⁻)
           1of3 | AA.3rd x⁺>x⁻ =
             let x⁻<x⁺ = Ord.>-flip x⁺>x⁻
@@ -71,15 +74,15 @@ instance
                   ≃⟨ AA.comm ⟩
                     d + x⁻
                   ∎
-             in AA.2nd (ℤ.≃posℕ-intro pos[d] (ℤ.≃₀-intro x⁺+0≃d+x⁻))
+             in AA.2nd (≃posℕ-intro pos[d] (ℤ.≃₀-intro x⁺+0≃d+x⁻))
 
           ¬2of3 : ¬ AA.TwoOfThree (x ≃ 0) (S.Positive x) (S.Negative x)
           ¬2of3 = ¬-intro λ
             { (AA.1∧2 x≃0 pos[x]) → x≃0 ↯ (S.pos≄0 pos[x])
             ; (AA.1∧3 x≃0 neg[x]) → x≃0 ↯ (S.neg≄0 neg[x])
             ; (AA.2∧3
-                  (ℤ.≃posℕ-intro {m} pos[m] (ℤ.≃₀-intro x⁺+0≃m+x⁻))
-                  (ℤ.≃posℕ-intro {n} pos[n] (ℤ.≃₀-intro x⁺+n≃0+x⁻))) →
+                  (≃posℕ-intro {m} pos[m] (ℤ.≃₀-intro x⁺+0≃m+x⁻))
+                  (≃posℕ-intro {n} pos[n] (ℤ.≃₀-intro x⁺+n≃0+x⁻))) →
                 let x⁺+n≃x⁻ =
                       begin
                         x⁺ + n
@@ -106,8 +109,23 @@ instance
                  in x⁺<>x⁻ ↯ ¬x⁺<>x⁻
             }
 
+-- Include everything from the partial impl
+private
+  open import net.cruhland.axioms.Integers.SignPartialImplNat PA
+    using (SignPropertiesNat)
+
+  signPropertiesNat : SignPropertiesNat ZB ZA ZN ZM
+  signPropertiesNat = record {}
+
+open SignPropertiesNat signPropertiesNat public
+  hiding (sign-trichotomy)
+
+instance
   positivity-common : S.PositivityCommon ℤ
   positivity-common = record {}
+
+  negativity-common : S.NegativityCommon ℤ
+  negativity-common = record {}
 
   sign-common : S.SignCommon ℤ
   sign-common =

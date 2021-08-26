@@ -122,5 +122,30 @@ instance
             let ¬sign-2of3 = AA.at-most-one sign-tri
              in contrapositive sign-2of3-from-ord-2of3 ¬sign-2of3
 
+  <-transitive : Eq.Transitive _<_
+  <-transitive = Eq.transitive <-trans
+    where
+      <-trans : {p q r : ℚ} → p < q → q < r → p < r
+      <-trans {p} {q} {r} neg[p-q] neg[q-r] =
+        let neg[[p-q]+[q-r]] = AA.pres neg[p-q] neg[q-r]
+            [p-q]+[q-r]≃p-r =
+              begin
+                (p - q) + (q - r)
+              ≃⟨ AA.subst₂ ℚ.sub-defn ⟩
+                (p + - q) + (q - r)
+              ≃⟨ AA.subst₂ ℚ.sub-defn ⟩
+                (p + - q) + (q + - r)
+              ≃⟨ AA.[ab][cd]≃a[[bc]d] ⟩
+                p + ((- q + q) + - r)
+              ≃⟨ AA.subst₂ (AA.subst₂ AA.inv) ⟩
+                p + (0 + - r)
+              ≃⟨ AA.subst₂ AA.ident ⟩
+                p + - r
+              ≃˘⟨ ℚ.sub-defn ⟩
+                p - r
+              ∎
+            neg[p-r] = AA.subst₁ [p-q]+[q-r]≃p-r neg[[p-q]+[q-r]]
+         in neg[p-r]
+
   totalOrder : Ord.TotalOrder ℚ
   totalOrder = record { <-from-≤≄ = <₀-from-≤₀≄ }

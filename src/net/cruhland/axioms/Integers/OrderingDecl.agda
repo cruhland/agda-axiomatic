@@ -9,6 +9,8 @@ module net.cruhland.axioms.Integers.OrderingDecl (PA : PeanoArithmetic) where
 open import net.cruhland.axioms.Integers.AdditionDecl PA using (Addition)
 open import net.cruhland.axioms.Integers.BaseDecl PA using (Base)
 import net.cruhland.axioms.Integers.LiteralImpl PA as LiteralImpl
+open import net.cruhland.axioms.Integers.MultiplicationDecl PA
+  using (Multiplication)
 open import net.cruhland.axioms.Integers.NegationDecl PA using (Negation)
 open import net.cruhland.axioms.Integers.SignDecl PA using (Sign)
 
@@ -17,11 +19,13 @@ private
       (ZB : Base)
       (ZA : Addition ZB)
       (ZN : Negation ZB ZA)
-      (ZS : Sign ZB ZA ZN)
+      (ZM : Multiplication ZB ZA ZN)
+      (ZS : Sign ZB ZA ZN ZM)
       where
     open Addition ZA public
     open Base ZB public
     open LiteralImpl ZB public
+    open Multiplication ZM public
     open Negation ZN public
     open Sign ZS public
 
@@ -29,10 +33,11 @@ record Ordering
     (ZB : Base)
     (ZA : Addition ZB)
     (ZN : Negation ZB ZA)
-    (ZS : Sign ZB ZA ZN)
+    (ZM : Multiplication ZB ZA ZN)
+    (ZS : Sign ZB ZA ZN ZM)
     : Set₁ where
   private
-    open module ℤ = IntegerPredefs ZB ZA ZN ZS using (ℤ)
+    open module ℤ = IntegerPredefs ZB ZA ZN ZM ZS using (ℤ)
 
   field
     {{totalOrder}} : Ord.TotalOrder ℤ

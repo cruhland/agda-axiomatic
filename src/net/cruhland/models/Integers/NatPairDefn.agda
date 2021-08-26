@@ -12,11 +12,4 @@ open import net.cruhland.models.Integers.NatPair.OrderingDefn PA using (ZO)
 open import net.cruhland.models.Integers.NatPair.SignDefn PA using (ZS)
 
 integers : Integers
-integers = record
-  { ZA = ZA
-  ; ZB = ZB
-  ; ZM = ZM
-  ; ZN = ZN
-  ; ZO = ZO
-  ; ZS = ZS
-  }
+integers = record { ZA = ZA ; ZB = ZB ; ZM = ZM ; ZN = ZN ; ZO = ZO ; ZS = ZS }

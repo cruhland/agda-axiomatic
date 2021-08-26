@@ -36,6 +36,16 @@ open Negativity {{...}} public using (neg≄0; Negative)
 
 {-# DISPLAY Negativity.Negative _ x = Negative x #-}
 
+record NegativityCommon
+    (A : Set)
+    {{_ : Eq A}}
+    {{_ : FromNatLiteral A}}
+    {{_ : Op.Plus A}}
+    {{_ : Negativity A}}
+    : Set where
+  field
+    {{+-preserves-neg}} : AA.Preserves Negative _+_
+
 record Trichotomy
     (A : Set) {{_ : FromNatLiteral A}} {{_ : Eq A}}
     {{_ : Positivity A}} {{_ : Negativity A}}
@@ -60,6 +70,7 @@ record SignCommon
     : Set where
   field
     {{positivity-common}} : PositivityCommon A
+    {{negativity-common}} : NegativityCommon A
     {{sign-trichotomy}} : Trichotomy A
 
     neg-Positive : {x : A} → Positive x → Negative (- x)

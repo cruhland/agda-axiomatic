@@ -16,6 +16,8 @@ module net.cruhland.models.Integers.NatPair.SignImplLt
 import net.cruhland.axioms.Integers.SignDecl PA as SignDecl
 open import net.cruhland.models.Integers.NatPair.AdditionDefn PA using (ZA)
 open import net.cruhland.models.Integers.NatPair.BaseDefn PA using (ZB)
+open import net.cruhland.models.Integers.NatPair.MultiplicationDefn PA
+  using (ZM)
 open import net.cruhland.models.Integers.NatPair.NegationDefn PA using (ZN)
 
 private
@@ -24,8 +26,10 @@ private
     open import net.cruhland.axioms.Integers.LiteralImpl PA ZB public
     open import net.cruhland.models.Integers.NatPair.AdditionImpl PA public
     open import net.cruhland.models.Integers.NatPair.BaseImpl PA public
+    open import net.cruhland.models.Integers.NatPair.MultiplicationImpl PA
+      public
     open import net.cruhland.models.Integers.NatPair.NegationImpl PA public
-    open SignDecl.SignPredefs ZB ZA ZN public
+    open SignDecl.SignPredefs ZB ZA ZN ZM public
 
 open ℕ using (ℕ)
 open ℤ using (_—_; _≃_[posℕ]; ℤ)
@@ -195,11 +199,20 @@ instance
   +-preserves-pos = AA.preserves +-pres-pos
     where
       +-pres-pos : {a b : ℤ} → S.Positive a → S.Positive b → S.Positive (a + b)
-      +-pres-pos {a⁺ — a⁻} {b⁺ — b⁻} a⁻<a⁺ b⁻<b⁺ = ℕ.<-compatible-+ a⁻<a⁺ b⁻<b⁺
+      +-pres-pos a⁻<a⁺ b⁻<b⁺ = ℕ.<-compatible-+ a⁻<a⁺ b⁻<b⁺
+
+  +-preserves-neg : AA.Preserves S.Negative _+_
+  +-preserves-neg = AA.preserves +-pres-neg
+    where
+      +-pres-neg : {a b : ℤ} → S.Negative a → S.Negative b → S.Negative (a + b)
+      +-pres-neg a⁺<a⁻ b⁺<b⁻ = ℕ.<-compatible-+ a⁺<a⁻ b⁺<b⁻
 
 instance
   positivity-common : S.PositivityCommon ℤ
   positivity-common = record {}
+
+  negativity-common : S.NegativityCommon ℤ
+  negativity-common = record {}
 
   sign-common : S.SignCommon ℤ
   sign-common =
@@ -207,11 +220,20 @@ instance
 
 -- Include everything from the partial impl
 private
-  open import net.cruhland.axioms.Integers.SignPartialImpl PA ZB ZA ZN
+  open import net.cruhland.axioms.Integers.SignPartialImpl PA
     using (SignProperties)
 
-  signProperties : SignProperties
-  signProperties = record { from-ℕ-preserves-pos = from-ℕ-preserves-pos }
+  signProperties : SignProperties ZB ZA ZN ZM
+  signProperties = record
+    { from-ℕ-preserves-pos = from-ℕ-preserves-pos
+    ; neg-Negative = neg-Negative
+    ; negℤ-from-posℕ = negℤ-from-posℕ
+    ; posℕ-from-negℤ = posℕ-from-negℤ
+    ; posℕ-from-posℤ = posℕ-from-posℤ
+    ; posℤ-from-posℕ = posℤ-from-posℕ
+    }
 
 open SignProperties signProperties public
-  hiding (from-ℕ-preserves-pos; positivity)
+  hiding ( from-ℕ-preserves-pos; negativity; neg-Negative; positivity
+         ; negℤ-from-posℕ; posℕ-from-negℤ; posℕ-from-posℤ; posℤ-from-posℕ
+         ; sign-trichotomy)

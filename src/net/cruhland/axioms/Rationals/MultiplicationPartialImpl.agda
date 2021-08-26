@@ -37,6 +37,23 @@ record MultiplicationProperties
     *-neg-ident : {q : ℚ} → -1 * q ≃ - q
 
   instance
+    neg-compatible-+ : AA.Compatible₂ (AA.tc₁ λ q → - q) _+_ _+_ _≃_
+    neg-compatible-+ = AA.compatible₂ neg-compat-+
+      where
+        neg-compat-+ : {p q : ℚ} → - (p + q) ≃ (- p) + (- q)
+        neg-compat-+ {p} {q} =
+          begin
+            - (p + q)
+          ≃˘⟨ *-neg-ident ⟩
+            -1 * (p + q)
+          ≃⟨ AA.distrib ⟩
+            -1 * p + -1 * q
+          ≃⟨ AA.subst₂ *-neg-ident ⟩
+            (- p) + -1 * q
+          ≃⟨ AA.subst₂ *-neg-ident ⟩
+            (- p) + (- q)
+          ∎
+
     *-comm-with-negᴸ : AA.FnOpCommutative AA.handᴸ -_ -_ (AA.tc₂ _*_)
     *-comm-with-negᴸ = AA.fnOpCommutative *-negᴸ
       where

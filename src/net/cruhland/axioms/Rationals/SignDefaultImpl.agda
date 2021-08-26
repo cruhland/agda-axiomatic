@@ -186,6 +186,26 @@ instance
             pos[ad+bc] = AA.pres {A = ℤ} {_⊙_ = _+_} pos[ad] pos[bc]
          in Positive₀-intro pos[ad+bc] pos[bd] p+q≃[ad+bc]/bd
 
+  +-preserves-neg : AA.Preserves S.Negative _+_
+  +-preserves-neg = AA.preserves +-pres-neg
+    where
+      +-pres-neg : {p q : ℚ} → S.Negative p → S.Negative q → S.Negative (p + q)
+      +-pres-neg
+          {p} {q}
+          (Negative₀-intro {b} pos[b] p≃-b) (Negative₀-intro {d} pos[d] q≃-d) =
+        let pos[b+d] = AA.pres pos[b] pos[d]
+            p+q≃-[b+d] =
+              begin
+                p + q
+              ≃⟨ AA.subst₂ p≃-b ⟩
+                (- b) + q
+              ≃⟨ AA.subst₂ q≃-d ⟩
+                (- b) + (- d)
+              ≃˘⟨ AA.compat₂ ⟩
+                - (b + d)
+              ∎
+         in Negative₀-intro pos[b+d] p+q≃-[b+d]
+
   sign-trichotomy : S.Trichotomy ℚ
   sign-trichotomy = S.trichotomy-intro tri
     where
@@ -266,6 +286,9 @@ neg-Negative {q} (Negative₀-intro {p} pos[p] q≃-p) =
 instance
   positivity-common : S.PositivityCommon ℚ
   positivity-common = record {}
+
+  negativity-common : S.NegativityCommon ℚ
+  negativity-common = record {}
 
   sign-common : S.SignCommon ℚ
   sign-common =

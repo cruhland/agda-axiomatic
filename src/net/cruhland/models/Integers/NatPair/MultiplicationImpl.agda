@@ -14,7 +14,6 @@ import net.cruhland.models.Integers.NatPair.AdditionImpl as AdditionImpl
   hiding (+-substitutiveᴸ; +-substitutiveᴿ)
 open import net.cruhland.models.Integers.NatPair.BaseDefn PA using (ZB)
 open import net.cruhland.models.Integers.NatPair.NegationDefn PA using (ZN)
-open import net.cruhland.models.Integers.NatPair.SignDefn PA using (ZS)
 
 private
   module ℕ = PeanoArithmetic PA
@@ -288,7 +287,7 @@ private
   open import net.cruhland.axioms.Integers.MultiplicationPartialImpl PA
     using (MultiplicationProperties)
 
-  multiplicationProperties : MultiplicationProperties ZB ZA ZN ZS
+  multiplicationProperties : MultiplicationProperties ZB ZA ZN
   multiplicationProperties = record {}
 
 open MultiplicationProperties multiplicationProperties public

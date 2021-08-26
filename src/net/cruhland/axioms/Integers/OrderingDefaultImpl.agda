@@ -20,8 +20,8 @@ module net.cruhland.axioms.Integers.OrderingDefaultImpl
   (ZB : Base PA)
   (ZA : Addition PA ZB)
   (ZN : Negation PA ZB ZA)
-  (ZS : Sign PA ZB ZA ZN)
-  (ZM : Multiplication PA ZB ZA ZN ZS)
+  (ZM : Multiplication PA ZB ZA ZN)
+  (ZS : Sign PA ZB ZA ZN ZM)
   where
 
 import net.cruhland.axioms.Integers.LiteralImpl PA as LiteralImpl
@@ -168,6 +168,35 @@ instance
             ; (AA.2∧3 (<₀-intro a≤b a≄b) (<₀-intro b≤a b≄a)) →
                 AA.antisym a≤b b≤a ↯ a≄b
             }
+
+  <-transitive : Eq.Transitive _<_
+  <-transitive = Eq.transitive <-trans
+    where
+      <-trans : {a b c : ℤ} → a < b → b < c → a < c
+      <-trans {a} {b} {c} a<b b<c =
+        let pos[b-a] = pos-from-< a<b
+            pos[c-b] = pos-from-< b<c
+            pos[[b-a]+[c-b]] = AA.pres pos[b-a] pos[c-b]
+            [b-a]+[c-b]≃c-a =
+              begin
+                (b - a) + (c - b)
+              ≃⟨ AA.comm ⟩
+                (c - b) + (b - a)
+              ≃⟨ AA.subst₂ ℤ.sub-defn ⟩
+                (c + (- b)) + (b - a)
+              ≃⟨ AA.subst₂ ℤ.sub-defn ⟩
+                (c + (- b)) + (b + (- a))
+              ≃⟨ AA.[ab][cd]≃a[[bc]d] ⟩
+                c + ((- b + b) + (- a))
+              ≃⟨ AA.subst₂ (AA.subst₂ AA.inv) ⟩
+                c + (0 + (- a))
+              ≃⟨ AA.subst₂ AA.ident ⟩
+                c + (- a)
+              ≃˘⟨ ℤ.sub-defn ⟩
+                c - a
+              ∎
+            pos[c-a] = AA.subst₁ [b-a]+[c-b]≃c-a pos[[b-a]+[c-b]]
+         in <-from-pos pos[c-a]
 
   totalOrder : Ord.TotalOrder ℤ
   totalOrder = record { <-from-≤≄ = <₀-intro }

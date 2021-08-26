@@ -1,5 +1,5 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
-open import net.cruhland.axioms.Eq using (_≃_; _≄_; Eq)
+open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_; Eq)
 open import net.cruhland.models.Function using (flip; id)
 open import net.cruhland.models.Logic using (_∨_; ¬_)
 
@@ -87,6 +87,7 @@ record TotalOrder (A : Set) {{_ : Eq A}} : Set₁ where
     {{nonstrict}} : NonStrictOrder A
     {{strict}} : StrictOrder A
     {{order-trichotomy}} : Trichotomy A
+    {{transitive}} : Eq.Transitive _<_
     <-from-≤≄ : {x y : A} → x ≤ y → x ≄ y → x < y
 
 open TotalOrder {{...}} public using (<-from-≤≄)

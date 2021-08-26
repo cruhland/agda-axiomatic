@@ -11,5 +11,5 @@ open import net.cruhland.models.Integers.NatPair.NegationDefn PA using (ZN)
 open import net.cruhland.models.Integers.NatPair.SignDefn PA using (ZS)
 
 -- Export all definitions from the default impl
-open import net.cruhland.axioms.Integers.OrderingDefaultImpl PA ZB ZA ZN ZS ZM
+open import net.cruhland.axioms.Integers.OrderingDefaultImpl PA ZB ZA ZN ZM ZS
   public

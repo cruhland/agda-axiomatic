@@ -16,9 +16,9 @@ record Integers : Set₁ where
     ZB : Base
     ZA : Addition ZB
     ZN : Negation ZB ZA
-    ZS : Sign ZB ZA ZN
-    ZM : Multiplication ZB ZA ZN ZS
-    ZO : Ordering ZB ZA ZN ZS
+    ZM : Multiplication ZB ZA ZN
+    ZS : Sign ZB ZA ZN ZM
+    ZO : Ordering ZB ZA ZN ZM ZS
 
   open Addition ZA public
   open Base ZB public
