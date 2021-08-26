@@ -1,29 +1,30 @@
-open import net.cruhland.axioms.CoreAlgebra.Monoid using (Monoid)
+module net.cruhland.axioms.CoreAlgebra.Group where
 
-module net.cruhland.axioms.CoreAlgebra.Group (G : Set) (M : Monoid G) where
+open import net.cruhland.axioms.CoreAlgebra.Monoid
+open import net.cruhland.axioms.Eq as Eq using (_≃_; Eq)
 
 import net.cruhland.axioms.AbstractAlgebra as AA
 
-open import net.cruhland.axioms.Eq as Eq using (_≃_; sym)
 open import net.cruhland.models.Function using (const)
 open import net.cruhland.models.Logic using (⊤)
 open Eq.≃-Reasoning
 
-private open module M = Monoid M using (_⊙_; identity)
 
-record Group : Set₁ where
+
+-- is there a way to make pass and an explicit Monoid if necessary?
+record Group (G : Set) {{_ : Eq G}} {{_ : Monoid G}} : Set₁ where
   field
-    invert_ : G → G
-    {{is-inverse}} : AA.Inverse² invert_ (const ⊤) (_⊙_) (identity)
+    invert : G → G
+    {{is-inverse}} : AA.Inverse² {A = G} (AA.tc₁ invert) (_⊙_) (identity)
 
   -- Group properties
   instance
-    -- invert_ is well-defined.
-    inverse-substitutive : AA.Substitutive₁ {A = G} invert_ _≃_ _≃_
-    inverse-substitutive = AA.substitutive₁ λ {x → helper x}
+    -- invert is well-defined.
+    inverse-substitutive : AA.Substitutive₁ {A = G} invert _≃_ _≃_
+    inverse-substitutive = AA.substitutive₁ helper
       where
-        helper : {a : G} → {b : G} → (a ≃ b) → (invert a ≃ invert b)
-        helper {a} {b} x =
+        helper : {a b : G} → (a ≃ b) → (invert a ≃ invert b)
+        helper {a} {b} a≃b =
           begin
             invert a
           ≃˘⟨ AA.ident ⟩
@@ -32,7 +33,7 @@ record Group : Set₁ where
             invert a ⊙ (b ⊙ invert b)
           ≃˘⟨ AA.assoc ⟩
             (invert a ⊙ b ) ⊙ invert b
-          ≃⟨ AA.subst₂ ( AA.subst₂ (sym x) ) ⟩
+          ≃˘⟨ AA.subst₂ ( AA.subst₂ (a≃b) ) ⟩
             (invert a ⊙ a ) ⊙ invert b
           ≃⟨ AA.subst₂ AA.inv ⟩
             identity ⊙ invert b
@@ -40,4 +41,4 @@ record Group : Set₁ where
             invert b
           ∎
           
-open Group public
+open Group {{...}} public using (invert)

@@ -52,7 +52,7 @@ instance
   opEqSubst = AA.substitutive² {A = Z2Set}
 
   opAssociative : AA.Associative _⊕_
-  opAssociative = record { assoc = opassoc }
+  opAssociative = 
     where
       opassoc : {a b c : Z2Set} → (a ⊕ b) ⊕ c ≡ a ⊕ (b ⊕ c)
       opassoc {ee} {ee} {ee} = PropEq.refl
@@ -83,28 +83,29 @@ instance
   ⊕-identity = AA.identity² {A = Z2Set}
 
   private
-    neg-inverseᴸ : AA.Inverse AA.handᴸ (Z2Invert_) (const ⊤) _⊕_ ee
+    neg-inverseᴸ : AA.Inverse AA.handᴸ (AA.tc₁ Z2Invert_) _⊕_ ee
     neg-inverseᴸ = AA.inverse neg-invᴸ
       where
         neg-invᴸ : {x : Z2Set} → ((Z2Invert_) x) ⊕ x ≡ ee
         neg-invᴸ {ee} = PropEq.refl
         neg-invᴸ {aa} = PropEq.refl
 
-    neg-inverseᴿ : AA.Inverse AA.handᴿ (Z2Invert_) (const ⊤) _⊕_ ee
+    neg-inverseᴿ : AA.Inverse AA.handᴿ (AA.tc₁ Z2Invert_) _⊕_ ee
     neg-inverseᴿ = AA.inverse neg-invᴿ
       where
         neg-invᴿ : {x : Z2Set} → ((Z2Invert_) x) ⊕ x ≡ ee
         neg-invᴿ {ee} = PropEq.refl
         neg-invᴿ {aa} = PropEq.refl
 
-  neg-inverse : AA.Inverse² (Z2Invert_) (const ⊤) _⊕_ ee
+  neg-inverse : AA.Inverse² (AA.tc₁ Z2Invert_) _⊕_ ee
   neg-inverse = AA.inverse²
 
-Z2Moniod : (Monoid Z2Set)
-Z2Moniod = record { _⊙_ = _⊕_
-                  ; identity = groupIdentity }
+instance
+  Z2Moniod : (Monoid Z2Set)
+  Z2Moniod = record { _⊙_ = _⊕_
+                    ; identity = groupIdentity }
 
-open import net.cruhland.axioms.CoreAlgebra.Group Z2Set Z2Moniod using (Group)
+open import net.cruhland.axioms.CoreAlgebra.Group using (Group)
 
-Z2Group : Group 
-Z2Group = record { invert_ = Z2Invert_ }
+Z2Group : Group Z2Set
+Z2Group = record { invert = Z2Invert_ }
