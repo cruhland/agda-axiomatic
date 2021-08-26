@@ -1,20 +1,18 @@
-open import Level using (0ℓ)
-open import net.cruhland.axioms.Eq using (_≃_; trans; module ≃-Reasoning)
-open ≃-Reasoning
+open import net.cruhland.axioms.Eq as Eq using (_≃_)
+open Eq.≃-Reasoning
 open import net.cruhland.axioms.Sets.Base using (SetAxioms)
 open import net.cruhland.axioms.Sets.Complement using (Complement)
 open import net.cruhland.axioms.Sets.Difference using (Difference)
 open import net.cruhland.axioms.Sets.Empty using (EmptySet)
-import net.cruhland.axioms.Sets.Equality as Equality
 open import net.cruhland.axioms.Sets.Intersection using (PairwiseIntersection)
 open import net.cruhland.axioms.Sets.Pair using (PairSet)
 open import net.cruhland.axioms.Sets.Singleton using (SingletonSet)
 import net.cruhland.axioms.Sets.Subset as Subset
 open import net.cruhland.axioms.Sets.Union using (PairwiseUnion)
 open import net.cruhland.models.Function using (_∘_; flip)
-open import net.cruhland.models.Logic using
-  (_∧_; ∧-intro; _∨_; ∨-introᴸ; ∨-introᴿ; ∨-map; ∨-rec; ⊥-elim)
-open import net.cruhland.models.Setoid using (El; Setoid; Setoid₀)
+open import net.cruhland.models.Logic
+  using (_∧_; ∧-intro; ∨-introᴸ; ∨-introᴿ; ∨-map; ∨-rec; _↯_)
+open import net.cruhland.models.Setoid using (El; Setoid₀)
 
 module net.cruhland.axioms.Sets.Properties
     (SA : SetAxioms)
@@ -24,23 +22,22 @@ module net.cruhland.axioms.Sets.Properties
     (PS : PairSet SA)
     (PU : PairwiseUnion SA ES)
     (SD : Difference SA)
-    (SS : SingletonSet SA) where
+    (SS : SingletonSet SA)
+    where
   open Complement CM using (∁; x∈∁A-elim; x∈∁A-intro)
   open Difference SD using (_∖_; x∈A∖B-elim; x∈A∖B-elimᴸ; x∈A∖B-intro)
   open EmptySet ES using (∅; x∉∅)
-  private module ≃-SA = Equality SA
   open PairSet PS using (pair; x∈pab-elimᴿ; x∈pab-introᴸ; x∈pab-introᴿ)
-  open PairwiseIntersection PI using
-    ( _∩_; ∩-comm; x∈A∩B-elim; x∈A∩B-elimᴸ; x∈A∩B-elimᴿ; x∈A∩B-intro₂
-    ; ∩-substᴸ; ∩-substᴿ
-    )
-  open PairwiseUnion PU using
-    ( _∪_; ∪-comm; x∈A∪B-elim; x∈A∪B-intro; x∈A∪B-introᴸ; x∈A∪B-introᴿ
-    ; ∪-substᴸ; ∪-substᴿ
-    )
-  open SetAxioms SA using (_∈_; _∉_; PSet; PSet₀)
+  open PairwiseIntersection PI
+    using ( _∩_; ∩-comm; x∈A∩B-elim; x∈A∩B-elimᴸ; x∈A∩B-elimᴿ; x∈A∩B-intro₂
+          ; ∩-substᴸ; ∩-substᴿ)
+  open PairwiseUnion PU
+    using ( _∪_; ∪-comm; x∈A∪B-elim; x∈A∪B-intro; x∈A∪B-introᴸ; x∈A∪B-introᴿ
+          ; ∪-substᴸ; ∪-substᴿ)
+  open SetAxioms SA using (_∈_; PSet₀)
   open SingletonSet SS using (singleton; x∈sa-elim; x∈sa-intro)
   open Subset SA using (_⊆_; ⊆-antisym; ⊆-intro)
+  import net.cruhland.axioms.Sets.Equality SA as SE
 
   private
     variable
@@ -48,7 +45,7 @@ module net.cruhland.axioms.Sets.Properties
       A B C : PSet₀ S
 
   ∅-⊆ : ∅ ⊆ A
-  ∅-⊆ = ⊆-intro (⊥-elim ∘ x∉∅)
+  ∅-⊆ = ⊆-intro (_↯ x∉∅)
 
   A⊆∅→A≃∅ : A ⊆ ∅ → A ≃ ∅
   A⊆∅→A≃∅ A⊆∅ = ⊆-antisym A⊆∅ ∅-⊆
@@ -75,8 +72,6 @@ module net.cruhland.axioms.Sets.Properties
   pab≃sa∪sb : {a b : El S} → pair a b ≃ singleton {S = S} a ∪ singleton b
   pab≃sa∪sb {S = S} {a} {b} = ⊆-antisym (⊆-intro forward) (⊆-intro backward)
     where
-      open Setoid S using (_≈_)
-
       forward : ∀ {x} → x ∈ pair a b → x ∈ singleton a ∪ singleton b
       forward x∈pab with x∈pab-elimᴿ x∈pab
       ... | ∨-introᴸ x≈a = x∈A∪B-introᴸ (x∈sa-intro x≈a)
@@ -91,7 +86,7 @@ module net.cruhland.axioms.Sets.Properties
   ∩-∅ᴸ = A⊆∅→A≃∅ (⊆-intro x∈A∩B-elimᴸ)
 
   ∩-∅ᴿ : A ∩ ∅ ≃ ∅
-  ∩-∅ᴿ = trans ∩-comm ∩-∅ᴸ
+  ∩-∅ᴿ = Eq.trans ∩-comm ∩-∅ᴸ
 
   ∩⊆-introᴸ : A ∩ B ⊆ A
   ∩⊆-introᴸ = ⊆-intro x∈A∩B-elimᴸ

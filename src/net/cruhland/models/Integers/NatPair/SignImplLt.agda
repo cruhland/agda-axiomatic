@@ -3,28 +3,36 @@ open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Operators using (_+_; -_)
-open import net.cruhland.axioms.Ordering using (_<_)
+open import net.cruhland.axioms.Ordering as Ord using (_<_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
-open import net.cruhland.axioms.Sign
-  using (Negative; Negativity; neg≄0; Positive; Positivity; pos≄0)
+import net.cruhland.axioms.Sign as S
 open import net.cruhland.models.Function using (_⟨→⟩_; id)
 open import net.cruhland.models.Literals
-open import net.cruhland.models.Logic using (¬_; contra)
+open import net.cruhland.models.Logic using (¬_; ¬-intro; _↯_)
 
 module net.cruhland.models.Integers.NatPair.SignImplLt
   (PA : PeanoArithmetic) where
 
-private open module ℕ = PeanoArithmetic PA using (ℕ)
-open import net.cruhland.models.Integers.NatPair.AdditionDefn PA using (Z+)
-import net.cruhland.models.Integers.NatPair.AdditionImpl PA as ℤ+
-open import net.cruhland.models.Integers.NatPair.BaseDefn PA using (ZB)
-open import net.cruhland.models.Integers.NatPair.BaseImpl PA as ℤB
-  using (_—_; ℤ; ≃₀-intro)
-open import net.cruhland.models.Integers.NatPair.NegationDefn PA using (Z-)
-import net.cruhland.models.Integers.NatPair.NegationImpl PA as ℤ-
-
 import net.cruhland.axioms.Integers.SignDecl PA as SignDecl
-open SignDecl.SignPredefs ZB Z+ Z- using (_≃_[posℕ]; ≃posℕ-intro)
+open import net.cruhland.models.Integers.NatPair.AdditionDefn PA using (ZA)
+open import net.cruhland.models.Integers.NatPair.BaseDefn PA using (ZB)
+open import net.cruhland.models.Integers.NatPair.MultiplicationDefn PA
+  using (ZM)
+open import net.cruhland.models.Integers.NatPair.NegationDefn PA using (ZN)
+
+private
+  module ℕ = PeanoArithmetic PA
+  module ℤ where
+    open import net.cruhland.axioms.Integers.LiteralImpl PA ZB public
+    open import net.cruhland.models.Integers.NatPair.AdditionImpl PA public
+    open import net.cruhland.models.Integers.NatPair.BaseImpl PA public
+    open import net.cruhland.models.Integers.NatPair.MultiplicationImpl PA
+      public
+    open import net.cruhland.models.Integers.NatPair.NegationImpl PA public
+    open SignDecl.SignPredefs ZB ZA ZN ZM public
+
+open ℕ using (ℕ)
+open ℤ using (_—_; _≃_[posℕ]; ℤ)
 
 Pos : ℤ → Set
 Pos (a⁺ — a⁻) = a⁻ < a⁺
@@ -33,23 +41,23 @@ Neg : ℤ → Set
 Neg (a⁺ — a⁻) = a⁺ < a⁻
 
 Pos≄0 : ∀ {a} → Pos a → a ≄ 0
-Pos≄0 {a⁺ — a⁻} a⁻<a⁺ a≃0 =
-  let a⁻≃a⁺ = Eq.sym (ℤB.balanced-from-zero a≃0)
+Pos≄0 {a⁺ — a⁻} a⁻<a⁺ = Eq.≄-intro λ a≃0 →
+  let a⁻≃a⁺ = Eq.sym (ℤ.balanced-from-zero a≃0)
       a⁻≄a⁺ = ℕ.<-elim-≄ a⁻<a⁺
-   in contra a⁻≃a⁺ a⁻≄a⁺
+   in a⁻≃a⁺ ↯ a⁻≄a⁺
 
 Neg≄0 : ∀ {a} → Neg a → a ≄ 0
-Neg≄0 {a⁺ — a⁻} a⁺<a⁻ a≃0 =
-  let a⁺≃a⁻ = ℤB.balanced-from-zero a≃0
+Neg≄0 {a⁺ — a⁻} a⁺<a⁻ = Eq.≄-intro λ a≃0 →
+  let a⁺≃a⁻ = ℤ.balanced-from-zero a≃0
       a⁺≄a⁻ = ℕ.<-elim-≄ a⁺<a⁻
-   in contra a⁺≃a⁻ a⁺≄a⁻
+   in a⁺≃a⁻ ↯ a⁺≄a⁻
 
 instance
   Pos-substitutive : AA.Substitutive₁ Pos _≃_ _⟨→⟩_
   Pos-substitutive = AA.substitutive₁ Pos-subst
     where
       Pos-subst : ∀ {a b} → a ≃ b → Pos a → Pos b
-      Pos-subst a@{a⁺ — a⁻} b@{b⁺ — b⁻} (≃₀-intro a⁺+b⁻≃b⁺+a⁻) a⁻<a⁺ =
+      Pos-subst a@{a⁺ — a⁻} b@{b⁺ — b⁻} (ℤ.≃₀-intro a⁺+b⁻≃b⁺+a⁻) a⁻<a⁺ =
         let d = ℕ.<-diff a⁻<a⁺
             pos[d] = ℕ.<-diff-pos a⁻<a⁺
             a⁻+d≃a⁺ = ℕ.<-elim-diff a⁻<a⁺
@@ -70,14 +78,14 @@ instance
             b⁻+d≃b⁺ = AA.cancel [b⁻+d]+a⁻≃b⁺+a⁻
          in ℕ.<-intro-diff pos[d] b⁻+d≃b⁺
 
-  positivity : Positivity {A = ℤ} 0
+  positivity : S.Positivity ℤ
   positivity = record { Positive = Pos ; pos≄0 = Pos≄0 }
 
   Neg-substitutive : AA.Substitutive₁ Neg _≃_ _⟨→⟩_
   Neg-substitutive = AA.substitutive₁ Neg-subst
     where
       Neg-subst : ∀ {a b} → a ≃ b → Neg a → Neg b
-      Neg-subst a@{a⁺ — a⁻} b@{b⁺ — b⁻} (≃₀-intro a⁺+b⁻≃b⁺+a⁻) a⁺<a⁻ =
+      Neg-subst a@{a⁺ — a⁻} b@{b⁺ — b⁻} (ℤ.≃₀-intro a⁺+b⁻≃b⁺+a⁻) a⁺<a⁻ =
         let d = ℕ.<-diff a⁺<a⁻
             pos[d] = ℕ.<-diff-pos a⁺<a⁻
             a⁺+d≃a⁻ = ℕ.<-elim-diff a⁺<a⁻
@@ -98,10 +106,10 @@ instance
             b⁺+d≃b⁻ = Eq.sym (AA.cancel a⁺+b⁻≃a⁺+[b⁺+d])
          in ℕ.<-intro-diff pos[d] b⁺+d≃b⁻
 
-  negativity : Negativity {A = ℤ} 0
+  negativity : S.Negativity ℤ
   negativity = record { Negative = Neg ; neg≄0 = Neg≄0 }
 
-posℕ-from-posℤ : {a : ℤ} → Positive a → a ≃ id [posℕ]
+posℕ-from-posℤ : {a : ℤ} → S.Positive a → a ≃ id [posℕ]
 posℕ-from-posℤ {a⁺ — a⁻} a⁻<a⁺ =
   let n = ℕ.<-diff a⁻<a⁺
       pos[n] = ℕ.<-diff-pos a⁻<a⁺
@@ -115,9 +123,9 @@ posℕ-from-posℤ {a⁺ — a⁻} a⁻<a⁺ =
         ≃⟨ AA.comm ⟩
           n + a⁻
         ∎
-   in ≃posℕ-intro pos[n] (≃₀-intro a⁺+0≃n+a⁻)
+   in ℤ.≃posℕ-intro pos[n] (ℤ.≃₀-intro a⁺+0≃n+a⁻)
 
-posℕ-from-negℤ : {a : ℤ} → Negative a → a ≃ -_ [posℕ]
+posℕ-from-negℤ : {a : ℤ} → S.Negative a → a ≃ -_ [posℕ]
 posℕ-from-negℤ {a⁺ — a⁻} a⁺<a⁻ =
   let n = ℕ.<-diff a⁺<a⁻
       pos[n] = ℕ.<-diff-pos a⁺<a⁻
@@ -129,10 +137,10 @@ posℕ-from-negℤ {a⁺ — a⁻} a⁺<a⁻ =
         ≃˘⟨ AA.ident ⟩
           0 + a⁻
         ∎
-   in ≃posℕ-intro pos[n] (≃₀-intro a⁺+n≃0+a⁻)
+   in ℤ.≃posℕ-intro pos[n] (ℤ.≃₀-intro a⁺+n≃0+a⁻)
 
-posℤ-from-posℕ : {a : ℤ} → a ≃ id [posℕ] → Positive a
-posℤ-from-posℕ {a⁺ — a⁻} (≃posℕ-intro {n} pos[n] (≃₀-intro a⁺+0≃n+a⁻)) =
+posℤ-from-posℕ : {a : ℤ} → a ≃ id [posℕ] → S.Positive a
+posℤ-from-posℕ {a⁺ — a⁻} (ℤ.≃posℕ-intro {n} pos[n] (ℤ.≃₀-intro a⁺+0≃n+a⁻)) =
   let a⁻+n≃a⁺ =
         begin
           a⁻ + n
@@ -145,8 +153,8 @@ posℤ-from-posℕ {a⁺ — a⁻} (≃posℕ-intro {n} pos[n] (≃₀-intro a�
         ∎
    in ℕ.<-intro-diff pos[n] a⁻+n≃a⁺
 
-negℤ-from-posℕ : {a : ℤ} → a ≃ -_ [posℕ] → Negative a
-negℤ-from-posℕ {a⁺ — a⁻} (≃posℕ-intro {n} pos[n] (≃₀-intro a⁺+n≃0+a⁻)) =
+negℤ-from-posℕ : {a : ℤ} → a ≃ -_ [posℕ] → S.Negative a
+negℤ-from-posℕ {a⁺ — a⁻} (ℤ.≃posℕ-intro {n} pos[n] (ℤ.≃₀-intro a⁺+n≃0+a⁻)) =
   let a⁺+n≃a⁻ =
         begin
           a⁺ + n
@@ -157,38 +165,75 @@ negℤ-from-posℕ {a⁺ — a⁻} (≃posℕ-intro {n} pos[n] (≃₀-intro a�
         ∎
    in ℕ.<-intro-diff pos[n] a⁺+n≃a⁻
 
-from-ℕ-preserves-pos : {n : ℕ} → Positive n → Positive (n as ℤ)
+from-ℕ-preserves-pos : {n : ℕ} → S.Positive n → S.Positive (n as ℤ)
 from-ℕ-preserves-pos = ℕ.<-from-pos
 
-neg-Positive : {a : ℤ} → Positive a → Negative (- a)
+neg-Positive : {a : ℤ} → S.Positive a → S.Negative (- a)
 neg-Positive {a⁺ — a⁻} a⁻<a⁺ = a⁻<a⁺
 
-neg-Negative : {a : ℤ} → Negative a → Positive (- a)
+neg-Negative : {a : ℤ} → S.Negative a → S.Positive (- a)
 neg-Negative {a⁺ — a⁻} a⁺<a⁻ = a⁺<a⁻
 
-trichotomy : (a : ℤ) → AA.ExactlyOneOfThree (Negative a) (a ≃ 0) (Positive a)
-trichotomy a@(a⁺ — a⁻) = AA.exactlyOneOfThree 1of3 ¬2of3
-  where
-    1of3 : AA.OneOfThree (Negative a) (a ≃ 0) (Positive a)
-    1of3 with AA.ExactlyOneOfThree.at-least-one (ℕ.order-trichotomy a⁺ a⁻)
-    1of3 | AA.1st a⁺<a⁻ = AA.1st a⁺<a⁻
-    1of3 | AA.2nd a⁺≃a⁻ = AA.2nd (ℤB.zero-from-balanced a⁺≃a⁻)
-    1of3 | AA.3rd a⁻<a⁺ = AA.3rd a⁻<a⁺
-
-    ¬2of3 : ¬ AA.TwoOfThree (Negative a) (a ≃ 0) (Positive a)
-    ¬2of3 (AA.1∧2 neg[a] a≃0) = contra a≃0 (neg≄0 neg[a])
-    ¬2of3 (AA.1∧3 a⁺<a⁻ a⁻<a⁺) = ℕ.<-asymmetric a⁺<a⁻ a⁻<a⁺
-    ¬2of3 (AA.2∧3 a≃0 pos[a]) = contra a≃0 (pos≄0 pos[a])
-
 instance
-  +-preserves-pos : AA.Preserves Positive _+_
+  sign-trichotomy : S.Trichotomy ℤ
+  sign-trichotomy = S.trichotomy-intro sign-tri
+    where
+      sign-tri :
+        (a : ℤ) → AA.ExactlyOneOfThree (a ≃ 0) (S.Positive a) (S.Negative a)
+      sign-tri a@(a⁺ — a⁻) = AA.exactlyOneOfThree 1of3 ¬2of3
+        where
+          1of3 : AA.OneOfThree (a ≃ 0) (S.Positive a) (S.Negative a)
+          1of3 with AA.ExactlyOneOfThree.at-least-one (ℕ.order-trichotomy a⁺ a⁻)
+          1of3 | AA.1st a⁺<a⁻ = AA.3rd a⁺<a⁻
+          1of3 | AA.2nd a⁺≃a⁻ = AA.1st (ℤ.zero-from-balanced a⁺≃a⁻)
+          1of3 | AA.3rd a⁺>a⁻ = AA.2nd (Ord.>-flip a⁺>a⁻)
+
+          ¬2of3 : ¬ AA.TwoOfThree (a ≃ 0) (S.Positive a) (S.Negative a)
+          ¬2of3 = ¬-intro λ
+            { (AA.1∧2 a≃0 pos[a]) → a≃0 ↯ (S.pos≄0 pos[a])
+            ; (AA.1∧3 a≃0 neg[a]) → a≃0 ↯ (S.neg≄0 neg[a])
+            ; (AA.2∧3 a⁻<a⁺ a⁺<a⁻) → ℕ.<-asymmetric a⁺<a⁻ a⁻<a⁺
+            }
+
+  +-preserves-pos : AA.Preserves S.Positive _+_
   +-preserves-pos = AA.preserves +-pres-pos
     where
-      +-pres-pos : {a b : ℤ} → Positive a → Positive b → Positive (a + b)
-      +-pres-pos {a⁺ — a⁻} {b⁺ — b⁻} a⁻<a⁺ b⁻<b⁺ = ℕ.<-compatible-+ a⁻<a⁺ b⁻<b⁺
+      +-pres-pos : {a b : ℤ} → S.Positive a → S.Positive b → S.Positive (a + b)
+      +-pres-pos a⁻<a⁺ b⁻<b⁺ = ℕ.<-compatible-+ a⁻<a⁺ b⁻<b⁺
+
+  +-preserves-neg : AA.Preserves S.Negative _+_
+  +-preserves-neg = AA.preserves +-pres-neg
+    where
+      +-pres-neg : {a b : ℤ} → S.Negative a → S.Negative b → S.Negative (a + b)
+      +-pres-neg a⁺<a⁻ b⁺<b⁻ = ℕ.<-compatible-+ a⁺<a⁻ b⁺<b⁻
+
+instance
+  positivity-common : S.PositivityCommon ℤ
+  positivity-common = record {}
+
+  negativity-common : S.NegativityCommon ℤ
+  negativity-common = record {}
+
+  sign-common : S.SignCommon ℤ
+  sign-common =
+    record { neg-Positive = neg-Positive ; neg-Negative = neg-Negative }
 
 -- Include everything from the partial impl
-open import net.cruhland.axioms.Integers.SignPartialImpl PA ZB Z+ Z-
-  using (SignProperties)
-open SignProperties (record { from-ℕ-preserves-pos = from-ℕ-preserves-pos })
-  public hiding (from-ℕ-preserves-pos; positivity)
+private
+  open import net.cruhland.axioms.Integers.SignPartialImpl PA
+    using (SignProperties)
+
+  signProperties : SignProperties ZB ZA ZN ZM
+  signProperties = record
+    { from-ℕ-preserves-pos = from-ℕ-preserves-pos
+    ; neg-Negative = neg-Negative
+    ; negℤ-from-posℕ = negℤ-from-posℕ
+    ; posℕ-from-negℤ = posℕ-from-negℤ
+    ; posℕ-from-posℤ = posℕ-from-posℤ
+    ; posℤ-from-posℕ = posℤ-from-posℕ
+    }
+
+open SignProperties signProperties public
+  hiding ( from-ℕ-preserves-pos; negativity; neg-Negative; positivity
+         ; negℤ-from-posℕ; posℕ-from-negℤ; posℕ-from-posℤ; posℤ-from-posℕ
+         ; sign-trichotomy)

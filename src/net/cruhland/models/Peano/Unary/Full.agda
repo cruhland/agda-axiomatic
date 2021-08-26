@@ -12,11 +12,13 @@ open import net.cruhland.axioms.Peano.Multiplication using (Multiplication)
 import net.cruhland.models.Peano.Unary.Base as UB
 import net.cruhland.models.Peano.Unary.Ordering as UO
 
+import net.cruhland.axioms.Peano.Literals UB.base as Literals
+
 instance
   star : Op.Star ℕ
   star = Op.star _*_
 
-  *-absorptiveᴸ : AA.Absorptive AA.handᴸ _*_ 0
+  *-absorptiveᴸ : AA.Absorptive AA.handᴸ (AA.tc₂ _*_)
   *-absorptiveᴸ = AA.absorptive Eq.refl
 
   *-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _*_ _≡_ _≡_

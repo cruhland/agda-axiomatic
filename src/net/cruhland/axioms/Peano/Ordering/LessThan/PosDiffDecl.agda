@@ -5,7 +5,7 @@ open import net.cruhland.axioms.Peano.Base
 open import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.BaseDecl using
   (LteBase)
 open import net.cruhland.axioms.Peano.Sign using () renaming (Sign to ℕSign)
-open import net.cruhland.axioms.Sign using (Positive)
+import net.cruhland.axioms.Sign as S
 
 module net.cruhland.axioms.Peano.Ordering.LessThan.PosDiffDecl
   (PB : PeanoBase)
@@ -15,12 +15,14 @@ module net.cruhland.axioms.Peano.Ordering.LessThan.PosDiffDecl
   where
 
 open PeanoBase PB using (ℕ)
-private module ℕ≤ = LteBase LTEB
+import net.cruhland.axioms.Peano.Literals PB as ℕL
+private
+  module ℕ≤ = LteBase LTEB
 
 record _≤⁺_ (n m : ℕ) : Set where
   constructor ≤⁺-intro
   field
     ≤⁺-elim-n≤m : n ≤ m
-    ≤⁺-elim-d⁺ : Positive (ℕ≤.≤-diff ≤⁺-elim-n≤m)
+    ≤⁺-elim-d⁺ : S.Positive (ℕ≤.≤-diff ≤⁺-elim-n≤m)
 
 open _≤⁺_ public using (≤⁺-elim-d⁺; ≤⁺-elim-n≤m)

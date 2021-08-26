@@ -1,14 +1,14 @@
-open import Level using (_⊔_)
-open import net.cruhland.axioms.Eq using (_≃_; sym)
+open import net.cruhland.axioms.Eq as Eq using (_≃_)
 open import net.cruhland.axioms.Sets.Base using (SetAxioms)
 import net.cruhland.axioms.Sets.Equality as Equality
 open import net.cruhland.models.Function using (_∘_; id)
-open import net.cruhland.models.Logic using (_↔_; ↔-intro; ¬_)
-open import net.cruhland.models.Setoid using (El; Setoid; Setoid₀)
+open import net.cruhland.models.Logic using ( ↔-intro; ¬_; contrapositive)
+open import net.cruhland.models.Setoid using (El; Setoid₀)
 
 module net.cruhland.axioms.Sets.Subset (SA : SetAxioms) where
-  private module ≃-SA = Equality SA
-  open ≃-SA using (≃-elimᴸ; ≃-elimᴿ; ≃-intro; ∈-substᴿ; ∉-substᴿ)
+  private
+    module SE = Equality SA
+  open SE using (≃-elimᴸ; ≃-elimᴿ; ≃-intro; ∈-substᴿ; ∉-substᴿ)
   open SetAxioms SA using (_∈_; _∉_; PSet)
 
   private
@@ -30,7 +30,7 @@ module net.cruhland.axioms.Sets.Subset (SA : SetAxioms) where
 
   ⊆-substᴸ : A₁ ≃ A₂ → A₁ ⊆ B → A₂ ⊆ B
   ⊆-substᴸ A₁≃A₂ (⊆-intro x∈A₁→x∈B) =
-    ⊆-intro (x∈A₁→x∈B ∘ (∈-substᴿ (sym A₁≃A₂)))
+    ⊆-intro (x∈A₁→x∈B ∘ (∈-substᴿ (Eq.sym A₁≃A₂)))
 
   ⊆-substᴿ : B₁ ≃ B₂ → A ⊆ B₁ → A ⊆ B₂
   ⊆-substᴿ B₁≃B₂ (⊆-intro x∈A→x∈B₁) = ⊆-intro (∈-substᴿ B₁≃B₂ ∘ x∈A→x∈B₁)
@@ -69,4 +69,4 @@ module net.cruhland.axioms.Sets.Subset (SA : SetAxioms) where
 
   ⊊-trans : A ⊊ B → B ⊊ C → A ⊊ C
   ⊊-trans (⊊-intro A⊆B@(⊆-intro x∈A→x∈B) b b∉A b∈B) (⊊-intro B⊆C c c∉B c∈C) =
-    ⊊-intro (⊆-trans A⊆B B⊆C) c (c∉B ∘ x∈A→x∈B) c∈C
+    ⊊-intro (⊆-trans A⊆B B⊆C) c (contrapositive x∈A→x∈B c∉B) c∈C

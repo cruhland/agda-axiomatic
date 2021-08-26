@@ -1,14 +1,14 @@
-module net.cruhland.axioms.Sets.Singleton where
-
-open import Level using (_⊔_; Level; Setω; 0ℓ)
-open import Relation.Binary using (DecSetoid)
+open import Level using (_⊔_; Level; Setω)
+open import net.cruhland.axioms.DecEq using (_≃?_)
 open import net.cruhland.axioms.Eq using (_≃_)
 open import net.cruhland.axioms.Sets.Base using (SetAxioms)
 import net.cruhland.axioms.Sets.Decidable as Decidable
 import net.cruhland.axioms.Sets.Equality as Equality
-open import net.cruhland.models.Logic using
-  (_↔_; ↔-elimᴸ; ↔-elimᴿ; ↔-sym; ↔-trans; Dec; dec-map; no; yes)
-open import net.cruhland.models.Setoid using (DecSetoid₀; El; Setoid; Setoid₀)
+open import net.cruhland.models.Logic
+  using (_↔_; ↔-elimᴸ; ↔-elimᴿ; ↔-sym; ↔-trans; dec-map)
+open import net.cruhland.models.Setoid using (DecSetoid; DecSetoid₀; El; Setoid)
+
+module net.cruhland.axioms.Sets.Singleton where
 
 -- If we want to have a singleton of another PSet, the first level
 -- parameter must vary. And if it is a doubly nested PSet, the second
@@ -27,8 +27,8 @@ module SingletonDef (SA : SetAxioms) where
 
 record SingletonSet (SA : SetAxioms) : Setω where
   open Decidable SA using (DecMembership; ∈?-intro)
-  private module ≃-SA = Equality SA
-  open ≃-SA using (≃-intro)
+  private
+    open module SE = Equality SA using (≃-intro)
   open SetAxioms SA using (_∈_; PSet)
   open SingletonDef SA using (is-singleton)
 
@@ -61,5 +61,4 @@ record SingletonSet (SA : SetAxioms) : Setω where
       {{DS : DecSetoid₀}} →
         ∀ {a} → DecMembership (singleton {S = DecSetoid.setoid DS} a)
     singleton-∈? {{DS}} {a} =
-      ∈?-intro (λ {x} → dec-map x∈sa-intro x∈sa-elim (a ≟ x))
-        where open DecSetoid DS using (_≈_; _≟_)
+      ∈?-intro (λ {x} → dec-map x∈sa-intro x∈sa-elim (a ≃? x))

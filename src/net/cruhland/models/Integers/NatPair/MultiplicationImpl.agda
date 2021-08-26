@@ -9,12 +9,22 @@ open import net.cruhland.models.Literals
 module net.cruhland.models.Integers.NatPair.MultiplicationImpl
   (PA : PeanoArithmetic) where
 
-private open module ℕ = PeanoArithmetic PA using (ℕ)
-import net.cruhland.models.Integers.NatPair.AdditionImpl PA as ℤ+
+open import net.cruhland.models.Integers.NatPair.AdditionDefn PA using (ZA)
+import net.cruhland.models.Integers.NatPair.AdditionImpl as AdditionImpl
   hiding (+-substitutiveᴸ; +-substitutiveᴿ)
-open import net.cruhland.models.Integers.NatPair.BaseImpl PA as ℤB
-  using (_—_; ℤ; ≃₀-intro)
-import net.cruhland.models.Integers.NatPair.NegationImpl PA as ℤ-
+open import net.cruhland.models.Integers.NatPair.BaseDefn PA using (ZB)
+open import net.cruhland.models.Integers.NatPair.NegationDefn PA using (ZN)
+
+private
+  module ℕ = PeanoArithmetic PA
+  module ℤ where
+    open import net.cruhland.axioms.Integers.LiteralImpl PA ZB public
+    open AdditionImpl PA public
+    open import net.cruhland.models.Integers.NatPair.BaseImpl PA public
+    open import net.cruhland.models.Integers.NatPair.NegationImpl PA public
+
+open ℕ using (ℕ)
+open ℤ using (_—_; ℤ)
 
 _*₀_ : ℤ → ℤ → ℤ
 (a⁺ — a⁻) *₀ (b⁺ — b⁻) = (a⁺ * b⁺ + a⁻ * b⁻) — (a⁺ * b⁻ + a⁻ * b⁺)
@@ -55,14 +65,14 @@ instance
     where
       *-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ * b ≃ a₂ * b
       *-substᴸ
-        a₁@{a₁⁺ — a₁⁻} a₂@{a₂⁺ — a₂⁻} b@{b⁺ — b⁻} (≃₀-intro a₁⁺+a₂⁻≃a₂⁺+a₁⁻) =
+        a₁@{a₁⁺ — a₁⁻} a₂@{a₂⁺ — a₂⁻} b@{b⁺ — b⁻} (ℤ.≃₀-intro a₁⁺+a₂⁻≃a₂⁺+a₁⁻) =
           begin
             a₁ * b
           ≃⟨⟩
             (a₁⁺ — a₁⁻) * (b⁺ — b⁻)
           ≃⟨⟩
             (a₁⁺ * b⁺ + a₁⁻ * b⁻) — (a₁⁺ * b⁻ + a₁⁻ * b⁺)
-          ≃⟨ ≃₀-intro componentEq ⟩
+          ≃⟨ ℤ.≃₀-intro componentEq ⟩
             (a₂⁺ * b⁺ + a₂⁻ * b⁻) — (a₂⁺ * b⁻ + a₂⁻ * b⁺)
           ≃⟨⟩
             (a₂⁺ — a₂⁻) * (b⁺ — b⁻)
@@ -102,7 +112,7 @@ instance
   *-substitutive : AA.Substitutive² _*_ _≃_ _≃_
   *-substitutive = AA.substitutive² {A = ℤ}
 
-  *-compatible-ℕ : AA.Compatible₂ (_as ℤ) _*_ _*_ _≃_
+  *-compatible-ℕ : AA.Compatible₂ (AA.tc₁ (_as ℤ)) _*_ _*_ _≃_
   *-compatible-ℕ = AA.compatible₂ {A = ℕ} *-compat-ℕ
     where
       *-compat-ℕ : {n m : ℕ} → (n * m as ℤ) ≃ (n as ℤ) * (m as ℤ)
@@ -164,7 +174,7 @@ instance
   *-identity : AA.Identity² _*_ 1
   *-identity = AA.identity² {A = ℤ}
 
-  *-distributiveᴸ : AA.Distributive AA.handᴸ _*_ _+_
+  *-distributiveᴸ : AA.Distributive AA.handᴸ (AA.tc₂ _*_) _+_
   *-distributiveᴸ = AA.distributive *-distribᴸ
     where
       *-distribᴸ : {a b c : ℤ} → a * (b + c) ≃ a * b + a * c
@@ -206,10 +216,10 @@ instance
               (b₁ * a₁ + b₂ * a₂) + (b₁ * a₃ + b₂ * a₄)
             ∎
 
-  *-distributiveᴿ : AA.Distributive AA.handᴿ _*_ _+_
+  *-distributiveᴿ : AA.Distributive AA.handᴿ (AA.tc₂ _*_) _+_
   *-distributiveᴿ = AA.distributiveᴿ-from-distributiveᴸ {A = ℤ}
 
-  *-distributive : AA.Distributive² _*_ _+_
+  *-distributive : AA.Distributive² (AA.tc₂ _*_) _+_
   *-distributive = AA.distributive² {A = ℤ}
 
   *-associative : AA.Associative _*_
@@ -241,7 +251,7 @@ instance
         ∎
 
   private
-    *-comm-with-negᴸ : AA.FnOpCommutative AA.handᴸ -_ _*_
+    *-comm-with-negᴸ : AA.FnOpCommutative AA.handᴸ -_ -_ (AA.tc₂ _*_)
     *-comm-with-negᴸ = AA.fnOpCommutative *-negᴸ
       where
         *-negᴸ : {a b : ℤ} → - (a * b) ≃ - a * b
@@ -266,22 +276,20 @@ instance
             - a * b
           ∎
 
-    *-comm-with-negᴿ : AA.FnOpCommutative AA.handᴿ -_ _*_
+    *-comm-with-negᴿ : AA.FnOpCommutative AA.handᴿ -_ -_ (AA.tc₂ _*_)
     *-comm-with-negᴿ = AA.fnOpCommutativeᴿ-from-fnOpCommutativeᴸ
 
-  *-comm-with-neg : AA.FnOpCommutative² -_ _*_
+  *-comm-with-neg : AA.FnOpCommutative² -_ -_ (AA.tc₂ _*_)
   *-comm-with-neg = AA.fnOpCommutative²
 
 -- Include all proofs from the partial impl
-open import net.cruhland.models.Integers.NatPair.AdditionDefn PA using (Z+)
-open import net.cruhland.models.Integers.NatPair.BaseDefn PA using (ZB)
-open import net.cruhland.models.Integers.NatPair.NegationDefn PA using (Z-)
-open import net.cruhland.models.Integers.NatPair.SignDefn PA using (ZS)
+private
+  open import net.cruhland.axioms.Integers.MultiplicationPartialImpl PA
+    using (MultiplicationProperties)
 
-open import net.cruhland.axioms.Integers.MultiplicationPartialImpl
-  PA ZB Z+ Z- ZS using (MultiplicationProperties)
-open MultiplicationProperties (record {}) public
-  hiding
-    (*-associative; *-comm-with-neg; *-commutative; *-compatible-ℕ
-    ; *-distributive; *-identity; *-substitutive; star
-    )
+  multiplicationProperties : MultiplicationProperties ZB ZA ZN
+  multiplicationProperties = record {}
+
+open MultiplicationProperties multiplicationProperties public
+  hiding ( *-associative; *-comm-with-neg; *-commutative; *-compatible-ℕ
+         ; *-distributive; *-identity; *-substitutive; star)

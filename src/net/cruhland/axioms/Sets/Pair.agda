@@ -1,18 +1,16 @@
-module net.cruhland.axioms.Sets.Pair where
-
 open import Level using (_⊔_; Level; Setω)
-open import Relation.Binary using (DecSetoid)
+open import net.cruhland.axioms.DecEq using (_≃?_)
 open import net.cruhland.axioms.Eq using (_≃_)
 open import net.cruhland.axioms.Sets.Base using (SetAxioms)
 import net.cruhland.axioms.Sets.Decidable as Decidable
 import net.cruhland.axioms.Sets.Equality as Equality
 open import net.cruhland.models.Function using (_∘_)
-open import net.cruhland.models.Logic using
-  ( _∨_; _∨?_; ∨-introᴸ; ∨-introᴿ; ∨-map
-  ; _↔_; ↔-elimᴸ; ↔-elimᴿ; ↔-sym; ↔-trans
-  ; Dec; dec-map; no; yes
-  )
-open import net.cruhland.models.Setoid using (DecSetoid₀; El; Setoid; Setoid₀)
+open import net.cruhland.models.Logic
+  using ( _∨_; _∨?_; ∨-introᴸ; ∨-introᴿ; ∨-map
+        ; _↔_; ↔-elimᴸ; ↔-elimᴿ; ↔-sym; ↔-trans; dec-map)
+open import net.cruhland.models.Setoid using (DecSetoid; DecSetoid₀; El; Setoid)
+
+module net.cruhland.axioms.Sets.Pair where
 
 -- This Setoid also needs level parameters, to support nested sets
 private
@@ -21,7 +19,7 @@ private
     S : Setoid σ₁ σ₂
 
 module PairDef (SA : SetAxioms) where
-  open SetAxioms SA using (_∈_; PSet; PSet₀)
+  open SetAxioms SA using (_∈_; PSet)
 
   is-pair : {S : Setoid σ₁ σ₂} → El S → El S → PSet S → Set (σ₁ ⊔ σ₂)
   is-pair {S = S} a b A = ∀ {x} → x ∈ A ↔ a ≈ x ∨ b ≈ x
@@ -29,10 +27,10 @@ module PairDef (SA : SetAxioms) where
 
 record PairSet (SA : SetAxioms) : Setω where
   open Decidable SA using (DecMembership; ∈?-intro)
-  private module ≃-SA = Equality SA
-  open ≃-SA using (≃-intro)
-  open SetAxioms SA using (_∈_; PSet; PSet₀)
+  private
+    open module SE = Equality SA using (≃-intro)
   open PairDef SA using (is-pair)
+  open SetAxioms SA using (_∈_; PSet)
 
   field
     pair : El S → El S → PSet S
@@ -76,5 +74,4 @@ record PairSet (SA : SetAxioms) : Setω where
       {{DS : DecSetoid₀}} →
         ∀ {a b} → DecMembership (pair {S = DecSetoid.setoid DS} a b)
     pair-∈? {{DS}} {a} {b} =
-      ∈?-intro (λ {x} → dec-map x∈pab-intro x∈pab-elimᴿ (a ≟ x ∨? b ≟ x))
-        where open DecSetoid DS using (_≈_; _≟_)
+      ∈?-intro (λ {x} → dec-map x∈pab-intro x∈pab-elimᴿ (a ≃? x ∨? b ≃? x))

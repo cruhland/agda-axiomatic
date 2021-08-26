@@ -1,6 +1,4 @@
-module net.cruhland.models.Sets.Predicate where
-
-open import Level using (_⊔_; Level; Setω) renaming (suc to sℓ)
+open import Level using (_⊔_; Level) renaming (suc to sℓ)
 open import net.cruhland.axioms.Sets using
   ( Complement; Comprehension; Difference; EmptySet; PairSet
   ; PairwiseIntersection; PairwiseUnion; Replacement; module ReplacementDefs
@@ -8,10 +6,12 @@ open import net.cruhland.axioms.Sets using
   )
 open import net.cruhland.models.Function
   using (_∘_; const; flip; Equivalence; id)
-open import net.cruhland.models.Logic using
-  (_∧_; ∧-map; _∨_; ∨-map; _↔_; ↔-elimᴿ; ↔-intro; ↔-refl; ⊥ᴸᴾ; ⊥ᴸᴾ-elim)
+open import net.cruhland.models.Logic
+  using ( _∧_; ∧-map; _∨_; ∨-map; ↔-refl; ⊥ᴸᴾ; contrapositive; ¬-intro)
 open import net.cruhland.models.Setoid
-  using (_⟨$⟩_; El; Setoid; Setoid₀; SPred₀; SRel₀) renaming (cong to ⟶-cong)
+  using (_⟨$⟩_; El; Setoid; Setoid₀; SPred₀) renaming (cong to ⟶-cong)
+
+module net.cruhland.models.Sets.Predicate where
 
 private
   variable
@@ -52,7 +52,7 @@ comprehension = record { ⟨_⟩ = SPred→PSet ; x∈⟨P⟩↔Px = ↔-refl }
 ∅ = record { ap = const ⊥ᴸᴾ ; cong = const id }
 
 emptySet : EmptySet setAxioms
-emptySet = record { ∅ = ∅ ; x∉∅ = ⊥ᴸᴾ-elim }
+emptySet = record { ∅ = ∅ ; x∉∅ = ¬-intro λ () }
 
 -- Level parameters needed for supporting nested sets
 singleton : {S : Setoid σ₁ σ₂} → El S → PSet S
@@ -121,7 +121,7 @@ pairwiseIntersection = record { _∩_ = _∩_ ; x∈A∩B↔x∈A∧x∈B = ↔-
 ∁ : PSet₀ S → PSet₀ S
 ∁ {S = S} A = record
   { ap = λ x → x ∉ A
-  ; cong = λ x≈y x∉A y∈A → x∉A (cong A (≈-sym x≈y) y∈A)
+  ; cong = λ x≈y x∉A → contrapositive (cong A (≈-sym x≈y)) x∉A
   }
   where open Setoid S using (_≈_) renaming (sym to ≈-sym)
 
@@ -137,7 +137,7 @@ _∖_ {S = S} A B = record { ap = in-diff ; cong = diff-cong }
     in-diff x = x ∈ A ∧ x ∉ B
 
     diff-cong : ∀ {x y} → x ≈ y → in-diff x → in-diff y
-    diff-cong x≈y = ∧-map (cong A x≈y) (_∘ cong B (≈-sym x≈y))
+    diff-cong x≈y = ∧-map (cong A x≈y) (contrapositive (cong B (≈-sym x≈y)))
 
 difference : Difference setAxioms
 difference = record { _∖_ = _∖_ ; x∈A∖B↔x∈A∧x∉B = ↔-refl }

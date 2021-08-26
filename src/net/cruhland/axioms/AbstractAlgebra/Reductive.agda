@@ -1,69 +1,80 @@
-module net.cruhland.axioms.AbstractAlgebra.Reductive where
-
 open import net.cruhland.axioms.Eq as Eq using (_≃_; Eq)
 open import net.cruhland.models.Function using (flip)
+open import net.cruhland.models.Literals
 
-open import net.cruhland.axioms.AbstractAlgebra.Base using
-  (forHand; Hand; handᴸ; handᴿ)
-open import net.cruhland.axioms.AbstractAlgebra.Swappable using
-  (comm; Commutative)
+module net.cruhland.axioms.AbstractAlgebra.Reductive where
+
+private
+  module AA where
+    open import net.cruhland.axioms.AbstractAlgebra.Base public
+    open import net.cruhland.axioms.AbstractAlgebra.Swappable public
 
 record Identity
-    (hand : Hand) {A : Set} {{_ : Eq A}} (_⊙_ : A → A → A) (e : A) : Set where
+    (hand : AA.Hand) {A : Set} {{_ : Eq A}} (_⊙_ : A → A → A) (e : A)
+    : Set where
   constructor identity
-  _<⊙>_ = forHand hand _⊙_
+  _<⊙>_ = AA.forHand hand _⊙_
   field
     ident : ∀ {a} → e <⊙> a ≃ a
 
 open Identity {{...}} public using (ident)
 
-identᴸ = ident {handᴸ}
-identᴿ = ident {handᴿ}
+identᴸ = ident {AA.handᴸ}
+identᴿ = ident {AA.handᴿ}
 
 identityᴿ-from-identityᴸ :
   {A : Set} {_⊙_ : A → A → A} {e : A} →
-    ∀ {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Identity handᴸ _⊙_ e}} →
-      Identity handᴿ _⊙_ e
-identityᴿ-from-identityᴸ = identity (Eq.trans comm ident)
+    ∀ {{_ : Eq A}} {{_ : AA.Commutative _⊙_}} {{_ : Identity AA.handᴸ _⊙_ e}} →
+      Identity AA.handᴿ _⊙_ e
+identityᴿ-from-identityᴸ = identity (Eq.trans AA.comm ident)
 
 record Identity² {A : Set} {{_ : Eq A}} (_⊙_ : A → A → A) (e : A) : Set where
   constructor identity²
   field
-    {{identityᴸ}} : Identity handᴸ _⊙_ e
-    {{identityᴿ}} : Identity handᴿ _⊙_ e
+    {{identityᴸ}} : Identity AA.handᴸ _⊙_ e
+    {{identityᴿ}} : Identity AA.handᴿ _⊙_ e
 
 record Absorptive
-    (hand : Hand) {A : Set} {{_ : Eq A}} (_⊙_ : A → A → A) (z : A) : Set where
+    (hand : AA.Hand) {A B : Set} {C : A → A → Set}
+    {{_ : Eq B}} {{_ : FromNatLiteral A}} {{_ : FromNatLiteral B}}
+    (_⊙_ : (x y : A) {{_ : C x y}} → B)
+    : Set where
   constructor absorptive
-  _<⊙>_ = forHand hand _⊙_
+  C˘ = AA.forHand hand C
+  _⊙˘_ = AA.forHandᶜ hand _⊙_
   field
-    absorb : ∀ {a} → z <⊙> a ≃ z
+    absorb : ∀ {a} {{_ : C˘ 0 a}} → 0 ⊙˘ a ≃ 0
 
 open Absorptive {{...}} public using (absorb)
 
-absorbᴸ = absorb {handᴸ}
-absorbᴿ = absorb {handᴿ}
+absorbᴸ = absorb {AA.handᴸ}
+absorbᴿ = absorb {AA.handᴿ}
 
 absorptiveᴿ-from-absorptiveᴸ :
-  {A : Set} {_⊙_ : A → A → A} {z : A}
-    {{_ : Eq A}} {{_ : Commutative _⊙_}} {{_ : Absorptive handᴸ _⊙_ z}} →
-      Absorptive handᴿ _⊙_ z
-absorptiveᴿ-from-absorptiveᴸ = absorptive (Eq.trans comm absorb)
+  {A : Set} {_⊙_ : A → A → A} {{_ : Eq A}} {{_ : FromNatLiteral A}}
+  {{_ : AA.Commutative _⊙_}} {{_ : Absorptive AA.handᴸ (AA.tc₂ _⊙_)}} →
+  Absorptive AA.handᴿ (AA.tc₂ _⊙_)
+absorptiveᴿ-from-absorptiveᴸ = absorptive (Eq.trans AA.comm absorb)
 
-record Absorptive² {A : Set} {{_ : Eq A}} (_⊙_ : A → A → A) (z : A) : Set where
+record Absorptive²
+    {A : Set} {C : A → A → Set} {{_ : Eq A}} {{_ : FromNatLiteral A}}
+    (_⊙_ : (x y : A) {{_ : C x y}} → A)
+    : Set where
   constructor absorptive²
   field
-    {{absorptiveᴸ}} : Absorptive handᴸ _⊙_ z
-    {{absorptiveᴿ}} : Absorptive handᴿ _⊙_ z
+    {{absorptiveᴸ}} : Absorptive AA.handᴸ _⊙_
+    {{absorptiveᴿ}} : Absorptive AA.handᴿ _⊙_
 
 {--- Equivalences ---}
 
 module _ {A : Set} {_⊙_ : A → A → A} {e : A} {{_ : Eq A}} where
 
-  identityᴸ-flip : {{_ : Identity handᴿ _⊙_ e}} → Identity handᴸ (flip _⊙_) e
+  identityᴸ-flip :
+    {{_ : Identity AA.handᴿ _⊙_ e}} → Identity AA.handᴸ (flip _⊙_) e
   identityᴸ-flip = identity ident
 
-  identityᴿ-flip : {{_ : Identity handᴸ _⊙_ e}} → Identity handᴿ (flip _⊙_) e
+  identityᴿ-flip :
+    {{_ : Identity AA.handᴸ _⊙_ e}} → Identity AA.handᴿ (flip _⊙_) e
   identityᴿ-flip = identity ident
 
   identity²-flip : {{_ : Identity² _⊙_ e}} → Identity² (flip _⊙_) e

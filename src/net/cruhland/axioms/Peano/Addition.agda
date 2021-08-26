@@ -1,34 +1,39 @@
-module net.cruhland.axioms.Peano.Addition where
-
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.DecEq using (_≃?_)
-open import net.cruhland.axioms.Eq using
-  (_≃_; _≄_; sym; trans; module ≃-Reasoning)
-open ≃-Reasoning
-import net.cruhland.axioms.Operators as Op
-open Op using (_+_)
+open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_)
+open Eq.≃-Reasoning
+open import net.cruhland.axioms.Operators as Op using (_+_)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
 import net.cruhland.axioms.Peano.Inspect as PeanoInspect
 import net.cruhland.axioms.Peano.Literals as PeanoLiterals
 open import net.cruhland.axioms.Peano.Sign using () renaming (Sign to ℕSign)
-open import net.cruhland.axioms.Sign as Sign using (Positive)
+import net.cruhland.axioms.Sign as S
 open import net.cruhland.models.Function using (_∘_; const)
 open import net.cruhland.models.Literals
-open import net.cruhland.models.Logic using
-  (⊤; _∧_; _∨_; ∨-introᴸ; ∨-introᴿ; ¬_; contra; ¬[¬a∨¬b]→a∧b)
+open import net.cruhland.models.Logic
+  using (⊤; _∧_; _∨_; ∨-introᴸ; ∨-introᴿ
+        ; _↯_; ¬_; ¬-intro; ¬[¬a∨¬b]→a∧b; contrapositive)
+
+module net.cruhland.axioms.Peano.Addition where
+
+private
+  module Predefs (PB : PeanoBase) (PS : ℕSign PB) where
+    open PeanoBase PB public
+    open PeanoInspect PB public
+    open PeanoLiterals PB public
+    open ℕSign PS public
 
 record Addition (PB : PeanoBase) (PS : ℕSign PB) : Set where
-  open PeanoBase PB using (ℕ; ind; step; step-case; step≄zero; zero)
-  open PeanoInspect PB using (case; case-zero; case-step; decEq; pred-intro)
-  private module ℕL = PeanoLiterals PB
-  private module ℕS = ℕSign PS
+  private
+    open module ℕ = Predefs PB PS using (ℕ; ind; step; step-case; step≄zero)
 
   field
     {{plus}} : Op.Plus ℕ
     {{+-substitutiveᴸ}} : AA.Substitutive₂ AA.handᴸ _+_ _≃_ _≃_
     {{+-identityᴸ}} : AA.Identity AA.handᴸ _+_ 0
-    {{+-fnOpCommutative-stepᴸ}} : AA.FnOpCommutative AA.handᴸ step _+_
+    {{+-fnOpCommutative-stepᴸ}} :
+      AA.FnOpCommutative AA.handᴸ step step (AA.tc₂ _+_)
 
   instance
     +-identityᴿ : AA.Identity AA.handᴿ _+_ 0
@@ -44,13 +49,13 @@ record Addition (PB : PeanoBase) (PS : ℕSign PB) : Set where
             Ps {k} k+z≃k =
               begin
                 step k + 0
-              ≃˘⟨ AA.fnOpComm ⟩
+              ≃˘⟨ AA.fnOpCommᴸ ⟩
                 step (k + 0)
               ≃⟨ AA.subst₁ k+z≃k ⟩
                 step k
               ∎
 
-    +-fnOpCommutative-stepᴿ : AA.FnOpCommutative AA.handᴿ step _+_
+    +-fnOpCommutative-stepᴿ : AA.FnOpCommutative AA.handᴿ step step (AA.tc₂ _+_)
     +-fnOpCommutative-stepᴿ = AA.fnOpCommutative +-stepᴿ
       where
         +-stepᴿ : ∀ {n m} → step (n + m) ≃ n + step m
@@ -71,11 +76,11 @@ record Addition (PB : PeanoBase) (PS : ℕSign PB) : Set where
             Ps {k} s[k+m]≃k+sm =
               begin
                 step (step k + m)
-              ≃˘⟨ AA.subst₁ AA.fnOpComm ⟩
+              ≃˘⟨ AA.subst₁ AA.fnOpCommᴸ ⟩
                 step (step (k + m))
               ≃⟨ AA.subst₁ s[k+m]≃k+sm ⟩
                 step (k + step m)
-              ≃⟨ AA.fnOpComm ⟩
+              ≃⟨ AA.fnOpCommᴸ ⟩
                 step k + step m
               ∎
 
@@ -99,11 +104,11 @@ record Addition (PB : PeanoBase) (PS : ℕSign PB) : Set where
             Ps {k} k+m≃m+k =
               begin
                 step k + m
-              ≃˘⟨ AA.fnOpComm ⟩
+              ≃˘⟨ AA.fnOpCommᴸ ⟩
                 step (k + m)
               ≃⟨ AA.subst₁ k+m≃m+k ⟩
                 step (m + k)
-              ≃⟨ AA.fnOpComm ⟩
+              ≃⟨ AA.fnOpCommᴿ ⟩
                 m + step k
               ∎
 
@@ -134,13 +139,13 @@ record Addition (PB : PeanoBase) (PS : ℕSign PB) : Set where
             Ps {k} [k+m]+p≃k+[m+p] =
               begin
                 (step k + m) + p
-              ≃˘⟨ AA.subst₂ AA.fnOpComm ⟩
+              ≃˘⟨ AA.subst₂ AA.fnOpCommᴸ ⟩
                 step (k + m) + p
-              ≃˘⟨ AA.fnOpComm ⟩
+              ≃˘⟨ AA.fnOpCommᴸ ⟩
                 step ((k + m) + p)
               ≃⟨ AA.subst₁ [k+m]+p≃k+[m+p] ⟩
                 step (k + (m + p))
-              ≃⟨ AA.fnOpComm ⟩
+              ≃⟨ AA.fnOpCommᴸ ⟩
                 step k + (m + p)
               ∎
 
@@ -170,11 +175,11 @@ record Addition (PB : PeanoBase) (PS : ℕSign PB) : Set where
                 s[k+m]≃s[k+p] =
                   begin
                     step (k + m)
-                  ≃⟨ AA.fnOpComm ⟩
+                  ≃⟨ AA.fnOpCommᴸ ⟩
                     step k + m
                   ≃⟨ sk+m≃sk+p ⟩
                     step k + p
-                  ≃˘⟨ AA.fnOpComm ⟩
+                  ≃˘⟨ AA.fnOpCommᴸ ⟩
                     step (k + p)
                   ∎
 
@@ -184,58 +189,85 @@ record Addition (PB : PeanoBase) (PS : ℕSign PB) : Set where
     +-cancellative² : AA.Cancellative² _+_ _≃_ _≃_ (const ⊤)
     +-cancellative² = AA.cancellative²
 
+    +-substitutive-≄ᴸ : AA.Substitutive₂ AA.handᴸ _+_ _≄_ _≄_
+    +-substitutive-≄ᴸ = AA.substitutive₂ +-subst-≄ᴸ
+      where
+        +-subst-≄ᴸ : {n₁ n₂ m : ℕ} → n₁ ≄ n₂ → n₁ + m ≄ n₂ + m
+        +-subst-≄ᴸ n₁≄n₂ = contrapositive AA.cancel n₁≄n₂
+
+    +-substitutive-≄ᴿ : AA.Substitutive₂ AA.handᴿ _+_ _≄_ _≄_
+    +-substitutive-≄ᴿ = AA.substᴿ-from-substᴸ-comm₂
+
+    +-substitutive-≄ : AA.Substitutive² _+_ _≄_ _≄_
+    +-substitutive-≄ = AA.substitutive²
+
   sn≃n+1 : ∀ {n} → step n ≃ n + 1
   sn≃n+1 {n} =
     begin
       step n
     ≃˘⟨ AA.subst₁ AA.ident ⟩
       step (n + 0)
-    ≃⟨ AA.fnOpComm ⟩
+    ≃⟨ AA.fnOpCommᴿ ⟩
       n + step 0
     ≃⟨⟩
       n + 1
     ∎
 
   n≄sn : ∀ {n} → n ≄ step n
-  n≄sn {n} n≃sn = contra (AA.cancel n+1≃n+0) step≄zero
-    where
-      n+1≃n+0 =
-        begin
-          n + 1
-        ≃˘⟨ sn≃n+1 ⟩
-          step n
-        ≃˘⟨ n≃sn ⟩
-          n
-        ≃˘⟨ AA.ident ⟩
-          n + 0
-        ∎
+  n≄sn {n} = Eq.≄-intro λ n≃sn →
+    let n+1≃n+0 =
+          begin
+            n + 1
+          ≃˘⟨ sn≃n+1 ⟩
+            step n
+          ≃˘⟨ n≃sn ⟩
+            n
+          ≃˘⟨ AA.ident ⟩
+            n + 0
+          ∎
+        1≃0 = AA.cancel n+1≃n+0
+        1≄0 = step≄zero
+     in 1≃0 ↯ 1≄0
 
-  +-positive : {a b : ℕ} → Positive a → Positive (a + b)
+  +-positive : {a b : ℕ} → S.Positive a → S.Positive (a + b)
   +-positive {a} {b} pos-a = ind P P0 Ps b
     where
-      P = λ x → Positive (a + x)
+      P = λ x → S.Positive (a + x)
 
       P0 : P 0
-      P0 = AA.subst₁ (sym AA.ident) pos-a
+      P0 = AA.subst₁ (Eq.sym AA.ident) pos-a
 
       Ps : step-case P
       Ps {k} _ =
-        ℕS.Pos-intro-≄0 λ a+sk≃0 → step≄zero (trans AA.fnOpComm a+sk≃0)
+        let s[a+k]≄0 = step≄zero
+            a+sk≄0 = AA.substᴸ AA.fnOpCommᴿ s[a+k]≄0
+         in ℕ.Pos-intro-≄0 a+sk≄0
 
   instance
-    +-preserves-Positive : AA.Preserves Positive _+_
+    +-preserves-Positive : AA.Preserves S.Positive _+_
     +-preserves-Positive = AA.preserves +-pres-pos
       where
-        +-pres-pos : {n m : ℕ} → Positive n → Positive m → Positive (n + m)
+        +-pres-pos :
+          {n m : ℕ} → S.Positive n → S.Positive m → S.Positive (n + m)
         +-pres-pos pos[n] pos[m] = +-positive pos[n]
 
+    positivityCommon : S.PositivityCommon ℕ
+    positivityCommon = record {}
+
   +-nonzero : {x y : ℕ} → x ≄ 0 → x + y ≄ 0
-  +-nonzero = Sign.pos≄0 ∘ +-positive ∘ ℕS.Pos-intro-≄0
+  +-nonzero = S.pos≄0 ∘ +-positive ∘ ℕ.Pos-intro-≄0
 
   +-both-zero : {a b : ℕ} → a + b ≃ 0 → a ≃ 0 ∧ b ≃ 0
   +-both-zero {a} {b} a+b≃0 =
     ¬[¬a∨¬b]→a∧b (a ≃? 0) (b ≃? 0) neither-positive
       where
         neither-positive : ¬ (a ≄ 0 ∨ b ≄ 0)
-        neither-positive (∨-introᴸ a≄0) = +-nonzero a≄0 a+b≃0
-        neither-positive (∨-introᴿ b≄0) = +-nonzero b≄0 (trans AA.comm a+b≃0)
+        neither-positive = ¬-intro λ
+          { (∨-introᴸ a≄0) →
+              let a+b≄0 = +-nonzero a≄0
+               in a+b≃0 ↯ a+b≄0
+          ; (∨-introᴿ b≄0) →
+              let b+a≃0 = Eq.trans AA.comm a+b≃0
+                  b+a≄0 = +-nonzero b≄0
+               in b+a≃0 ↯ b+a≄0
+          }

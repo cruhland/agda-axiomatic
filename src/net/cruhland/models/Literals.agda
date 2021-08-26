@@ -1,4 +1,5 @@
 open import net.cruhland.axioms.Cast using (_As_; _as_)
+open import net.cruhland.axioms.Operators as Op using (-_)
 open import net.cruhland.models.Function using (const)
 open import net.cruhland.models.Logic using (⊤)
 
@@ -22,8 +23,11 @@ open FromNatLiteral_~_ {{...}} public using (fromNatLiteral)
 FromNatLiteral : Set → Set
 FromNatLiteral A = FromNatLiteral A ~ const ⊤
 
-nat-literal-from-cast : {A : Set} {{_ : Nat As A}} → FromNatLiteral A
-nat-literal-from-cast {A} = FromNatLiteral-intro (_as A)
+nat-literal-via :
+  (A {B} : Set) {C : Nat → Set} {{_ : FromNatLiteral A ~ C}} {{_ : A As B}} →
+  FromNatLiteral B ~ C
+nat-literal-via A {B} =
+  FromNatLiteral-intro λ n → fromNatLiteral n as B
 
 record FromNegLiteral_~_ (A : Set) (C : Nat → Set) : Set where
   constructor FromNegLiteral-intro
@@ -37,3 +41,8 @@ open FromNegLiteral_~_ {{...}} public using (fromNegLiteral)
 
 FromNegLiteral : Set → Set
 FromNegLiteral A = FromNegLiteral A ~ const ⊤
+
+neg-literal-via-nat-literal :
+  {A : Set} {C : Nat → Set} {{_ : FromNatLiteral A ~ C}} {{_ : Op.Dashᴸ A}} →
+  FromNegLiteral A ~ C
+neg-literal-via-nat-literal = FromNegLiteral-intro λ n → - fromNatLiteral n

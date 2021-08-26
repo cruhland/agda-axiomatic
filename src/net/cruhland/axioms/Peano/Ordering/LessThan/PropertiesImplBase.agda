@@ -1,7 +1,7 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq as Eq using (_≃_)
 open import net.cruhland.axioms.Operators using (_+_)
-open import net.cruhland.axioms.Ordering using (_<_; _≮_)
+open import net.cruhland.axioms.Ordering as Ord using (_<_; _≮_; _>_)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
@@ -11,10 +11,10 @@ open import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.BaseDecl using
 import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.PropertiesImplBase
   as LteProps
 open import net.cruhland.axioms.Peano.Sign using (Sign)
-open import net.cruhland.axioms.Sign using (Positive; pos≄0)
+import net.cruhland.axioms.Sign as S
 open import net.cruhland.models.Function using (_⟨→⟩_)
 open import net.cruhland.models.Literals
-open import net.cruhland.models.Logic using (∧-intro; ⊥; contra)
+open import net.cruhland.models.Logic using (∧-intro; ⊥; _↯_; ¬-intro)
 
 module net.cruhland.axioms.Peano.Ordering.LessThan.PropertiesImplBase
   (PB : PeanoBase)
@@ -45,6 +45,17 @@ instance
             d[n≤m]+d[m≤k]≃d[n≤k] = Eq.sym (ℕ≤P.diff-trans n≤m m≤k)
             pos[d[n≤k]] = AA.subst₁ d[n≤m]+d[m≤k]≃d[n≤k] pos[d[n≤m]+d[m≤k]]
          in ℕ<.<-intro-≤pd n≤k pos[d[n≤k]]
+
+  >-transitive : Eq.Transitive _>_
+  >-transitive = Eq.transitive >-trans
+    where
+      >-trans : {n m k : ℕ} → n > m → m > k → n > k
+      >-trans n>m m>k =
+        let m<n = Ord.>-flip n>m
+            k<m = Ord.>-flip m>k
+            k<n = Eq.trans k<m m<n
+            n>k = Ord.<-flip k<n
+         in n>k
 
   <-substitutive-≃ᴸ : AA.Substitutive₂ AA.handᴸ _<_ _≃_ _⟨→⟩_
   <-substitutive-≃ᴸ = AA.substitutive₂ <-substᴸ
@@ -79,7 +90,7 @@ instance
         let a₁≤a₂ = ℕ<.<-elim-≤ a₁<a₂
             a₁≄a₂ = ℕ<.<-elim-≄ a₁<a₂
             a₁+b≤a₂+b = AA.subst₂ a₁≤a₂
-            a₁+b≄a₂+b = λ a₁+b≃a₂+b → contra (AA.cancel a₁+b≃a₂+b) a₁≄a₂
+            a₁+b≄a₂+b = AA.subst₂ a₁≄a₂
          in ℕ<.<-intro-≤≄ a₁+b≤a₂+b a₁+b≄a₂+b
 
   <-substitutive-+ᴿ : AA.Substitutive₂ AA.handᴿ _+_ _<_ _<_
@@ -98,19 +109,20 @@ n<sn : {n : ℕ} → n < step n
 n<sn = ℕ<.<-intro-≤≄ ℕ≤P.n≤sn ℕ+.n≄sn
 
 n≮0 : {n : ℕ} → n ≮ 0
-n≮0 n<0 =
+n≮0 = ¬-intro λ n<0 →
   let n≤0 = ℕ<.<-elim-≤ n<0
       n≄0 = ℕ<.<-elim-≄ n<0
       n+d≃0 = ℕ≤.≤-elim-diff n≤0
       ∧-intro n≃0 _ = ℕ+.+-both-zero n+d≃0
-   in contra n≃0 n≄0
+   in n≃0 ↯ n≄0
 
-<-from-pos : {n : ℕ} → Positive n → 0 < n
-<-from-pos pos[n] = ℕ<.<-intro-≤≄ ℕ≤.≤-zeroᴸ (Eq.sym (pos≄0 pos[n]))
+<-from-pos : {n : ℕ} → S.Positive n → 0 < n
+<-from-pos pos[n] = ℕ<.<-intro-≤≄ ℕ≤.≤-zeroᴸ (Eq.sym (S.pos≄0 pos[n]))
 
 <-asymmetric : {n m : ℕ} → n < m → m < n → ⊥
 <-asymmetric n<m m<n =
   let n≤m = ℕ<.<-elim-≤ n<m
       m≤n = ℕ<.<-elim-≤ m<n
       n≄m = ℕ<.<-elim-≄ n<m
-   in contra (AA.antisym n≤m m≤n) n≄m
+      n≃m = AA.antisym n≤m m≤n
+   in n≃m ↯ n≄m

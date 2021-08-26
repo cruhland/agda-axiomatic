@@ -1,15 +1,11 @@
-module net.cruhland.axioms.Sets.Replacement where
-
-open import Data.List using (List; []; _∷_; map)
+open import Data.List using (List; _∷_; map)
 open import Data.List.Membership.Setoid using (find)
 open import Data.List.Relation.Unary.All
   using (All) renaming ([] to []ᴬ; _∷_ to _∷ᴬ_)
-open import Data.List.Relation.Unary.Any
-  using (Any; any?) renaming (map to map-any)
+open import Data.List.Relation.Unary.Any using (Any) renaming (map to map-any)
 open import Level using (Setω)
-open import Relation.Binary using (DecSetoid)
-open import net.cruhland.axioms.Eq using (_≃_; sym; trans; module ≃-Reasoning)
-open ≃-Reasoning
+open import net.cruhland.axioms.Eq as Eq using (_≃_)
+open Eq.≃-Reasoning
 open import net.cruhland.axioms.Sets.Base using (SetAxioms)
 import net.cruhland.axioms.Sets.Decidable as Decidable
 open import net.cruhland.axioms.Sets.Empty using (EmptySet)
@@ -18,21 +14,21 @@ import net.cruhland.axioms.Sets.PreFinite as PreFinite
 open import net.cruhland.axioms.Sets.Singleton using (SingletonSet)
 import net.cruhland.axioms.Sets.Subset as Subset
 open import net.cruhland.axioms.Sets.Union using (PairwiseUnion)
-open import net.cruhland.models.Function using (_∘_; const)
-open import net.cruhland.models.Logic using
-  ( ⊤; _∧?_; ∧-intro; uncurry; ∨-introᴸ; ∨-introᴿ
-  ; _↔_; ↔-elimᴸ; ↔-elimᴿ; ⊥-elim; Dec; dec-map
-  )
+open import net.cruhland.models.Logic
+  using (∧-intro; ∨-introᴸ; ∨-introᴿ; _↔_; ↔-elimᴸ; ↔-elimᴿ; _↯_; Dec; dec-map)
 open import net.cruhland.models.Setoid
-  using (_⟨$⟩_; DecSetoid₀; El; Equivalence; Setoid; Setoid₀; SRel₀)
+  using (_⟨$⟩_; DecSetoid; DecSetoid₀; El; Equivalence; Setoid; Setoid₀; SRel₀)
   renaming (cong to SRel-cong)
+import net.cruhland.models.Sets.DecList as DecList
+
+module net.cruhland.axioms.Sets.Replacement where
 
 private
   variable
     S T : Setoid₀
 
 module ReplacementDefs (SA : SetAxioms) where
-  open SetAxioms SA using (_∈_; PSet; PSet₀)
+  open SetAxioms SA using (_∈_; PSet₀)
 
   record ReplRel (A : PSet₀ S) (T : Setoid₀) : Set₁ where
     open Setoid T renaming (_≈_ to _≈ᵀ_)
@@ -60,18 +56,17 @@ record Replacement
     (ES : EmptySet SA)
     (PU : PairwiseUnion SA ES)
     (SS : SingletonSet SA)
-      : Setω where
-  open Decidable SA using (_∈?_; DecMembership; ∈?-intro)
+    : Setω where
+  open Decidable SA using (DecMembership; ∈?-intro)
   open EmptySet ES using (∅; x∉∅)
-  private module ≃-SA = Equality SA
-  open ≃-SA using (∈-substᴿ)
-  open PairwiseUnion PU using
-    (_∪_; x∈A∪B-elim; x∈A∪B-introᴸ; x∈A∪B-introᴿ; ∪-substᴿ)
-  open PreFinite SA ES PU SS using
-    (∈ᴸ→∈fin; ∈fin→∈ᴸ; Finite; finite; toList; toList⊆A; same-set)
-  open ReplacementDefs SA public using
-    (ReplFun; ReplMem; ReplMem-intro; ReplRel)
-  open SetAxioms SA using (_∈_; PSet; PSet₀)
+  private
+    open module SE = Equality SA using (∈-substᴿ)
+  open PairwiseUnion PU
+    using (_∪_; x∈A∪B-elim; x∈A∪B-introᴸ; x∈A∪B-introᴿ; ∪-substᴿ)
+  open PreFinite SA ES PU SS
+    using (∈ᴸ→∈fin; ∈fin→∈ᴸ; Finite; finite; toList; toList⊆A; same-set)
+  open ReplacementDefs SA public
+  open SetAxioms SA using (_∈_; PSet₀)
   open SingletonSet SS using (singleton; x∈sa-elim; x∈sa-intro; a∈sa)
   open Subset SA using (⊆-antisym; ⊆-intro)
 
@@ -98,14 +93,14 @@ record Replacement
   ReplRel-subst : {A₁ A₂ : PSet₀ S} → A₁ ≃ A₂ → ReplRel A₁ T → ReplRel A₂ T
   ReplRel-subst A₁≃A₂ record { R = R ; R-most = R-most } = record
     { R = R
-    ; R-most = λ x∈A₂ Rxy Rxz → R-most (∈-substᴿ (sym A₁≃A₂) x∈A₂) Rxy Rxz
+    ; R-most = λ x∈A₂ Rxy Rxz → R-most (∈-substᴿ (Eq.sym A₁≃A₂) x∈A₂) Rxy Rxz
     }
 
   ReplFun-subst :
     {A₁ A₂ : PSet₀ S} {RR : ReplRel A₁ T} →
       (A₁≃A₂ : A₁ ≃ A₂) → ReplFun RR → ReplFun (ReplRel-subst A₁≃A₂ RR)
   ReplFun-subst A₁≃A₂ record { f = f ; Rxfx = Rxfx } =
-    record { f = f ; Rxfx = λ x∈A₂ → Rxfx (∈-substᴿ (sym A₁≃A₂) x∈A₂) }
+    record { f = f ; Rxfx = λ x∈A₂ → Rxfx (∈-substᴿ (Eq.sym A₁≃A₂) x∈A₂) }
 
   rep-subst :
     {A₁ A₂ : PSet₀ S} {R : ReplRel A₁ T} (A₁≃A₂ : A₁ ≃ A₂) →
@@ -125,7 +120,7 @@ record Replacement
           x ∈ replacement A₁ R
       rev x∈rep₂ =
         let ReplMem-intro a∈A₂ Rax = x∈rep-elim x∈rep₂
-         in x∈rep-intro (ReplMem-intro (∈-substᴿ (sym A₁≃A₂) a∈A₂) Rax)
+         in x∈rep-intro (ReplMem-intro (∈-substᴿ (Eq.sym A₁≃A₂) a∈A₂) Rax)
 
   instance
     rep-∈? :
@@ -136,7 +131,7 @@ record Replacement
     rep-∈? {T = T} {{DS}} {A} {RR} {{finA}} {{decR}} =
       ∈?-intro (dec-map x∈rep-intro x∈rep-elim ReplMem?)
         where
-          open DecSetoid DS using (_≈_)
+          open DecList DS using (any?)
           open Setoid T using () renaming (refl to ≈ᵀ-refl)
           open ReplRel RR using (R)
 
@@ -153,7 +148,7 @@ record Replacement
 
                 rev : ReplMem x RR → Any (λ a → R ⟨$⟩ a ⟨$⟩ x) (toList A)
                 rev record { a = a ; a∈A = a∈A ; Rax = Rax } =
-                  let a∈fin[lA] = ∈-substᴿ (sym same-set) a∈A
+                  let a∈fin[lA] = ∈-substᴿ (Eq.sym same-set) a∈A
                       a∈ᴸlA = ∈fin→∈ᴸ {DS = DS} {xs = toList A} a∈fin[lA]
                    in map-any
                      (λ a≈a′ →
@@ -165,13 +160,13 @@ record Replacement
         {{finA : Finite A}} {{rf : ReplFun RR}} →
           Finite (replacement A RR)
     rep-finite {S = S} {T} {A} {RR} {{finA}} {{rf}} =
-      let A≃flA = sym same-set
+      let A≃flA = Eq.sym same-set
           RR′ = ReplRel-subst A≃flA RR
           rf′ = ReplFun-subst A≃flA rf
           fin-map-xs≃rep-fin-xs = same-xs (toList⊆A A) RR′ rf′
        in record
          { elements = elements
-         ; same-set = trans fin-map-xs≃rep-fin-xs (sym (rep-subst A≃flA))
+         ; same-set = Eq.trans fin-map-xs≃rep-fin-xs (Eq.sym (rep-subst A≃flA))
          }
       where
         open Setoid S using () renaming
@@ -188,12 +183,12 @@ record Replacement
         same-xs []ᴬ rpl rpf = ⊆-antisym (⊆-intro fwd) (⊆-intro rev)
           where
             fwd : ∀ {x} → x ∈ ∅ → x ∈ replacement ∅ rpl
-            fwd x∈∅ = ⊥-elim (x∉∅ x∈∅)
+            fwd x∈∅ = x∈∅ ↯ x∉∅
 
             rev : ∀ {x} → x ∈ replacement ∅ rpl → x ∈ ∅
             rev x∈rep =
               let ReplMem-intro a∈∅ Rax = x∈rep-elim x∈rep
-               in ⊥-elim (x∉∅ a∈∅)
+               in a∈∅ ↯ x∉∅
         same-xs {x ∷ xs} (x∈A ∷ᴬ xs⊆A) rpl rpf =
           begin
             finite (map rpf-f (x ∷ xs))

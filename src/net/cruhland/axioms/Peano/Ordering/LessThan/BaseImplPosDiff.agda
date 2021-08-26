@@ -2,7 +2,7 @@ import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.DecEq using (_≃?_)
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_)
 open Eq.≃-Reasoning
-open import net.cruhland.axioms.Ordering using (_≤_; _<_; LessThan)
+open import net.cruhland.axioms.Ordering as Ord using (_≤_; _<_)
 open import net.cruhland.axioms.Operators using (_+_)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
@@ -12,9 +12,9 @@ open import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.BaseDecl
 open import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.PropertiesDecl
   using (LteProperties)
 open import net.cruhland.axioms.Peano.Sign using () renaming (Sign to ℕSign)
-open import net.cruhland.axioms.Sign as Sign using (Positive)
+import net.cruhland.axioms.Sign as S
 open import net.cruhland.models.Literals
-open import net.cruhland.models.Logic using (contra; no; yes)
+open import net.cruhland.models.Logic using (_↯_; no; yes)
 
 module net.cruhland.axioms.Peano.Ordering.LessThan.BaseImplPosDiff
   (PB : PeanoBase)
@@ -24,52 +24,64 @@ module net.cruhland.axioms.Peano.Ordering.LessThan.BaseImplPosDiff
   (LTEP : LteProperties PB PS PA LTEB)
   where
 
-private module ℕ+ = Addition PA
-open PeanoBase PB using (ℕ)
-import net.cruhland.axioms.Peano.Inspect PB as ℕI
-import net.cruhland.axioms.Peano.Literals PB as ℕL
-private module ℕ≤ = LteBase LTEB
-private module ℕ≤P = LteProperties LTEP
-private module ℕS = ℕSign PS
+private
+  module ℕ where
+    open Addition PA public
+    open LteBase LTEB public
+    open LteProperties LTEP public
+    open ℕSign PS public
+    open PeanoBase PB public
+    open import net.cruhland.axioms.Peano.Inspect PB public
+    open import net.cruhland.axioms.Peano.Literals PB public
+
+open ℕ using (ℕ)
 import net.cruhland.axioms.Peano.Ordering.LessThan.PosDiffDecl PB PS PA LTEB
   as PD
 
 instance
-  lessThan : LessThan ℕ
-  lessThan = record { _<_ = PD._≤⁺_ }
+  strictOrder : Ord.StrictOrder ℕ
+  strictOrder = Ord.strict-from-lt PD._≤⁺_
 
-<-intro-≤pd : {n m : ℕ} (n≤m : n ≤ m) → Positive (ℕ≤.≤-diff n≤m) → n < m
+  -- Instances needed in impls only
+  lessThan = Ord.StrictOrder.lt strictOrder
+  greaterThan = Ord.StrictOrder.gt strictOrder
+
+<-intro-≤pd : {n m : ℕ} (n≤m : n ≤ m) → S.Positive (ℕ.≤-diff n≤m) → n < m
 <-intro-≤pd = PD.≤⁺-intro
 
 <-intro-≤≄ : {n m : ℕ} → n ≤ m → n ≄ m → n < m
-<-intro-≤≄ n≤m n≄m with ℕ≤.≤-diff n≤m ≃? 0
-... | yes d≃0 = contra (ℕ≤P.zero-diff n≤m d≃0) n≄m
-... | no d≄0 = <-intro-≤pd n≤m (ℕS.Pos-intro-≄0 d≄0)
+<-intro-≤≄ n≤m n≄m with ℕ.≤-diff n≤m ≃? 0
+... | yes d≃0 =
+  let n≃m = ℕ.zero-diff n≤m d≃0
+   in n≃m ↯ n≄m
+... | no d≄0 =
+  let pos[d] = ℕ.Pos-intro-≄0 d≄0
+   in <-intro-≤pd n≤m pos[d]
 
 <-elim-≤ : {n m : ℕ} → n < m → n ≤ m
 <-elim-≤ = PD.≤⁺-elim-n≤m
 
 <-diff : {n m : ℕ} → n < m → ℕ
-<-diff n<m = ℕ≤.≤-diff (<-elim-≤ n<m)
+<-diff n<m = ℕ.≤-diff (<-elim-≤ n<m)
 
 <-diff-from-≤-diff :
-  {n m : ℕ} (n<m : n < m) → <-diff n<m ≃ ℕ≤.≤-diff (<-elim-≤ n<m)
+  {n m : ℕ} (n<m : n < m) → <-diff n<m ≃ ℕ.≤-diff (<-elim-≤ n<m)
 <-diff-from-≤-diff n<m = Eq.refl
 
-<-diff-pos : {n m : ℕ} (n<m : n < m) → Positive (<-diff n<m)
+<-diff-pos : {n m : ℕ} (n<m : n < m) → S.Positive (<-diff n<m)
 <-diff-pos = PD.≤⁺-elim-d⁺
 
-<-intro-diff : {n m d : ℕ} → Positive d → n + d ≃ m → n < m
+<-intro-diff : {n m d : ℕ} → S.Positive d → n + d ≃ m → n < m
 <-intro-diff pos[d] n+d≃m =
-  let n≤m = ℕ≤.≤-intro-diff n+d≃m
-      pos[d[n≤m]] = AA.subst₁ (Eq.sym (ℕ≤P.intro-diff-id n+d≃m)) pos[d]
+  let n≤m = ℕ.≤-intro-diff n+d≃m
+      pos[d[n≤m]] = AA.subst₁ (Eq.sym (ℕ.intro-diff-id n+d≃m)) pos[d]
    in PD.≤⁺-intro n≤m pos[d[n≤m]]
 
 <-elim-diff : {n m : ℕ} (n<m : n < m) → n + <-diff n<m ≃ m
-<-elim-diff n<m = ℕ≤.≤-elim-diff (<-elim-≤ n<m)
+<-elim-diff n<m = ℕ.≤-elim-diff (<-elim-≤ n<m)
 
 <-elim-≄ : {n m : ℕ} → n < m → n ≄ m
-<-elim-≄ {n} {m} n<m n≃m =
+<-elim-≄ {n} {m} n<m = Eq.≄-intro λ n≃m →
   let n+d≃n+0 =
         begin
           n + <-diff n<m
@@ -81,5 +93,5 @@ instance
           n + 0
         ∎
       d≃0 = AA.cancel n+d≃n+0
-      d≄0 = Sign.pos≄0 (<-diff-pos n<m)
-   in contra d≃0 d≄0
+      d≄0 = S.pos≄0 (<-diff-pos n<m)
+   in d≃0 ↯ d≄0

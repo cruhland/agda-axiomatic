@@ -20,7 +20,8 @@ private
 
 record PairwiseIntersection (SA : SetAxioms) : Setω where
   open Decidable SA using (_∈?_; DecMembership; ∈?-intro)
-  private module ≃-SA = Equality SA
+  private
+    module ≃-SA = Equality SA
   open ≃-SA using (∈-substᴿ)
   open SetAxioms SA using (_∈_; PSet₀)
   open Subset SA using (_⊆_; ⊆-antisym; ⊆-intro)
