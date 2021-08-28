@@ -4,7 +4,9 @@ open Eq.≃-Reasoning
 open import net.cruhland.axioms.Integers using (Integers)
 open import net.cruhland.axioms.Operators as Op using (_+_; -_; _*_; _⁻¹; _/_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
+open import net.cruhland.models.Function using (const)
 open import net.cruhland.models.Literals
+open import net.cruhland.models.Logic using (⊤)
 
 module net.cruhland.axioms.Rationals.DivisionPartialImplPropertiesQ
   (PA : PeanoArithmetic) (Z : Integers PA) where
@@ -77,7 +79,7 @@ record DivisionPropertiesQ
             ((q / p) {{Cab}}) + ((r / p) {{Cac}})
           ∎
 
-    div-ℚ-substitutiveᴸ : AA.Substitutive₂ᶜ AA.handᴸ _/_ _≃_ _≃_
+    div-ℚ-substitutiveᴸ : AA.Substitutive₂ᶜ AA.handᴸ _/_ _≃_ _≃_ (const ⊤)
     div-ℚ-substitutiveᴸ = AA.substitutive₂ /-substᴸ
       where
         /-substᴸ :
@@ -96,7 +98,7 @@ record DivisionPropertiesQ
             q₂ / r
           ∎
 
-    div-ℚ-substitutiveᴿ : AA.Substitutive₂ᶜ AA.handᴿ _/_ _≃_ _≃_
+    div-ℚ-substitutiveᴿ : AA.Substitutive₂ᶜ AA.handᴿ _/_ _≃_ _≃_ (const ⊤)
     div-ℚ-substitutiveᴿ = AA.substitutive₂ /-substᴿ
       where
         /-substᴿ :
@@ -113,7 +115,7 @@ record DivisionPropertiesQ
             p / q₂
           ∎
 
-    div-ℚ-substitutive : AA.Substitutive²ᶜ _/_ _≃_ _≃_
+    div-ℚ-substitutive : AA.Substitutive²ᶜ _/_ _≃_ _≃_ (const ⊤)
     div-ℚ-substitutive = AA.substitutive²
 
     div-ℚ-comm-with-negᴸ : AA.FnOpCommutative AA.handᴸ -_ -_ _/_

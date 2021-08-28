@@ -103,7 +103,7 @@ instance
   from-ℤ : ℤ As ℚ
   from-ℤ = Cast.As-intro (_// 1)
 
-  //-substitutiveᴸ : AA.Substitutive₂ᶜ AA.handᴸ _//_ _≃_ _≃_
+  //-substitutiveᴸ : AA.Substitutive₂ᶜ AA.handᴸ _//_ _≃_ _≃_ (const ⊤)
   //-substitutiveᴸ = AA.substitutive₂ //-substᴸ
     where
       //-substᴸ :
@@ -118,7 +118,7 @@ instance
               ∎
          in ≃₀-intro componentEq
 
-  //-substitutiveᴿ : AA.Substitutive₂ᶜ AA.handᴿ _//_ _≃_ _≃_
+  //-substitutiveᴿ : AA.Substitutive₂ᶜ AA.handᴿ _//_ _≃_ _≃_ (const ⊤)
   //-substitutiveᴿ = AA.substitutive₂ //-substᴿ
     where
       //-substᴿ :
@@ -133,7 +133,7 @@ instance
               ∎
          in ≃₀-intro componentEq
 
-  //-substitutive : AA.Substitutive²ᶜ _//_ _≃_ _≃_
+  //-substitutive : AA.Substitutive²ᶜ _//_ _≃_ _≃_ (const ⊤)
   //-substitutive = AA.substitutive²
 
   //-cancellativeᴸ :

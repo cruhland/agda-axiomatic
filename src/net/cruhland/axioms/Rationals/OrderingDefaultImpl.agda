@@ -2,7 +2,7 @@ import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Integers using (Integers)
-open import net.cruhland.axioms.Operators using (_+_; -_; _-_)
+open import net.cruhland.axioms.Operators using (_+_; -_; _-_; _*_)
 open import net.cruhland.axioms.Ordering as Ord using (_<_; _>_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.axioms.Rationals.AdditionDecl using (Addition)
@@ -200,3 +200,18 @@ instance
 
   <-substitutive-+ : AA.Substitutive² _+_ _<_ _<_
   <-substitutive-+ = AA.substitutive² {A = ℚ}
+
+  <-substitutive-*ᴸ : AA.Substitutive₂ᶜ AA.handᴸ (AA.tc₂ _*_) _<_ _<_ S.Positive
+  <-substitutive-*ᴸ = AA.substitutive₂ <-subst-*ᴸ
+    where
+      <-subst-*ᴸ : {p q r : ℚ} {{_ : S.Positive r}} → p < q → p * r < q * r
+      <-subst-*ᴸ {{pos[r]}} neg[p-q] =
+        let neg[[p-q]r] = ℚ.neg*pos≃neg neg[p-q] pos[r]
+            neg[pr-qr] = AA.subst₁ AA.distrib neg[[p-q]r]
+         in neg[pr-qr]
+
+  <-substitutive-*ᴿ : AA.Substitutive₂ᶜ AA.handᴿ (AA.tc₂ _*_) _<_ _<_ S.Positive
+  <-substitutive-*ᴿ = AA.substᴿ-from-substᴸ-comm₂
+
+  <-substitutive-* : AA.Substitutive²ᶜ (AA.tc₂ _*_) _<_ _<_ S.Positive
+  <-substitutive-* = AA.substitutive²

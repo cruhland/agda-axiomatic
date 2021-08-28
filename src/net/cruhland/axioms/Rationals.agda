@@ -20,11 +20,11 @@ record Rationals : Set₁ where
     QB : Base
     QA : Addition QB
     QN : Negation QB QA
-    QO : Ordering QB QA
     QM : Multiplication QB QA QN
     QR : Reciprocal QB QA QN QM
     QD : Division QB QA QN QM QR
     QS : Sign QB QA QN QM QR QD
+    QO : Ordering QB QA QN QM QR QD QS
 
   open Addition QA public
   open Base QB public

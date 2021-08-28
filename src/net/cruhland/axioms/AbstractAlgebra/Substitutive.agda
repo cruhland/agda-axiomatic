@@ -1,9 +1,9 @@
 open import Level using (_⊔_)
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_; Eq)
 open Eq.≃-Reasoning
-open import net.cruhland.models.Function using (_∘_; _⟨→⟩_)
+open import net.cruhland.models.Function using (_∘_; _⟨→⟩_; const)
 import net.cruhland.models.Function.Properties
-open import net.cruhland.models.Logic using (contrapositive)
+open import net.cruhland.models.Logic using (⊤; contrapositive)
 
 module net.cruhland.axioms.AbstractAlgebra.Substitutive where
 
@@ -30,14 +30,14 @@ Substitutive₁ f = Substitutive₁ᶜ (AA.tc₁ f)
 record Substitutive₂ᶜ
     (hand : AA.Hand) {α β χ δ} {A : Set α} {B : Set β} {C : A → A → Set}
     (_⊙_ : (x y : A) {{_ : C x y}} → B)
-    (_~_ : A → A → Set χ) (_≈_ : B → B → Set δ)
+    (_~_ : A → A → Set χ) (_≈_ : B → B → Set δ) (Cb : A → Set)
     : Set (α ⊔ χ ⊔ δ) where
   constructor substitutive₂
   C˘ = AA.forHand hand C
   _⊙˘_ = AA.forHandᶜ hand _⊙_
   field
     subst₂ :
-      ∀ {a₁ a₂ b} {{c₁ : C˘ a₁ b}} {{c₂ : C˘ a₂ b}} →
+      ∀ {a₁ a₂ b} {{cb : Cb b}} {{c₁ : C˘ a₁ b}} {{c₂ : C˘ a₂ b}} →
       a₁ ~ a₂ → (a₁ ⊙˘ b) ≈ (a₂ ⊙˘ b)
 
 open Substitutive₂ᶜ {{...}} public using (subst₂)
@@ -48,7 +48,8 @@ substᴿ = subst₂ {AA.handᴿ}
 Substitutive₂ :
   AA.Hand → ∀ {α β χ δ} {A : Set α} {B : Set β} (_⊙_ : A → A → B)
   (_~_ : A → A → Set χ) (_≈_ : B → B → Set δ) → Set (α ⊔ χ ⊔ δ)
-Substitutive₂ hand _⊙_ = Substitutive₂ᶜ hand (AA.tc₂ _⊙_)
+Substitutive₂ hand _⊙_ _~_ _≈_ =
+  Substitutive₂ᶜ hand (AA.tc₂ _⊙_) _~_ _≈_ (const ⊤)
 
 substitutiveᴿ-from-substitutiveᴸ :
   ∀ {α β χ δ} {A : Set α} {B : Set β} {_⊙_ : A → A → B} {_~_ : A → A → Set χ}
@@ -60,17 +61,17 @@ substitutiveᴿ-from-substitutiveᴸ = substitutive₂ (AA.with-swap ∘ subst�
 record Substitutive²ᶜ
     {α β χ δ} {A : Set α} {B : Set β} {C : A → A → Set}
     (_⊙_ : (x y : A) {{_ : C x y}} → B)
-    (_~_ : A → A → Set χ) (_≈_ : B → B → Set δ)
+    (_~_ : A → A → Set χ) (_≈_ : B → B → Set δ) (Cb : A → Set)
     : Set (α ⊔ χ ⊔ δ) where
   constructor substitutive²
   field
-    {{substitutiveᴸ}} : Substitutive₂ᶜ AA.handᴸ _⊙_ _~_ _≈_
-    {{substitutiveᴿ}} : Substitutive₂ᶜ AA.handᴿ _⊙_ _~_ _≈_
+    {{substitutiveᴸ}} : Substitutive₂ᶜ AA.handᴸ _⊙_ _~_ _≈_ Cb
+    {{substitutiveᴿ}} : Substitutive₂ᶜ AA.handᴿ _⊙_ _~_ _≈_ Cb
 
 Substitutive² :
   ∀ {α β χ δ} {A : Set α} {B : Set β} (_⊙_ : A → A → B) (_~_ : A → A → Set χ)
   (_≈_ : B → B → Set δ) → Set (α ⊔ χ ⊔ δ)
-Substitutive² _⊙_ = Substitutive²ᶜ (AA.tc₂ _⊙_)
+Substitutive² _⊙_ _~_ _≈_ = Substitutive²ᶜ (AA.tc₂ _⊙_) _~_ _≈_ (const ⊤)
 
 module _ {β} {A : Set} {B : Set β} {_⊙_ : A → A → B} {{_ : Eq B}} where
 
@@ -177,9 +178,9 @@ substᴿ-from-substᴸ-comm = substitutiveᴿ-from-substitutiveᴸ
     instance ≃-substᴿ = EqProperties.≃-substitutiveᴿ
 
 substᴿ-from-substᴸ-comm₂ :
-  {A : Set} {_⊙_ : A → A → A} {_~_ : A → A → Set} {{_ : Eq A}}
+  {A : Set} {_⊙_ : A → A → A} {_~_ : A → A → Set} {Cb : A → Set} {{_ : Eq A}}
   {{_ : AA.Commutative _⊙_}} {{_ : Substitutive² _~_ _≃_ _⟨→⟩_}}
-  {{_ : Substitutive₂ AA.handᴸ _⊙_ _~_ _~_}} →
-  Substitutive₂ AA.handᴿ _⊙_ _~_ _~_
+  {{_ : Substitutive₂ᶜ AA.handᴸ (AA.tc₂ _⊙_) _~_ _~_ Cb}} →
+  Substitutive₂ᶜ AA.handᴿ (AA.tc₂ _⊙_) _~_ _~_ Cb
 substᴿ-from-substᴸ-comm₂ =
   substitutive₂ λ a₁~a₂ → substᴸ AA.comm (substᴿ AA.comm (subst₂ a₁~a₂))

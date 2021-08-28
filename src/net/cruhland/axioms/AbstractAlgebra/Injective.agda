@@ -1,7 +1,7 @@
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_; Eq)
 open Eq.≃-Reasoning
 open import net.cruhland.models.Function using (_∘_; _⟨→⟩_; const; flip)
-open import net.cruhland.models.Logic using (contrapositive)
+open import net.cruhland.models.Logic using (⊤; contrapositive)
 
 module net.cruhland.axioms.AbstractAlgebra.Injective where
 
@@ -93,7 +93,7 @@ cancelᴿ-from-cancelᴸ-comm₂ :
     {_★_ : A → A → B} {{_ : AA.Commutative _★_}}
     {_⊙_ : (x y : A) {{_ : C⊙ x y}} → R}
     {_⊡_ : (x y : B) {{_ : C⊡ x y}} → R}
-    {{_ : AA.Substitutive²ᶜ _⊡_ _≃_ _≃_}}
+    {{_ : AA.Substitutive²ᶜ _⊡_ _≃_ _≃_ (const ⊤)}}
     {{_ : AA.Substitutive₁ C⊡₁ _≃_ _⟨→⟩_}}
     {{r : Cancellativeᶜ AA.handᴸ (AA.tc₂ _★_) _⊙_ _⊡_ _≃_ C}} →
     Cancellativeᶜ AA.handᴿ (AA.tc₂ _★_) _⊙_ _⊡_ _≃_ C

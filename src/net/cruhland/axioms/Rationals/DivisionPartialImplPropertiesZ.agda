@@ -5,7 +5,9 @@ open Eq.≃-Reasoning
 open import net.cruhland.axioms.Integers using (Integers)
 open import net.cruhland.axioms.Operators as Op using (-_; _*_; _/_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
+open import net.cruhland.models.Function using (const)
 open import net.cruhland.models.Literals
+open import net.cruhland.models.Logic using (⊤)
 
 module net.cruhland.axioms.Rationals.DivisionPartialImplPropertiesZ
   (PA : PeanoArithmetic) (Z : Integers PA) where
@@ -42,7 +44,7 @@ record DivisionPropertiesZ
 
   field
     {{div-ℚ}} : Op.Slash ℚ (_≄ 0) ℚ
-    {{div-ℚ-substitutive}} : AA.Substitutive²ᶜ _/_ _≃_ _≃_
+    {{div-ℚ-substitutive}} : AA.Substitutive²ᶜ _/_ _≃_ _≃_ (const ⊤)
     {{div-ℚ-comm-with-neg}} : AA.FnOpCommutative² -_ -_ _/_
     {{div-ℚ-absorptiveᴸ}} : AA.Absorptive AA.handᴸ _/_
     {{div-ℚ-cancellative-*}} :
@@ -54,7 +56,7 @@ record DivisionPropertiesZ
       let instance b:ℚ≄0:ℚ = AA.subst₁ b≄0 in a / b ≃ (a as ℚ) / (b as ℚ)
 
   instance
-    div-ℤ-substitutiveᴸ : AA.Substitutive₂ᶜ AA.handᴸ _/_ _≃_ _≃_
+    div-ℤ-substitutiveᴸ : AA.Substitutive₂ᶜ AA.handᴸ _/_ _≃_ _≃_ (const ⊤)
     div-ℤ-substitutiveᴸ = AA.substitutive₂ /-substᴸ
       where
         /-substᴸ :
@@ -76,7 +78,7 @@ record DivisionPropertiesZ
                 (a₂ / b)
               ∎
 
-    div-ℤ-substitutiveᴿ : AA.Substitutive₂ᶜ AA.handᴿ _/_ _≃_ _≃_
+    div-ℤ-substitutiveᴿ : AA.Substitutive₂ᶜ AA.handᴿ _/_ _≃_ _≃_ (const ⊤)
     div-ℤ-substitutiveᴿ = AA.substitutive₂ /-substᴿ
       where
         /-substᴿ :
@@ -96,7 +98,7 @@ record DivisionPropertiesZ
                 b / a₂
               ∎
 
-    div-ℤ-substitutive : AA.Substitutive²ᶜ _/_ _≃_ _≃_
+    div-ℤ-substitutive : AA.Substitutive²ᶜ _/_ _≃_ _≃_ (const ⊤)
     div-ℤ-substitutive = AA.substitutive² {A = ℤ}
 
     div-ℤ-comm-with-negᴸ : AA.FnOpCommutative AA.handᴸ -_ -_ _/_

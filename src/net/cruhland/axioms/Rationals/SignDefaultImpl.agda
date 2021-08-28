@@ -268,6 +268,35 @@ instance
                  in p+q≃0 ↯ p+q≄0
             }
 
+  *-preserves-pos : AA.Preserves S.Positive _*_
+  *-preserves-pos = AA.preserves *-pres-pos
+    where
+      *-pres-pos : {p q : ℚ} → S.Positive p → S.Positive q → S.Positive (p * q)
+      *-pres-pos
+          {p} {q}
+          (Positive₀-intro {a} {b} pos[a] pos[b] p≃a/b)
+          (Positive₀-intro {c} {d} pos[c] pos[d] q≃c/d) =
+        let pos[ac] = AA.pres pos[a] pos[c]
+            pos[bd] = AA.pres pos[b] pos[d]
+            instance
+              b≄0 = S.pos≄0 pos[b]
+              d≄0 = S.pos≄0 pos[d]
+              bd≄0₁ = AA.nonzero-prod {{a≄0 = b≄0}} {{d≄0}}
+              bd≄0₂ = S.pos≄0 pos[bd]
+            pq≃ac/bd =
+              begin
+                p * q
+              ≃⟨ AA.subst₂ p≃a/b ⟩
+                (a / b) * q
+              ≃⟨ AA.subst₂ q≃c/d ⟩
+                (a / b) * (c / d)
+              ≃⟨ ℚ.*-div-ℤ ⟩
+                ((a * c) / (b * d)) {{bd≄0₁}}
+              ≃⟨ ℚ.div-ℤ-subst-proof ⟩
+                ((a * c) / (b * d)) {{bd≄0₂}}
+              ∎
+         in Positive₀-intro pos[ac] pos[bd] pq≃ac/bd
+
 neg-Positive : {q : ℚ} → S.Positive q → S.Negative (- q)
 neg-Positive pos[q] = Negative₀-intro pos[q] Eq.refl
 
@@ -282,6 +311,19 @@ neg-Negative {q} (Negative₀-intro {p} pos[p] q≃-p) =
           - q
         ∎
    in AA.subst₁ p≃-q pos[p]
+
+neg*pos≃neg : {p q : ℚ} → S.Negative p → S.Positive q → S.Negative (p * q)
+neg*pos≃neg {p} {q} (Negative₀-intro {r} pos[r] p≃-r) pos[q] =
+  let pos[rq] = AA.pres pos[r] pos[q]
+      pq≃-[rq] =
+        begin
+          p * q
+        ≃⟨ AA.subst₂ p≃-r ⟩
+          (- r) * q
+        ≃˘⟨ AA.fnOpCommᴸ ⟩
+          - (r * q)
+        ∎
+   in Negative₀-intro pos[rq] pq≃-[rq]
 
 instance
   positivity-common : S.PositivityCommon ℚ

@@ -5,7 +5,9 @@ open Eq.≃-Reasoning
 open import net.cruhland.axioms.Integers using (Integers)
 open import net.cruhland.axioms.Operators as Op using (_+_; -_; _*_; _⁻¹; _/_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
+open import net.cruhland.models.Function using (const)
 open import net.cruhland.models.Literals
+open import net.cruhland.models.Logic using (⊤)
 
 module net.cruhland.axioms.Rationals.DivisionPartialImplDerivedQ
   (PA : PeanoArithmetic) (Z : Integers PA) where
@@ -45,7 +47,7 @@ record DivisionDerivedQ
 
   field
     {{div-ℚ}} : Op.Slash ℚ (_≄ 0) ℚ
-    {{div-ℚ-substitutive}} : AA.Substitutive²ᶜ {A = ℚ} _/_ _≃_ _≃_
+    {{div-ℚ-substitutive}} : AA.Substitutive²ᶜ {A = ℚ} _/_ _≃_ _≃_ (const ⊤)
     {{div-ℚ-distributive-+ᴿ}} : AA.Distributive AA.handᴿ _/_ _+_
     div-ℚ-subst-proof :
       {p q : ℚ} {{q≄0₁ q≄0₂ : q ≄ 0}} → (p / q) {{q≄0₁}} ≃ (p / q) {{q≄0₂}}

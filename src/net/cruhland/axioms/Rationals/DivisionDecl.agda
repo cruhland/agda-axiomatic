@@ -4,7 +4,9 @@ open import net.cruhland.axioms.Eq using (_≃_; _≄_)
 open import net.cruhland.axioms.Integers using (Integers)
 open import net.cruhland.axioms.Operators as Op using (_+_; -_; _*_; _⁻¹; _/_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
+open import net.cruhland.models.Function using (const)
 open import net.cruhland.models.Literals
+open import net.cruhland.models.Logic using (⊤)
 
 module net.cruhland.axioms.Rationals.DivisionDecl
   (PA : PeanoArithmetic) (Z : Integers PA) where
@@ -71,7 +73,7 @@ record Division
       {p q : ℚ} {{q≄0₁ q≄0₂ : q ≄ 0}} → (p / q) {{q≄0₁}} ≃ (p / q) {{q≄0₂}}
     q/q≃1 : {q : ℚ} {{_ : q ≄ 0}} → q / q ≃ 1
 
-    {{div-ℚ-substitutive}} : AA.Substitutive²ᶜ {A = ℚ} _/_ _≃_ _≃_
+    {{div-ℚ-substitutive}} : AA.Substitutive²ᶜ {A = ℚ} _/_ _≃_ _≃_ (const ⊤)
     {{div-ℚ-comm-with-neg}} : AA.FnOpCommutative² -_ -_ _/_
     {{div-ℚ-absorptiveᴸ}} : AA.Absorptive AA.handᴸ _/_
     {{div-ℚ-distributive-+ᴿ}} : AA.Distributive AA.handᴿ _/_ _+_
@@ -94,7 +96,7 @@ record Division
     div-ℤ-subst-proof :
       {a b : ℤ} {{b≄0₁ b≄0₂ : b ≄ 0}} → (a / b) {{b≄0₁}} ≃ (a / b) {{b≄0₂}}
 
-    {{div-ℤ-substitutive}} : AA.Substitutive²ᶜ {A = ℤ} _/_ _≃_ _≃_
+    {{div-ℤ-substitutive}} : AA.Substitutive²ᶜ {A = ℤ} _/_ _≃_ _≃_ (const ⊤)
     {{div-ℤ-comm-with-neg}} : AA.FnOpCommutative² {B = ℤ} -_ -_ _/_
     {{div-ℤ-absorptiveᴸ}} : AA.Absorptive AA.handᴸ {A = ℤ} _/_
     {{div-ℤ-cancellative-*}} :
