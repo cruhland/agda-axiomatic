@@ -14,6 +14,7 @@ open import net.cruhland.axioms.Rationals.NegationDecl using (Negation)
 open import net.cruhland.axioms.Rationals.ReciprocalDecl using (Reciprocal)
 open import net.cruhland.axioms.Rationals.SignDecl using (Sign)
 import net.cruhland.axioms.Sign as S
+open import net.cruhland.models.Function using (_⟨→⟩_)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic
   using (_∨_; ∨-map; ∨-forceᴸ; ¬_; contrapositive)
@@ -149,3 +150,53 @@ instance
 
   totalOrder : Ord.TotalOrder ℚ
   totalOrder = record { <-from-≤≄ = <₀-from-≤₀≄ }
+
+  <-substitutive-≃ᴸ : AA.Substitutive₂ AA.handᴸ _<_ _≃_ _⟨→⟩_
+  <-substitutive-≃ᴸ = AA.substitutive₂ <-subst-≃ᴸ
+    where
+      <-subst-≃ᴸ : {p₁ p₂ q : ℚ} → p₁ ≃ p₂ → p₁ < q → p₂ < q
+      <-subst-≃ᴸ p₁≃p₂ neg[p₁-r] =
+        let neg[p₂-q] = AA.subst₁ (AA.subst₂ p₁≃p₂) neg[p₁-r]
+         in neg[p₂-q]
+
+  <-substitutive-≃ᴿ : AA.Substitutive₂ AA.handᴿ _<_ _≃_ _⟨→⟩_
+  <-substitutive-≃ᴿ = AA.substitutive₂ <-subst-≃ᴿ
+    where
+      <-subst-≃ᴿ : {p₁ p₂ q : ℚ} → p₁ ≃ p₂ → q < p₁ → q < p₂
+      <-subst-≃ᴿ p₁≃p₂ neg[q-p₁] =
+        let neg[q-p₂] = AA.subst₁ (AA.subst₂ p₁≃p₂) neg[q-p₁]
+         in neg[q-p₂]
+
+  <-substitutive-≃ : AA.Substitutive² _<_ _≃_ _⟨→⟩_
+  <-substitutive-≃ = AA.substitutive² {A = ℚ}
+
+  <-substitutive-+ᴸ : AA.Substitutive₂ AA.handᴸ _+_ _<_ _<_
+  <-substitutive-+ᴸ = AA.substitutive₂ <-subst-+ᴸ
+    where
+      <-subst-+ᴸ : {p q r : ℚ} → p < q → p + r < q + r
+      <-subst-+ᴸ {p} {q} {r} neg[p-q] =
+        let p-q≃[p+r]-[q+r] =
+              begin
+                p - q
+              ≃⟨ ℚ.sub-defn ⟩
+                p + - q
+              ≃˘⟨ AA.subst₂ AA.ident ⟩
+                p + (0 + - q)
+              ≃˘⟨ AA.subst₂ (AA.subst₂ AA.inv) ⟩
+                p + ((r + - r) + - q)
+              ≃˘⟨ AA.[ab][cd]≃a[[bc]d] ⟩
+                (p + r) + (- r + - q)
+              ≃⟨ AA.subst₂ AA.comm ⟩
+                (p + r) + (- q + - r)
+              ≃˘⟨ AA.subst₂ AA.compat₂ ⟩
+                (p + r) + - (q + r)
+              ≃˘⟨ ℚ.sub-defn ⟩
+                (p + r) - (q + r)
+              ∎
+         in AA.subst₁ p-q≃[p+r]-[q+r] neg[p-q]
+
+  <-substitutive-+ᴿ : AA.Substitutive₂ AA.handᴿ _+_ _<_ _<_
+  <-substitutive-+ᴿ = AA.substᴿ-from-substᴸ-comm₂ {A = ℚ}
+
+  <-substitutive-+ : AA.Substitutive² _+_ _<_ _<_
+  <-substitutive-+ = AA.substitutive² {A = ℚ}

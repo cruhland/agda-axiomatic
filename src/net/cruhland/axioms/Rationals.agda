@@ -19,8 +19,8 @@ record Rationals : Set₁ where
   field
     QB : Base
     QA : Addition QB
-    QO : Ordering QB
     QN : Negation QB QA
+    QO : Ordering QB QA
     QM : Multiplication QB QA QN
     QR : Reciprocal QB QA QN QM
     QD : Division QB QA QN QM QR

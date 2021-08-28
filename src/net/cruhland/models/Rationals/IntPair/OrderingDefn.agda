@@ -5,8 +5,9 @@ module net.cruhland.models.Rationals.IntPair.OrderingDefn
   (PA : PeanoArithmetic) (Z : Integers PA) where
 
 open import net.cruhland.axioms.Rationals.OrderingDecl PA Z using (Ordering)
+open import net.cruhland.models.Rationals.IntPair.AdditionDefn PA Z using (QA)
 open import net.cruhland.models.Rationals.IntPair.BaseDefn PA Z using (QB)
 import net.cruhland.models.Rationals.IntPair.OrderingImpl PA Z as QO
 
-QO : Ordering QB
+QO : Ordering QB QA
 QO = record { QO }
