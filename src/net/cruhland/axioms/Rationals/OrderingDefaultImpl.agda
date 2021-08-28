@@ -92,6 +92,14 @@ instance
   nonStrictOrder : Ord.NonStrictOrder ℚ
   nonStrictOrder = record { ≤-flip = ≤₀-flip ; ≥-flip = ≥₀-flip }
 
+with->-flipped : {p₁ p₂ q₁ q₂ : ℚ} → (p₁ < q₁ → p₂ < q₂) → q₁ > p₁ → q₂ > p₂
+with->-flipped f q₁>p₁ =
+  let p₁<q₁ = Ord.>-flip q₁>p₁
+      p₂<q₂ = f p₁<q₁
+      q₂>p₂ = Ord.<-flip p₂<q₂
+   in q₂>p₂
+
+instance
   order-trichotomy : Ord.Trichotomy ℚ
   order-trichotomy = Ord.trichotomy-intro ord-tri
     where
@@ -170,6 +178,21 @@ instance
   <-substitutive-≃ : AA.Substitutive² _<_ _≃_ _⟨→⟩_
   <-substitutive-≃ = AA.substitutive² {A = ℚ}
 
+  >-substitutive-≃ᴸ : AA.Substitutive₂ AA.handᴸ _>_ _≃_ _⟨→⟩_
+  >-substitutive-≃ᴸ = AA.substitutive₂ >-subst-≃ᴸ
+    where
+      >-subst-≃ᴸ : {p₁ p₂ q : ℚ} → p₁ ≃ p₂ → p₁ > q → p₂ > q
+      >-subst-≃ᴸ p₁≃p₂ p₁>q = with->-flipped (AA.subst₂ p₁≃p₂) p₁>q
+
+  >-substitutive-≃ᴿ : AA.Substitutive₂ AA.handᴿ _>_ _≃_ _⟨→⟩_
+  >-substitutive-≃ᴿ = AA.substitutive₂ >-subst-≃ᴿ
+    where
+      >-subst-≃ᴿ : {p₁ p₂ q : ℚ} → p₁ ≃ p₂ → q > p₁ → q > p₂
+      >-subst-≃ᴿ p₁≃p₂ q>p₁ = with->-flipped (AA.subst₂ p₁≃p₂) q>p₁
+
+  >-substitutive-≃ : AA.Substitutive² {A = ℚ} _>_ _≃_ _⟨→⟩_
+  >-substitutive-≃ = AA.substitutive² {A = ℚ}
+
   <-substitutive-+ᴸ : AA.Substitutive₂ AA.handᴸ _+_ _<_ _<_
   <-substitutive-+ᴸ = AA.substitutive₂ <-subst-+ᴸ
     where
@@ -201,17 +224,36 @@ instance
   <-substitutive-+ : AA.Substitutive² _+_ _<_ _<_
   <-substitutive-+ = AA.substitutive² {A = ℚ}
 
-  <-substitutive-*ᴸ : AA.Substitutive₂ᶜ AA.handᴸ (AA.tc₂ _*_) _<_ _<_ S.Positive
-  <-substitutive-*ᴸ = AA.substitutive₂ <-subst-*ᴸ
+  <-substitutive-*-posᴸ :
+    AA.Substitutive₂ᶜ AA.handᴸ (AA.tc₂ _*_) _<_ _<_ S.Positive
+  <-substitutive-*-posᴸ = AA.substitutive₂ <-subst-*-posᴸ
     where
-      <-subst-*ᴸ : {p q r : ℚ} {{_ : S.Positive r}} → p < q → p * r < q * r
-      <-subst-*ᴸ {{pos[r]}} neg[p-q] =
+      <-subst-*-posᴸ : {p q r : ℚ} {{_ : S.Positive r}} → p < q → p * r < q * r
+      <-subst-*-posᴸ {{pos[r]}} neg[p-q] =
         let neg[[p-q]r] = ℚ.neg*pos≃neg neg[p-q] pos[r]
             neg[pr-qr] = AA.subst₁ AA.distrib neg[[p-q]r]
          in neg[pr-qr]
 
-  <-substitutive-*ᴿ : AA.Substitutive₂ᶜ AA.handᴿ (AA.tc₂ _*_) _<_ _<_ S.Positive
-  <-substitutive-*ᴿ = AA.substᴿ-from-substᴸ-comm₂
+  <-substitutive-*-posᴿ :
+    AA.Substitutive₂ᶜ AA.handᴿ (AA.tc₂ _*_) _<_ _<_ S.Positive
+  <-substitutive-*-posᴿ = AA.substᴿ-from-substᴸ-comm₂
 
-  <-substitutive-* : AA.Substitutive²ᶜ (AA.tc₂ _*_) _<_ _<_ S.Positive
-  <-substitutive-* = AA.substitutive²
+  <-substitutive-*-pos : AA.Substitutive²ᶜ (AA.tc₂ _*_) _<_ _<_ S.Positive
+  <-substitutive-*-pos = AA.substitutive²
+
+  <-substitutive-*-negᴸ :
+    AA.Substitutive₂ᶜ AA.handᴸ (AA.tc₂ _*_) _<_ _>_ S.Negative
+  <-substitutive-*-negᴸ = AA.substitutive₂ <-subst-*-negᴸ
+    where
+      <-subst-*-negᴸ : {p q r : ℚ} {{_ : S.Negative r}} → p < q → p * r > q * r
+      <-subst-*-negᴸ {{neg[r]}} neg[p-q] =
+        let pos[[p-q]r] = ℚ.neg*neg≃pos neg[p-q] neg[r]
+            pos[pr-qr] = AA.subst₁ AA.distrib pos[[p-q]r]
+         in pos[pr-qr]
+
+  <-substitutive-*-negᴿ :
+    AA.Substitutive₂ᶜ AA.handᴿ (AA.tc₂ _*_) _<_ _>_ S.Negative
+  <-substitutive-*-negᴿ = AA.substᴿ-from-substᴸ-comm₂
+
+  <-substitutive-*-neg : AA.Substitutive²ᶜ (AA.tc₂ _*_) _<_ _>_ S.Negative
+  <-substitutive-*-neg = AA.substitutive²

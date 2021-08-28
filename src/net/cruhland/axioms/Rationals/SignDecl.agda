@@ -73,3 +73,4 @@ record Sign
 
     positiveDenominator : (q : ℚ) → PositiveDenominator q
     neg*pos≃neg : {p q : ℚ} → S.Negative p → S.Positive q → S.Negative (p * q)
+    neg*neg≃pos : {p q : ℚ} → S.Negative p → S.Negative q → S.Positive (p * q)

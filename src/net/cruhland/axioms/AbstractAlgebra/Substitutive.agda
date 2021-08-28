@@ -178,9 +178,12 @@ substᴿ-from-substᴸ-comm = substitutiveᴿ-from-substitutiveᴸ
     instance ≃-substᴿ = EqProperties.≃-substitutiveᴿ
 
 substᴿ-from-substᴸ-comm₂ :
-  {A : Set} {_⊙_ : A → A → A} {_~_ : A → A → Set} {Cb : A → Set} {{_ : Eq A}}
-  {{_ : AA.Commutative _⊙_}} {{_ : Substitutive² _~_ _≃_ _⟨→⟩_}}
-  {{_ : Substitutive₂ᶜ AA.handᴸ (AA.tc₂ _⊙_) _~_ _~_ Cb}} →
-  Substitutive₂ᶜ AA.handᴿ (AA.tc₂ _⊙_) _~_ _~_ Cb
-substᴿ-from-substᴸ-comm₂ =
-  substitutive₂ λ a₁~a₂ → substᴸ AA.comm (substᴿ AA.comm (subst₂ a₁~a₂))
+  {A : Set} {_⊙_ : A → A → A} {_~_ _≈_ : A → A → Set} {Cb : A → Set}
+  {{_ : Eq A}} {{_ : AA.Commutative _⊙_}} {{_ : Substitutive² _≈_ _≃_ _⟨→⟩_}}
+  {{_ : Substitutive₂ᶜ AA.handᴸ (AA.tc₂ _⊙_) _~_ _≈_ Cb}} →
+  Substitutive₂ᶜ AA.handᴿ (AA.tc₂ _⊙_) _~_ _≈_ Cb
+substᴿ-from-substᴸ-comm₂ = substitutive₂ λ a₁~a₂ →
+  let a₁⊙b≈a₂⊙b = subst₂ a₁~a₂
+      a₁⊙b≈b⊙a₂ = substᴿ AA.comm a₁⊙b≈a₂⊙b
+      b⊙a₁≈b⊙a₂ = substᴸ AA.comm a₁⊙b≈b⊙a₂
+   in b⊙a₁≈b⊙a₂

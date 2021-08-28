@@ -325,6 +325,28 @@ neg*pos≃neg {p} {q} (Negative₀-intro {r} pos[r] p≃-r) pos[q] =
         ∎
    in Negative₀-intro pos[rq] pq≃-[rq]
 
+neg*neg≃pos : {p q : ℚ} → S.Negative p → S.Negative q → S.Positive (p * q)
+neg*neg≃pos
+    {p} {q}
+    (Negative₀-intro {r} pos[r] p≃-r) (Negative₀-intro {s} pos[s] q≃-s) =
+  let pos[rs] = AA.pres pos[r] pos[s]
+      pq≃rs =
+        begin
+          p * q
+        ≃⟨ AA.subst₂ p≃-r ⟩
+          (- r) * q
+        ≃⟨ AA.subst₂ q≃-s ⟩
+          (- r) * (- s)
+        ≃˘⟨ AA.fnOpCommᴸ ⟩
+          - (r * (- s))
+        ≃˘⟨ AA.subst₁ AA.fnOpCommᴿ ⟩
+          - (- (r * s))
+        ≃⟨ AA.inv-involutive ⟩
+          r * s
+        ∎
+      pos[pq] = AA.subst₁ (Eq.sym pq≃rs) pos[rs]
+   in pos[pq]
+
 instance
   positivity-common : S.PositivityCommon ℚ
   positivity-common = record {}
