@@ -15,7 +15,8 @@ open import net.cruhland.axioms.Rationals.ReciprocalDecl using (Reciprocal)
 import net.cruhland.axioms.Sign as S
 open import net.cruhland.models.Function using (_⟨→⟩_)
 open import net.cruhland.models.Literals
-open import net.cruhland.models.Logic using (¬_; ¬-intro; _↯_)
+open import net.cruhland.models.Logic
+  using (_∧_; ∧-intro; _↯_; ¬_; ¬-intro; contrapositive)
 
 module net.cruhland.axioms.Rationals.SignDefaultImpl
   (PA : PeanoArithmetic)
@@ -357,3 +358,106 @@ instance
   sign-common : S.SignCommon ℚ
   sign-common =
     record { neg-Positive = neg-Positive ; neg-Negative = neg-Negative }
+
+sgn : ℚ → ℚ
+sgn q with AA.at-least-one (S.trichotomy q)
+... | AA.1st q≃0 = 0
+... | AA.2nd pos[q] = 1
+... | AA.3rd neg[q] = -1
+
+sgn-zero : {q : ℚ} → q ≃ 0 → sgn q ≃ 0
+sgn-zero {q} q≃0 with AA.at-least-one (S.trichotomy q)
+... | AA.1st q≃0 = Eq.refl
+... | AA.2nd pos[q] = q≃0 ↯ S.pos≄0 pos[q]
+... | AA.3rd neg[q] = q≃0 ↯ S.neg≄0 neg[q]
+
+sgn-pos : {q : ℚ} → S.Positive q → sgn q ≃ 1
+sgn-pos {q} pos[q] with AA.at-least-one (S.trichotomy q)
+... | AA.1st q≃0 =
+  q≃0 ↯ S.pos≄0 pos[q]
+... | AA.2nd pos[q] =
+  Eq.refl
+... | AA.3rd neg[q] =
+  let 2of3 = AA.2∧3 pos[q] neg[q]
+      ¬2of3 = AA.at-most-one (S.trichotomy q)
+   in 2of3 ↯ ¬2of3
+
+sgn-neg : {q : ℚ} → S.Negative q → sgn q ≃ -1
+sgn-neg {q} neg[q] with AA.at-least-one (S.trichotomy q)
+... | AA.1st q≃0 =
+  q≃0 ↯ S.neg≄0 neg[q]
+... | AA.2nd pos[q] =
+  let 2of3 = AA.2∧3 pos[q] neg[q]
+      ¬2of3 = AA.at-most-one (S.trichotomy q)
+   in 2of3 ↯ ¬2of3
+... | AA.3rd neg[q] =
+  Eq.refl
+
+instance
+  sgn-substitutive : AA.Substitutive₁ sgn _≃_ _≃_
+  sgn-substitutive = AA.substitutive₁ sgn-subst
+    where
+      sgn-subst : {p q : ℚ} → p ≃ q → sgn p ≃ sgn q
+      sgn-subst {p} {q} p≃q with AA.at-least-one (S.trichotomy q)
+      ... | AA.1st q≃0 = sgn-zero (Eq.trans p≃q q≃0)
+      ... | AA.2nd pos[q] = sgn-pos (AA.subst₁ (Eq.sym p≃q) pos[q])
+      ... | AA.3rd neg[q] = sgn-neg (AA.subst₁ (Eq.sym p≃q) neg[q])
+
+abs : ℚ → ℚ
+abs q = q * sgn q
+
+abs-zero : {q : ℚ} → q ≃ 0 → abs q ≃ 0
+abs-zero {q} q≃0 =
+  begin
+    abs q
+  ≃⟨⟩
+    q * sgn q
+  ≃⟨ AA.subst₂ (sgn-zero q≃0) ⟩
+    q * 0
+  ≃⟨ AA.absorb ⟩
+    0
+  ∎
+
+abs-pos : {q : ℚ} → S.Positive q → abs q ≃ q
+abs-pos {q} pos[q] =
+  begin
+    abs q
+  ≃⟨⟩
+    q * sgn q
+  ≃⟨ AA.subst₂ (sgn-pos pos[q]) ⟩
+    q * 1
+  ≃⟨ AA.ident ⟩
+    q
+  ∎
+
+abs-neg : {q : ℚ} → S.Negative q → abs q ≃ - q
+abs-neg {q} neg[q] =
+  begin
+    abs q
+  ≃⟨⟩
+    q * sgn q
+  ≃⟨ AA.subst₂ (sgn-neg neg[q]) ⟩
+    q * -1
+  ≃⟨ AA.comm ⟩
+    -1 * q
+  ≃⟨ ℚ.*-neg-ident ⟩
+    - q
+  ∎
+
+instance
+  abs-substitutive : AA.Substitutive₁ abs _≃_ _≃_
+  abs-substitutive = AA.substitutive₁ abs-subst
+    where
+      abs-subst : {p q : ℚ} → p ≃ q → abs p ≃ abs q
+      abs-subst {p} {q} p≃q =
+        begin
+          abs p
+        ≃⟨⟩
+          p * sgn p
+        ≃⟨ AA.subst₂ p≃q ⟩
+          q * sgn p
+        ≃⟨ AA.subst₂ (AA.subst₁ p≃q) ⟩
+          q * sgn q
+        ≃⟨⟩
+          abs q
+        ∎

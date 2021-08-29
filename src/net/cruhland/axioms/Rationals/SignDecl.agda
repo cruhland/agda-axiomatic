@@ -1,9 +1,10 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq using (_≃_)
 open import net.cruhland.axioms.Integers using (Integers)
-open import net.cruhland.axioms.Operators using (_*_; _/_)
+open import net.cruhland.axioms.Operators using (-_; _*_; _/_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 import net.cruhland.axioms.Sign as S
+open import net.cruhland.models.Literals
 
 module net.cruhland.axioms.Rationals.SignDecl
   (PA : PeanoArithmetic) (Z : Integers PA) where
@@ -74,3 +75,15 @@ record Sign
     positiveDenominator : (q : ℚ) → PositiveDenominator q
     neg*pos≃neg : {p q : ℚ} → S.Negative p → S.Positive q → S.Negative (p * q)
     neg*neg≃pos : {p q : ℚ} → S.Negative p → S.Negative q → S.Positive (p * q)
+
+    sgn : ℚ → ℚ
+    sgn-zero : {q : ℚ} → q ≃ 0 → sgn q ≃ 0
+    sgn-pos : {q : ℚ} → S.Positive q → sgn q ≃ 1
+    sgn-neg : {q : ℚ} → S.Negative q → sgn q ≃ -1
+    {{sgn-substitutive}} : AA.Substitutive₁ sgn _≃_ _≃_
+
+    abs : ℚ → ℚ
+    abs-zero : {q : ℚ} → q ≃ 0 → abs q ≃ 0
+    abs-pos : {q : ℚ} → S.Positive q → abs q ≃ q
+    abs-neg : {q : ℚ} → S.Negative q → abs q ≃ - q
+    {{abs-substitutive}} : AA.Substitutive₁ abs _≃_ _≃_
