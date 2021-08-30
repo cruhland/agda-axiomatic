@@ -87,3 +87,5 @@ record Sign
     abs-pos : {q : ℚ} → S.Positive q → abs q ≃ q
     abs-neg : {q : ℚ} → S.Negative q → abs q ≃ - q
     {{abs-substitutive}} : AA.Substitutive₁ abs _≃_ _≃_
+
+    dist : ℚ → ℚ → ℚ

@@ -3,7 +3,7 @@ open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Integers using (Integers)
-open import net.cruhland.axioms.Operators using (_+_; -_; _*_; _/_)
+open import net.cruhland.axioms.Operators using (_+_; -_; _-_; _*_; _/_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.axioms.Rationals.AdditionDecl using (Addition)
 open import net.cruhland.axioms.Rationals.BaseDecl using (Base)
@@ -461,3 +461,6 @@ instance
         ≃⟨⟩
           abs q
         ∎
+
+dist : ℚ → ℚ → ℚ
+dist p q = abs (p - q)
