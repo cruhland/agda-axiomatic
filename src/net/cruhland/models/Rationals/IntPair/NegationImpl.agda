@@ -157,7 +157,7 @@ private
   negationBase = record {}
 
 open NegationBase negationBase public
-  hiding (neg-dash; neg-substitutive; +-inverse)
+  hiding (neg-dash; neg-injective; neg-substitutive; +-inverse)
 
 private
   open import net.cruhland.axioms.Rationals.NegationPartialImplDerived PA Z

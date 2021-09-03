@@ -2,10 +2,11 @@ import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq using (_≃_)
 open import net.cruhland.axioms.Integers using (Integers)
 open import net.cruhland.axioms.Operators using (_+_; _*_)
-open import net.cruhland.axioms.Ordering as Ord using (_<_; _>_)
+open import net.cruhland.axioms.Ordering as Ord using (_<_; _>_; _≥_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 import net.cruhland.axioms.Sign as S
 open import net.cruhland.models.Function using (_⟨→⟩_)
+open import net.cruhland.models.Literals
 
 module net.cruhland.axioms.Rationals.OrderingDecl
   (PA : PeanoArithmetic) (Z : Integers PA) where
@@ -58,3 +59,7 @@ record Ordering
     {{<-substitutive-+}} : AA.Substitutive² {A = ℚ} _+_ _<_ _<_
     {{<-substitutive-*-pos}} : AA.Substitutive²ᶜ (AA.tc₂ _*_) _<_ _<_ S.Positive
     {{<-substitutive-*-neg}} : AA.Substitutive²ᶜ (AA.tc₂ _*_) _<_ _>_ S.Negative
+    pos-from->0 : {q : ℚ} → q > 0 → S.Positive q
+    neg-from-<0 : {q : ℚ} → q < 0 → S.Negative q
+
+    abs≥0 : {q : ℚ} → ℚ.abs q ≥ 0

@@ -3,7 +3,7 @@ open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Integers using (Integers)
 open import net.cruhland.axioms.Operators using (_+_; -_; _-_; _*_)
-open import net.cruhland.axioms.Ordering as Ord using (_<_; _>_)
+open import net.cruhland.axioms.Ordering as Ord using (_<_; _>_; _≥_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 open import net.cruhland.axioms.Rationals.AdditionDecl using (Addition)
 open import net.cruhland.axioms.Rationals.BaseDecl using (Base)
@@ -17,7 +17,7 @@ import net.cruhland.axioms.Sign as S
 open import net.cruhland.models.Function using (_⟨→⟩_)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic
-  using (_∨_; ∨-map; ∨-forceᴸ; ¬_; contrapositive)
+  using (_∨_; ∨-introᴸ; ∨-introᴿ; ∨-map; ∨-forceᴸ; ¬_; contrapositive)
 
 module net.cruhland.axioms.Rationals.OrderingDefaultImpl
   (PA : PeanoArithmetic)
@@ -257,3 +257,28 @@ instance
 
   <-substitutive-*-neg : AA.Substitutive²ᶜ (AA.tc₂ _*_) _<_ _>_ S.Negative
   <-substitutive-*-neg = AA.substitutive²
+
+pos-from->0 : {q : ℚ} → q > 0 → S.Positive q
+pos-from->0 pos[q-0] = AA.subst₁ AA.ident pos[q-0]
+
+neg-from-<0 : {q : ℚ} → q < 0 → S.Negative q
+neg-from-<0 neg[q-0] = AA.subst₁ AA.ident neg[q-0]
+
+abs≥0 : {q : ℚ} → ℚ.abs q ≥ 0
+abs≥0 {q} with AA.at-least-one (Ord.trichotomy q 0)
+... | AA.1st q≃0 =
+  let abs[q]≃0 = ℚ.abs[q]≃0-from-q≃0 q≃0
+   in ∨-introᴿ abs[q]≃0
+... | AA.2nd neg[q-0] =
+  let neg[q] = AA.subst₁ AA.ident neg[q-0]
+      abs[q]≃-q = ℚ.abs[q]≃[-q]-from-neg[q] neg[q]
+      pos[-q] = S.neg-Negative neg[q]
+      pos[abs[q]] = AA.subst₁ (Eq.sym abs[q]≃-q) pos[-q]
+      pos[abs[q]-0] = AA.subst₁ (Eq.sym AA.ident) pos[abs[q]]
+   in ∨-introᴸ pos[abs[q]-0]
+... | AA.3rd pos[q-0] =
+  let pos[q] = AA.subst₁ AA.ident pos[q-0]
+      abs[q]≃q = ℚ.abs[q]≃q-from-pos[q] pos[q]
+      pos[abs[q]] = AA.subst₁ (Eq.sym abs[q]≃q) pos[q]
+      pos[abs[q]-0] = AA.subst₁ (Eq.sym AA.ident) pos[abs[q]]
+   in ∨-introᴸ pos[abs[q]-0]

@@ -1,5 +1,5 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
-open import net.cruhland.axioms.Eq as Eq using (_≃_)
+open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Integers using (Integers)
 open import net.cruhland.axioms.Operators as Op using (_+_; -_; _-_)
@@ -29,6 +29,25 @@ record NegationBase (QB : Base) (QA : Addition QB) : Set₁ where
     {{+-inverse}} : AA.Inverse² {A = ℚ} (AA.tc₁ λ q → - q) _+_ 0
 
   instance
+    neg-injective : AA.Injective -_ _≃_ _≃_
+    neg-injective = AA.injective neg-inject
+      where
+        neg-inject : {p q : ℚ} →  - p ≃ - q → p ≃ q
+        neg-inject {p} {q} [-p]≃[-q] =
+          begin
+            p
+          ≃˘⟨ AA.inv-involutive ⟩
+            - (- p)
+          ≃⟨ AA.subst₁ [-p]≃[-q] ⟩
+            - (- q)
+          ≃⟨ AA.inv-involutive ⟩
+            q
+          ∎
+
+  [-1]≄0 : -1 ≄ 0
+  [-1]≄0 = AA.substᴿ AA.inv-ident (AA.subst₁ ℚ.1≄0)
+
+  instance
     sub-dash : Op.Dash₂ ℚ
     sub-dash = Op.subtraction
 
@@ -46,6 +65,21 @@ record NegationBase (QB : Base) (QA : Addition QB) : Set₁ where
 
     sub-substitutive : AA.Substitutive² _-_ _≃_ _≃_
     sub-substitutive = AA.substitutive² {A = ℚ}
+
+    sub-identityᴿ : AA.Identity AA.handᴿ _-_ 0
+    sub-identityᴿ = AA.identity sub-identᴿ
+      where
+        sub-identᴿ : {q : ℚ} → q - 0 ≃ q
+        sub-identᴿ {q} =
+          begin
+            q - 0
+          ≃⟨⟩
+            q + - 0
+          ≃⟨ AA.subst₂ AA.inv-ident ⟩
+            q + 0
+          ≃⟨ AA.ident ⟩
+            q
+          ∎
 
   sub-defn : {p q : ℚ} → p - q ≃ p + (- q)
   sub-defn = Eq.refl

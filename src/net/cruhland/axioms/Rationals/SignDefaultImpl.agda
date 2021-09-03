@@ -1,5 +1,6 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
-open import net.cruhland.axioms.Cast using (_as_)
+open import net.cruhland.axioms.Cast using (_as_; _value_)
+open import net.cruhland.axioms.DecEq using (_≃?_)
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_)
 open Eq.≃-Reasoning
 open import net.cruhland.axioms.Integers using (Integers)
@@ -16,7 +17,7 @@ import net.cruhland.axioms.Sign as S
 open import net.cruhland.models.Function using (_⟨→⟩_)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic
-  using (_∧_; ∧-intro; _↯_; ¬_; ¬-intro; contrapositive)
+  using (_∧_; ∧-intro; ∨-introᴸ; ∨-introᴿ; _↯_; ¬_; ¬-intro; no; yes)
 
 module net.cruhland.axioms.Rationals.SignDefaultImpl
   (PA : PeanoArithmetic)
@@ -33,6 +34,7 @@ import net.cruhland.axioms.Rationals.LiteralImpl PA Z as LiteralImpl
 import net.cruhland.axioms.Rationals.SignDecl PA Z as SignDecl
 
 private
+  module ℕ = PeanoArithmetic PA
   module ℤ = Integers Z
   module ℚ where
     open SignDecl.SignPredefs QB QA QN QM QR QD public
@@ -138,9 +140,8 @@ positiveDenominator q with ℚ.fraction q
 ... | AA.3rd neg[q↓] =
   let pos[-q↓] = S.neg-Negative neg[q↓]
       instance
-        -q↓≄0-from-pos = S.pos≄0 pos[-q↓]
-        -1≄0 = AA.substᴿ AA.inv-ident (AA.subst₁ ℤ.1≄0)
-        -1*q↓≄0 = AA.nonzero-prod {{a≄0 = -1≄0}} {{q↓≄0}}
+        [-q↓]≄0-from-pos = S.pos≄0 pos[-q↓]
+        [-1]*q↓≄0 = AA.nonzero-prod {{a≄0 = ℤ.[-1]≄0}} {{q↓≄0}}
       q≃[-q↑]/[-q↓] =
         begin
           q
@@ -149,9 +150,9 @@ positiveDenominator q with ℚ.fraction q
         ≃˘⟨ AA.cancel ⟩
           ((-1 * q↑) / (-1 * q↓))
         ≃⟨ AA.subst₂ ℤ.neg-mult ⟩
-          ((- q↑) / (-1 * q↓)) {{ -1*q↓≄0 }}
+          ((- q↑) / (-1 * q↓)) {{[-1]*q↓≄0}}
         ≃⟨ AA.subst₂ ℤ.neg-mult ⟩
-          ((- q↑) / (- q↓)) {{ -q↓≄0-from-pos }}
+          ((- q↑) / (- q↓)) {{[-q↓]≄0-from-pos}}
         ∎
    in ℚ.positiveDenominator-intro {a = - q↑} pos[-q↓] q≃[-q↑]/[-q↓]
 
@@ -365,14 +366,14 @@ sgn q with AA.at-least-one (S.trichotomy q)
 ... | AA.2nd pos[q] = 1
 ... | AA.3rd neg[q] = -1
 
-sgn-zero : {q : ℚ} → q ≃ 0 → sgn q ≃ 0
-sgn-zero {q} q≃0 with AA.at-least-one (S.trichotomy q)
+sgn[q]≃0-from-q≃0 : {q : ℚ} → q ≃ 0 → sgn q ≃ 0
+sgn[q]≃0-from-q≃0 {q} q≃0 with AA.at-least-one (S.trichotomy q)
 ... | AA.1st q≃0 = Eq.refl
 ... | AA.2nd pos[q] = q≃0 ↯ S.pos≄0 pos[q]
 ... | AA.3rd neg[q] = q≃0 ↯ S.neg≄0 neg[q]
 
-sgn-pos : {q : ℚ} → S.Positive q → sgn q ≃ 1
-sgn-pos {q} pos[q] with AA.at-least-one (S.trichotomy q)
+sgn[q]≃1-from-pos[q] : {q : ℚ} → S.Positive q → sgn q ≃ 1
+sgn[q]≃1-from-pos[q] {q} pos[q] with AA.at-least-one (S.trichotomy q)
 ... | AA.1st q≃0 =
   q≃0 ↯ S.pos≄0 pos[q]
 ... | AA.2nd pos[q] =
@@ -382,8 +383,8 @@ sgn-pos {q} pos[q] with AA.at-least-one (S.trichotomy q)
       ¬2of3 = AA.at-most-one (S.trichotomy q)
    in 2of3 ↯ ¬2of3
 
-sgn-neg : {q : ℚ} → S.Negative q → sgn q ≃ -1
-sgn-neg {q} neg[q] with AA.at-least-one (S.trichotomy q)
+sgn[q]≃[-1]-from-neg[q] : {q : ℚ} → S.Negative q → sgn q ≃ -1
+sgn[q]≃[-1]-from-neg[q] {q} neg[q] with AA.at-least-one (S.trichotomy q)
 ... | AA.1st q≃0 =
   q≃0 ↯ S.neg≄0 neg[q]
 ... | AA.2nd pos[q] =
@@ -393,56 +394,171 @@ sgn-neg {q} neg[q] with AA.at-least-one (S.trichotomy q)
 ... | AA.3rd neg[q] =
   Eq.refl
 
+q≃0-from-sgn[q]≃0 : {q : ℚ} → sgn q ≃ 0 → q ≃ 0
+q≃0-from-sgn[q]≃0 {q} sgn[q]≃0 with AA.at-least-one (S.trichotomy q)
+... | AA.1st q≃0 =
+  q≃0
+... | AA.2nd pos[q] =
+  let 1≃0 = sgn[q]≃0
+   in 1≃0 ↯ ℚ.1≄0
+... | AA.3rd neg[q] =
+  let [-1]≃0 = sgn[q]≃0
+   in [-1]≃0 ↯ ℚ.[-1]≄0
+
+[-1]≄1 : -1 ≄ (ℚ value 1)
+[-1]≄1 = Eq.≄-intro λ [-1]≃1 →
+  let 0:ℤ:ℚ≃2:ℤ:ℚ =
+        begin
+          0
+        ≃˘⟨ AA.inv ⟩
+          -1 + 1
+        ≃⟨ AA.subst₂ [-1]≃1 ⟩
+          1 + 1
+        ≃⟨⟩
+          (ℕ.step 0 as ℤ as ℚ) + (ℕ.step 0 as ℤ as ℚ)
+        ≃˘⟨ AA.compat₂ ⟩
+          ((ℕ.step 0 as ℤ) + (ℕ.step 0 as ℤ) as ℚ)
+        ≃˘⟨ AA.subst₁ AA.compat₂ ⟩
+          (ℕ.step 0 + ℕ.step 0 as ℤ as ℚ)
+        ≃˘⟨ AA.subst₁ (AA.subst₁ AA.fnOpCommᴿ) ⟩
+          (ℕ.step (ℕ.step 0 + 0) as ℤ as ℚ)
+        ≃⟨ AA.subst₁ (AA.subst₁ AA.fnOpCommᴸ) ⟩
+          (ℕ.step (ℕ.step 0) + 0 as ℤ as ℚ)
+        ≃⟨ AA.subst₁ (AA.subst₁ AA.ident) ⟩
+          (ℕ.step (ℕ.step 0) as ℤ as ℚ)
+        ≃⟨⟩
+          2
+        ∎
+      0:ℤ:ℚ≄2:ℤ:ℚ = Eq.sym (AA.subst₁ (AA.subst₁ ℕ.step≄zero))
+   in 0:ℤ:ℚ≃2:ℤ:ℚ ↯ 0:ℤ:ℚ≄2:ℤ:ℚ
+
+q≃0-from-q≃[-q] : {q : ℚ} → q ≃ - q → q ≃ 0
+q≃0-from-q≃[-q] {q} q≃[-q] with q ≃? 0
+... | yes q≃0 =
+  q≃0
+... | no q≄0 =
+  let instance
+        _ = q≄0
+      [-1]≃1 =
+        begin
+          -1
+        ≃⟨⟩
+          - 1
+        ≃˘⟨ AA.subst₁ ℚ.q/q≃1 ⟩
+          - (q / q)
+        ≃⟨ AA.fnOpCommᴸ ⟩
+          (- q) / q
+        ≃˘⟨ AA.subst₂ q≃[-q] ⟩
+          q / q
+        ≃⟨ ℚ.q/q≃1 ⟩
+          1
+        ∎
+   in [-1]≃1 ↯ [-1]≄1
+
+pos[q]-from-sgn[q]≃1 : {q : ℚ} → sgn q ≃ 1 → S.Positive q
+pos[q]-from-sgn[q]≃1 {q} sgn[q]≃1 with AA.at-least-one (S.trichotomy q)
+... | AA.1st q≃0 =
+  let 1≃0 = Eq.sym sgn[q]≃1
+   in 1≃0 ↯ ℚ.1≄0
+... | AA.2nd pos[q] =
+  pos[q]
+... | AA.3rd neg[q] =
+  let [-1]≃1 = sgn[q]≃1
+   in [-1]≃1 ↯ [-1]≄1
+
+neg[q]-from-sgn[q]≃[-1] : {q : ℚ} → sgn q ≃ -1 → S.Negative q
+neg[q]-from-sgn[q]≃[-1] {q} sgn[q]≃[-1] with AA.at-least-one (S.trichotomy q)
+... | AA.1st q≃0 =
+  let [-1]≃0 = Eq.sym sgn[q]≃[-1]
+      1≃0 =
+        begin
+          1
+        ≃˘⟨ AA.inv-involutive ⟩
+          - (- 1)
+        ≃⟨ AA.subst₁ [-1]≃0 ⟩
+          - 0
+        ≃⟨ AA.inv-ident ⟩
+          0
+        ∎
+   in 1≃0 ↯ ℚ.1≄0
+... | AA.2nd pos[q] =
+  let [-1]≃1 = Eq.sym sgn[q]≃[-1]
+   in [-1]≃1 ↯ [-1]≄1
+... | AA.3rd neg[q] =
+  neg[q]
+
 instance
   sgn-substitutive : AA.Substitutive₁ sgn _≃_ _≃_
   sgn-substitutive = AA.substitutive₁ sgn-subst
     where
       sgn-subst : {p q : ℚ} → p ≃ q → sgn p ≃ sgn q
       sgn-subst {p} {q} p≃q with AA.at-least-one (S.trichotomy q)
-      ... | AA.1st q≃0 = sgn-zero (Eq.trans p≃q q≃0)
-      ... | AA.2nd pos[q] = sgn-pos (AA.subst₁ (Eq.sym p≃q) pos[q])
-      ... | AA.3rd neg[q] = sgn-neg (AA.subst₁ (Eq.sym p≃q) neg[q])
+      ... | AA.1st q≃0 =
+        sgn[q]≃0-from-q≃0 (Eq.trans p≃q q≃0)
+      ... | AA.2nd pos[q] =
+        sgn[q]≃1-from-pos[q] (AA.subst₁ (Eq.sym p≃q) pos[q])
+      ... | AA.3rd neg[q] =
+        sgn[q]≃[-1]-from-neg[q] (AA.subst₁ (Eq.sym p≃q) neg[q])
 
 abs : ℚ → ℚ
 abs q = q * sgn q
 
-abs-zero : {q : ℚ} → q ≃ 0 → abs q ≃ 0
-abs-zero {q} q≃0 =
+abs[q]≃0-from-q≃0 : {q : ℚ} → q ≃ 0 → abs q ≃ 0
+abs[q]≃0-from-q≃0 {q} q≃0 =
   begin
     abs q
   ≃⟨⟩
     q * sgn q
-  ≃⟨ AA.subst₂ (sgn-zero q≃0) ⟩
+  ≃⟨ AA.subst₂ (sgn[q]≃0-from-q≃0 q≃0) ⟩
     q * 0
   ≃⟨ AA.absorb ⟩
     0
   ∎
 
-abs-pos : {q : ℚ} → S.Positive q → abs q ≃ q
-abs-pos {q} pos[q] =
+abs[q]≃q-from-pos[q] : {q : ℚ} → S.Positive q → abs q ≃ q
+abs[q]≃q-from-pos[q] {q} pos[q] =
   begin
     abs q
   ≃⟨⟩
     q * sgn q
-  ≃⟨ AA.subst₂ (sgn-pos pos[q]) ⟩
+  ≃⟨ AA.subst₂ (sgn[q]≃1-from-pos[q] pos[q]) ⟩
     q * 1
   ≃⟨ AA.ident ⟩
     q
   ∎
 
-abs-neg : {q : ℚ} → S.Negative q → abs q ≃ - q
-abs-neg {q} neg[q] =
+abs[q]≃[-q]-from-neg[q] : {q : ℚ} → S.Negative q → abs q ≃ - q
+abs[q]≃[-q]-from-neg[q] {q} neg[q] =
   begin
     abs q
   ≃⟨⟩
     q * sgn q
-  ≃⟨ AA.subst₂ (sgn-neg neg[q]) ⟩
+  ≃⟨ AA.subst₂ (sgn[q]≃[-1]-from-neg[q] neg[q]) ⟩
     q * -1
   ≃⟨ AA.comm ⟩
     -1 * q
   ≃⟨ ℚ.*-neg-ident ⟩
     - q
   ∎
+
+q≃0-from-abs[q]≃0 : {q : ℚ} → abs q ≃ 0 → q ≃ 0
+q≃0-from-abs[q]≃0 q*sgn[q]≃0 with AA.zero-prod q*sgn[q]≃0
+... | ∨-introᴸ q≃0 = q≃0
+... | ∨-introᴿ sgn[q]≃0 = q≃0-from-sgn[q]≃0 sgn[q]≃0
+
+¬neg[q]-from-abs[q]≃q : {q : ℚ} → abs q ≃ q → ¬ S.Negative q
+¬neg[q]-from-abs[q]≃q abs[q]≃q = ¬-intro λ neg[q] →
+  let abs[q]≃[-q] = abs[q]≃[-q]-from-neg[q] neg[q]
+      q≃[-q] = Eq.trans (Eq.sym abs[q]≃q) abs[q]≃[-q]
+      q≃0 = q≃0-from-q≃[-q] q≃[-q]
+   in q≃0 ↯ S.neg≄0 neg[q]
+
+¬pos[q]-from-abs[q]≃[-q] : {q : ℚ} → abs q ≃ - q → ¬ S.Positive q
+¬pos[q]-from-abs[q]≃[-q] abs[q]≃[-q] = ¬-intro λ pos[q] →
+  let abs[q]≃q = abs[q]≃q-from-pos[q] pos[q]
+      q≃[-q] = Eq.trans (Eq.sym abs[q]≃q) abs[q]≃[-q]
+      q≃0 = q≃0-from-q≃[-q] q≃[-q]
+   in q≃0 ↯ S.pos≄0 pos[q]
 
 instance
   abs-substitutive : AA.Substitutive₁ abs _≃_ _≃_

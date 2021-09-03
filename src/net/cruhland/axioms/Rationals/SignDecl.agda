@@ -1,10 +1,12 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
-open import net.cruhland.axioms.Eq using (_≃_)
+open import net.cruhland.axioms.Cast using (_value_)
+open import net.cruhland.axioms.Eq using (_≃_; _≄_)
 open import net.cruhland.axioms.Integers using (Integers)
 open import net.cruhland.axioms.Operators using (-_; _*_; _/_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 import net.cruhland.axioms.Sign as S
 open import net.cruhland.models.Literals
+open import net.cruhland.models.Logic using (¬_)
 
 module net.cruhland.axioms.Rationals.SignDecl
   (PA : PeanoArithmetic) (Z : Integers PA) where
@@ -75,17 +77,25 @@ record Sign
     positiveDenominator : (q : ℚ) → PositiveDenominator q
     neg*pos≃neg : {p q : ℚ} → S.Negative p → S.Positive q → S.Negative (p * q)
     neg*neg≃pos : {p q : ℚ} → S.Negative p → S.Negative q → S.Positive (p * q)
+    [-1]≄1 : -1 ≄ (ℚ value 1)
+    q≃0-from-q≃[-q] : {q : ℚ} → q ≃ - q → q ≃ 0
 
     sgn : ℚ → ℚ
-    sgn-zero : {q : ℚ} → q ≃ 0 → sgn q ≃ 0
-    sgn-pos : {q : ℚ} → S.Positive q → sgn q ≃ 1
-    sgn-neg : {q : ℚ} → S.Negative q → sgn q ≃ -1
+    sgn[q]≃0-from-q≃0 : {q : ℚ} → q ≃ 0 → sgn q ≃ 0
+    q≃0-from-sgn[q]≃0 : {q : ℚ} → sgn q ≃ 0 → q ≃ 0
+    sgn[q]≃1-from-pos[q] : {q : ℚ} → S.Positive q → sgn q ≃ 1
+    pos[q]-from-sgn[q]≃1 : {q : ℚ} → sgn q ≃ 1 → S.Positive q
+    sgn[q]≃[-1]-from-neg[q] : {q : ℚ} → S.Negative q → sgn q ≃ -1
+    neg[q]-from-sgn[q]≃[-1] : {q : ℚ} → sgn q ≃ -1 → S.Negative q
     {{sgn-substitutive}} : AA.Substitutive₁ sgn _≃_ _≃_
 
     abs : ℚ → ℚ
-    abs-zero : {q : ℚ} → q ≃ 0 → abs q ≃ 0
-    abs-pos : {q : ℚ} → S.Positive q → abs q ≃ q
-    abs-neg : {q : ℚ} → S.Negative q → abs q ≃ - q
+    abs[q]≃0-from-q≃0 : {q : ℚ} → q ≃ 0 → abs q ≃ 0
+    q≃0-from-abs[q]≃0 : {q : ℚ} → abs q ≃ 0 → q ≃ 0
+    abs[q]≃q-from-pos[q] : {q : ℚ} → S.Positive q → abs q ≃ q
+    ¬neg[q]-from-abs[q]≃q : {q : ℚ} → abs q ≃ q → ¬ S.Negative q
+    abs[q]≃[-q]-from-neg[q] : {q : ℚ} → S.Negative q → abs q ≃ - q
+    ¬pos[q]-from-abs[q]≃[-q] : {q : ℚ} → abs q ≃ - q → ¬ S.Positive q
     {{abs-substitutive}} : AA.Substitutive₁ abs _≃_ _≃_
 
     dist : ℚ → ℚ → ℚ

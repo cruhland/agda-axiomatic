@@ -1,6 +1,6 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
-open import net.cruhland.axioms.Cast using (_as_)
-open import net.cruhland.axioms.Eq using (_≃_)
+open import net.cruhland.axioms.Cast using (_as_; _value_)
+open import net.cruhland.axioms.Eq using (_≃_; _≄_)
 open import net.cruhland.axioms.Integers using (Integers)
 open import net.cruhland.axioms.Operators as Op using (_+_; -_; _-_)
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
@@ -29,9 +29,11 @@ record Negation (QB : Base) (QA : Addition QB) : Set₁ where
     {{neg-substitutive}} : AA.Substitutive₁ {A = ℚ} -_ _≃_ _≃_
     {{neg-compatible-ℤ}} : AA.Compatible₁ {A = ℤ} (AA.tc₁ (_as ℚ)) -_ -_ _≃_
     {{+-inverse}} : AA.Inverse² {A = ℚ} (AA.tc₁ λ q → - q) _+_ 0
+    [-1]≄0 : -1 ≄ (ℚ value 0)
 
     {{sub-dash}} : Op.Dash₂ ℚ
     {{sub-substitutive}} : AA.Substitutive² {A = ℚ} _-_ _≃_ _≃_
+    {{sub-identityᴿ}} : AA.Identity AA.handᴿ {A = ℚ} _-_ 0
     sub-defn : {p q : ℚ} → p - q ≃ p + (- q)
     sub-negᴿ : {p q : ℚ} → p - (- q) ≃ p + q
     sub-same : {q : ℚ} → q - q ≃ 0
