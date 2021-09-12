@@ -56,6 +56,11 @@ module SignPredefs
       pos[b] : S.Positive b
       q≃a/b : let instance b≄0 = S.pos≄0 pos[b] in q ≃ a / b
 
+  data Sgn : ℚ → Set where
+    Sgn[0] : Sgn 0
+    Sgn[1] : Sgn 1
+    Sgn[-1] : Sgn -1
+
 record Sign
     (QB : Base)
     (QA : Addition QB)
@@ -81,6 +86,7 @@ record Sign
     q≃0-from-q≃[-q] : {q : ℚ} → q ≃ - q → q ≃ 0
 
     sgn : ℚ → ℚ
+    {{Sgn-sgn}} : {q : ℚ} → Sgn (sgn q)
     sgn[q]≃0-from-q≃0 : {q : ℚ} → q ≃ 0 → sgn q ≃ 0
     q≃0-from-sgn[q]≃0 : {q : ℚ} → sgn q ≃ 0 → q ≃ 0
     sgn[q]≃1-from-pos[q] : {q : ℚ} → S.Positive q → sgn q ≃ 1
@@ -90,6 +96,7 @@ record Sign
     {{sgn-substitutive}} : AA.Substitutive₁ sgn _≃_ _≃_
 
     abs : ℚ → ℚ
+    abs-defn : {q : ℚ} → abs q ≃ q * sgn q
     abs[q]≃0-from-q≃0 : {q : ℚ} → q ≃ 0 → abs q ≃ 0
     q≃0-from-abs[q]≃0 : {q : ℚ} → abs q ≃ 0 → q ≃ 0
     abs[q]≃q-from-pos[q] : {q : ℚ} → S.Positive q → abs q ≃ q

@@ -23,6 +23,13 @@ record Antisymmetric {A : Set} {{eq : Eq A}} (_~_ : A → A → Set) : Set where
 
 open Antisymmetric {{...}} public using (antisym)
 
+record Irreflexive {A : Set} (_~_ : A → A → Set) : Set where
+  constructor irreflexive
+  field
+    irrefl : ∀ {a} → ¬ (a ~ a)
+
+open Irreflexive {{...}} public using (irrefl)
+
 distributiveᴿ-from-distributiveᴸ :
   {A : Set} {_⊙_ _⊕_ : A → A → A} {{_ : Eq A}} {{_ : Commutative _⊙_}}
   {{_ : Substitutive² _⊕_ _≃_ _≃_}} {{_ : Distributive handᴸ (tc₂ _⊙_) _⊕_}} →

@@ -1,13 +1,13 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq as Eq using (_≃_)
 open Eq.≃-Reasoning
-open import net.cruhland.axioms.Ordering as Ord using (_≤_)
-open import net.cruhland.axioms.Operators using (_+_)
+open import net.cruhland.axioms.Operators as Op using (_+_; _≤_)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
 import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.AddDecl as AddDecl
 open import net.cruhland.axioms.Peano.Sign using (Sign)
+open import net.cruhland.models.Function using (flip)
 open import net.cruhland.models.Literals
 
 module net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.BaseImplAdd
@@ -20,12 +20,11 @@ open PeanoBase PB using (ℕ; step)
 import net.cruhland.axioms.Peano.Literals PB as ℕL
 
 instance
-  nonStrictOrder : Ord.NonStrictOrder ℕ
-  nonStrictOrder = Ord.nonStrict-from-lte AD._+d≃_
+  ltEq : Op.LtEq ℕ
+  ltEq = Op.ltEq AD._+d≃_
 
-  -- Instances needed in impls only
-  lessThanOrEqual = Ord.NonStrictOrder.lte nonStrictOrder
-  greaterThanOrEqual = Ord.NonStrictOrder.gte nonStrictOrder
+  gtEq : Op.GtEq ℕ
+  gtEq = Op.gtEq (flip AD._+d≃_)
 
 diff : {n m : ℕ} → n ≤ m → ℕ
 diff = AD.diff

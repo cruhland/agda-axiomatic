@@ -37,5 +37,6 @@ record Negation (QB : Base) (QA : Addition QB) : Set₁ where
     sub-defn : {p q : ℚ} → p - q ≃ p + (- q)
     sub-negᴿ : {p q : ℚ} → p - (- q) ≃ p + q
     sub-same : {q : ℚ} → q - q ≃ 0
+    sub-zeroᴸ : {q : ℚ} → 0 - q ≃ - q
     p-q≃0-from-p≃q : {p q : ℚ} → p ≃ q → p - q ≃ 0
     p≃q-from-p-q≃0 : {p q : ℚ} → p - q ≃ 0 → p ≃ q

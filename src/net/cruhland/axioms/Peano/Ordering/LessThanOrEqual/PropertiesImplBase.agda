@@ -1,15 +1,15 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq as Eq using (_≃_)
 open Eq.≃-Reasoning
-open import net.cruhland.axioms.Ordering using (_≤_; _≰_)
-open import net.cruhland.axioms.Operators using (_+_)
+open import net.cruhland.axioms.Operators using (_+_; _≤_; _≰_; _≥_)
+import net.cruhland.axioms.Ordering as Ord
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
 open import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.BaseDecl using
   (LteBase)
 open import net.cruhland.axioms.Peano.Sign using (Sign)
-open import net.cruhland.models.Function using (_∘_; _⟨→⟩_; const)
+open import net.cruhland.models.Function using (_∘_; _⟨→⟩_; const; flip)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using
   (⊤; ∧-intro; _↯_; ¬-intro; Dec; dec-map; no; yes)
@@ -30,7 +30,22 @@ private
 
 open ℕ using (ℕ; step)
 
+≤-from-≃ : {n m : ℕ} → n ≃ m → n ≤ m
+≤-from-≃ {n} {m} n≃m =
+  let n+0≃m =
+        begin
+          n + 0
+        ≃⟨ AA.ident ⟩
+          n
+        ≃⟨ n≃m ⟩
+          m
+        ∎
+   in ℕ.≤-intro-diff n+0≃m
+
 instance
+  ≤-reflexive : Eq.Reflexive _≤_
+  ≤-reflexive = Eq.reflexive (ℕ.≤-intro-diff AA.ident)
+
   ≤-transitive : Eq.Transitive _≤_
   ≤-transitive = Eq.transitive ≤-trans
     where
@@ -97,6 +112,12 @@ instance
 
   ≤-substitutive-≃ : AA.Substitutive² _≤_ _≃_ _⟨→⟩_
   ≤-substitutive-≃ = AA.substitutive²
+
+  lessThanOrEqual : Ord.NonStrict _≤_
+  lessThanOrEqual = Ord.nonstrict-intro ≤-from-≃
+
+  nonStrictOrder : Ord.NonStrict² _≤_ (flip _≤_)
+  nonStrictOrder = Ord.nonstrict²-from-nonstrict
 
   ≤-injective-step : AA.Injective step _≤_ _≤_
   ≤-injective-step = AA.injective ≤-inject

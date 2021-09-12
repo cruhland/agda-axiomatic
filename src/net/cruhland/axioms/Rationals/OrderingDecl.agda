@@ -1,8 +1,9 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq using (_≃_)
 open import net.cruhland.axioms.Integers using (Integers)
-open import net.cruhland.axioms.Operators using (_+_; _*_)
-open import net.cruhland.axioms.Ordering as Ord using (_<_; _>_; _≥_)
+open import net.cruhland.axioms.Operators as Op
+  using (_+_; _*_; _≤_; _≥_; _<_; _>_)
+import net.cruhland.axioms.Ordering as Ord
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 import net.cruhland.axioms.Sign as S
 open import net.cruhland.models.Function using (_⟨→⟩_)
@@ -53,13 +54,19 @@ record Ordering
     open module ℚ = RationalPredefs QB QA QN QM QR QD QS using (ℚ)
 
   field
-    {{totalOrder}} : Ord.TotalOrder ℚ
-    {{<-substitutive-≃}} : AA.Substitutive² {A = ℚ} _<_ _≃_ _⟨→⟩_
-    {{>-substitutive-≃}} : AA.Substitutive² {A = ℚ} _>_ _≃_ _⟨→⟩_
+    {{lt}} : Op.Lt ℚ
+    {{gt}} : Op.Gt ℚ
+    {{ltEq}} : Op.LtEq ℚ
+    {{gtEq}} : Op.GtEq ℚ
+    {{totalOrder}} : Ord.TotalOrder {A = ℚ} _≤_ _≥_ _<_ _>_
     {{<-substitutive-+}} : AA.Substitutive² {A = ℚ} _+_ _<_ _<_
     {{<-substitutive-*-pos}} : AA.Substitutive²ᶜ (AA.tc₂ _*_) _<_ _<_ S.Positive
     {{<-substitutive-*-neg}} : AA.Substitutive²ᶜ (AA.tc₂ _*_) _<_ _>_ S.Negative
+    {{≤-substitutive-+}} : AA.Substitutive² {A = ℚ} _+_ _≤_ _≤_
     pos-from->0 : {q : ℚ} → q > 0 → S.Positive q
     neg-from-<0 : {q : ℚ} → q < 0 → S.Negative q
 
+    *-sgn-max : {q s : ℚ} {{_ : ℚ.Sgn s}} → q * s ≤ q * ℚ.sgn q
+
     abs≥0 : {q : ℚ} → ℚ.abs q ≥ 0
+    abs-triangle : {p q : ℚ} → ℚ.abs (p + q) ≤ ℚ.abs p + ℚ.abs q

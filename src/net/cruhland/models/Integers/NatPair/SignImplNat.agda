@@ -60,7 +60,7 @@ instance
              in AA.3rd (≃posℕ-intro pos[d] (ℤ.≃₀-intro x⁺+d≃0+x⁻))
           1of3 | AA.2nd x⁺≃x⁻ = AA.1st (ℤ.zero-from-balanced x⁺≃x⁻)
           1of3 | AA.3rd x⁺>x⁻ =
-            let x⁻<x⁺ = Ord.>-flip x⁺>x⁻
+            let x⁻<x⁺ = Ord.gt-flip x⁺>x⁻
                 d = ℕ.<-diff x⁻<x⁺
                 pos[d] = ℕ.<-diff-pos x⁻<x⁺
                 x⁻+d≃x⁺ = ℕ.<-elim-diff x⁻<x⁺
@@ -103,7 +103,7 @@ instance
                       ∎
                     x⁺<x⁻ = ℕ.<-intro-diff pos[n] x⁺+n≃x⁻
                     x⁻<x⁺ = ℕ.<-intro-diff pos[m] x⁻+m≃x⁺
-                    x⁺>x⁻ = Ord.<-flip x⁻<x⁺
+                    x⁺>x⁻ = Ord.lt-flip x⁻<x⁺
                     x⁺<>x⁻ = AA.1∧3 x⁺<x⁻ x⁺>x⁻
                     ¬x⁺<>x⁻ = AA.ExactlyOneOfThree.at-most-one x⁺<≃>x⁻
                  in x⁺<>x⁻ ↯ ¬x⁺<>x⁻

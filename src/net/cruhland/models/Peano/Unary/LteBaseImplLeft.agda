@@ -7,20 +7,16 @@ open import Data.Nat.Properties
 open import Relation.Binary.PropositionalEquality using (cong; refl)
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq as Eq using (_≃_)
-open import net.cruhland.axioms.Ordering as Ord using (_≤_)
-open import net.cruhland.axioms.Operators using (_+_)
+open import net.cruhland.axioms.Operators as Op using (_+_; _≤_)
+open import net.cruhland.models.Function using (flip)
 import net.cruhland.models.Peano.Unary.Base
 
 instance
-  nonStrictOrder : Ord.NonStrictOrder ℕ
-  nonStrictOrder = Ord.nonStrict-from-lte _≤ᴸ_
+  ltEq : Op.LtEq ℕ
+  ltEq = Op.ltEq _≤ᴸ_
 
-  -- Instances needed in impls only
-  lessThanOrEqual = Ord.NonStrictOrder.lte nonStrictOrder
-  greaterThanOrEqual = Ord.NonStrictOrder.gte nonStrictOrder
-
-  ≤-reflexive : Eq.Reflexive _≤_
-  ≤-reflexive = Eq.reflexive ≤-refl
+  gtEq : Op.GtEq ℕ
+  gtEq = Op.gtEq (flip _≤ᴸ_)
 
   ≤-substitutive-step : AA.Substitutive₁ step _≤_ _≤_
   ≤-substitutive-step = AA.substitutive₁ s≤s

@@ -1,6 +1,6 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
-open import net.cruhland.axioms.Operators using (_-_)
-open import net.cruhland.axioms.Ordering as Ord using (_≤_; _<_)
+open import net.cruhland.axioms.Operators as Op using (_-_; _≤_; _≥_; _<_; _>_)
+import net.cruhland.axioms.Ordering as Ord
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 import net.cruhland.axioms.Sign as S
 
@@ -40,7 +40,10 @@ record Ordering
     open module ℤ = IntegerPredefs ZB ZA ZN ZM ZS using (ℤ)
 
   field
-    {{totalOrder}} : Ord.TotalOrder ℤ
-    {{≤-antisymmetric}} : AA.Antisymmetric {A = ℤ} _≤_
+    {{ltEq}} : Op.LtEq ℤ
+    {{gtEq}} : Op.GtEq ℤ
+    {{lt}} : Op.Lt ℤ
+    {{gt}} : Op.Gt ℤ
+    {{totalOrder}} : Ord.TotalOrder {A = ℤ} _≤_ _≥_ _<_ _>_
     <-from-pos : {a b : ℤ} → S.Positive (b - a) → a < b
     pos-from-< : {a b : ℤ} → a < b → S.Positive (b - a)

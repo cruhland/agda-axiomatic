@@ -1,4 +1,4 @@
-open import net.cruhland.axioms.Ordering using (_≤_)
+open import net.cruhland.axioms.Operators using (_≤_)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)

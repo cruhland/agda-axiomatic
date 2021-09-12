@@ -1,8 +1,8 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq as Eq using (_≃_)
 open Eq.≃-Reasoning
-open import net.cruhland.axioms.Ordering as Ord using (_<_)
-open import net.cruhland.axioms.Operators as Op using (_+_; _*_)
+open import net.cruhland.axioms.Operators as Op using (_+_; _*_; _<_)
+import net.cruhland.axioms.Ordering as Ord
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
@@ -281,7 +281,7 @@ record Multiplication
         ... | AA.2nd b≃c =
           b≃c
         ... | AA.3rd b>c =
-          let ac<ab = *-preserves-<ᴸ (Ord.>-flip b>c) it
+          let ac<ab = *-preserves-<ᴸ (Ord.gt-flip b>c) it
               ac≄ab = ℕ.<-elim-≄ ac<ab
            in Eq.sym ab≃ac ↯ ac≄ab
 

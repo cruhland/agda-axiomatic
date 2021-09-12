@@ -2,8 +2,7 @@ import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.DecEq using (_≃?_)
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_)
 open Eq.≃-Reasoning
-open import net.cruhland.axioms.Ordering as Ord using (_≤_; _<_)
-open import net.cruhland.axioms.Operators using (_+_)
+open import net.cruhland.axioms.Operators as Op using (_+_; _≤_; _<_; _>_)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
@@ -13,6 +12,7 @@ open import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.PropertiesDecl
   using (LteProperties)
 open import net.cruhland.axioms.Peano.Sign using () renaming (Sign to ℕSign)
 import net.cruhland.axioms.Sign as S
+open import net.cruhland.models.Function using (flip)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using (_↯_; no; yes)
 
@@ -39,12 +39,11 @@ import net.cruhland.axioms.Peano.Ordering.LessThan.PosDiffDecl PB PS PA LTEB
   as PD
 
 instance
-  strictOrder : Ord.StrictOrder ℕ
-  strictOrder = Ord.strict-from-lt PD._≤⁺_
+  lt : Op.Lt ℕ
+  lt = Op.lt PD._≤⁺_
 
-  -- Instances needed in impls only
-  lessThan = Ord.StrictOrder.lt strictOrder
-  greaterThan = Ord.StrictOrder.gt strictOrder
+  gt : Op.Gt ℕ
+  gt = Op.gt (flip _<_)
 
 <-intro-≤pd : {n m : ℕ} (n≤m : n ≤ m) → S.Positive (ℕ.≤-diff n≤m) → n < m
 <-intro-≤pd = PD.≤⁺-intro

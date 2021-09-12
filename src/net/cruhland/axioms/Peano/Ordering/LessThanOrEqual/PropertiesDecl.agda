@@ -1,7 +1,7 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq as Eq using (_≃_)
-open import net.cruhland.axioms.Ordering using (_≤_)
-open import net.cruhland.axioms.Operators using (_+_)
+open import net.cruhland.axioms.Operators using (_+_; _≤_; _≥_)
+import net.cruhland.axioms.Ordering as Ord
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
@@ -27,10 +27,8 @@ record LteProperties (LTEB : LteBase) : Set₁ where
     module ℕ≤ = LteBase LTEB
 
   field
-    {{≤-transitive}} : Eq.Transitive _≤_
-    {{≤-antisymmetric}} : AA.Antisymmetric _≤_
-    {{≤-substitutive-≃}} : AA.Substitutive² _≤_ _≃_ _⟨→⟩_
-    ≤-intro-≃ : {n m : ℕ} → n ≃ m → n ≤ m
+    {{nonStrictOrder}} : Ord.NonStrict² _≤_ _≥_
+
     zero-diff : {n m : ℕ} (n≤m : n ≤ m) → ℕ≤.≤-diff n≤m ≃ 0 → n ≃ m
     _≤?_ : (n m : ℕ) → Dec (n ≤ m)
 

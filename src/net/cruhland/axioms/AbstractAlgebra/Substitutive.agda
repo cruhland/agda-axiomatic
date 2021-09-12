@@ -1,7 +1,7 @@
 open import Level using (_⊔_)
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_; Eq)
 open Eq.≃-Reasoning
-open import net.cruhland.models.Function using (_∘_; _⟨→⟩_; const)
+open import net.cruhland.models.Function using (_∘_; _⟨→⟩_; const; flip)
 import net.cruhland.models.Function.Properties
 open import net.cruhland.models.Logic using (⊤; contrapositive)
 
@@ -72,6 +72,19 @@ Substitutive² :
   ∀ {α β χ δ} {A : Set α} {B : Set β} (_⊙_ : A → A → B) (_~_ : A → A → Set χ)
   (_≈_ : B → B → Set δ) → Set (α ⊔ χ ⊔ δ)
 Substitutive² _⊙_ _~_ _≈_ = Substitutive²ᶜ (AA.tc₂ _⊙_) _~_ _≈_ (const ⊤)
+
+substitutive²-flipped :
+  ∀ {α β γ δ} {A : Set α} {B : Set β} {_⊙_ : A → A → B} {_~_ : A → A → Set γ}
+  {_≈_ : B → B → Set δ} {{_ : Substitutive² _⊙_ _~_ _≈_}} →
+  Substitutive² (flip _⊙_) _~_ _≈_
+substitutive²-flipped {_⊙_ = _⊙_} {_~_} {_≈_} = substitutive²
+  where
+    instance
+      flippedᴸ : Substitutive₂ AA.handᴸ (flip _⊙_) _~_ _≈_
+      flippedᴸ = substitutive₂ (subst₂ {_⊙_ = AA.tc₂ _⊙_})
+
+      flippedᴿ : Substitutive₂ AA.handᴿ (flip _⊙_) _~_ _≈_
+      flippedᴿ = substitutive₂ (subst₂ {_⊙_ = AA.tc₂ _⊙_})
 
 module _ {β} {A : Set} {B : Set β} {_⊙_ : A → A → B} {{_ : Eq B}} where
 

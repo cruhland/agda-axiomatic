@@ -1,3 +1,5 @@
+open import net.cruhland.models.Logic using (¬_)
+
 module net.cruhland.axioms.Operators where
 
 record Plus (A : Set) : Set where
@@ -76,3 +78,59 @@ record Caret (A : Set) : Set where
 open Caret {{...}} public
 
 {-# DISPLAY Caret._^_ _ a b = a ^ b #-}
+
+record LtEq (A : Set) : Set₁ where
+  constructor ltEq
+  infix 4 _≤_ _≰_
+  field
+    _≤_ : A → A → Set
+
+  _≰_ : A → A → Set
+  x ≰ y = ¬ (x ≤ y)
+
+open LtEq {{...}} public
+
+{-# DISPLAY LtEq._≤_ _ x y = x ≤ y #-}
+{-# DISPLAY LtEq._≰_ _ x y = x ≰ y #-}
+
+record GtEq (A : Set) : Set₁ where
+  constructor gtEq
+  infix 4 _≥_ _≱_
+  field
+    _≥_ : A → A → Set
+
+  _≱_ : A → A → Set
+  x ≱ y = ¬ (x ≥ y)
+
+open GtEq {{...}} public
+
+{-# DISPLAY GtEq._≥_ _ x y = x ≥ y #-}
+{-# DISPLAY GtEq._≱_ _ x y = x ≱ y #-}
+
+record Lt (A : Set) : Set₁ where
+  constructor lt
+  infix 4 _<_ _≮_
+  field
+    _<_ : A → A → Set
+
+  _≮_ : A → A → Set
+  x ≮ y = ¬ (x < y)
+
+open Lt {{...}} public
+
+{-# DISPLAY Lt._<_ _ x y = x < y #-}
+{-# DISPLAY Lt._≮_ _ x y = x ≮ y #-}
+
+record Gt (A : Set) : Set₁ where
+  constructor gt
+  infix 4 _>_ _≯_
+  field
+    _>_ : A → A → Set
+
+  _≯_ : A → A → Set
+  x ≯ y = ¬ (x > y)
+
+open Gt {{...}} public
+
+{-# DISPLAY Gt._>_ _ x y = x > y #-}
+{-# DISPLAY Gt._≯_ _ x y = x ≯ y #-}

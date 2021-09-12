@@ -2,8 +2,8 @@ import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Cast using (_as_)
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_)
 open Eq.≃-Reasoning
-open import net.cruhland.axioms.Operators using (_+_; -_)
-open import net.cruhland.axioms.Ordering as Ord using (_<_)
+open import net.cruhland.axioms.Operators using (_+_; -_; _<_)
+import net.cruhland.axioms.Ordering as Ord
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 import net.cruhland.axioms.Sign as S
 open import net.cruhland.models.Function using (_⟨→⟩_; id)
@@ -186,7 +186,7 @@ instance
           1of3 with AA.ExactlyOneOfThree.at-least-one (ℕ.order-trichotomy a⁺ a⁻)
           1of3 | AA.1st a⁺<a⁻ = AA.3rd a⁺<a⁻
           1of3 | AA.2nd a⁺≃a⁻ = AA.1st (ℤ.zero-from-balanced a⁺≃a⁻)
-          1of3 | AA.3rd a⁺>a⁻ = AA.2nd (Ord.>-flip a⁺>a⁻)
+          1of3 | AA.3rd a⁺>a⁻ = AA.2nd (Ord.gt-flip a⁺>a⁻)
 
           ¬2of3 : ¬ AA.TwoOfThree (a ≃ 0) (S.Positive a) (S.Negative a)
           ¬2of3 = ¬-intro λ

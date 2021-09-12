@@ -1,6 +1,5 @@
 open import net.cruhland.axioms.Eq using (_≃_; _≄_)
-open import net.cruhland.axioms.Ordering as Ord using (_≤_; _<_)
-open import net.cruhland.axioms.Operators using (_+_)
+open import net.cruhland.axioms.Operators as Op using (_+_; _≤_; _<_)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
@@ -24,7 +23,8 @@ record LtBase (LTEB : LteBase) : Set₁ where
     module ℕ≤ = LteBase LTEB
 
   field
-    {{strictOrder}} : Ord.StrictOrder ℕ
+    {{lt}} : Op.Lt ℕ
+    {{gt}} : Op.Gt ℕ
 
     <-intro-≤≄ : {n m : ℕ} → n ≤ m → n ≄ m → n < m
     <-intro-≤pd : {n m : ℕ} (n≤m : n ≤ m) → S.Positive (ℕ≤.≤-diff n≤m) → n < m

@@ -1,6 +1,6 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq using (_≃_; _≄_)
-open import net.cruhland.axioms.Ordering using (_≤_; _<_; _>_)
+open import net.cruhland.axioms.Operators using (_≤_; _<_; _>_)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)

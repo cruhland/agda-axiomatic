@@ -1,7 +1,6 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq as Eq using (_≃_)
-open import net.cruhland.axioms.Ordering as Ord using (_≤_)
-open import net.cruhland.axioms.Operators using (_+_)
+open import net.cruhland.axioms.Operators as Op using (_+_; _≤_)
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
@@ -16,9 +15,9 @@ import net.cruhland.axioms.Peano.Literals PB as ℕL
 
 record LteBase : Set₁ where
   field
-    {{nonStrictOrder}} : Ord.NonStrictOrder ℕ
+    {{ltEq}} : Op.LtEq ℕ
+    {{gtEq}} : Op.GtEq ℕ
 
-    {{≤-reflexive}} : Eq.Reflexive _≤_
     ≤-zeroᴸ : {n : ℕ} → 0 ≤ n
 
     {{≤-substitutive-step}} : AA.Substitutive₁ step _≤_ _≤_

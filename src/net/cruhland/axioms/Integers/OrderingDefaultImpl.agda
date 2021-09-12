@@ -8,10 +8,12 @@ open import net.cruhland.axioms.Integers.MultiplicationDecl
   using (Multiplication)
 open import net.cruhland.axioms.Integers.NegationDecl using (Negation)
 open import net.cruhland.axioms.Integers.SignDecl using (Sign)
-open import net.cruhland.axioms.Operators using (_+_; -_; _-_)
-open import net.cruhland.axioms.Ordering as Ord using (_≤_; _<_; _>_)
+open import net.cruhland.axioms.Operators as Op
+  using (_+_; -_; _-_; _≤_; _≥_; _<_; _>_)
+import net.cruhland.axioms.Ordering as Ord
 open import net.cruhland.axioms.Peano using (PeanoArithmetic)
 import net.cruhland.axioms.Sign as S
+open import net.cruhland.models.Function using (_⟨→⟩_; flip)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using (∧-intro; _↯_; ¬_; ¬-intro)
 
@@ -44,6 +46,18 @@ record _≤₀_ (a b : ℤ) : Set where
     {d} : ℕ
     a+d≃b : a + (d as ℤ) ≃ b
 
+≤₀-from-≃ : {a b : ℤ} → a ≃ b → a ≤₀ b
+≤₀-from-≃ {a} {b} a≃b =
+  let a+0≃b =
+        begin
+          a + 0
+        ≃⟨ AA.ident ⟩
+          a
+        ≃⟨ a≃b ⟩
+          b
+        ∎
+   in ≤₀-intro a+0≃b
+
 record _<₀_ (a b : ℤ) : Set where
   constructor <₀-intro
   field
@@ -51,17 +65,57 @@ record _<₀_ (a b : ℤ) : Set where
     a≄b : a ≄ b
 
 instance
-  nonStrictOrder : Ord.NonStrictOrder ℤ
-  nonStrictOrder = Ord.nonStrict-from-lte _≤₀_
+  ltEq : Op.LtEq ℤ
+  ltEq = Op.ltEq _≤₀_
 
-  strictOrder : Ord.StrictOrder ℤ
-  strictOrder = Ord.strict-from-lt _<₀_
+  gtEq : Op.GtEq ℤ
+  gtEq = Op.gtEq (flip _≤_)
 
-  -- Instances needed in impls only
-  lessThanOrEqual = Ord.NonStrictOrder.lte nonStrictOrder
-  greaterThanOrEqual = Ord.NonStrictOrder.gte nonStrictOrder
-  lessThan = Ord.StrictOrder.lt strictOrder
-  greaterThan = Ord.StrictOrder.gt strictOrder
+  ≤-substitutiveᴸ : AA.Substitutive₂ AA.handᴸ _≤_ _≃_ _⟨→⟩_
+  ≤-substitutiveᴸ = AA.substitutive₂ ≤-substᴸ
+    where
+      ≤-substᴸ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → a₁ ≤ b → a₂ ≤ b
+      ≤-substᴸ {a₁} {a₂} {b} a₁≃a₂ (≤₀-intro {d} a₁+d≃b) =
+        let a₂+d≃b =
+              begin
+                a₂ + (d as ℤ)
+              ≃˘⟨ AA.subst₂ a₁≃a₂ ⟩
+                a₁ + (d as ℤ)
+              ≃⟨ a₁+d≃b ⟩
+                b
+              ∎
+         in ≤₀-intro a₂+d≃b
+
+  ≤-substitutiveᴿ : AA.Substitutive₂ AA.handᴿ _≤_ _≃_ _⟨→⟩_
+  ≤-substitutiveᴿ = AA.substitutive₂ ≤-substᴿ
+    where
+      ≤-substᴿ : {a₁ a₂ b : ℤ} → a₁ ≃ a₂ → b ≤ a₁ → b ≤ a₂
+      ≤-substᴿ a₁≃a₂ (≤₀-intro b+d≃a₁) = ≤₀-intro (Eq.trans b+d≃a₁ a₁≃a₂)
+
+  ≤-substitutive : AA.Substitutive² _≤_ _≃_ _⟨→⟩_
+  ≤-substitutive = AA.substitutive² {A = ℤ}
+
+  ≤-reflexive : Eq.Reflexive _≤_
+  ≤-reflexive = Eq.reflexive (≤₀-intro AA.ident)
+
+  ≤-transitive : Eq.Transitive _≤_
+  ≤-transitive = Eq.transitive ≤-trans
+    where
+      ≤-trans : {a b c : ℤ} → a ≤ b → b ≤ c → a ≤ c
+      ≤-trans {a} {b} {c} (≤₀-intro {d₁} a+d₁≃b) (≤₀-intro {d₂} b+d₂≃c) =
+        let a+[d₁+d₂]≃c =
+              begin
+                a + (d₁ + d₂ as ℤ)
+              ≃⟨ AA.subst₂ AA.compat₂ ⟩
+                a + ((d₁ as ℤ) + (d₂ as ℤ))
+              ≃˘⟨ AA.assoc ⟩
+                (a + (d₁ as ℤ)) + (d₂ as ℤ)
+              ≃⟨ AA.subst₂ a+d₁≃b ⟩
+                b + (d₂ as ℤ)
+              ≃⟨ b+d₂≃c ⟩
+                c
+              ∎
+         in ≤₀-intro a+[d₁+d₂]≃c
 
   ≤-antisymmetric : AA.Antisymmetric _≤_
   ≤-antisymmetric = AA.antisymmetric ≤-antisym
@@ -103,6 +157,28 @@ instance
               b
             ∎
 
+  lessThanOrEqual : Ord.NonStrict _≤_
+  lessThanOrEqual = Ord.nonstrict-intro ≤₀-from-≃
+
+  nonStrictOrder : Ord.NonStrict² _≤_ (flip _≤_)
+  nonStrictOrder = Ord.nonstrict²-from-nonstrict {A = ℤ}
+
+  lt : Op.Lt ℤ
+  lt = Ord.lt-≤≄
+
+  gt : Op.Gt ℤ
+  gt = Ord.gt-flip-≤≄
+
+  lessThan : Ord.Strict {A = ℤ} Ord._≤≄_
+  lessThan = Ord.strict-from-nonstrict
+
+  strictOrder : Ord.Strict² Ord._≤≄_ (flip Ord._≤≄_)
+  strictOrder = Ord.strict²-from-strict
+
+  -- Instances needed in impls only
+  greaterThanOrEqual = Ord.NonStrict².gte nonStrictOrder
+  greaterThan = Ord.Strict².gt strictOrder
+
 <-from-pos : {a b : ℤ} → S.Positive (b - a) → a < b
 <-from-pos {a} {b} pos[b-a] =
   let ℤ.≃posℕ-intro {d} pos[d] b-a≃d = ℤ.posℕ-from-posℤ pos[b-a]
@@ -124,10 +200,10 @@ instance
             d≃0 = AA.inject d:ℤ≃0:ℤ
             d≄0 = S.pos≄0 pos[d]
          in d≃0 ↯ d≄0
-   in <₀-intro a≤b a≄b
+   in Ord.≤≄-intro a≤b a≄b
 
 pos-from-< : {a b : ℤ} → a < b → S.Positive (b - a)
-pos-from-< {a} {b} (<₀-intro (≤₀-intro {d} a+d≃b) a≄b) =
+pos-from-< {a} {b} (Ord.≤≄-intro (≤₀-intro {d} a+d≃b) a≄b) =
   let d≄0 = Eq.≄-intro λ d≃0 →
         let a≃b =
               begin
@@ -147,7 +223,7 @@ pos-from-< {a} {b} (<₀-intro (≤₀-intro {d} a+d≃b) a≄b) =
    in ℤ.posℤ-from-posℕ (ℤ.≃posℕ-intro pos[d] b-a≃d)
 
 instance
-  order-trichotomy : Ord.Trichotomy ℤ
+  order-trichotomy : Ord.Trichotomy _<_ _>_
   order-trichotomy = Ord.trichotomy-intro ord-tri
     where
       ord-tri : (a b : ℤ) → AA.ExactlyOneOfThree (a ≃ b) (a < b) (a > b)
@@ -161,42 +237,13 @@ instance
 
           ¬2of3 : ¬ AA.TwoOfThree (a ≃ b) (a < b) (a > b)
           ¬2of3 = ¬-intro λ
-            { (AA.1∧2 a≃b (<₀-intro a≤b a≄b)) →
+            { (AA.1∧2 a≃b (Ord.≤≄-intro a≤b a≄b)) →
                 a≃b ↯ a≄b
-            ; (AA.1∧3 a≃b (<₀-intro b≤a b≄a)) →
+            ; (AA.1∧3 a≃b (Ord.≤≄-intro b≤a b≄a)) →
                 a≃b ↯ Eq.sym b≄a
-            ; (AA.2∧3 (<₀-intro a≤b a≄b) (<₀-intro b≤a b≄a)) →
+            ; (AA.2∧3 (Ord.≤≄-intro a≤b a≄b) (Ord.≤≄-intro b≤a b≄a)) →
                 AA.antisym a≤b b≤a ↯ a≄b
             }
 
-  <-transitive : Eq.Transitive _<_
-  <-transitive = Eq.transitive <-trans
-    where
-      <-trans : {a b c : ℤ} → a < b → b < c → a < c
-      <-trans {a} {b} {c} a<b b<c =
-        let pos[b-a] = pos-from-< a<b
-            pos[c-b] = pos-from-< b<c
-            pos[[b-a]+[c-b]] = AA.pres pos[b-a] pos[c-b]
-            [b-a]+[c-b]≃c-a =
-              begin
-                (b - a) + (c - b)
-              ≃⟨ AA.comm ⟩
-                (c - b) + (b - a)
-              ≃⟨ AA.subst₂ ℤ.sub-defn ⟩
-                (c + (- b)) + (b - a)
-              ≃⟨ AA.subst₂ ℤ.sub-defn ⟩
-                (c + (- b)) + (b + (- a))
-              ≃⟨ AA.[ab][cd]≃a[[bc]d] ⟩
-                c + ((- b + b) + (- a))
-              ≃⟨ AA.subst₂ (AA.subst₂ AA.inv) ⟩
-                c + (0 + (- a))
-              ≃⟨ AA.subst₂ AA.ident ⟩
-                c + (- a)
-              ≃˘⟨ ℤ.sub-defn ⟩
-                c - a
-              ∎
-            pos[c-a] = AA.subst₁ [b-a]+[c-b]≃c-a pos[[b-a]+[c-b]]
-         in <-from-pos pos[c-a]
-
-  totalOrder : Ord.TotalOrder ℤ
-  totalOrder = record { <-from-≤≄ = <₀-intro }
+  totalOrder : Ord.TotalOrder _≤_ _≥_ _<_ _>_
+  totalOrder = record { lt-from-lte-≄ = Ord.≤≄-intro }

@@ -1,7 +1,7 @@
 import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.Eq as Eq using (_≃_)
-open import net.cruhland.axioms.Operators using (_+_)
-open import net.cruhland.axioms.Ordering as Ord using (_<_; _≮_; _>_)
+open import net.cruhland.axioms.Operators using (_+_; _<_; _≮_; _>_)
+import net.cruhland.axioms.Ordering as Ord
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
@@ -12,7 +12,7 @@ import net.cruhland.axioms.Peano.Ordering.LessThanOrEqual.PropertiesImplBase
   as LteProps
 open import net.cruhland.axioms.Peano.Sign using (Sign)
 import net.cruhland.axioms.Sign as S
-open import net.cruhland.models.Function using (_⟨→⟩_)
+open import net.cruhland.models.Function using (_⟨→⟩_; flip)
 open import net.cruhland.models.Literals
 open import net.cruhland.models.Logic using (∧-intro; ⊥; _↯_; ¬-intro)
 
@@ -31,6 +31,15 @@ module ℕ≤ = LteBase LTEB
 module ℕ≤P = LteProps PB PS PA LTEB
 
 instance
+  <-irreflexive : AA.Irreflexive _<_
+  <-irreflexive = AA.irreflexive <-irrefl
+    where
+      <-irrefl : {n : ℕ} → n ≮ n
+      <-irrefl = ¬-intro λ n<n →
+        let n≃n = Eq.refl
+            n≄n = ℕ<.<-elim-≄ n<n
+         in n≃n ↯ n≄n
+
   <-transitive : Eq.Transitive _<_
   <-transitive = Eq.transitive <-trans
     where
@@ -45,17 +54,6 @@ instance
             d[n≤m]+d[m≤k]≃d[n≤k] = Eq.sym (ℕ≤P.diff-trans n≤m m≤k)
             pos[d[n≤k]] = AA.subst₁ d[n≤m]+d[m≤k]≃d[n≤k] pos[d[n≤m]+d[m≤k]]
          in ℕ<.<-intro-≤pd n≤k pos[d[n≤k]]
-
-  >-transitive : Eq.Transitive _>_
-  >-transitive = Eq.transitive >-trans
-    where
-      >-trans : {n m k : ℕ} → n > m → m > k → n > k
-      >-trans n>m m>k =
-        let m<n = Ord.>-flip n>m
-            k<m = Ord.>-flip m>k
-            k<n = Eq.trans k<m m<n
-            n>k = Ord.<-flip k<n
-         in n>k
 
   <-substitutive-≃ᴸ : AA.Substitutive₂ AA.handᴸ _<_ _≃_ _⟨→⟩_
   <-substitutive-≃ᴸ = AA.substitutive₂ <-substᴸ
@@ -81,6 +79,12 @@ instance
 
   <-substitutive-≃ : AA.Substitutive² _<_ _≃_ _⟨→⟩_
   <-substitutive-≃ = AA.substitutive²
+
+  lessThan : Ord.Strict _<_
+  lessThan = Ord.strict-intro
+
+  strictOrder : Ord.Strict² _<_ (flip _<_)
+  strictOrder = Ord.strict²-from-strict
 
   <-substitutive-+ᴸ : AA.Substitutive₂ AA.handᴸ _+_ _<_ _<_
   <-substitutive-+ᴸ = AA.substitutive₂ <-substᴸ

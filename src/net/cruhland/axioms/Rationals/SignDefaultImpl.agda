@@ -500,8 +500,17 @@ instance
       ... | AA.3rd neg[q] =
         sgn[q]≃[-1]-from-neg[q] (AA.subst₁ (Eq.sym p≃q) neg[q])
 
+  Sgn-sgn : {q : ℚ} → ℚ.Sgn (sgn q)
+  Sgn-sgn {q} with AA.at-least-one (S.trichotomy q)
+  ... | AA.1st q≃0 = ℚ.Sgn[0]
+  ... | AA.2nd pos[q] = ℚ.Sgn[1]
+  ... | AA.3rd neg[q] = ℚ.Sgn[-1]
+
 abs : ℚ → ℚ
 abs q = q * sgn q
+
+abs-defn : {q : ℚ} → abs q ≃ q * sgn q
+abs-defn = Eq.refl
 
 abs[q]≃0-from-q≃0 : {q : ℚ} → q ≃ 0 → abs q ≃ 0
 abs[q]≃0-from-q≃0 {q} q≃0 =

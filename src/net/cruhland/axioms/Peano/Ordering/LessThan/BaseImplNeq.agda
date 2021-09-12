@@ -2,8 +2,8 @@ import net.cruhland.axioms.AbstractAlgebra as AA
 open import net.cruhland.axioms.DecEq using (_≃?_)
 open import net.cruhland.axioms.Eq as Eq using (_≃_; _≄_)
 open Eq.≃-Reasoning
-open import net.cruhland.axioms.Ordering as Ord using (_≤_; _<_)
-open import net.cruhland.axioms.Operators using (_+_)
+open import net.cruhland.axioms.Operators as Op using (_+_; _≤_; _<_; _>_)
+import net.cruhland.axioms.Ordering as Ord
 open import net.cruhland.axioms.Peano.Addition using (Addition)
 open import net.cruhland.axioms.Peano.Base
   using () renaming (Peano to PeanoBase)
@@ -35,19 +35,18 @@ private
     open import net.cruhland.axioms.Peano.Literals PB public
 
 open ℕ using (ℕ)
-open import net.cruhland.axioms.Peano.Ordering.LessThan.NeqDecl PB PS PA LTEB
-  as ND using (_≤≄_)
 
 instance
-  strictOrder : Ord.StrictOrder ℕ
-  strictOrder = Ord.strict-from-lt _≤≄_
+  lt : Op.Lt ℕ
+  lt = Ord.lt-≤≄ {_≤_ = _≤_}
 
-  -- Instances needed in impls only
-  lessThan = Ord.StrictOrder.lt strictOrder
-  greaterThan = Ord.StrictOrder.gt strictOrder
+  gt : Op.Gt ℕ
+  gt = Ord.gt-flip-≤≄ {_≤_ = _≤_}
+
+_≤≄_ = Ord._≤≄_ {_≤_ = _≤_}
 
 <-intro-≤≄ : {n m : ℕ} → n ≤ m → n ≄ m → n ≤≄ m
-<-intro-≤≄ = ND.≤≄-intro
+<-intro-≤≄ = Ord.≤≄-intro
 
 <-intro-≤pd : {n m : ℕ} (n≤m : n ≤ m) → S.Positive (ℕ.≤-diff n≤m) → n < m
 <-intro-≤pd n≤m pos[d] =
@@ -58,10 +57,10 @@ instance
    in <-intro-≤≄ n≤m n≄m
 
 <-elim-≤ : {n m : ℕ} → n ≤≄ m → n ≤ m
-<-elim-≤ = ND.≤≄-elim-≤
+<-elim-≤ = Ord.≤-from-≤≄
 
 <-elim-≄ : {n m : ℕ} → n ≤≄ m → n ≄ m
-<-elim-≄ = ND.≤≄-elim-≄
+<-elim-≄ = Ord.≄-from-≤≄
 
 <-diff : {n m : ℕ} → n < m → ℕ
 <-diff n<m = ℕ.≤-diff (<-elim-≤ n<m)

@@ -104,6 +104,16 @@ record NegationBase (QB : Base) (QA : Addition QB) : Set₁ where
       0
     ∎
 
+  sub-zeroᴸ : {q : ℚ} → 0 - q ≃ - q
+  sub-zeroᴸ {q} =
+    begin
+      0 - q
+    ≃⟨⟩
+      0 + (- q)
+    ≃⟨ AA.ident ⟩
+      - q
+    ∎
+
   p≃q-from-p-q≃0 : {p q : ℚ} → p - q ≃ 0 → p ≃ q
   p≃q-from-p-q≃0 {p} {q} p-q≃0 =
     begin
